@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    echo "Usage: build-dependencies <DRUPAL_PATH>"
+    echo "Usage: build-dependencies /path/to/drupal"
     echo ""
 }
 
