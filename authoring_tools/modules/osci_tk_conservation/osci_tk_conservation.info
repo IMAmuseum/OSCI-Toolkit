@@ -3,6 +3,6 @@ description = "Provides tools for displaying and working with conservation asset
 package = "OSCI Toolkit"
 version = "1.0"
 core = "7.x"
-dependencies[] = libraries
+dependencies[] = osci_tk_features
 files[] = osci_tk_conservation.module
 files[] = osci_tk_conservation.admin.inc
