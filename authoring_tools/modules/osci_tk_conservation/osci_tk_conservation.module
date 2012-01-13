@@ -497,12 +497,9 @@ function _osci_tk_conservation_get_conservation_aspect($node) {
 function osci_tk_conservation_view($nid)
 {
 	drupal_add_library('system', 'ui.slider');
-	drupal_add_js(libraries_get_path('amplify') . '/core/amplify.core.js');
-// TODO: remove the below coupling
-	drupal_add_css(drupal_get_path('module', 'osci_layout').'/css/osci_layout.css');
-
-	drupal_add_js(drupal_get_path('module', 'osci_conservation') . '/js/conservation-view.js', 'file');
-	drupal_add_css(drupal_get_path('module', 'osci_conservation') . '/css/conservation-view.css', 'file');
+	drupal_add_js(libraries_get_path('amplify') . '/core/amplify.core.js', 'file');
+	drupal_add_js(drupal_get_path('module', 'osci_conservation') . '/js/osci_tk_conservation_view.js', 'file');
+	drupal_add_css(drupal_get_path('module', 'osci_conservation') . '/css/osci_tk_conservation_view.css', 'file');
 
 	$node = node_load($nid);
 
