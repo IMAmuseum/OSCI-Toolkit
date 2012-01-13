@@ -1,0 +1,8 @@
+name = "OSCI Toolkit - Conservation Tools"
+description = "Provides tools for displaying and working with conservation assets"
+package = "OSCI Toolkit"
+version = "1.0"
+core = "7.x"
+dependencies[] = libraries
+files[] = osci_tk_conservation.module
+files[] = osci_tk_conservation.admin.inc
