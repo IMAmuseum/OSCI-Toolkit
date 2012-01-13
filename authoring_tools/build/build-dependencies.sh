@@ -43,9 +43,9 @@ echo
 # Polymaps
 #
 echo "Downloading and extracting polymaps..."
-curl -s -L -o polymaps.tgz https://github.com/simplegeo/polymaps/tarball/v2.5.0
-tar -xz -C src -f polymaps.tgz
-rm polymaps.tgz
+curl -s -L -o polymaps-2.5.0.tgz https://github.com/simplegeo/polymaps/tarball/v2.5.0
+tar -xz -C src -f polymaps-2.5.0.tgz
+rm polymaps-2.5.0.tgz
 rm ./src/simplegeo-polymaps-13ae25d/polymaps.min.js
 cp ./src/simplegeo-polymaps-13ae25d/polymaps.js ./src/simplegeo-polymaps-13ae25d/polymaps.js.prepatch
 patch ./src/simplegeo-polymaps-13ae25d/polymaps.js polymaps.js.patch
@@ -74,3 +74,21 @@ fi
 rm -rf $1/sites/all/libraries/jscolor/*
 mv -f ./src/jscolor/* $1/sites/all/libraries/jscolor
 rm -rf ./src/jscolor
+echo
+
+#
+# Amplify.js
+#
+echo "Downloading and extracting amplify..."
+curl -s -L -o amplify-1.1.0.tgz https://github.com/appendto/amplify/tarball/1.1.0
+tar -xz -C src -f amplify-1.1.0.tgz
+rm amplify-1.1.0.tgz
+echo "Moving to Drupal libraries..."
+if [ ! -d $1/sites/all/libraries/amplify ];
+then
+    mkdir -p $1/sites/all/libraries/amplify
+fi
+rm -rf $1/sites/all/libraries/amplify/*
+mv -f ./src/appendto-amplify-bede933/* $1/sites/all/libraries/amplify
+rm -rf ./src/appendto-amplify-bede933
+echo
