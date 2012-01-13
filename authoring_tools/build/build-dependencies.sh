@@ -5,12 +5,14 @@ function usage() {
     echo ""
 }
 
+# test for arguments
 if [ ! $1 ] || [ ! -d $1 ]; 
 then
     usage
     exit
 fi
 
+# test for index.php - to ensure a drupal directory
 if [ ! -f $1/index.php ];
 then
     echo "Error: This doesn't look like a Drupal install (no index.php)"
@@ -19,6 +21,7 @@ then
     exit
 fi
 
+# test for trailing slash - should not be present
 dpath=$(echo $1 | awk '{print substr($0,length,1)}')
 if [ $dpath = '/' ];
 then
@@ -44,13 +47,30 @@ curl -s -L -o polymaps.tgz https://github.com/simplegeo/polymaps/tarball/v2.5.0
 tar -xz -C src -f polymaps.tgz
 rm polymaps.tgz
 rm ./src/simplegeo-polymaps-13ae25d/polymaps.min.js
-echo "Patching polymaps..."
 cp ./src/simplegeo-polymaps-13ae25d/polymaps.js ./src/simplegeo-polymaps-13ae25d/polymaps.js.prepatch
 patch ./src/simplegeo-polymaps-13ae25d/polymaps.js polymaps.js.patch
 echo "Moving to Drupal libraries..."
-if [ ! -d $1/sites/all/libraries ];
+if [ ! -d $1/sites/all/libraries/polymaps ];
 then
     mkdir -p $1/sites/all/libraries/polymaps
 fi
-mv ./src/simplegeo-polymaps-13ae25d $1/sites/all/libraries/polymaps
+rm -rf $1/sites/all/libraries/polymaps/*
+mv -f ./src/simplegeo-polymaps-13ae25d/* $1/sites/all/libraries/polymaps
+rm -rf ./src/simplegeo-polymaps-13ae25d
 echo
+
+#
+# JsColor
+#
+echo "Downloading and extracting jscolor..."
+curl -s -L -O http://jscolor.com/release/jscolor-1.3.9.zip
+unzip -o -q jscolor-1.3.9.zip -d src
+rm jscolor-1.3.9.zip
+echo "Moving to Drupal libraries..."
+if [ ! -d $1/sites/all/libraries/jscolor ];
+then
+    mkdir -p $1/sites/all/libraries/jscolor
+fi
+rm -rf $1/sites/all/libraries/jscolor/*
+mv -f ./src/jscolor/* $1/sites/all/libraries/jscolor
+rm -rf ./src/jscolor
