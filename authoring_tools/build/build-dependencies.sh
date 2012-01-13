@@ -43,7 +43,7 @@ echo
 # Polymaps
 #
 echo "Downloading and extracting polymaps..."
-curl -s -L -o polymaps-2.5.0.tgz https://github.com/simplegeo/polymaps/tarball/v2.5.0
+curl -s -k -L -o polymaps-2.5.0.tgz https://github.com/simplegeo/polymaps/tarball/v2.5.0
 tar -xz -C src -f polymaps-2.5.0.tgz
 rm polymaps-2.5.0.tgz
 rm ./src/simplegeo-polymaps-13ae25d/polymaps.min.js
@@ -80,7 +80,7 @@ echo
 # Amplify.js
 #
 echo "Downloading and extracting amplify..."
-curl -s -L -o amplify-1.1.0.tgz https://github.com/appendto/amplify/tarball/1.1.0
+curl -s -k -L -o amplify-1.1.0.tgz https://github.com/appendto/amplify/tarball/1.1.0
 tar -xz -C src -f amplify-1.1.0.tgz
 rm amplify-1.1.0.tgz
 echo "Moving to Drupal libraries..."
