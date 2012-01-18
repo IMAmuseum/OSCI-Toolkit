@@ -123,4 +123,20 @@ rm -rf $1/sites/all/libraries/simplehtmldom/*
 cp -r ./src/simplehtmldom/* $1/sites/all/libraries/simplehtmldom
 echo
 
+#
+# FancyBox
+#
+echo "Downloading and extracting FancyBox..."
+curl -s -L -O http://fancybox.googlecode.com/files/jquery.fancybox-1.3.4.zip
+unzip -o -q jquery.fancybox-1.3.4.zip -d src
+rm jquery.fancybox-1.3.4.zip
+echo "Copying to Drupal libraries..."
+if [ ! -d $1/sites/all/libraries/fancybox ];
+then
+    mkdir -p $1/sites/all/libraries/fancybox
+fi
+rm -rf $1/sites/all/libraries/fancybox/*
+cp -r ./src/jquery.fancybox-1.3.4/* $1/sites/all/libraries/fancybox
+echo
+
 echo "Finished"

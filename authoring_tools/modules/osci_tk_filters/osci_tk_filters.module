@@ -1,0 +1,242 @@
+<?php
+
+/***********************************************************************
+ *
+ * Drupal Hooks
+ *
+ */
+
+function osci_tk_filters_init() {
+    drupal_add_js(libraries_get_path('fancybox').'/fancybox/jquery.fancybox-1.3.4.js', array('weight' => '5'));
+    drupal_add_css(libraries_get_path('fancybox').'/fancybox/jquery.fancybox-1.3.4.css');
+    drupal_add_js(drupal_get_path('module', 'osci_tk_filters').'/js/osci_tk_filters.js', array('weight' => '5'));
+    drupal_add_css(drupal_get_path('module', 'osci_tk_filters').'/css/osci_tk_filters.css');
+    $settings = array(
+        'osci_tk_filters' => array(
+            'modulePath' => base_path().drupal_get_path('module', 'osci_tk_filters'),
+        ),
+    );
+    drupal_add_js($settings, 'setting');
+}
+
+/**
+ * Implementation of hook_filter_info
+ */
+function osci_tk_filters_filter_info() {
+    $filters = array();
+
+    // Footnotes
+    $filters['osci_tk_footnote'] = array(
+        'title'             => t('Footnote filter'),
+        'description'       => t('Allow filters for footnotes'),
+        'process callback'  => '_filter_footnote',
+        'settings callback' => '_filter_settings',
+        'tips callback'     => '_filter_footnote_tips',
+    );
+
+    $filters['osci_tk_figure'] = array(
+        'title'             => t('Figure filter'),
+        'description'       => t('Add references to figure images in content'),
+        'process callback'  => '_filter_figure',
+        'settings callback' => '_filter_settings',
+        'tips callback'     => '_filter_figure_tips',
+    );
+    
+    $filters['osci_tk_cross_link'] = array(
+        'title'             => t('Cross Link filter'),
+        'description'       => t('Allow cross content linking within a book'),
+        'process callback'  => '_filter_cross_link',
+        'settings callback' => '_filter_settings',
+        'tips callback'     => '_filter_cross_link_tips'
+    );
+
+    return $filters;
+}
+
+/**
+ * Implementation of hook_wysiwyg_plugin
+ */
+function osci_tk_filters_wysiwyg_plugin($editor, $version) {
+    switch($editor) {
+        case 'ckeditor':
+            return array(
+                'osci_tk_filters' => array(
+                    'path'      => drupal_get_path('module', 'osci_tk_filters').'/js/osci_tk_filters',
+                    'buttons'   => array(
+                        'footnote'  => t('OSCI - Footnote'),
+                        'figure'    => t('OSCI - Figure'),
+                    ),
+                    'load'      => TRUE,
+                ),
+            );
+            break;
+    }
+}
+
+/**
+ * Empty settings function, seems to be required by hook_filter_info
+ */
+function _filter_settings() {}
+
+/***********************************************************************
+ *
+ * FOOTNOTE
+ *
+ */
+
+/**
+ * Process callback for filter
+ */
+function _filter_footnote($text, $filter, $format) {
+    $regex = '/\[footnote:(.*?)\]/i';
+    return preg_replace_callback($regex, '_process_footnote', $text);
+}
+
+/**
+ * Regex replace callback
+ */
+function _process_footnote($text) {
+    if (empty($text[1])) return $text[0];
+    list($ident) = explode('_fn_', $text[1]);
+    list($ident) = explode('-', $ident);
+    $table = 'field_revision_field_' . $ident;
+    $field = 'field_' . $ident . '_footnotes';
+    $db = db_select($table, 't')
+        ->fields('t', array('entity_id'))
+        ->condition($field, '%' .$text[1]. '%', 'LIKE')
+        ->execute()
+        ->fetchAssoc();
+    if (count($db['entity_id'])) {
+        return '<a href="#'.$text[1].'" class="superscript footnote-link">'.$text[1].'</a>';
+    }
+}
+
+/**
+ * Tooltip funcion
+ */
+function _filter_footnote_tips() {
+    return t('Insert a footnote with [footnote:ID]');
+}
+
+/***********************************************************************
+ *
+ * FIGURE
+ *
+ */
+
+function _filter_figure($text, $filter, $format) {
+    $regex = '/\[figure:(.*?)\]/i';
+    return preg_replace_callback($regex, '_process_figure', $text);
+}
+
+function _process_figure($text) {
+    if (empty($text[1])) return $text[0];
+    static $count;
+    $count++;
+
+    //return '<a href="#'.$text[1].'" class="figure">(fig. '.$count.')</a>';
+    return '<a href="#'.$text[1].'" class="figure-link">'.$text[1].'</a>';
+    /*
+    // Get the field
+    $result = db_query('SELECT entity_id FROM {field_data_field_identifier} WHERE field_identifier_value = :identifier', array(':identifier' => $data['id']));
+    $entity = $result->fetchObject();
+
+    // Build the node
+    $node = node_load($entity->entity_id);
+    node_build_content($node, 'full');
+
+    // Build the content
+    $additional_data = 'data-columns="'.$data['args']['col'].'" data-position="'.$data['args']['pos'].'"';
+    $output = drupal_render($node->content['field_image']);
+
+    return '<div '.$additional_data.' id="figure-'.$node->nid.'" class="figure">'.$output.'</div>';
+    */
+}
+
+function _filter_figure_tips() {
+    return t('Insert a figure with [figure:ID]');
+}
+/************** INSERT OTHER FILTER FUNCTIONS HERE ********************/
+
+
+/***********************************************************************
+ *
+ * HELPER FUNCTIONS
+ *
+ */
+
+/*
+ * @param $text
+ * A string of text with arguments
+ * @return
+ * A keyed array with id and args
+ */
+function _process_args($text) {
+    $data = array();
+    $temp = explode('|', $text);
+    if (isset($temp[0])) {
+        $data['id'] = $temp[0];
+    }
+    
+    if (isset($temp[1])) {
+        $args = explode(',', $temp[1]);
+
+        foreach ($args as $val) {
+            $arg = explode('=', $val);
+            if (isset($arg[0]) && isset($arg[1])) {
+                $data['args'][$arg[0]] = $arg[1];
+            }
+        }
+    }
+
+    return $data;
+}
+
+/***********************************************************************
+ *
+ * Cross linking
+ *
+ */
+
+/**
+ * Process callback for filter
+ */
+function _filter_cross_link($text, $filter, $format) {
+    $regex = '/\[link:(.*?)\]/i';
+    return preg_replace_callback($regex, '_process_cross_link', $text);
+}
+
+/**
+ * Regex replace callback
+ */
+function _process_cross_link($text) {
+    if (empty($text[1])) return $text[0];
+    $args = _process_args($text[1]);
+
+    $nid = $args['id'];
+    $url = url("node/{$nid}/reader");
+    $linkText = isset($args['args']['text']) ? $args['args']['text'] : "Link " . $nid;
+    
+    $query = "";
+    if (isset($args['args']['paragraph'])) {
+        $query = "#para-" . $args['args']['paragraph'];
+    }
+    
+    if (isset($args['args']['section'])) {
+        $query = '#field_' . $args['args']['section'] . '_anchor';
+    }
+    
+    if ($query) {
+        $url = url("node/{$nid}/reader", array('fragment' => substr($query, 1)));
+        $query = "data-query=\"$query\"";
+    }
+
+    return "<a href=\"{$url}\" class=\"cross-link\" target=\"_blank\" data-nid=\"{$nid}\" {$query}>{$linkText}</a>";
+}
+
+/**
+ * Tooltip funcion
+ */
+function _filter_cross_link_tips() {
+    return t('Insert a Link with [link:Node ID]');
+}

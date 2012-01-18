@@ -1,0 +1,5 @@
+name = "OSCI ToolKit - Filters"
+description = "Provides text filters for the OSCI ToolKit"
+package = "OSCI ToolKit"
+version = "1.0"
+core = "7.x"
