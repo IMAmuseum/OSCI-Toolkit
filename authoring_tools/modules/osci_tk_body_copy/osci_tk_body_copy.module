@@ -1,0 +1,940 @@
+<?php
+
+function osci_tk_body_copy_init() {
+	$baseUrl = url("", array('absolute' => TRUE));
+	drupal_add_js(array('baseUrl' => $baseUrl), 'setting');
+	drupal_add_library('system', 'ui.dialog');
+}
+
+function osci_tk_body_copy_menu()
+{
+    $items = array();
+
+    $items['node/%/bodycopy'] = array(
+        'title'             => 'Raw Content',
+        'description'       => 'Body copy layout for book display',
+        'page callback'     => 'osci_tk_body_copy_render_layout',
+        'page arguments'    => array(1, 'html5'),
+        'access arguments'  => array('access content'),
+        'type'              => MENU_CALLBACK
+    );
+
+    $items['ajax/figure'] = array(
+        'title'             => 'Figure search',
+        'page callback'     => 'osci_tk_body_copy_figure_reference',
+        'access arguments'  => array('access content'),
+        'type'              => MENU_CALLBACK,
+    );
+    
+    $items['ajax/figurepreview/%'] = array(
+        'title'             => 'Figure preview',
+        'page callback'     => 'osci_tk_body_copy_figure_preview',
+    	'page arguments'	=> array(2),
+        'access arguments'  => array('access content'),
+        'type'              => MENU_CALLBACK,
+    );
+    
+   	$items['ajax/figurethumb/save'] = array(
+        'title'             => 'Save Figure Thumbnail',
+        'page callback'     => 'osci_tk_body_copy_figure_thumb_save',
+        'access arguments'  => array('access content'),
+        'type'              => MENU_CALLBACK,
+    );
+
+    $items['node/%/pdf'] = array(
+        'title' => 'Pdf',
+        'description' => 'Create a pdf of this book',
+        'page callback' => 'book_export_pdf',
+        'page arguments' => array(1),
+        'access arguments' => array('access content'),
+        'type' => MENU_LOCAL_TASK
+    );
+
+    return $items;
+}
+
+function osci_tk_body_copy_theme()
+{
+    return array(
+        'body_copy_field_html5' => array(
+            'render element'    => 'element',
+            'template'          => 'templates/osci_tk_body_copy_field_html5'
+        ),
+        'body_copy_field_print' => array(
+            'render element'    => 'element',
+            'template'          => 'templates/osci_tk_body_copy_field_print'
+        ),
+        'body_copy_footnote' => array(
+            'template'  => 'templates/osci_tk_body_copy_footnote',
+            'variables' => array(
+                'fnId'      => null,
+                'fnCopy'    => null
+            )
+        ),
+        'body_copy_node' => array(
+            'template'          => 'templates/osci_tk_body_copy_node',
+            'render element'    => 'element'
+        ),
+        'body_copy_footnotes' => array(
+            'template'  => 'templates/osci_tk_body_copy_footnotes',
+            'variables' => array(
+                'footnotes' => array()
+            )
+        ),
+        'body_copy_figure' => array(
+            'template'  => 'templates/osci_tk_body_copy_figure',
+            'file'      => 'osci_tk_body_copy.templates.inc',
+            'variables' => array(
+                'figure'            => array(),
+                'body_copy_format'  => null,
+            )
+        ),
+        'body_copy_figure_print' => array(
+            'template'  => 'templates/osci_tk_body_copy_figure_print',
+            'file'      => 'osci_tk_body_copy.templates.inc',
+            'variables' => array(
+                'figure'            => array(),
+                'body_copy_format'  => null,
+            )
+        ),
+        'body_copy_figures_html5' => array(
+            'template' => 'templates/osci_tk_body_copy_figures_html5',
+            'variables' => array(
+                'figures' => array()
+            )
+        ),
+        'body_copy_figures_print' => array(
+            'template' => 'templates/osci_tk_body_copy_figures_print',
+            'variables' => array(
+                'figures' => array()
+            )
+        ),
+        'osci_tk_book_export_pdf' => array(
+          'variables' => array('title' => NULL, 'contents' => NULL, 'depth' => NULL),
+          'template' => 'templates/osci_tk_book_export_pdf',
+          'file'      => 'osci_tk_body_copy.templates.inc',
+        ),
+        'osci_tk_book_node_export_pdf' => array(
+          'variables' => array('node' => NULL, 'children' => NULL),
+          'template' => 'templates/osci_tk_book_node_export_pdf',
+          'file'      => 'osci_tk_body_copy.templates.inc',
+        ),
+    );
+}
+
+function osci_tk_body_copy_node_update($node)
+{
+    $cacheKey = "osci_tk_body_copy_" . $node->nid;
+    cache_clear_all($cacheKey, 'cache');
+    
+    $cacheKey = "osci_tk_body_copy_" . $node->nid . '_html5';
+    cache_clear_all($cacheKey, 'cache');
+    
+    $cacheKey = "osci_tk_body_copy_" . $node->nid . '_print';
+    cache_clear_all($cacheKey, 'cache');
+    
+    $cacheKey = "osci_tk_toc_" . $node->nid;
+    cache_clear_all($cacheKey, 'cache');
+}
+
+function book_export_pdf($nid) {
+    if (user_access('access printer-friendly version')) {
+        $export_data = array();
+        $node = node_load($nid);
+
+        if (isset($node->book)) {
+            $tree = book_menu_subtree_data($node->book);
+            $contents = book_export_traverse($tree, 'book_node_export_pdf');
+        }
+
+        $html = theme('osci_tk_book_export_pdf', array('title' => $node->title, 'contents' => $contents, 'depth' => $node->book['depth']));
+
+        require_once(libraries_get_path('dompdf') . '/dompdf_config.inc.php');
+
+        $dompdf = new DOMPDF();
+        $dompdf->set_base_path(realpath('./'));
+        $dompdf->load_html($html);
+
+        $dompdf->render();
+
+
+        $filename = strtolower($node->title);
+	    $filename = str_replace(
+	        array("#"," ", "'", "\"", "__", "&", "/", "\\", "?", "-"),
+	        array("_", "_", "", "", "_", "and", "_", "_", "", "_"),
+	        $filename
+	    );
+
+        $dompdf->stream($filename . ".pdf");
+    } else {
+        drupal_access_denied();
+    }
+}
+
+function book_node_export_pdf($node, $children = '') {
+    $node->rendered = osci_tk_body_copy_render_layout($node->nid, 'print');
+
+    return theme('osci_tk_book_node_export_pdf', array('node' => $node, 'children' => $children));
+}
+
+function osci_tk_body_copy_sort_elements($elements)
+{
+    $bodyCopyElements = array();
+    foreach($elements as $k => $v) {
+        if (strpos($k, 'field_osci_tk_') === 0) {
+            $elements[$k]['#theme'] = 'body_copy_field_html5';
+        }
+        if (is_array($v) && isset($v['#field_type']) && $v['#field_type'] === 'osci_tk_body_copy') {
+            $bodyCopyElements[$k] = $v['#weight'];
+        }
+    }
+    asort($bodyCopyElements);
+
+    return $bodyCopyElements;
+}
+
+function osci_tk_body_copy_render_layout($nid, $format = 'html5')
+{
+    $cacheKey = "osci_tk_body_copy_" . $nid . '_' . $format;
+    $output = &drupal_static($cacheKey);
+    if (!isset($output)) {
+        if ($cache = cache_get($cacheKey)) {
+            $output = $cache->data;
+        }
+        else {
+            require_once(libraries_get_path('simplehtmldom') . '/simple_html_dom.php');    
+
+            $node = node_load($nid);
+            $elements = node_view($node, 'body_copy');
+            $footnotes = array();
+            $footnoteOrder = array();
+            $footnoteCount = 0;
+            $figures = array();
+            $figureOrder = array();
+            $figureCount = 0;
+            $figureOccurenceCount = array();
+
+            $plateNid = null;
+            if (isset($elements['field_osci_tk_plate_image'])) {
+                $plateNid = ($elements['field_osci_tk_plate_image']['#items'][0]['nid']) ? $elements['field_osci_tk_plate_image']['#items'][0]['nid'] : null;
+                $plateCaption = $node->field_osci_tk_navigation_title['und'][0]['value'];
+                unset($elements['field_osci_tk_plate_image']);
+            }
+
+            $catalogNumber = (isset($node->field_osci_tk_catalogue_number['und']) && $node->field_osci_tk_catalogue_number['und'][0]['value']) ? $node->field_osci_tk_catalogue_number['und'][0]['value'] : null;
+            $bodyCopyElements = osci_tk_body_copy_sort_elements($elements);
+
+            $paragraphCount = 0;
+
+            // get url for path
+            $paragraphUrl = url("node/{$nid}/reader", array('absolute' => TRUE, 'fragment' => 'para-'));
+
+            foreach ($bodyCopyElements as $k => $weight) {
+                $v = $elements[$k];
+                $elements[$k]['#theme'] = 'body_copy_field_' . $format;
+
+                if (strlen(trim($v[0]['#markup']))) {
+                    $html = str_get_html($v[0]['#markup']);
+
+                    $paragraphs = $html->find('p');
+                    if (count($paragraphs)) {
+                        foreach($paragraphs as $p) {
+                            $paragraphCount++;
+                            $p->innertext = "<a href=\"" . $paragraphUrl . $paragraphCount . "\" class=\"osci_tk_paragraph_identifier osci_tk_paragraph_{$paragraphCount}\" data-paragraph_id=\"{$paragraphCount}\">{$paragraphCount}</a>" . $p->innertext();
+                            $newClass = $p->class ? $p->class . ' ' : '';
+                            $p->class = $newClass . "osci_tk_paragraph_{$paragraphCount} osci_tk_paragraph";
+                            $p->setAttribute("data-paragraph_id", $paragraphCount);
+                        }
+                    }
+
+                    $v[0]['#markup'] = $html->save();
+                    $html = str_get_html($v[0]['#markup']);
+
+                    $figLinks = $html->find("a.figure-link");
+                    if (count($figLinks)) {
+                        foreach ($figLinks as $link) {
+                            $fId = $link->innertext();
+
+                            if (isset($figureOccurenceCount[$fId])) {
+                                $figOccur = ++$figureOccurenceCount[$fId];
+                            } else {
+                                $figOccur = $figureOccurenceCount[$fId] = 1;
+                            }
+
+                            $numberTemplate = ($v[0]['osci_tk_figures'][$fId]['number_template']) ? $v[0]['osci_tk_figures'][$fId]['number_template'] : "Fig. cat#.fig#";
+                            
+                            if ($figOccur === 1) {
+                                $numberTemplate = str_replace(
+                                    array('cat#', 'fig#'),
+                                    array($catalogNumber, ++$figureCount),
+                                    $numberTemplate
+                                );
+                            }
+                            $v[0]['osci_tk_figures'][$fId]['number_template'] = $numberTemplate;                            
+
+                            $link->innertext = $numberTemplate;
+                            $link->setAttribute("data-occurence", $figOccur);
+                            $figureOrder[] = $fId;
+                        }
+                    }
+
+                    $v[0]['#markup'] = $html->save();
+                    $html = str_get_html($v[0]['#markup']);
+
+                    $fnLinks = $html->find("a.footnote-link");
+                    if (count($fnLinks)) {
+                        foreach ($fnLinks as $link) {
+                            $fnId = $link->innertext();
+
+                            $link->innertext = ++$footnoteCount;
+                            $footnoteOrder[$footnoteCount] = $fnId;
+                        }
+                    }
+
+                    $elements[$k][0]['#markup'] = $html->save();
+                } else {
+                    unset($elements[$k]);
+                }
+
+                $footnotes += $v[0]['osci_tk_footnotes'];
+                $figures += $v[0]['osci_tk_figures'];
+            }
+
+            if (count($footnotes)) {
+                $finalFootnotes = array();
+                foreach($footnoteOrder as $k => $fnId) {
+                    if (isset($footnotes[$fnId])) {
+                        $finalFootnotes[$k] = array_merge($footnotes[$fnId], array('fnCount' => $k));
+                    }
+                }
+
+                $elements['field_osci_tk_footnotes'] = array(
+                    '#theme'            => 'body_copy_field_html5',
+                    '#title'            => 'Footnotes',
+                    '#weight'           => 999,
+                    '#label_display'    => 'inline',
+                    '#field_type'       => 'osci_tk_body_copy',
+                    '#field_name'       => 'field_osci_tk_footnotes',
+                    '#attributes'        => array('class' => array('osci_tk_column_break')),
+                    0 => array(
+                        '#markup' => theme('body_copy_footnotes', array('footnotes' => $finalFootnotes))
+                    ),
+                );
+            }
+
+            if (count($figures) || $plateNid) {
+                $finalFigures = array();
+
+                if ($plateNid) {
+                    $plateId = 'osci_tk_plate_fig';
+                    $finalFigures[$plateId] = array(
+                        'figure_reference' => $plateNid,
+                        'number_template' => ($catalogNumber) ? "Cat. {$catalogNumber}" : ' ',
+                        'caption' => $plateCaption,
+                        'position' => 't',
+                        'columns' => '55%',
+                        'id' => $plateId,
+                        'format' => 'footnote',
+                        'figCount' => 0,
+                        'figOccurences' => 1
+                    );
+                }
+
+                $figureCount = 0;
+                foreach($figureOrder as $k => $fId) {
+                    if (isset($figures[$fId])) {
+                        if (isset($finalFigures[$fId])) {
+                            $finalFigures[$fId]['figOccurences']++;
+                        } else {
+                            $figureCount++;
+                            $finalFigures[$fId] = array_merge($figures[$fId], array('figCount' => $figureCount, 'figOccurences' => 1, 'catalogNumber' => $catalogNumber));
+                        }
+                    }
+                }
+
+                $elements['field_osci_tk_figures'] = array(
+                    '#theme'            => 'body_copy_field_' . $format,
+                    '#title'            => 'Figures',
+                    '#weight'           => 1000,
+                    '#label_display'    => 'inline',
+                    '#field_type'       => 'osci_tk_body_copy',
+                    '#field_name'       => 'field_osci_tk_figures',
+                    0 => array(
+                        '#markup' => theme('body_copy_figures_' . $format, array('figures' => $finalFigures))
+                    ),
+                );
+            }
+
+            switch($format) {
+                case 'print':
+                    unset($elements['#theme']);
+                    break;
+                
+                default:
+                    $elements['#theme'] = 'body_copy_node';
+            }
+            
+            unset($elements['#pre_render']);
+
+            $output = render($elements);
+            cache_set($cacheKey, $output, 'cache');
+        }
+    }
+    
+    switch ($format) {
+        case 'print':
+            return $output;
+            break;
+        
+        default:
+            print $output;
+    }
+}
+
+function osci_tk_body_copy_entity_info_alter(&$entity_info)
+{
+    $entity_info['node']['view modes']['body_copy'] = array(
+        'label'             => t('Body Copy'),
+        'custom settings'   => TRUE,
+    );
+}
+
+function osci_tk_body_copy_field_info()
+{
+    return array(
+        'osci_tk_body_copy' => array(
+            'label'             => t('Body Copy'),
+            'description'       => t('Includes text area for body copy and multi-value field for footnotes & figures'),
+            'default_widget'    => 'osci_tk_body_copy_widget',
+            'default_formatter' => 'osci_tk_body_copy_formatter'
+        )
+    );
+}
+
+function osci_tk_body_copy_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items)
+{
+    if ($field['type'] === 'osci_tk_body_copy') {
+        $items[0]['footnote_index']     = (int)$items[0]['footnotes']['footnote_index'];
+        $items[0]['body_copy_format']   = $items[0]['body_copy']['format'];
+        $items[0]['body_copy']          = trim($items[0]['body_copy']['value']);
+        $items[0]['figure_index']       = (int)$items[0]['figures']['figure_index'];
+
+        $finalFootnotes = array();
+        if (is_array($_POST[$field['field_name']]['und'][0]['footnotes'])) {
+            $footnotes = $_POST[$field['field_name']]['und'][0]['footnotes'];
+            foreach($footnotes as $id => $footnote) {
+                $uid = substr($field['field_name'], 6) . '_fn_' . $entity->nid . '_' . $id;
+                if (empty($footnote) || $id == 'footnote_index' || $id == 'footnote-blank') {
+                    continue;
+                }
+                $finalFootnotes[$uid] = $footnote;
+            }
+        }
+        $items[0]['footnotes'] = serialize($finalFootnotes);
+
+        $finalFigures = array();
+        if (is_array($_POST[$field['field_name']]['und'][0]['figures'])) {
+            $figures = $_POST[$field['field_name']]['und'][0]['figures'];
+            foreach($figures as $id => $figure) {
+                $uid = substr($field['field_name'], 6) . '_fig_' . $entity->nid . '_' . $id;
+                if (empty($figure['figure_reference']) || $id == 'figure_index' || $id == 'figure-blank') {
+                    continue;
+                }
+                
+                $opts = json_decode($figure['figure_options']);
+                if (isset($opts->previewUrl)) {
+                	unset($opts->previewUrl);
+                }
+                $figure['figure_options'] = json_encode($opts);
+                
+                $finalFigures[$uid] = $figure;
+            }
+        }
+        $items[0]['figures'] = serialize($finalFigures);
+    }
+}
+
+function osci_tk_body_copy_field_is_empty($item, $field)
+{
+    $return = false;
+
+    if (empty($item['body_copy'])) {
+        $return = true;
+    }
+
+    return $return;
+}
+
+/***********************************************************************
+ *  Field Type API: Formatter
+ **********************************************************************/
+
+function osci_tk_body_copy_field_formatter_info()
+{
+    return array(
+        'osci_tk_body_copy_formatter' => array(
+            'label' => t('Body Copy View'),
+            'field types' => array('osci_tk_body_copy')
+        ),
+        'osci_tk_body_copy_formatter_html5' => array(
+            'label' => t('Body Copy HTML5'),
+            'field types' => array('osci_tk_body_copy')
+        ),
+        'osci_tk_text_field_formatter_html5' => array(
+            'label' => t('Text Field HTML5'),
+            'field types' => array('text', 'text_long')
+        )
+    );
+}
+
+function osci_tk_body_copy_field_prepare_view($entity_type, $entities, $field, $instances, $langcode, &$items)
+{
+    if ($field['type'] == 'osci_tk_body_copy') {
+        foreach($items as $nid => $fields) {
+            foreach($fields as $delta => $item) {
+                if (isset($item['footnotes'])) {
+                    $items[$nid][$delta]['footnotes'] = unserialize($item['footnotes']);
+                }
+
+                if (isset($item['figures'])) {
+                    $figures = unserialize($item['figures']);
+
+                    foreach($figures as $id => $figure) {
+                        $figures[$id]['id'] = $id;
+                        $figures[$id]['format'] = $item['body_copy_format'];
+                    }
+                    $items[$nid][$delta]['figures'] = $figures;
+                }
+            }
+        }
+    }
+}
+
+function osci_tk_body_copy_field_formatter_view($object_type, $object, $field, $instance, $langcode, $items, $display)
+{
+    $element = array();
+
+    switch ($display['type']) {
+        case 'osci_tk_text_field_formatter_html5':
+            foreach($items as $delta => $item) {
+                $element[$delta] = array(
+                    '#markup' => '<div>' . $item['value'] . '</div>',
+                    '#theme'  => 'body_copy_field_html5',
+                );
+            }
+            break;
+        case 'osci_tk_body_copy_formatter':
+            $rendered_figures = array();
+
+            foreach($items as $delta => $item) {
+                $markup = check_markup($item['body_copy'], $item['body_copy_format']);
+
+                $footnotes = $item['footnotes'];
+                // Add anchor tags
+                if (is_array($footnotes)) {
+                    foreach($footnotes as $id => $footnote) {
+                        $footnotes[$id] = theme('body_copy_footnote', array('fnId' => $id, 'fnCopy' => check_markup($footnote, $item['body_copy_format'])));
+                    }
+                }
+                $markup .= theme_item_list(array('items' => $footnotes, 'title' => 'Footnotes', 'type' => 'ol', 'attributes' => array()));
+
+                $figures = $item['figures'];
+                if (is_array($figures)) {
+                    foreach ($figures as $figure) {
+                        $rendered_figures[] = theme('body_copy_figure', array('figure' => $figure));
+                    }
+                }
+                $markup .= theme('item_list', array('items' => $rendered_figures, 'title' => t('Figures'), 'type' => 'ol'));
+
+                $element[$delta]['#markup'] = $markup;
+            }
+            break;
+        case 'osci_tk_body_copy_formatter_html5':
+            foreach($items as $delta => $item) {
+                $markup = check_markup($item['body_copy'], $item['body_copy_format']);
+
+                $footnotes = $item['footnotes'];
+                // Add anchor tags
+                if (is_array($footnotes)) {
+                    foreach($footnotes as $id => $footnote) {
+                        $footnotes[$id] = array('fnId' => $id, 'fnCopy' => check_markup($footnote, $item['body_copy_format']));
+                    }
+                }
+
+                $figures = $item['figures'];
+
+                $element[$delta] = array(
+                    '#markup' => $markup,
+                    '#theme' => 'body_copy_field_html5',
+                    'osci_tk_footnotes' => $footnotes,
+                    'osci_tk_figures' => $figures
+                );
+            }
+            break;
+    }
+
+    return $element;
+}
+
+/**************************************************************************
+ * Field Type API: Widget
+ **************************************************************************/
+
+function osci_tk_body_copy_field_widget_info()
+{
+
+    return array(
+        'osci_tk_body_copy_widget' => array(
+            'label' => t('Body copy with footnotes & figures'),
+            'field types' => array('osci_tk_body_copy'),
+            'settings' => array('body_copy_rows' => 5, 'footnote_rows' => 3, 'figure_caption_rows' => 3),
+            'behaviors' => array('default value' => FIELD_BEHAVIOR_NONE)
+        )
+    );
+}
+
+function osci_tk_body_copy_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element)
+{
+    drupal_add_library('system', 'ui.tabs');
+    drupal_add_library('system', 'ui.slider');
+
+    $footnoteCount = isset($items[$delta]['footnote_index']) ? $items[$delta]['footnote_index'] : 0;
+    $footnoteCount = $footnoteCount ? $footnoteCount : 0;
+
+    $figureCount = isset($items[$delta]['figure_index']) ? $items[$delta]['figure_index'] : 0;
+    $figureCount = $figureCount ? $figureCount : 0;
+
+    $bodyCopy = array(
+        '#type' => 'fieldset',
+        '#attached' => array(
+            'js' => array(
+                base_path() . 'sites/all/libraries/ckeditor/adapters/jquery.js',
+                drupal_get_path('module', 'osci_tk_body_copy') . '/js/body_copy_field.js',
+            ),
+        ),
+        'body_copy' => array(
+            '#type' => 'text_format',
+            '#base_type' => 'textarea',
+            '#default_value' => isset($items[$delta]['body_copy']) ? $items[$delta]['body_copy'] : NULL,
+            '#rows' => $instance['widget']['settings']['body_copy_rows'],
+            '#format' => null,
+        ),
+        'footnotes' => array(
+            '#type' => 'fieldset',
+            '#attributes' => array('class' => array('footnotes-wrapper')),
+            '#title' => t('Footnotes'),
+            'footnote_index' => array(
+                '#type' => 'hidden',
+                '#default_value' => $footnoteCount
+            ),
+        ),
+        'figures' => array(
+            '#type' => 'fieldset',
+            '#attributes' => array('class' => array('figures-wrapper')),
+            '#title' => t('Figures'),
+            'figure_index' => array(
+                '#type' => 'hidden',
+                '#default_value' => $figureCount,
+                '#weight' => -100
+            ),
+        )
+    );
+
+    $footnotes = array('footnote_blank' => '');
+    $loadnotes = (isset($items[$delta]['footnotes']) && !is_array($items[$delta]['footnotes'])) ? unserialize($items[$delta]['footnotes']) : array();
+    if ($loadnotes) {
+        $footnotes = array_merge($footnotes, $loadnotes);
+    }
+
+    $bodyCopy['footnotes']['add_another'] = array(
+        '#markup' => '<a href="#" class="footnote-add-another">Add Footnote</a>',
+        '#weight' => -1,
+    );
+
+    $fieldName = substr($field['field_name'], 6);
+    $nid = $form['nid']['#value'];
+
+    $fnList = array();
+    foreach ($footnotes as $id => $footnote) {
+        if ($id !== 'footnote_blank') {
+            $id = substr($id, strrpos($id, '_') + 1);
+        }
+        $fnId = $fieldName . '_fn_' . $nid . '_' . $id;
+        $class = ($id == 1) ? 'footnote first' : 'footnote';
+        $bodyCopy['footnotes'][$id] = array(
+            '#title' => $id . ' <span>[footnote:' . $fnId . ']</span>',
+            '#type' => 'textarea',
+            '#default_value' => $footnote,
+            '#rows' => $instance['widget']['settings']['footnote_rows'],
+            '#attributes' => array('class' => array($class)),
+            '#prefix' => '<div id="' . $fnId . '" class="footnote-wrapper" data-fnprefix="' . $fieldName . '_fn_' . $nid . '_">',
+            '#suffix' => '</div>',
+            '#weight' => ($id == 'footnote_blank') ? -1 : $id
+        );
+
+        $fnList[] = '<li><a href="#' . $fnId . '">' . $id . '</a></li>';
+    }
+
+    $bodyCopy['footnotes']['footnote_list'] = array(
+        '#markup' => '<ul>' . implode("\n", $fnList) . '</ul>',
+        '#weight' => 0
+    );
+
+    $figures = array('figure_blank' => '');
+    $loadFigures = isset($items[$delta]['figures']) ? unserialize($items[$delta]['figures']) : array();
+    $figures += $loadFigures ? $loadFigures : array();
+
+    $bodyCopy['figures']['add_another'] = array(
+        '#markup' => '<a href="#" class="figure-add-another">Add Figure</a>',
+        '#weight' => -1,
+    );
+
+    $figureList = array();
+    foreach($figures as $id => $figure) {
+        if ($id !== 'figure_blank') {
+            $id = substr($id, strrpos($id, '_') + 1);
+    	}
+        $figId = $fieldName . '_fig_' . $nid . '_' . $id;
+        $class = ($id == 1) ? 'figure first' : 'figure';
+        
+        // set up figure defaults
+        $figDefault = isset($figure['figure_options']) ? $figure['figure_options'] : '{}';
+        
+        $figOpt = json_decode($figDefault);
+        if (isset($figOpt->previewUri) && $figOpt->previewUri) {
+        	$figOpt->previewUrl = image_style_url('osci_tk_thumbnail_165w', $figOpt->previewUri);
+        }
+        $figDefault = json_encode($figOpt);
+        
+        
+        $bodyCopy['figures'][$id] = array(
+            '#title'        => $id . ' <span>[figure:' . $figId . ']</span>',
+            '#type'         => 'fieldset',
+            '#attributes'   => array('class' => array($class)),
+            '#prefix'       => '<div id="' . $figId . '" data-figprefix="' . $fieldName . '_fig_' . $nid . '_" class="figure-wrapper">',
+            '#suffix'      => '</div>',
+            '#weight'       => ($id == 'figure_blank') ? -1 : $id,
+            '#tree'         => true,
+            'figure_preview' => array(
+                '#markup'	=> '<figure class="figure_reference_preview">&nbsp;</figure>',
+            ),
+            'figure_id'     => array(
+                '#markup'   => '<div class="figure_identifier">' . $id . ' <span>[figure:' . $figId . ']</span> </div>'
+            ),
+            'figure_options' => array(
+            	'#type' => 'hidden',
+            	'#default_value' => $figDefault,
+            	'#attributes' => array('class' => 'figure_options'),
+            ),
+            'figure_reference' => array(
+                '#title'                => t('Figure Reference'),
+                '#description'          => t('Type the identifier of the media that this figure should display.'),
+                '#type'                 => 'textfield',
+                '#autocomplete_path'    => 'ajax/figure',
+            	'#attributes'			=> array('class' => array('figure_reference_field')),
+                '#default_value'        => isset($figure['figure_reference']) ? $figure['figure_reference'] : '',
+            ),
+            'number_template' => array(
+            	'#title'            => t('Number Template'),
+                '#description'      => t('The template to use for generating the figure number. (cat# will be replaced with the catalog number, fig# will be replaced with the figure number)'),
+                '#type'             => 'textfield',
+                '#default_value'    => isset($figure['number_template']) ? $figure['number_template'] : 'Fig. cat#.fig#',
+            ),
+            'caption' => array(
+                '#title'            => t('Caption'),
+                '#description'      => t('The caption text to associate with this figure'),
+                '#type'             => 'textarea',
+                '#default_value'    => isset($figure['caption']) ? $figure['caption'] : '',
+                '#rows'             => $instance['widget']['settings']['figure_caption_rows']
+            ),
+            'position' => array(
+                '#title'            => t('Position'),
+                '#description'      => t('A hint on how to place the figure on a page.'),
+                '#type'             => 'select',
+                '#default_value'    => isset($figure['position']) ? $figure['position'] : 'n',
+                '#options'          => array(
+                    't'     => 'top',
+                    'b'     => 'bottom',
+                    'tl'    => 'top left',
+                    'tr'    => 'top right',
+                    'bl'    => 'bottom left',
+                    'br'    => 'bottom right',
+                    'p'     => 'full page',
+                    'n'     => 'none'
+                )
+            ),
+            'columns' => array(
+                '#title'            => t('Columns'),
+                '#type'             => 'textfield',
+                '#default_value'    => isset($figure['columns']) ? $figure['columns'] : '50%',
+                '#description'      => t('A hint of how many columns the figure should span on a page. This can be either a number (1 or greater) or a percentage (0%-100%).')
+            )
+        );
+
+        $figureList[] = '<li><a href="#' . $figId . '">' . $id . '</a></li>';
+    }
+
+    $bodyCopy['figures']['figure_list'] = array(
+        '#markup' => '<ul>' . implode("\n", $figureList) . '</ul>',
+        '#weight' => 0
+    );
+
+    return $element + $bodyCopy;
+}
+
+/**
+ * Implements hook_field_widget_settings_form().
+ */
+function osci_tk_body_copy_field_widget_settings_form($field, $instance)
+{
+    $widget = $instance['widget'];
+    $settings = $widget['settings'];
+
+    $form['body_copy_rows'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Body Copy Rows'),
+        '#description' => t('The number of rows to use for the Body Copy textarea.'),
+        '#default_value' => $settings['body_copy_rows'],
+        '#required' => TRUE,
+        '#element_validate' => array('_element_validate_integer_positive')
+    );
+
+    $form['footnote_rows'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Footnote Rows'),
+        '#description' => t('The number of rows to use for the Footnote textarea.'),
+        '#default_value' => $settings['footnote_rows'],
+        '#required' => TRUE,
+        '#element_validate' => array('_element_validate_integer_positive')
+    );
+
+    $form['figure_caption_rows'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Figure Caption Rows'),
+        '#description' => t('The number of rows to use for the Figure caption textarea.'),
+        '#default_value' => $settings['figure_caption_rows'],
+        '#required' => TRUE,
+        '#element_validate' => array('_element_validate_integer_positive')
+    );
+
+    return $form;
+}
+
+function osci_tk_body_copy_figure_preview($nid) {
+	// get node and ensure it's a valid figure type
+	$node = node_load($nid);
+	$ret = new stdClass();
+	$time = time();
+	$ret->time = $time;
+	switch($node->type) {
+		case "image":
+			if (isset($node->field_image['und'][0])) {
+				$ret->image = file_create_url($node->field_image['und'][0]['uri']);
+				$ret->div = '<div style="width:100%;">'
+					.theme_image_style(array(
+                	    'style_name' => 'osci_tk_image_256',
+            			'path' => $node->field_image['und'][0]['uri'],
+                	    'alt' => $node->title,
+        		    	'title' => $node->title,
+            			'attributes' => array(
+        		           	'class' => 'preview_image',
+							'style' => 'width:100%;'
+        		    	)
+        		    ))
+					.'</div>';
+			}
+			break;
+		case 'iip_asset':
+		case 'svg_asset':
+		case 'image_asset':
+			$node->field_assets['und'][0]['nid'] = $node->nid;
+        case "conservation_asset":
+        	if (count($node->field_image) > 0) {
+        		// there is a representative image, return it in a div
+        		$ret->div = '<img class="preview_image" src="'.image_style_url('osci_tk_thumbnail_165w', $node->field_image['und'][0]['uri']).'" />'
+        			. '<div style="display:none;" data-aspect="'._osci_tk_conservation_get_conservation_aspect($node).'">'
+        			._osci_tk_conservation_get_conservation_html($nid)
+        			.'</div>';
+        	}
+        	else {
+            	$ret->div = '<div class="preview_image">No Preview Available</div>'
+            		. '<div style="display:none;" data-aspect="'._osci_tk_conservation_get_conservation_aspect($node).'">'
+        			._osci_tk_conservation_get_conservation_html($nid)
+        			.'</div>';
+        	}
+            break;
+	}
+	return drupal_json_output($ret);
+}
+
+function osci_tk_body_copy_figure_thumb_save() {
+	preg_match('/data:\w+\/(\w+);base64,(.*)/', $_REQUEST['fileDataURI'], $matches);
+	$fileType = $matches[1];
+	switch($fileType) {
+		case "jpeg":
+			$ext = 'jpg';
+			break;
+		case "png":
+			$ext = 'png';
+			break;
+		case "gif":
+			$ext = 'gif';
+			break;
+	}
+	$fileData = base64_decode(str_replace(' ','+',$matches[2]));
+	$figureId = $_REQUEST['figureId'];
+	$dir = $_SERVER['DOCUMENT_ROOT'].substr(base_path(),1)."/sites/default/files/previews/";
+	
+	// remove any previous thumbs for this figure
+	$dirHandle = opendir($dir);
+	while (($file = readdir($dirHandle)) !== FALSE) {
+		if (strstr($file, $figureId)) {
+			unlink(drupal_realpath("public://previews/".$file));
+		}
+	}
+	
+	// save the new figure thumb
+	$filename = $figureId.'.'.time().'.'.$ext;
+	file_put_contents($dir.$filename, $fileData);
+	// form the return
+	$ret = new stdClass;
+	$ret->url = image_style_url('osci_tk_thumbnail_165w', 'public://previews/' . $filename);
+	$ret->uri = 'public://previews/' . $filename;
+	print json_encode($ret);
+}
+
+function osci_tk_body_copy_figure_reference($args) {
+    $figs = db_select('node', 'n')
+        ->fields('n', array('title', 'nid'))
+        ->condition('type', array('html_figure', 'conservation_asset', 'image_asset', 'iip_asset', 'svg_asset'), 'IN')
+        ->condition('status', 1)
+        ->condition('title', '%'.db_like($args).'%', 'LIKE')
+        ->orderBy('created', 'DESC')
+        ->addTag('node_access')
+        ->range(0, 100)
+        ->execute();
+    $matches = array();
+    foreach($figs as $result) {
+        $matches[$result->nid] = $result->title;
+    }
+    return drupal_json_output($matches);
+}
+
+/**
+ * Implementation of hook_form_alter().
+ * Add submit button to the top of the form for all node content types
+ */
+function osci_tk_body_copy_form_alter(&$form, &$form_state, $form_id) {
+	if($form_id == 'work_of_art_node_form' || $form_id == 'collector_node_form' || $form_id == 'volume_node_form'
+		|| $form_id == 'section_node_form' || $form_id == 'image_node_form' || $form_id == 'html_figure_node_form'
+		|| $form_id == 'page_node_form') 
+	{
+		$form['submit2'] = array(
+		 '#type' => 'submit',
+		 '#value' => t('Save'),
+		 '#weight' => -1000,
+		 '#submit' => array('node_form_submit')
+		);
+	}
+}
+?>
