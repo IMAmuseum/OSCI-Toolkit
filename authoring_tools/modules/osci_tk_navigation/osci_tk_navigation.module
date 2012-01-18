@@ -18,7 +18,7 @@ function osci_tk_navigation_menu() {
 
 function osci_tk_navigation_get_toc($nid = null, $format = 'epub3') {
 
-  if (is_null($nid)) return '';
+  if (!is_numeric($nid)) return '';
   
   if ($format == 'json') {  
     $toc = _osci_tk_navigation_get_toc($nid);
