@@ -49,14 +49,13 @@ rm polymaps-2.5.0.tgz
 rm ./src/simplegeo-polymaps-13ae25d/polymaps.min.js
 cp ./src/simplegeo-polymaps-13ae25d/polymaps.js ./src/simplegeo-polymaps-13ae25d/polymaps.js.prepatch
 patch ./src/simplegeo-polymaps-13ae25d/polymaps.js polymaps.js.patch
-echo "Moving to Drupal libraries..."
+echo "Copying to Drupal libraries..."
 if [ ! -d $1/sites/all/libraries/polymaps ];
 then
     mkdir -p $1/sites/all/libraries/polymaps
 fi
 rm -rf $1/sites/all/libraries/polymaps/*
-mv -f ./src/simplegeo-polymaps-13ae25d/* $1/sites/all/libraries/polymaps
-rm -rf ./src/simplegeo-polymaps-13ae25d
+cp -r ./src/simplegeo-polymaps-13ae25d/* $1/sites/all/libraries/polymaps
 echo
 
 #
@@ -66,14 +65,13 @@ echo "Downloading and extracting jscolor..."
 curl -s -L -O http://jscolor.com/release/jscolor-1.3.9.zip
 unzip -o -q jscolor-1.3.9.zip -d src
 rm jscolor-1.3.9.zip
-echo "Moving to Drupal libraries..."
+echo "Copying to Drupal libraries..."
 if [ ! -d $1/sites/all/libraries/jscolor ];
 then
     mkdir -p $1/sites/all/libraries/jscolor
 fi
 rm -rf $1/sites/all/libraries/jscolor/*
-mv -f ./src/jscolor/* $1/sites/all/libraries/jscolor
-rm -rf ./src/jscolor
+cp -r ./src/jscolor/* $1/sites/all/libraries/jscolor
 echo
 
 #
@@ -83,12 +81,46 @@ echo "Downloading and extracting amplify..."
 curl -s -k -L -o amplify-1.1.0.tgz https://github.com/appendto/amplify/tarball/1.1.0
 tar -xz -C src -f amplify-1.1.0.tgz
 rm amplify-1.1.0.tgz
-echo "Moving to Drupal libraries..."
+echo "Copying to Drupal libraries..."
 if [ ! -d $1/sites/all/libraries/amplify ];
 then
     mkdir -p $1/sites/all/libraries/amplify
 fi
 rm -rf $1/sites/all/libraries/amplify/*
-mv -f ./src/appendto-amplify-bede933/* $1/sites/all/libraries/amplify
-rm -rf ./src/appendto-amplify-bede933
+cp -r ./src/appendto-amplify-bede933/* $1/sites/all/libraries/amplify
 echo
+
+#
+# DOMPDF
+#
+echo "Downloading and extracting DOMPDF..."
+curl -s -L -O http://dompdf.googlecode.com/files/dompdf-0.5.2.zip
+unzip -o -q dompdf-0.5.2.zip -d src
+rm dompdf-0.5.2.zip
+echo "Copying to Drupal libraries..."
+if [ ! -d $1/sites/all/libraries/dompdf ];
+then
+    mkdir -p $1/sites/all/libraries/dompdf
+fi
+rm -rf $1/sites/all/libraries/dompdf/*
+cp -r ./src/dompdf/* $1/sites/all/libraries/dompdf
+chmod 1777 $1/sites/all/libraries/dompdf/lib/fonts
+echo
+
+#
+# Simple HTML DOM
+#
+echo "Downloading and extracting Simple HTML DOM..."
+curl -s -L -O http://iweb.dl.sourceforge.net/project/simplehtmldom/simplehtmldom/1.11/simplehtmldom_1_11.zip
+unzip -o -q simplehtmldom_1_11.zip -d src
+rm simplehtmldom_1_11.zip
+echo "Copying to Drupal libraries..."
+if [ ! -d $1/sites/all/libraries/simplehtmldom ];
+then
+    mkdir -p $1/sites/all/libraries/simplehtmldom
+fi
+rm -rf $1/sites/all/libraries/simplehtmldom/*
+cp -r ./src/simplehtmldom/* $1/sites/all/libraries/simplehtmldom
+echo
+
+echo "Finished"
