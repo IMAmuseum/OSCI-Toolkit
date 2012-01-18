@@ -1,0 +1,5 @@
+name = "OSCI Toolkit Navigation Engine"
+description = "Navigation engine for book pages"
+package = "OSCI Toolkit"
+version = "0.2"
+core = "7.x"
