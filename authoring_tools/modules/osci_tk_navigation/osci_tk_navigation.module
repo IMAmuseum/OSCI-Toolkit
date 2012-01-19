@@ -225,8 +225,8 @@ function _osci_tk_navigation_get_image_data($nid)
     if (isset($node->field_osci_tk_plate_image['und']) && $node->field_osci_tk_plate_image['und'][0]['nid']) {
         $imageNode = node_load($node->field_osci_tk_plate_image['und'][0]['nid']);
         $fullImageUrl = file_create_url($imageNode->field_image['und'][0]['uri']);
-        $thumbnail165Url = image_style_url('osci_tk_thumbnail_165w', $imageNode->field_image['und'][0]['uri']);
-        $thumbnail100Url = image_style_url('osci_tk_thumbnail_100w', $imageNode->field_image['und'][0]['uri']);
+        $thumbnail165Url = image_style_url('osci_tk_default', $imageNode->field_image['und'][0]['uri']);
+        $thumbnail100Url = image_style_url('osci_tk_default', $imageNode->field_image['und'][0]['uri']);
 
         $imageData = array(
             'full_image_url' => $fullImageUrl,
