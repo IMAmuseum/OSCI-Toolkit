@@ -1,157 +1,53 @@
 <?php 
 
 
+function osci_tk_navigation_form_alter(&$form, &$form_state, $form_id)
+{
+    if (strpos($form_id, '_node_form') !== false && isset($form['field_osci_tk_content_length'])) {
+        $form['field_osci_tk_content_length']['und'][0]['value']['#type'] = 'hidden';
+    }
+}
+
+
 function osci_tk_navigation_menu() {
   
   $items = array();
-  $items['navigation/get-toc'] = array(
-    'title' => t('Table of contents'),
-    'page callback' => 'osci_tk_navigation_get_toc',
+  $items['navigation/toc/book/%node'] = array(
+    'page callback' => '_osci_tk_navigation_render_book_toc',
+    'page arguments' => array(3),
     'access callback' => '_osci_tk_navigation_check_access',  
     'type' => MENU_CALLBACK
   );
+  
+  $items['navigation/toc/subtree/%node'] = array(
+    'page callback' => '_osci_tk_navigation_render_toc_subtree',
+    'page arguments' => array(3),
+    'access callback' => '_osci_tk_navigation_check_access',  
+    'type' => MENU_CALLBACK
+  );  
   
   return $items;  
   
 }
 
 
-function osci_tk_navigation_get_toc($nid = null, $format = 'epub3') {
-
-  if (!is_numeric($nid)) return '';
-  
-  if ($format == 'json') {  
-    $toc = _osci_tk_navigation_get_toc($nid);
-    print json_encode($toc);
-    exit();
-  }
-
-  $toc = _osci_tk_navigation_get_toc($nid);
-  
-  // Not using templates for performance. Might consider an XML library.
-  $epub = "<nav epub:type='toc' id='toc-$nid'>";
-  $epub .= "<h1>Table of Contents</h1>"; // Optional header
-  $epub .= "<ol>"; // The only other element allowed as a child of <nav>
-  
-  /* 
-   * The order of li elements contained within the toc nav element must match the order of 
-   * the targeted elements within each targeted EPUB Content Document, and must also follow 
-   * the order of Content Documents in the Publication spine.
-   */
-  
-  $attr_fields = array('nid', 'mlid', 'length', 'total_length', 'editor', 'timestamp');
-  
-  foreach($toc as $item) {    
-
-    // Export data fields into html attributes
-    $attr_data = array();
-    foreach ($attr_fields as $field) {
-      if (isset($item[$field])) {
-        $attr_data[]= "data-$field='{$item[$field]}'";
-      }
-      $data_str = count($attr_data) ? join(' ', $attr_data) : '';    
-    }    
-    
-    // <a> points to the target within the EPUB ContentDocument
-    $epub .= "<li><a $data_str href='{$item['bodycopy']}'>{$item['title']}</a></li>";      
-  }
-    
-  $epub .= "</ol></nav>";
-
-  print $epub; exit();  
-  
-}
-
-
-function osci_tk_navigation_services_resources()
+function osci_tk_navigation_node_submit($node, $form, &$form_state)
 {
-    return array(
-        'navigation' => array(
-            'retrieve' => array(
-                'callback' => '_osci_tk_navigation_get_toc',
-                'args' => array(
-                    array(
-                        'name' => 'nid',
-                        'optional' => false,
-                        'type' => 'int',
-                        'description' => 'The nid to load the table of contents for.',
-                        'source' => array('path' => '0')
-                    ),
-                    array(
-                        'name' => 'full_book',
-                        'type' => 'int',
-                        'description' => 'Display navigation details for the full book this node belongs to.',
-                        'optional' => true,
-                        'source' => array('param' => 'full_book'),
-                        'default' => false
-                    )
-                ),
-                'access callback' => "_osci_tk_navigation_check_access",
-                //'access arguments' => array('access content'),
-                //'access arguments append' => false
-            ),
-            'index' => array(
-                'callback' => '_osci_tk_navigation_get_books',
-                'access callback' => "_osci_tk_navigation_check_access",
-                //'access arguments' => array('access content'),
-                //'access arguments append' => false
-            ),
-            'relationships' => array(
-                'next' => array(
-                    'callback' => '_osci_tk_navigation_next',
-                    'args' => array(
-                        array(
-                            'name' => 'nid',
-                            'optional' => false,
-                            'type' => 'int',
-                            'description' => 'The nid to load the table of contents for.',
-                            'source' => array('path' => '0')
-                        ),
-                    ),
-                    'access callback' => "_osci_tk_navigation_check_access",
-                ),
-                'prev' => array(
-                    'callback' => '_osci_tk_navigation_prev',
-                    'args' => array(
-                        array(
-                            'name' => 'nid',
-                            'optional' => false,
-                            'type' => 'int',
-                            'description' => 'The nid to load the table of contents for.',
-                            'source' => array('path' => '0')
-                        ),
-                    ),
-                    'access callback' => "_osci_tk_navigation_check_access",
-                ),
-                'parent' => array(
-                    'callback' => '_osci_tk_navigation_parent',
-                    'args' => array(
-                        array(
-                            'name' => 'nid',
-                            'optional' => false,
-                            'type' => 'int',
-                            'description' => 'The nid to load the table of contents for.',
-                            'source' => array('path' => '0')
-                        ),
-                    ),
-                    'access callback' => "_osci_tk_navigation_check_access",
-                ),
-                'book' => array(
-                    'callback' => '_osci_tk_navigation_get_book_toc',
-                    'args' => array(
-                        array(
-                            'name' => 'nid',
-                            'optional' => false,
-                            'type' => 'int',
-                            'description' => 'The nid to load the table of contents for.',
-                            'source' => array('path' => '0')
-                        ),
-                    ),
-                    'access callback' => "_osci_tk_navigation_check_access",
-                )
-            )
-        )
-    );
+    if (isset($form_state['node']->field_osci_tk_content_length)) {
+        $wordCount = 0;
+
+        foreach($form_state['values'] as $k => $v) {
+            if (strpos($k, 'field_osci_tk') === 0) {
+                if (isset($v['und'][0]['body_copy'])) {
+                    $wordCount += str_word_count(strip_tags($v['und'][0]['body_copy']['value']));
+                } elseif (isset($v['und'][0]['value'])) {
+                    $wordCount += str_word_count(strip_tags($v['und'][0]['value']));
+                }
+            }
+        }
+
+        $form_state['node']->field_osci_tk_content_length['und'][0]['value'] = $wordCount;
+    }
 }
 
 
@@ -161,115 +57,22 @@ function _osci_tk_navigation_check_access()
 }
 
 
-function _osci_tk_navigation_get_toc($nid, $fullBook = false)
-{
-    $toc = null;
-    $node = node_load($nid);
-
-    if (isset($node->book)) {
-        if ($fullBook) {
-            foreach (book_get_books() as $book_id => $book) {
-                if ($book['bid'] == $node->book['bid']) {
-                    $toc = book_menu_subtree_data($book);
-                    $toc = _osci_tk_navigation_clean_toc($toc);
-                    _osci_tk_navigation_load_additional_toc_data($toc);
-                    break;
-                }
-            }
-        } else {
-            $toc = book_menu_subtree_data($node->book);
-            $toc = _osci_tk_navigation_clean_toc($toc);
-            _osci_tk_navigation_load_additional_toc_data($toc);
-        }
-    }
-    
-    return $toc;
+function _osci_tk_navigation_check_cache($cache_key) {
+  
+  // Check static variable    
+  $output = &drupal_static($cache_key); 
+  if (!is_null($output)) return $output;
+  
+  // Check cache
+  if ($cache = cache_get($cache_key)) {
+    $output = $cache->data; // Sets the static variable as well
+    return $output;
+  }
+  
+  return null;
+  
 }
 
-function _osci_tk_navigation_get_book_toc($nid)
-{
-    $toc = null;
-    $cacheKey = "osci_toc_" . $nid;
-    
-    $toc = &drupal_static($cacheKey);
-    if (!isset($toc)) {
-        if ($cache = cache_get($cacheKey)) {
-            $toc = $cache->data;
-        }
-        else {
-            $node = node_load($nid);
-            
-            if (isset($node->book)) {
-                foreach (book_get_books() as $book_id => $book) {
-                    if ($book['bid'] == $node->book['bid']) {
-                        $toc = book_menu_subtree_data($book);
-                        $toc = _osci_tk_navigation_clean_toc($toc);
-                        _osci_tk_navigation_load_additional_toc_data($toc);
-                        break;
-                    }
-                }
-            }
-            
-            cache_set($cacheKey, $toc, 'cache');
-        }
-    }
-
-    return $toc;
-}
-
-
-function _osci_tk_navigation_get_books()
-{
-    $allBooks = array();
-    $books = book_get_books();
-
-    foreach($books as $book) {
-        $allBooks['bid_' . $book['bid']] = array_pop(_osci_tk_navigation_clean_toc(array('link' => $book)));
-    }
-
-    return $allBooks;
-}
-
-
-function _osci_tk_navigation_next($nid)
-{
-    $toc = array();
-    $node = node_load($nid);
-
-    if ($node->book) {
-        if ($next = book_next($node->book)) {
-            $toc = _osci_tk_navigation_clean_toc(array('link' => $next));
-        }
-    }
-
-    return $toc;
-}
-
-
-function _osci_tk_navigation_prev($nid)
-{
-    $toc = array();
-    $node = node_load($nid);
-
-    if ($node->book) {
-        if ($prev = book_prev($node->book)) {
-            $toc = _osci_tk_navigation_clean_toc(array('link' => $prev));
-        }
-    }
-
-    return $toc;
-}
-
-
-function _osci_tk_navigation_parent($nid)
-{
-    $toc = array();
-    $node = node_load($nid);
-    if ($node->book['plid'] && $parent = book_link_load($node->book['plid'])) {
-        $toc = _osci_tk_navigation_clean_toc(array('link' => $parent));
-    }
-    return $toc;
-}
 
 function _osci_tk_navigation_clean_toc($toc)
 {
@@ -378,31 +181,61 @@ function _osci_tk_navigation_clean_toc_iterate($toc)
 }
 
 
-function osci_tk_navigation_node_submit($node, $form, &$form_state)
-{
-    if (isset($form_state['node']->field_osci_tk_content_length)) {
-        $wordCount = 0;
+function _osci_tk_navigation_epub_subtree($toc, $attr_fields = array()) {
+  
+  $epub = '';
+  foreach($toc as $item) {    
 
-        foreach($form_state['values'] as $k => $v) {
-            if (strpos($k, 'field_osci_tk') === 0) {
-                if (isset($v['und'][0]['body_copy'])) {
-                    $wordCount += str_word_count(strip_tags($v['und'][0]['body_copy']['value']));
-                } elseif (isset($v['und'][0]['value'])) {
-                    $wordCount += str_word_count(strip_tags($v['und'][0]['value']));
-                }
-            }
-        }
-
-        $form_state['node']->field_osci_tk_content_length['und'][0]['value'] = $wordCount;
-    }
+    // Export data fields into html attributes
+    $attr_data = array();
+    foreach ($attr_fields as $field) {
+      if (isset($item[$field])) {
+        $attr_data[]= "data-$field='{$item[$field]}'";
+      }
+      $data_str = count($attr_data) ? join(' ', $attr_data) : '';    
+    }    
+    
+    // <a> points to the target within the EPUB ContentDocument
+    $epub .= "<li><a $data_str href='{$item['bodycopy']}'>{$item['title']}</a></li>";      
+  }  
+  
+  return "<ol>$epub</ol>";  
+  
 }
 
 
-function osci_tk_navigation_form_alter(&$form, &$form_state, $form_id)
+function _osci_tk_navigation_get_books()
 {
-    if (strpos($form_id, '_node_form') !== false && isset($form['field_osci_tk_content_length'])) {
-        $form['field_osci_tk_content_length']['und'][0]['value']['#type'] = 'hidden';
+    $allBooks = array();
+    $books = book_get_books();
+
+    foreach($books as $book) {
+        $allBooks['bid_' . $book['bid']] = array_pop(_osci_tk_navigation_clean_toc(array('link' => $book)));
     }
+
+    return $allBooks;
+}
+
+
+function _osci_tk_navigation_get_image_data($nid)
+{
+    $imageData = array();
+
+    $node = node_load($nid);
+    if (isset($node->field_osci_tk_plate_image['und']) && $node->field_osci_tk_plate_image['und'][0]['nid']) {
+        $imageNode = node_load($node->field_osci_tk_plate_image['und'][0]['nid']);
+        $fullImageUrl = file_create_url($imageNode->field_image['und'][0]['uri']);
+        $thumbnail165Url = image_style_url('osci_tk_thumbnail_165w', $imageNode->field_image['und'][0]['uri']);
+        $thumbnail100Url = image_style_url('osci_tk_thumbnail_100w', $imageNode->field_image['und'][0]['uri']);
+
+        $imageData = array(
+            'full_image_url' => $fullImageUrl,
+            'thumbnail_165w_url' => $thumbnail165Url,
+            'thumbnail_100w_url' => $thumbnail100Url
+        );
+    }
+
+    return $imageData;
 }
 
 
@@ -417,6 +250,105 @@ function _osci_tk_navigation_get_node_content_length($nids)
     }
 
     return $contentLengths;
+}
+
+
+function _osci_tk_navigation_render_book_toc($node, $format = 'epub')
+{
+  
+    // Check the cache
+    $cache_key = "osci_book_toc_{$format}_{$node->nid}";    
+    $output = _osci_tk_navigation_check_cache($cache_key);
+    if (!is_null($output)) {
+      print $output; exit();
+    }
+
+    $toc = null;
+    if (isset($node->book)) {
+        foreach (book_get_books() as $book_id => $book) {
+            if ($book['bid'] == $node->book['bid']) {
+                $toc = book_menu_subtree_data($book);
+                $toc = _osci_tk_navigation_clean_toc($toc);
+                _osci_tk_navigation_load_additional_toc_data($toc);
+                break;
+            }
+        }
+    }
+
+    $output = null;
+    
+    if (!is_null($toc)) {
+      
+      if ($format == 'json') {  
+        
+        $output = json_encode($toc);      
+        
+      } else {
+      
+        // Not using templates for performance. Might consider an XML library.
+        $output = "<nav epub:type='toc' id='book-{$node->book['bid']}-toc'>";
+        $output .= "<h1>Table of Contents</h1>"; // Optional header
+        $output .= "<ol>"; // The only other element allowed as a child of <nav>
+        
+        /* 
+         * The order of li elements contained within the toc nav element must match the order of 
+         * the targeted elements within each targeted EPUB Content Document, and must also follow 
+         * the order of Content Documents in the Publication spine.
+         */
+        
+        $attr_fields = array('nid', 'mlid', 'length', 'total_length', 'editor', 'timestamp');
+      
+        $output .= _osci_tk_navigation_epub_subtree($toc, $attr_fields);
+          
+        $output .= "</nav>";        
+        
+      }
+        
+      cache_set($cache_key, $output, 'cache');              
+      
+    }
+
+    print $output; exit();
+    //return $output;
+    
+}
+
+
+function _osci_tk_navigation_render_toc_subtree($node, $format = 'epub')
+{  
+  
+  // Check the cache
+  $cache_key = "osci_subtree_toc_{$format}_{$node->nid}";    
+  $output = _osci_tk_navigation_check_cache($cache_key);
+  if (!is_null($output)) {
+    print $output; exit();
+  }  
+  
+  if (!isset($node->book)) return null; // This node is not in a book
+
+  $toc = null;
+  $toc = book_menu_subtree_data($node->book);
+  $toc = _osci_tk_navigation_clean_toc($toc);
+  _osci_tk_navigation_load_additional_toc_data($toc);        
+
+  $output = null;      
+  
+  if (!is_null($toc)) {
+  
+    if ($format == 'json') {  
+      $output = json_encode($toc);
+    } else {  
+      $attr_fields = array('nid', 'mlid', 'length', 'total_length', 'editor', 'timestamp');    
+      $output = _osci_tk_navigation_epub_subtree($toc, $attr_fields);
+    }
+    
+    cache_set($cache_key, $output, 'cache');    
+    
+  }
+  
+  print $output; exit();  
+  //return $output;
+  
 }
 
 
@@ -493,24 +425,46 @@ function _osci_tk_navigation_load_additional_toc_data(&$toc)
 }
 
 
-function _osci_tk_navigation_get_image_data($nid)
+function _osci_tk_navigation_next($nid)
 {
-    $imageData = array();
-
+    $toc = array();
     $node = node_load($nid);
-    if (isset($node->field_osci_tk_plate_image['und']) && $node->field_osci_tk_plate_image['und'][0]['nid']) {
-        $imageNode = node_load($node->field_osci_tk_plate_image['und'][0]['nid']);
-        $fullImageUrl = file_create_url($imageNode->field_image['und'][0]['uri']);
-        $thumbnail165Url = image_style_url('osci_tk_thumbnail_165w', $imageNode->field_image['und'][0]['uri']);
-        $thumbnail100Url = image_style_url('osci_tk_thumbnail_100w', $imageNode->field_image['und'][0]['uri']);
 
-        $imageData = array(
-            'full_image_url' => $fullImageUrl,
-            'thumbnail_165w_url' => $thumbnail165Url,
-            'thumbnail_100w_url' => $thumbnail100Url
-        );
+    if ($node->book) {
+        if ($next = book_next($node->book)) {
+            $toc = _osci_tk_navigation_clean_toc(array('link' => $next));
+        }
     }
 
-    return $imageData;
+    return $toc;
 }
+
+
+function _osci_tk_navigation_parent($nid)
+{
+    $toc = array();
+    $node = node_load($nid);
+    if ($node->book['plid'] && $parent = book_link_load($node->book['plid'])) {
+        $toc = _osci_tk_navigation_clean_toc(array('link' => $parent));
+    }
+    return $toc;
+}
+
+
+function _osci_tk_navigation_prev($nid)
+{
+    $toc = array();
+    $node = node_load($nid);
+
+    if ($node->book) {
+        if ($prev = book_prev($node->book)) {
+            $toc = _osci_tk_navigation_clean_toc(array('link' => $prev));
+        }
+    }
+
+    return $toc;
+}
+
+
+
 ?>
