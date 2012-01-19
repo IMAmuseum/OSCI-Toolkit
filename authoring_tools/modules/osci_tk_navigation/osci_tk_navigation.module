@@ -308,8 +308,8 @@ function _osci_tk_navigation_render_book_toc($node, $format = 'epub')
       
     }
 
-    //print $output; exit();
-    return $output;
+    print $output; exit();
+    //return $output;
     
 }
 
