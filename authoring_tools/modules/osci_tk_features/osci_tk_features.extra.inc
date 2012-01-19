@@ -19,7 +19,7 @@ function osci_tk_features_menu_alter(&$items) {
 	);
 	
 	$items['admin/config/system/osci/images'] = array(
-		        'title'             => t('Images'),
+		        'title'             => t('Image Styles'),
 		        'description'		=> 'Settings for image sizes',
 		        'page callback'     => 'drupal_get_form',
 		        'page arguments'    => array('osci_tk_features_images_admin_form'),
