@@ -1,4 +1,4 @@
-name = "OSCI ToolKit - Filters"
+name = "Filters"
 description = "Provides text filters for the OSCI ToolKit"
 package = "OSCI ToolKit"
 version = "1.0"

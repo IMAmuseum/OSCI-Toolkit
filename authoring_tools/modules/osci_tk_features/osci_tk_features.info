@@ -1,4 +1,4 @@
-name = "OSCI ToolKit Features"
+name = "Features"
 description = "Provides Drupal Features for the OSCI ToolKit"
 core = "7.x"
 package = "Features"

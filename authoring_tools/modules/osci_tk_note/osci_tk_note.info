@@ -1,4 +1,4 @@
-name = "OSCI ToolKit Note"
+name = "Notes"
 description = "Provides the ability to create and see Notes"
 package = "OSCI ToolKit"
 version = "1.0"
