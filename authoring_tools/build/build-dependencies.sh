@@ -139,4 +139,19 @@ rm -rf $1/sites/all/libraries/fancybox/*
 cp -r ./src/jquery.fancybox-1.3.4/* $1/sites/all/libraries/fancybox
 echo
 
+#
+# CKEditor
+#
+echo "Downloading and extracting CKEditor..."
+curl -s -L -O http://download.cksource.com/CKEditor/CKEditor/CKEditor%203.4.2/ckeditor_3.4.2.zip
+unzip -o -q ckeditor_3.4.2.zip -d src
+rm ckeditor_3.4.2.zip
+echo "Copying to Drupal libraries..."
+if [ ! -d $1/sites/all/libraries/ckeditor ];
+then
+    mkdir -p $1/sites/all/libraries/ckeditor
+fi
+rm -rf $1/sites/all/libraries/ckeditor/*
+cp -r ./src/ckeditor/* $1/sites/all/libraries/ckeditor
+echo
 echo "Finished"
