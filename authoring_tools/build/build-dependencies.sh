@@ -123,4 +123,52 @@ rm -rf $1/sites/all/libraries/simplehtmldom/*
 cp -r ./src/simplehtmldom/* $1/sites/all/libraries/simplehtmldom
 echo
 
+#
+# FancyBox
+#
+echo "Downloading and extracting FancyBox..."
+curl -s -L -O http://fancybox.googlecode.com/files/jquery.fancybox-1.3.4.zip
+unzip -o -q jquery.fancybox-1.3.4.zip -d src
+rm jquery.fancybox-1.3.4.zip
+echo "Copying to Drupal libraries..."
+if [ ! -d $1/sites/all/libraries/fancybox ];
+then
+    mkdir -p $1/sites/all/libraries/fancybox
+fi
+rm -rf $1/sites/all/libraries/fancybox/*
+cp -r ./src/jquery.fancybox-1.3.4/* $1/sites/all/libraries/fancybox
+echo
+
+#
+# CKEditor
+#
+echo "Downloading and extracting CKEditor..."
+curl -s -L -O http://download.cksource.com/CKEditor/CKEditor/CKEditor%203.4.2/ckeditor_3.4.2.zip
+unzip -o -q ckeditor_3.4.2.zip -d src
+rm ckeditor_3.4.2.zip
+echo "Copying to Drupal libraries..."
+if [ ! -d $1/sites/all/libraries/ckeditor ];
+then
+    mkdir -p $1/sites/all/libraries/ckeditor
+fi
+rm -rf $1/sites/all/libraries/ckeditor/*
+cp -r ./src/ckeditor/* $1/sites/all/libraries/ckeditor
+echo
+
+#
+# jQuery Template Plugin
+#
+echo "Downloading and extracting jQuery Template Plugin..."
+curl -s -L -o jquery-tmpl.zip https://github.com/jquery/jquery-tmpl/zipball/vBeta1.0.0
+unzip -o -q jquery-tmpl.zip -d src
+rm jquery-tmpl.zip
+echo "Copying to Drupal libraries..."
+if [ ! -d $1/sites/all/libraries/jquery-tmpl ];
+then
+    mkdir -p $1/sites/all/libraries/jquery-tmpl
+fi
+rm -rf $1/sites/all/libraries/jquery-tmpl/*
+cp -r ./src/jquery-jquery-tmpl-484cee9/* $1/sites/all/libraries/jquery-tmpl
+echo
+
 echo "Finished"

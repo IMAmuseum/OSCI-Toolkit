@@ -1,0 +1,6 @@
+name = "Notes"
+description = "Provides the ability to create and see Notes"
+package = "OSCI ToolKit"
+version = "1.0"
+core = "7.x"
+files[] = includes/NoteEntityController.class.php

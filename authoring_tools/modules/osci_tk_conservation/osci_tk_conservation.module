@@ -245,6 +245,53 @@ function osci_tk_conservation_node_load($nodes, $types) {
 }
 
 
+function osci_tk_conservation_view($nid)
+{
+	drupal_add_library('system', 'ui.slider');
+	drupal_add_js(libraries_get_path('amplify') . '/core/amplify.core.js', 'file');
+	drupal_add_js(drupal_get_path('module', 'osci_conservation') . '/js/osci_tk_conservation_view.js', 'file');
+	drupal_add_css(drupal_get_path('module', 'osci_conservation') . '/css/osci_tk_conservation_view.css', 'file');
+
+	$node = node_load($nid);
+
+	$elements = node_view($node, 'body_copy');
+
+	$catalogNumber = (isset($node->field_osci_catalogue_number['und']) && $node->field_osci_catalogue_number['und'][0]['value']) ? $node->field_osci_catalogue_number['und'][0]['value'] : null;
+
+	$plateNid = null;
+	if (isset($elements['field_osci_plate_image'])) {
+		$plateNid = ($elements['field_osci_plate_image']['#items'][0]['nid']) ? $elements['field_osci_plate_image']['#items'][0]['nid'] : null;
+		$plateCaption = $node->field_osci_navigation_title['und'][0]['value'];
+	}
+
+	$plateId = 'osci_plate_fig';
+	$plateFigure = array(
+        'figure_reference' => $plateNid,
+        'number_template' => ($catalogNumber) ? "Cat. {$catalogNumber}" : ' ',
+        'caption' => $plateCaption,
+        'position' => 't',
+        'columns' => '55%',
+        'id' => $plateId,
+        'format' => 'footnote',
+        'figCount' => 0,
+        'figOccurences' => 1
+	);
+
+	return theme('body_copy_figure', array('figure' => $plateFigure));
+
+}
+
+// implements hook_osci_tk_image_types - for osci_tk_features admin settings
+function osci_tk_conservation_osci_tk_image_types() {
+	$types[] = array(
+		'title'			=> 'Conservation Thumbnail',
+		'variable'		=> 'osci_tk_image_style_conservation_thumbnail',
+		'description'	=> 'Thumnail used to represent a conservation asset'
+	);
+	
+	return $types;
+}
+
 /*
  * utility callback that determines if nid provided is an svg asset or not
  * returns true/false
@@ -333,7 +380,7 @@ function _osci_tk_conservation_get_conservation_html($nid) {
     if (!is_numeric($nid))
         return;
     $node = node_load($nid);
-    $thumbStyle = 'osci_tk_conservation_100w';
+    $thumbStyle = variable_get('osci_tk_image_style_conservation_thumbnail', 'osci_tk_default');
     
     // create a unique id for this conservation asset
     $id = "conservation-asset-" . preg_replace('/\./', '', ((string) microtime(TRUE)));
@@ -492,40 +539,4 @@ function _osci_tk_conservation_get_conservation_aspect($node) {
 
     if ($width > 0 && $height > 0) return ($width / $height);
     else return 1;
-}
-
-function osci_tk_conservation_view($nid)
-{
-	drupal_add_library('system', 'ui.slider');
-	drupal_add_js(libraries_get_path('amplify') . '/core/amplify.core.js', 'file');
-	drupal_add_js(drupal_get_path('module', 'osci_conservation') . '/js/osci_tk_conservation_view.js', 'file');
-	drupal_add_css(drupal_get_path('module', 'osci_conservation') . '/css/osci_tk_conservation_view.css', 'file');
-
-	$node = node_load($nid);
-
-	$elements = node_view($node, 'body_copy');
-
-	$catalogNumber = (isset($node->field_osci_catalogue_number['und']) && $node->field_osci_catalogue_number['und'][0]['value']) ? $node->field_osci_catalogue_number['und'][0]['value'] : null;
-
-	$plateNid = null;
-	if (isset($elements['field_osci_plate_image'])) {
-		$plateNid = ($elements['field_osci_plate_image']['#items'][0]['nid']) ? $elements['field_osci_plate_image']['#items'][0]['nid'] : null;
-		$plateCaption = $node->field_osci_navigation_title['und'][0]['value'];
-	}
-
-	$plateId = 'osci_plate_fig';
-	$plateFigure = array(
-        'figure_reference' => $plateNid,
-        'number_template' => ($catalogNumber) ? "Cat. {$catalogNumber}" : ' ',
-        'caption' => $plateCaption,
-        'position' => 't',
-        'columns' => '55%',
-        'id' => $plateId,
-        'format' => 'footnote',
-        'figCount' => 0,
-        'figOccurences' => 1
-	);
-
-	return theme('body_copy_figure', array('figure' => $plateFigure));
-	
 }
