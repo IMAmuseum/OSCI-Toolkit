@@ -60,29 +60,21 @@ function osci_tk_body_copy_preprocess_body_copy_figure(&$vars) {
         	if (!isset($node->field_ptiff['und'][0]) && isset($node->field_image['und'][0]) || isset($vars['osci_tk_static_image']))
         	{
         	    $image = array();
-        		// ptiff is empty, use the image field for display
-        		if (isset($vars['osci_tk_image_cache'])) {
-        		    $image[] = theme_image_style(array(
-                	    'style_name' => $vars['osci_tk_image_cache'],
-            			'path' => $node->field_image['und'][0]['uri'],
-                	    'alt' => $title,
-        		    	'title' => $title,
-            			'attributes' => array(
-        		            'class' => $vars['osci_tk_image_cache']
-        		        )
-            		));
-        		} else {
-        		    $image[] = theme_image(array(
-            			'path' => $node->field_image['und'][0]['uri'],
-        		        'alt' => $title,
-        		        'title' => $title,
-            			'attributes' => array(
-        		            'class' => 'osci_tk_image_full'
-        		        )
-            		));
-        		}
+        		
+        		$image[] = theme_image(array(
+            		'path' => $node->field_image['und'][0]['uri'],
+        		    'alt' => $title,
+        		    'title' => $title,
+            		'attributes' => array(
+        		    	'class' => 'osci_tk_image_full'
+        		    )
+            	));
 
-        		$imageStyles = array("osci_tk_image_256", "osci_tk_image_512", "osci_tk_image_1024");
+        		$imageStyles = array(
+        			variable_get('osci_tk_image_style_body_copy_256', 'osci_tk_default'), 
+        			variable_get('osci_tk_image_style_body_copy_512', 'osci_tk_default'), 
+        			variable_get('osci_tk_image_style_body_copy_1024', 'osci_tk_default')
+        		);
         		foreach($imageStyles as $imgStyle) {
         		    $image[] = theme_image_style(array(
                 	    'style_name' => $imgStyle,
@@ -120,7 +112,7 @@ function osci_tk_body_copy_preprocess_body_copy_figure(&$vars) {
         	}
         	else {
         		$vars['thumbnail'] = theme_image_style(array(
-        			'style_name' => "osci_tk_thumbnail_165w",
+        			'style_name' => variable_get('osci_tk_image_style_body_copy_figure_thumbnail', 'osci_tk_default'),
         			'path' => $thumbnailPath,
         			'alt' => $node->title,
         			'attributes' => array(
@@ -139,7 +131,7 @@ function osci_tk_body_copy_preprocess_body_copy_figure(&$vars) {
             
             if (isset($node->field_image['und'][0]))
             $vars['thumbnail'] = theme_image_style(array(
-                'style_name' => "osci_tk_thumbnail_165w",
+                'style_name' => variable_get('osci_tk_image_style_body_copy_figure_thumbnail', 'osci_tk_default'),
                 'path' => $node->field_image['und'][0]['uri'],
                 'alt' => $node->title,
                 'attributes' => array(
@@ -175,7 +167,7 @@ function osci_tk_body_copy_preprocess_body_copy_figure(&$vars) {
            	}
            	if ($use_style) {
 	            $vars['thumbnail'] = theme_image_style(array(
-	            	'style_name' => "osci_tk_thumbnail_165w",
+	            	'style_name' => variable_get('osci_tk_image_style_body_copy_figure_thumbnail', 'osci_tk_default'), // body copy figure thumbnail
 	                'path' => $thumbnailPath,
 	                'alt' => $node->title,
 	                'attributes' => array(
@@ -246,7 +238,7 @@ function osci_tk_body_copy_preprocess_body_copy_figure_print(&$vars) {
         	if (!isset($node->field_ptiff['und'][0]) && isset($node->field_image['und'][0]))
         	{
                 $image = theme_image_style(array(
-                    'style_name' => 'osci_tk_print',
+                    'style_name' => variable_get('osci_tk_image_style_body_copy_print', 'osci_tk_default'),
                     'path' => $node->field_image['und'][0]['uri'],
                     'alt' => $title,
                     'title' => $title,
@@ -280,8 +272,7 @@ function osci_tk_body_copy_preprocess_body_copy_figure_print(&$vars) {
            	}
 
             $vars['content'] = theme_image_style(array(
-                'style_name' => "osci_tk_print",
-                'path' => $thumbnailPath,
+                'style_name' => variable_get('osci_tk_image_style_body_copy_print', 'osci_tk_default'), 
                 'alt' => $title,
                 'title' => $title,
                 'attributes' => array(

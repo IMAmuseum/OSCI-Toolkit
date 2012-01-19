@@ -702,7 +702,10 @@ function osci_tk_body_copy_field_widget_form(&$form, &$form_state, $field, $inst
         
         $figOpt = json_decode($figDefault);
         if (isset($figOpt->previewUri) && $figOpt->previewUri) {
-        	$figOpt->previewUrl = image_style_url('osci_tk_thumbnail_165w', $figOpt->previewUri);
+        	$figOpt->previewUrl = image_style_url(
+        		variable_get('osci_tk_image_style_body_copy_figure_preview', 'osci_tk_default'), 
+        		$figOpt->previewUri
+        	);
         }
         $figDefault = json_encode($figOpt);
         
@@ -832,7 +835,7 @@ function osci_tk_body_copy_figure_preview($nid) {
 				$ret->image = file_create_url($node->field_image['und'][0]['uri']);
 				$ret->div = '<div style="width:100%;">'
 					.theme_image_style(array(
-                	    'style_name' => 'osci_tk_image_256',
+                	    'style_name' => variable_get('osci_tk_image_style_body_copy_figure_preview', 'osci_tk_default'),
             			'path' => $node->field_image['und'][0]['uri'],
                 	    'alt' => $node->title,
         		    	'title' => $node->title,
@@ -851,7 +854,8 @@ function osci_tk_body_copy_figure_preview($nid) {
         case "conservation_asset":
         	if (count($node->field_image) > 0) {
         		// there is a representative image, return it in a div
-        		$ret->div = '<img class="preview_image" src="'.image_style_url('osci_tk_thumbnail_165w', $node->field_image['und'][0]['uri']).'" />'
+        		$ret->div = '<img class="preview_image" '
+        			. 'src="'.image_style_url(variable_get('osci_tk_image_style_body_copy_figure_preview', 'osci_tk_default'), $node->field_image['und'][0]['uri']).'" />'
         			. '<div style="display:none;" data-aspect="'._osci_tk_conservation_get_conservation_aspect($node).'">'
         			._osci_tk_conservation_get_conservation_html($nid)
         			.'</div>';
@@ -898,7 +902,10 @@ function osci_tk_body_copy_figure_thumb_save() {
 	file_put_contents($dir.$filename, $fileData);
 	// form the return
 	$ret = new stdClass;
-	$ret->url = image_style_url('osci_tk_thumbnail_165w', 'public://previews/' . $filename);
+	$ret->url = image_style_url(
+		variable_get('osci_tk_image_style_body_copy_figure_preview', 'osci_tk_default'), 
+		'public://previews/' . $filename
+	);
 	$ret->uri = 'public://previews/' . $filename;
 	print json_encode($ret);
 }
@@ -920,21 +927,37 @@ function osci_tk_body_copy_figure_reference($args) {
     return drupal_json_output($matches);
 }
 
-/**
- * Implementation of hook_form_alter().
- * Add submit button to the top of the form for all node content types
- */
-function osci_tk_body_copy_form_alter(&$form, &$form_state, $form_id) {
-	if($form_id == 'work_of_art_node_form' || $form_id == 'collector_node_form' || $form_id == 'volume_node_form'
-		|| $form_id == 'section_node_form' || $form_id == 'image_node_form' || $form_id == 'html_figure_node_form'
-		|| $form_id == 'page_node_form') 
-	{
-		$form['submit2'] = array(
-		 '#type' => 'submit',
-		 '#value' => t('Save'),
-		 '#weight' => -1000,
-		 '#submit' => array('node_form_submit')
-		);
-	}
+function osci_tk_body_copy_osci_tk_image_types() {
+	$types[] = array(
+		'title'			=> 'Body Copy Authoring - Figure Preview',
+		'variable'		=> 'osci_tk_image_style_body_copy_figure_preview',
+		'description'	=> 'Thumbnail used to preview a figure while editing body copy'
+	);
+	$types[] = array(
+		'title'			=> 'Body Copy - Figure Thumbnail',
+		'variable'		=> 'osci_tk_image_style_body_copy_figure_thumbnail',
+		'description'	=> 'Thumbnail used represent a figure'
+	);
+	$types[] = array(
+		'title'			=> 'Body Copy - Figure 256',
+		'variable'		=> 'osci_tk_image_style_body_copy_figure_256',
+		'description'	=> 'A small version of a figure image'
+	);
+	$types[] = array(
+		'title'			=> 'Body Copy - Figure 512',
+		'variable'		=> 'osci_tk_image_style_body_copy_figure_512',
+		'description'	=> 'A medium version of a figure image'
+	);
+	$types[] = array(
+		'title'			=> 'Body Copy - Figure 1024',
+		'variable'		=> 'osci_tk_image_style_body_copy_figure_1024',
+		'description'	=> 'A large version of a figure image'
+	);
+	$types[] = array(
+		'title'			=> 'Body Copy - Print',
+		'variable'		=> 'osci_tk_image_style_body_copy_print',
+		'description'	=> 'A version of a image for printing'
+	);
+	
+	return $types;
 }
-?>
