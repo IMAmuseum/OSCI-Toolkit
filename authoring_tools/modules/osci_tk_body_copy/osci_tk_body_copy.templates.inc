@@ -242,9 +242,6 @@ function osci_tk_body_copy_preprocess_body_copy_figure_print(&$vars) {
                     'path' => $node->field_image['und'][0]['uri'],
                     'alt' => $title,
                     'title' => $title,
-                    'attributes' => array(
-                        'class' => $vars['osci_tk_image_cache']
-                    )
                 ));
 
         		$vars['content'] = $image;
@@ -275,9 +272,6 @@ function osci_tk_body_copy_preprocess_body_copy_figure_print(&$vars) {
                 'style_name' => variable_get('osci_tk_image_style_body_copy_print', 'osci_tk_default'), 
                 'alt' => $title,
                 'title' => $title,
-                'attributes' => array(
-                    'class' => $vars['osci_tk_image_cache']
-                )
             ));
            	
             break;
