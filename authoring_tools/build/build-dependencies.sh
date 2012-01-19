@@ -154,4 +154,21 @@ fi
 rm -rf $1/sites/all/libraries/ckeditor/*
 cp -r ./src/ckeditor/* $1/sites/all/libraries/ckeditor
 echo
+
+#
+# jQuery Template Plugin
+#
+echo "Downloading and extracting jQuery Template Plugin..."
+curl -s -L -o jquery-tmpl.zip https://github.com/jquery/jquery-tmpl/zipball/vBeta1.0.0
+unzip -o -q jquery-tmpl.zip -d src
+rm jquery-tmpl.zip
+echo "Copying to Drupal libraries..."
+if [ ! -d $1/sites/all/libraries/jquery-tmpl ];
+then
+    mkdir -p $1/sites/all/libraries/jquery-tmpl
+fi
+rm -rf $1/sites/all/libraries/jquery-tmpl/*
+cp -r ./src/jquery-jquery-tmpl-484cee9/* $1/sites/all/libraries/jquery-tmpl
+echo
+
 echo "Finished"
