@@ -38,23 +38,21 @@ function osci_tk_features_admin_form($form, &$form_state) {
 
 function osci_tk_features_images_admin_form($form, &$form_state) {
 	$form = array();
-
 	// allow modules to provide an array of needed image styles by returning an
-	// array containing a pretty title and a variable name to store the mapped image style
+	// array containing a pretty title, a variable name to store the mapped image style,
+	// and a description of the 
 	// returned array should look like:
-	// array('Title' => 'variable name')
-	// ex: array('Conservation Thumbnail' => 'osci_tk_image_style_conservation_thumbnail')
+	// array(array('title' => 'Very Pretty', 'variable' => 'osci_tk_image_style_thumbnail', 'description' => 'test'))
 	$types = module_invoke_all('osci_tk_image_types');
 	$styles = image_style_options(FALSE);
-	
-	foreach ($types as $title => $type) {
-		$form[$type] = array(
+	foreach ($types as $type) {
+		$form[$type['variable']] = array(
 			'#type'				=> 'select',
-			'#title'			=> $title,
+			'#title'			=> $type['title'],
+			'#description'		=> $type['description'],
 			'#options'			=> $styles,
-			'#default_value'	=> variable_get($type, 'osci_tk_default')
+			'#default_value'	=> variable_get($type['variable'], 'osci_tk_default')
 		);
 	}
-
 	return system_settings_form($form);
 }

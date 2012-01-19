@@ -283,9 +283,13 @@ function osci_tk_conservation_view($nid)
 
 // implements hook_osci_tk_image_types - for osci_tk_features admin settings
 function osci_tk_conservation_osci_tk_image_types() {
-	return array(
-		'Conservation Thumbnail' => 'osci_tk_image_style_conservation_thumbnail',
+	$types[] = array(
+		'title'			=> 'Conservation Thumbnail',
+		'variable'		=> 'osci_tk_image_style_conservation_thumbnail',
+		'description'	=> 'Thumnail used to represent a conservation asset'
 	);
+	
+	return $types;
 }
 
 /*
@@ -376,7 +380,7 @@ function _osci_tk_conservation_get_conservation_html($nid) {
     if (!is_numeric($nid))
         return;
     $node = node_load($nid);
-    $thumbStyle = 'osci_tk_conservation_100w';
+    $thumbStyle = variable_get('osci_tk_image_style_conservation_thumbnail', 'osci_tk_default');
     
     // create a unique id for this conservation asset
     $id = "conservation-asset-" . preg_replace('/\./', '', ((string) microtime(TRUE)));
