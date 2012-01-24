@@ -260,7 +260,7 @@ function _osci_tk_navigation_render_book_toc($node, $format = 'epub')
           $output .= _osci_tk_navigation_epub_subtree($child, $attr_fields);
         }
           
-        $output .= "</nav>";        
+        $output .= "</ol></nav>";        
         
       }
         
