@@ -34,7 +34,7 @@ jQuery(document).ready(function() {
 
 function store_note(data, target) {
 	var $ = jQuery;
-	var endpoint = '/notes/';
+	var endpoint = Drupal.settings.basePath + 'notes/';
 	
 	$.post(endpoint, data, function(data) {
 		if (parseInt(data) > 0) {
@@ -48,7 +48,7 @@ function store_note(data, target) {
 
 function retrieve_note(data, target) {
 	var $ = jQuery;
-	var endpoint = '/notes/';
+	var endpoint = Drupal.settings.basePath + 'notes/';
 	
 	$.get(endpoint, data, function(data) {
 		target.html(data);
