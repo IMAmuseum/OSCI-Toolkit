@@ -24,8 +24,6 @@ function osci_tk_notes_menu() {
 function osci_tk_notes_request() {
 	global $user;
 	$args = array();
-	dpm($_POST, 'post');
-	dpm($_GET, 'get');
 	
 	if ($user->uid > 0) {
 		if (count($_POST) > 0) {
