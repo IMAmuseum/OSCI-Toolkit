@@ -29,16 +29,16 @@ function osci_tk_notes_request() {
 		if (count($_POST) > 0) {
 			// POST request, insert a note into the db
 			if (isset($_POST['book_id']) && !empty($_POST['book_id'])
-			&& isset($_POST['section_id']) && !empty($_POST['section_id'])
-			&& isset($_POST['paragraph_id']) && !empty($_POST['paragraph_id'])
-			&& isset($_POST['note']) && !empty($_POST['note'])) {
+				&& isset($_POST['section_id']) && !empty($_POST['section_id'])
+				&& isset($_POST['paragraph_id']) && !empty($_POST['paragraph_id'])
+				&& isset($_POST['note']) && !empty($_POST['note'])) {
 			
-				$bid = $_POST['book_id'];
-				$sid = $_POST['section_id'];
-				$pid = $_POST['paragraph_id'];
-				$note = $_POST['note'];
+				$bid 	= $_POST['book_id'];
+				$sid 	= $_POST['section_id'];
+				$pid 	= $_POST['paragraph_id'];
+				$note 	= $_POST['note'];
 				$result = db_query("INSERT INTO {notes} (uid, book_id, section_id, paragraph_id, note)
-							VALUES (:uid, :bid, :sid, :pid, :note)",
+					VALUES (:uid, :bid, :sid, :pid, :note)",
 					array(':uid' => $user->uid, ':bid' => $bid, ':sid' => $sid, ':pid' => $pid, ':note' => $note))
 					->rowCount();
 				print($result);
@@ -53,16 +53,16 @@ function osci_tk_notes_request() {
 			$query = "SELECT * from {notes} WHERE uid = :uid";
 			$args[':uid'] = $user->uid;
 			if (isset($_GET['book_id']) && !empty($_GET['book_id'])) {
-				$query .= " AND WHERE book_id = :bid";
-				$args[':bid'] = $_GET['book_id'];
+				$query 			.= " AND WHERE book_id = :bid";
+				$args[':bid'] 	= $_GET['book_id'];
 			}
 			if (isset($_GET['section_id']) && !empty($_GET['section_id'])) {
-				$query .= " AND WHERE section_id = :sid";
-				$args[':sid'] = $_GET['section_id'];
+				$query 			.= " AND WHERE section_id = :sid";
+				$args[':sid'] 	= $_GET['section_id'];
 			}
 			if (isset($_GET['paragraph_id']) && !empty($_GET['paragraph_id'])) {
-				$query .= " AND WHERE paragraph_id = :pid";
-				$args[':pid'] = $_GET['paragraph_id'];
+				$query 			.= " AND WHERE paragraph_id = :pid";
+				$args[':pid'] 	= $_GET['paragraph_id'];
 			}
 			$result = db_query($query, $args);
 			$return = array();
@@ -74,7 +74,7 @@ function osci_tk_notes_request() {
 					'note' => $row->note
 				);
 			}
-			print json_encode($return);
+			print json_encode(array('notes' => $return));
 		}
 	}
 }
