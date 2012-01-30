@@ -1,0 +1,171 @@
+<?php 
+
+
+function osci_tk_notes_menu() {
+	global $user;
+	$items = array();
+	
+	$items['notes'] = array(
+		'title'			 	=> t('Process a note request'),
+		'page callback'	 	=> 'osci_tk_notes_request',
+		'access callback' 	=> array($user->uid)
+	);
+	
+	$items['notes/demo'] = array(
+		'title'			 	=> t('Demonstrate Notes Functionality'),
+		'page callback'		=> 'drupal_get_form',
+		'page arguments' 	=> array('osci_tk_notes_demo'),
+		'access callback'  	=> array(($user->uid == 1))
+	);
+	
+	return $items;
+}
+
+function osci_tk_notes_request() {
+	global $user;
+	$args = array();
+	dpm($_POST, 'post');
+	dpm($_GET, 'get');
+	
+	if ($user->uid > 0) {
+		if (count($_POST) > 0) {
+			// POST request, insert a note into the db
+			if (isset($_POST['book_id']) && !empty($_POST['book_id'])
+			&& isset($_POST['section_id']) && !empty($_POST['section_id'])
+			&& isset($_POST['paragraph_id']) && !empty($_POST['paragraph_id'])
+			&& isset($_POST['note']) && !empty($_POST['note'])) {
+			
+				$bid = $_POST['book_id'];
+				$sid = $_POST['section_id'];
+				$pid = $_POST['paragraph_id'];
+				$note = $_POST['note'];
+				$result = db_query("INSERT INTO {notes} (uid, book_id, section_id, paragraph_id, note)
+							VALUES (:uid, :bid, :sid, :pid, :note)",
+					array(':uid' => $user->uid, ':bid' => $bid, ':sid' => $sid, ':pid' => $pid, ':note' => $note))
+					->rowCount();
+				print($result);
+				return;
+			}
+			else {
+				print("0");
+			}
+		}
+		else {
+			// GET request, retreive user's notes
+			$query = "SELECT * from {notes} WHERE uid = :uid";
+			$args[':uid'] = $user->uid;
+			if (isset($_GET['book_id']) && !empty($_GET['book_id'])) {
+				$query .= " AND WHERE book_id = :bid";
+				$args[':bid'] = $_GET['book_id'];
+			}
+			if (isset($_GET['section_id']) && !empty($_GET['section_id'])) {
+				$query .= " AND WHERE section_id = :sid";
+				$args[':sid'] = $_GET['section_id'];
+			}
+			if (isset($_GET['paragraph_id']) && !empty($_GET['paragraph_id'])) {
+				$query .= " AND WHERE paragraph_id = :pid";
+				$args[':pid'] = $_GET['paragraph_id'];
+			}
+			$result = db_query($query, $args);
+			$return = array();
+			foreach ($result as $row) {
+				$return[] = array(
+					'book_id' => $row->book_id,
+					'section_id' => $row->section_id,
+					'paragraph_id' => $row->paragraph_id,
+					'note' => $row->note
+				);
+			}
+			print json_encode($return);
+		}
+	}
+}
+
+function osci_tk_notes_demo() {
+	global $user;
+	drupal_add_js(drupal_get_path('module', 'osci_tk_notes') . '/js/demo.js');
+	
+	$form = array();
+	
+	$form['store'] = array(
+		'#type'				=> 'fieldset',
+		'#title'			=> 'Store a User Note',
+		'#attributes'		=> array('class' => array('store-form'))
+	);
+	$form['store']['uid'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'User id',
+		'#default_value'	=> $user->uid,
+		'#required'			=> TRUE,
+		'#disabled'			=> TRUE
+	);
+	$form['store']['book_id'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'Book id',
+		'#required'			=> TRUE
+	);
+	$form['store']['section_id'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'Section id',
+		'#required'			=> TRUE
+	);
+	$form['store']['paragraph_id'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'Paragraph id',
+		'#required'			=> TRUE
+	);
+	$form['store']['note'] = array(
+			'#type'				=> 'textarea',
+			'#title'			=> 'Note',
+			'#required'			=> TRUE
+	);
+	$form['store']['submit'] = array(
+		'#type'				=> 'button',
+		'#title'			=> 'Paragraph id',
+		'#value'			=> 'Submit',
+		'#required'			=> TRUE
+	);
+	$form['store']['result'] = array(
+		'#type'				=> 'item',
+		'#title'			=> 'Result',
+		'#markup'			=> '<pre><div id="store-result"></div></pre>'
+	);
+	
+	$form['retrieve'] = array(
+		'#type'				=> 'fieldset',
+		'#title'			=> 'Retrieve a User Note',
+		'#attributes'		=> array('class' => array('retrieve-form'))
+	);
+	$form['retrieve']['uid'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'User id',
+		'#default_value'	=> $user->uid,
+		'#required'			=> TRUE,
+		'#disabled'			=> TRUE
+	);
+	$form['retrieve']['book_id'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'Book id',
+	);
+	$form['retrieve']['section_id'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'Section id',
+	);
+	$form['retrieve']['paragraph_id'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'Paragraph id',
+	);
+	$form['retrieve']['submit'] = array(
+			'#type'			=> 'button',
+			'#title'		=> 'Paragraph id',
+			'#value'		=> 'Submit',
+			'#required'		=> TRUE
+	);
+	$form['retrieve']['result'] = array(
+			'#type'			=> 'item',
+			'#title'		=> 'Result',
+			'#markup'		=> '<pre><div id="ret-result"></div></pre>'
+	);
+	
+	return $form;
+}
