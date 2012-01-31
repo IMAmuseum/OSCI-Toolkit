@@ -1,0 +1,44 @@
+<?php
+
+function osci_tk_epub_menu()
+{
+	$items = array();
+	
+	$items['node/%node/ePub'] = array(
+		'title' => 'ePub',
+		'page callback' => 'osci_tk_epub_render',
+		'page arguments' => array(1),
+		'access arguments' => array('access content'),
+		'type' => MENU_LOCAL_TASK
+	);
+	
+	return $items;
+}
+
+function osci_tk_epub_entity_info_alter(&$entity_info) 
+{
+    foreach($entity_info as $type => $entity) 
+	{
+        $entity_info[$type]['view modes']['epub'] = array(
+            'label'             => t('ePub'),
+            'custom settings'   => TRUE,
+        );
+    }
+}
+
+function osci_tk_epub_field_formatter_info()
+{
+	$formatters = array(
+		'osci_tk_epub_content' => array(
+			'label' => 'ePub Content',
+			'field types' => array('osci_tk_body_copy')
+		)
+	);
+	
+	return $formatters;
+}
+
+function osci_tk_epub_render($node)
+{
+	
+}
