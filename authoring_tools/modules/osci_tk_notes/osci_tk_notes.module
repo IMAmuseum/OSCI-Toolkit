@@ -41,11 +41,18 @@ function osci_tk_notes_request() {
 					VALUES (:uid, :bid, :sid, :pid, :note)",
 					array(':uid' => $user->uid, ':bid' => $bid, ':sid' => $sid, ':pid' => $pid, ':note' => $note))
 					->rowCount();
-				print($result);
-				return;
+				if ($result > 0) {
+					print json_encode(array('success' => TRUE));
+					return;
+				}
+				else {
+					print json_encode(array('success' => FALSE));
+					return;
+				}
 			}
 			else {
-				print("0");
+				print json_encode(array('success' => FALSE));
+				return;
 			}
 		}
 		else {
@@ -53,15 +60,15 @@ function osci_tk_notes_request() {
 			$query = "SELECT * from {notes} WHERE uid = :uid";
 			$args[':uid'] = $user->uid;
 			if (isset($_GET['book_id']) && !empty($_GET['book_id'])) {
-				$query 			.= " AND WHERE book_id = :bid";
+				$query 			.= " AND book_id = :bid";
 				$args[':bid'] 	= $_GET['book_id'];
 			}
 			if (isset($_GET['section_id']) && !empty($_GET['section_id'])) {
-				$query 			.= " AND WHERE section_id = :sid";
+				$query 			.= " AND section_id = :sid";
 				$args[':sid'] 	= $_GET['section_id'];
 			}
 			if (isset($_GET['paragraph_id']) && !empty($_GET['paragraph_id'])) {
-				$query 			.= " AND WHERE paragraph_id = :pid";
+				$query 			.= " AND paragraph_id = :pid";
 				$args[':pid'] 	= $_GET['paragraph_id'];
 			}
 			$result = db_query($query, $args);
@@ -75,6 +82,7 @@ function osci_tk_notes_request() {
 				);
 			}
 			print json_encode(array('notes' => $return));
+			return;
 		}
 	}
 }

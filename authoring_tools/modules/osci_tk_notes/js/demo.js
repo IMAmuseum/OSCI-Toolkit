@@ -6,7 +6,6 @@ jQuery(document).ready(function() {
 	store_submit.click(function(event) {
 		event.preventDefault();
 		var data = {
-			'uid'			: $('#edit-uid').val(),
 			'book_id'		: $('#edit-book-id').val(),
 			'section_id'	: $('#edit-section-id').val(),
 			'paragraph_id'	: $('#edit-paragraph-id').val(),
@@ -21,13 +20,13 @@ jQuery(document).ready(function() {
 	ret_submit.click(function(event) {
 		event.preventDefault();
 		var data = {
-			'uid'			: $('#edit-uid--2').val(),
 			'book_id'		: $('#edit-book-id--2').val(),
 			'section_id'	: $('#edit-section-id--2').val(),
 			'paragraph_id'	: $('#edit-paragraph-id--2').val(),
 		};
 		var target = $('#ret-result');
 		target.html('');
+		console.log(data);
 		retrieve_note(data, target);
 	});
 });
@@ -37,12 +36,7 @@ function store_note(data, target) {
 	var endpoint = Drupal.settings.basePath + 'notes/';
 	
 	$.post(endpoint, data, function(data) {
-		if (parseInt(data) > 0) {
-			target.html('Success');
-		}
-		else {
-			target.html('Failed');
-		}
+		target.html(data);
 	})
 }
 
