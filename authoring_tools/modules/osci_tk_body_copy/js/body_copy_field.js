@@ -285,23 +285,26 @@
 	
 	
     $(document).ready(function() {
-    	var config = Drupal.settings.wysiwyg.configs.ckeditor.formatfootnote;
+    	var config = Drupal.settings.ckeditor;
 
     	function initCKeditor(obj) {
-    		var obj = $(obj);
-    		var wrapper = obj.parents('.footnotes-wrapper');
-    		var textareas = $('textarea', wrapper);
+    		obj = $(obj);
+    		var textareas = obj.parents('.footnotes-wrapper').find('textarea.has_ckeditor');
     		textareas.each(function() {
     			// Find all editor instances and destroy them
-                var instance = $(this).data('ckeditorInstance');
+				var $this = $(this);
+                var instance = $this.ckeditorGet();
                 if (instance !== undefined && instance !== null && instance.destroy && $.isFunction(instance.destroy)) {
                     instance.destroy();
+					$this.removeClass("has_ckeditor");
                 }
     		});
-            obj.ckeditor(function() {}, config);
+            obj.ckeditor(function() {
+				$("#" + this.name).addClass("has_ckeditor");
+			}, {});
         }
     	
-        
+
         /**************************************************
          * CKEDITOR 
          */
