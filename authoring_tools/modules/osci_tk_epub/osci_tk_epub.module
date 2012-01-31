@@ -4,7 +4,7 @@ function osci_tk_epub_menu()
 {
 	$items = array();
 	
-	$items['node/%node/ePub'] = array(
+	$items['node/%node/epub'] = array(
 		'title' => 'ePub',
 		'page callback' => 'osci_tk_epub_render',
 		'page arguments' => array(1),
@@ -15,30 +15,42 @@ function osci_tk_epub_menu()
 	return $items;
 }
 
-function osci_tk_epub_entity_info_alter(&$entity_info) 
-{
-    foreach($entity_info as $type => $entity) 
-	{
-        $entity_info[$type]['view modes']['epub'] = array(
-            'label'             => t('ePub'),
-            'custom settings'   => TRUE,
-        );
-    }
-}
 
-function osci_tk_epub_field_formatter_info()
-{
-	$formatters = array(
-		'osci_tk_epub_content' => array(
-			'label' => 'ePub Content',
-			'field types' => array('osci_tk_body_copy')
+function osci_tk_epub_theme($existing, $type, $theme, $path) {
+	return array(
+		'node__book__epub' => array(
+			//'arguments'	=> array('node' => NULL),
+			'template'	=> 'templates/node__book__epub'
+		),
+		'node__image_asset__epub' => array(
+			//'arguments'	=> array('node' => NULL),
+			'template'	=> 'templates/node__book__epub'
 		)
 	);
-	
-	return $formatters;
+}
+
+
+// register custom view mode 'epub'
+function osci_tk_epub_entity_info_alter(&$entity_info) 
+{
+	foreach($entity_info as $type => $entity) 
+	{
+		$entity_info[$type]['view modes']['epub'] = array(
+			'label' 			=> t('ePub'),
+			'custom settings' 	=> TRUE,
+		);
+	}
+}
+
+function osci_tk_epub_preprocess_node(&$vars) {
+	if ($vars['view_mode'] == 'epub') {
+		// provide a custom template for nodes by type when view mode is epub
+		$vars['theme_hook_suggestions'][] = 'node__' . $vars['type'] . '__epub';
+	}
 }
 
 function osci_tk_epub_render($node)
 {
-	
+	$view = node_view($node, 'epub');
+	print drupal_render($view);
 }

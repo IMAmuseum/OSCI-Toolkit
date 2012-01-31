@@ -1,4 +1,4 @@
-name = "OSCI ToolKit ePub"
+name = "ePub"
 description = "Provides ePub output for the OSCI ToolKit"
 package = "OSCI ToolKit"
 version = "1.0"
