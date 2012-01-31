@@ -1,0 +1,91 @@
+<?php
+
+function osci_tk_citations_menu() {
+	$items = array();
+
+	$items['citations'] = array(
+		'title'			 	=> t('Process a citation request'),
+		'page callback'	 	=> 'osci_tk_citations_request',
+		'access callback'	=> TRUE
+	);
+
+	$items['citations/demo'] = array(
+		'title'			 	=> t('Demonstrate Citation Functionality'),
+		'page callback'		=> 'drupal_get_form',
+		'page arguments' 	=> array('osci_tk_citations_demo'),
+		'access callback'	=> TRUE
+	);
+
+	return $items;
+}
+
+function osci_tk_citations_request() {
+	if (isset($_GET['book_id']) && !empty($_GET['book_id'])
+		&& isset($_GET['section_id']) && !empty($_GET['section_id'])
+		&& isset($_GET['paragraph_id']) && !empty($_GET['paragraph_id'])) {
+		
+		$bid = $_GET['book_id'];
+		$sid = $_GET['section_id'];
+		$pid = $_GET['paragraph_id'];
+		
+		// determine author, publisher, publication_date, editor - get from section first,
+		// or book if not present on section
+		
+		// TODO: replace
+		print json_encode(array(
+			'success' => TRUE, 
+			'citation' => array(
+				'author' 			=> "",
+				'section_title' 	=> "",
+				'book_title' 		=> "",
+				'publisher' 		=> "",
+				'paragraph' 		=> "",
+				'publication_date' 	=> "",
+				'editor' 			=> "",
+				'url'				=> ""
+			)
+		));
+		return;
+	}
+	else {
+		print json_encode(array('success' => FALSE));
+	}
+}
+
+function osci_tk_citations_demo() {
+	global $user;
+	drupal_add_js(drupal_get_path('module', 'osci_tk_citations') . '/js/demo.js');
+
+	$form = array();
+
+	$form['retrieve'] = array(
+		'#type'				=> 'fieldset',
+		'#title'			=> 'Retrieve Citation Data',
+		'#attributes'		=> array('class' => array('retrieve-form'))
+	);
+	$form['retrieve']['book_id'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'Book id',
+	);
+	$form['retrieve']['section_id'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'Section id',
+	);
+	$form['retrieve']['paragraph_id'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'Paragraph id',
+	);
+	$form['retrieve']['submit'] = array(
+			'#type'			=> 'button',
+			'#title'		=> 'Paragraph id',
+			'#value'		=> 'Submit',
+			'#required'		=> TRUE
+	);
+	$form['retrieve']['result'] = array(
+			'#type'			=> 'item',
+			'#title'		=> 'Result',
+			'#markup'		=> '<pre style="width: 600px;"><div id="ret-result"></div></pre>'
+	);
+
+	return $form;
+}

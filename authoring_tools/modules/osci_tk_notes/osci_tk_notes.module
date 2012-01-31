@@ -81,7 +81,7 @@ function osci_tk_notes_request() {
 					'note' => $row->note
 				);
 			}
-			print json_encode(array('notes' => $return));
+			print json_encode(array('success' => FALSE, 'notes' => $return));
 			return;
 		}
 	}
@@ -134,7 +134,7 @@ function osci_tk_notes_demo() {
 	$form['store']['result'] = array(
 		'#type'				=> 'item',
 		'#title'			=> 'Result',
-		'#markup'			=> '<pre><div id="store-result"></div></pre>'
+		'#markup'			=> '<pre style="width: 600px;"><div id="store-result"></div></pre>'
 	);
 	
 	$form['retrieve'] = array(
@@ -170,7 +170,7 @@ function osci_tk_notes_demo() {
 	$form['retrieve']['result'] = array(
 			'#type'			=> 'item',
 			'#title'		=> 'Result',
-			'#markup'		=> '<pre><div id="ret-result"></div></pre>'
+			'#markup'		=> '<pre style="width: 600px;"><div id="ret-result"></div></pre>'
 	);
 	
 	return $form;
