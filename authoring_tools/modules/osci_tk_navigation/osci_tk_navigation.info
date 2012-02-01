@@ -1,4 +1,4 @@
-name = "Navigation Engine"
+name = "Navigation Engine (deprecated)"
 description = "Navigation engine for book pages"
 package = "OSCI ToolKit"
 version = "0.2"

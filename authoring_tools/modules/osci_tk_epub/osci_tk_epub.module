@@ -4,13 +4,21 @@ function osci_tk_epub_menu()
 {
 	$items = array();
 	
-	$items['node/%node/epub'] = array(
+	$items['node/%node/epub.xhtml'] = array(
 		'title' => 'ePub',
 		'page callback' => 'osci_tk_epub_render',
 		'page arguments' => array(1),
 		'access arguments' => array('access content'),
 		'type' => MENU_LOCAL_TASK
 	);
+	
+	$items['node/%node/nav.xhtml'] = array(
+		'title' => 'ePub Navigation Document',
+		'page callback' => 'osci_tk_epub_render_navigation',
+		'page arguments' => array(1),
+		'access arguments' => array('access content'),
+		'type' => MENU_LOCAL_TASK
+	);		
 	
 	$items['node/%node/package.opf'] = array(
 		'title' => 'ePub Package Document',
@@ -76,6 +84,22 @@ function osci_tk_epub_render($node)
 
 
 /**
+ * Render the navigation document for the book corresponding to this node
+ */
+function osci_tk_epub_render_navigation($node)
+{
+
+  // Render the table of contents
+  $output = _osci_tk_epub_navigation_render_book_toc($node);
+  
+  // Render other tables...
+  
+  return $output;
+  
+}
+
+
+/**
  * Render the package document for the book corresponding to this node
  */
 function osci_tk_epub_render_package($node)
@@ -105,4 +129,215 @@ function osci_tk_epub_render_package($node)
     print $output;
 	exit();
 	
+}
+
+
+/**
+ * Recursively build up the toc metadata for the given book node's subtree
+ */
+function _osci_tk_epub_navigation_build_toc($tree_node) {
+  
+  $result = array();
+
+  /*** Build metadata for this node ***/
+  if (isset($tree_node['link']['nid'])) {
+      $nid = $tree_node['link']['nid'];
+  } else {
+      $nid = substr($tree_node['link']['href'], strrpos($tree_node['link']['href'], '/') + 1);
+  }  
+  
+  $nextPage = null;
+  $prevPage = null;
+  $parentPage = null;
+  
+  if ($tree_node['link']['mlid']) {
+      if ($prev = book_prev($tree_node['link'])) {
+          $prevPage = substr($prev['href'], strrpos($prev['href'], '/') + 1);
+          //$nids[] = $prevPage;
+      }
+      if ($tree_node['link']['plid'] && $parent = book_link_load($tree_node['link']['plid'])) {
+          $parentPage = substr($parent['href'], strrpos($parent['href'], '/') + 1);
+          //$nids[] = $parentPage;
+      }
+      if ($next = book_next($tree_node['link'])) {
+          $nextPage = substr($next['href'], strrpos($next['href'], '/') + 1);
+          //$nids[] = $nextPage;
+      }
+  }   
+  
+  $alias = drupal_lookup_path("alias", $tree_node['link']['href']);
+  
+  $result['data'] = array(  
+	'nid'      => $nid,
+  	'mlid'     => $tree_node['link']['mlid'],
+  	'title'    => $tree_node['link']['title'],  
+    'href'     => url("reader/" . $alias),
+    'print'    => url("print/" . $alias),
+    'bodycopy' => url($alias['href'] . '/bodycopy'),  
+    'next'     => $nextPage,
+    'prev'     => $prevPage,
+    'parent'   => $parentPage,
+    'length'   => 0
+  );
+  
+  if (isset($tree_node['link']['bid'])) {
+    $result['data']['bid'] = $tree_node['link']['bid'];
+  }
+  
+  /*** Load additional info from the node ***/
+  $result['data'] = array_merge($result['data'], _osci_tk_epub_navigation_node_toc_data($nid));
+  
+  $result['data']['subtree_length'] = $result['data']['length'];    
+  
+  /*** Recurse if this node has children ***/
+  if (!empty($tree_node['below'])) {
+      $result['children'] = array();
+      foreach ($tree_node['below'] as $child) {    
+        $child_data = _osci_tk_epub_navigation_build_toc($child);   
+        $result['children'][] =  $child_data;
+        $result['data']['subtree_length'] += $child_data['data']['subtree_length'];
+      }
+  }  
+  
+  return $result;  
+  
+}
+
+
+function _osci_tk_epub_check_cache($cache_key) {
+  
+  // Check static variable    
+  $output = &drupal_static($cache_key); 
+  if (!is_null($output)) return $output;
+  
+  // Check cache
+  if ($cache = cache_get($cache_key)) {
+    $output = $cache->data; // Sets the static variable as well
+    return $output;
+  }
+  
+  return null;
+  
+}
+
+
+/**
+ * Gather table of contents data for the given node
+ */
+function _osci_tk_epub_navigation_node_toc_data($nid) {
+  
+  $data = array();
+  
+  $node = node_load($nid);
+  
+  $data['timestamp'] = $node->changed;  
+
+  if (!empty($node->field_osci_tk_content_length)) {        
+    $data['length'] = $node->field_osci_tk_content_length['und'][0]['value'];
+  }  
+
+  if (isset($node->field_osci_tk_plate_image['und']) && $node->field_osci_tk_plate_image['und'][0]['nid']) {
+    $imageNode = node_load($node->field_osci_tk_plate_image['und'][0]['nid']);
+    $fullImageUrl = file_create_url($imageNode->field_image['und'][0]['uri']);
+    $thumbnail165Url = image_style_url('osci_tk_default', $imageNode->field_image['und'][0]['uri']);
+    $thumbnail100Url = image_style_url('osci_tk_default', $imageNode->field_image['und'][0]['uri']);
+
+    $data['plate_image'] = array(
+      'full_image_url' => $fullImageUrl,
+      'thumbnail_165w_url' => $thumbnail165Url,
+      'thumbnail_100w_url' => $thumbnail100Url
+    );
+  }    
+  
+  return $data;
+  
+}
+
+
+/**
+ * Render the ePub table of contents for the book of the given node
+ */
+function _osci_tk_epub_navigation_render_book_toc($node)
+{
+
+  // Check the cache
+  $cache_key = "osci_epub_toc_{$node->nid}";    
+  $output = _osci_tk_epub_check_cache($cache_key);
+  if (!is_null($output)) {
+    print $output; exit();
+  }
+
+  $toc = null;
+  if (isset($node->book)) {
+    foreach (book_get_books() as $book_id => $book) {
+      if ($book['bid'] == $node->book['bid']) {
+        $subtree = book_menu_subtree_data($node->book);
+        // There should only be one node at the top level
+        $toc = _osci_tk_epub_navigation_build_toc(array_pop($subtree));
+        break;
+      }
+    }
+  }
+
+  $output = null;
+  
+  if (!is_null($toc)) {
+          
+    // Not using templates for performance. Might consider an XML library.
+    $output = "<nav epub:type='toc' id='book-{$node->book['bid']}-toc'>";
+    $output .= "<h1>Table of Contents</h1>"; // Optional header
+    $output .= "<ol>"; // The only other element allowed as a child of <nav>
+    
+    /* 
+     * The order of li elements contained within the toc nav element must match the order of 
+     * the targeted elements within each targeted EPUB Content Document, and must also follow 
+     * the order of Content Documents in the Publication spine.
+     */
+    
+    $attr_fields = array('nid', 'mlid', 'length', 'subtree_length', 'editor', 'timestamp');
+  
+    foreach($toc['children'] as $child) {
+      $output .= _osci_tk_epub_navigation_render_toc_subtree($child, $attr_fields);
+    }
+      
+    $output .= "</ol></nav>";
+            
+    cache_set($cache_key, $output, 'cache');              
+    
+  }
+
+  return $output;
+    
+}
+
+
+/**
+ * Render the ePub table of contents for a node's book subtree
+ */
+function _osci_tk_epub_navigation_render_toc_subtree($tree_node, $attr_fields = array()) {
+
+  // Export data fields into html attributes
+  $attr_data = array();
+  foreach ($attr_fields as $field) {
+    if (isset($tree_node['data'][$field])) {
+      $attr_data[]= "data-$field='{$tree_node['data'][$field]}'";
+    }
+    $data_str = count($attr_data) ? join(' ', $attr_data) : '';    
+  }    
+    
+  // <a> points to the target within the EPUB ContentDocument
+  $content = "<a $data_str href='node/{$tree_node['data']['nid']}/epub.xhtml'>{$tree_node['data']['title']}</a>";      
+
+  if (empty($tree_node['children'])) {
+    return "<li>$content</li>";
+  } 
+
+  $children = '';
+  foreach ($tree_node['children'] as $child) {
+    $children .= _osci_tk_epub_navigation_render_toc_subtree($child, $attr_fields);    
+  }
+  
+  // Build children    
+  return "<li>$content<ol>$children</ol></li>";    
+  
 }
