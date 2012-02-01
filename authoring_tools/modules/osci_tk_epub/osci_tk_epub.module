@@ -12,6 +12,14 @@ function osci_tk_epub_menu()
 		'type' => MENU_LOCAL_TASK
 	);
 	
+	$items['node/%node/package.opf'] = array(
+		'title' => 'ePub Package Document',
+		'page callback' => 'osci_tk_epub_render_package',
+		'page arguments' => array(1),
+		'access arguments' => array('access content'),
+		'type' => MENU_LOCAL_TASK
+	);	
+	
 	return $items;
 }
 
@@ -25,6 +33,17 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 		'node__image_asset__epub' => array(
 			//'arguments'	=> array('node' => NULL),
 			'template'	=> 'templates/node__book__epub'
+		),
+		'epub_package' => array(
+		    'arguments' => array(
+		        'pub_id' => null,
+		        'title' => null,
+		        'language' => 'en',
+		        'properties' => array(),
+		        'manifest' => array(),
+		        'spine' => array()
+		    ),
+		    'template' => 'templates/epub_package'
 		)
 	);
 }
@@ -53,4 +72,37 @@ function osci_tk_epub_render($node)
 {
 	$view = node_view($node, 'epub');
 	print drupal_render($view);
+}
+
+
+/**
+ * Render the package document for the book corresponding to this node
+ */
+function osci_tk_epub_render_package($node)
+{
+    // Find the corresponding book for this node
+    // TODO: check the cache for this book
+    
+    // Find all of the resources for this book
+
+    $arguments = array(
+        'pub_id' => 'urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809',
+        'title' => 'Book Title',
+        'properties' => array(
+            'modified' => date(DATE_W3C, time())
+        ),
+        'manifest' => array(),
+        'spine' => array()
+    );
+    
+    // Build the manifest and spine
+  
+    $output = theme('epub_package', $arguments);
+	
+    // TODO: cache the output for this book
+    
+    //header('Content-type: application/oebps-package+xml');
+    print $output;
+	exit();
+	
 }
