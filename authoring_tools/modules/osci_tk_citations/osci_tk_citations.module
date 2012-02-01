@@ -20,28 +20,43 @@ function osci_tk_citations_menu() {
 }
 
 function osci_tk_citations_request() {
-	if (isset($_GET['book_id']) && !empty($_GET['book_id'])
-		&& isset($_GET['section_id']) && !empty($_GET['section_id'])
+	if (isset($_GET['section_id']) && !empty($_GET['section_id'])
 		&& isset($_GET['paragraph_id']) && !empty($_GET['paragraph_id'])) {
 		
-		$bid = $_GET['book_id'];
 		$sid = $_GET['section_id'];
 		$pid = $_GET['paragraph_id'];
 		
-		// determine author, publisher, publication_date, editor - get from section first,
-		// or book if not present on section
+		// load the section node and its book-parent section. if no parent, use itself
+		$section = node_load($sid);
+		$book_section = isset($section->book['bid']) 
+			? node_load($section->book['bid']) 
+			: $section;
 		
-		// TODO: replace
+		// for missing values on the section, inherit from the book-parent section
+		if (!isset($section->author) && empty($section->author) && isset($book->author)) {
+			$section->author = $book->author;
+		}
+		if (!isset($section->publisher) && empty($section->publisher) && isset($book->publisher)) {
+			$section->publisher = $book->publisher;
+		}
+		if (!isset($section->publication_date) && empty($section->publication_date) && isset($book->publication_date)) {
+			$section->publication_date = $book->publication_date;
+		}
+		if (!isset($section->editor) && empty($section->editor) && isset($book->editor)) {
+			$section->editor = $book->editor;
+		}
+		
+		// output the json response
 		print json_encode(array(
 			'success' => TRUE, 
 			'citation' => array(
-				'author' 			=> "",
-				'section_title' 	=> "",
-				'book_title' 		=> "",
-				'publisher' 		=> "",
-				'paragraph' 		=> "",
-				'publication_date' 	=> "",
-				'editor' 			=> "",
+				'author' 			=> $section->author,
+				'section_title' 	=> $section->title,
+				'book_title' 		=> $book_section->title,
+				'publisher' 		=> $section->publisher,
+				'paragraph' 		=> $pid,
+				'publication_date' 	=> $section->publication_date,
+				'editor' 			=> $section->editor,
 				'url'				=> ""
 			)
 		));
@@ -62,10 +77,6 @@ function osci_tk_citations_demo() {
 		'#type'				=> 'fieldset',
 		'#title'			=> 'Retrieve Citation Data',
 		'#attributes'		=> array('class' => array('retrieve-form'))
-	);
-	$form['retrieve']['book_id'] = array(
-		'#type'				=> 'textfield',
-		'#title'			=> 'Book id',
 	);
 	$form['retrieve']['section_id'] = array(
 		'#type'				=> 'textfield',
