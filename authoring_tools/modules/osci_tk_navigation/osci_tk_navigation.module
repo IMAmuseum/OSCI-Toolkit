@@ -1,14 +1,5 @@
 <?php 
 
-
-function osci_tk_navigation_form_alter(&$form, &$form_state, $form_id)
-{
-    if (strpos($form_id, '_node_form') !== false && isset($form['field_osci_tk_content_length'])) {
-        $form['field_osci_tk_content_length']['und'][0]['value']['#type'] = 'hidden';
-    }
-}
-
-
 function osci_tk_navigation_menu() {
   
   $items = array();
@@ -29,33 +20,6 @@ function osci_tk_navigation_menu() {
   return $items;  
   
 }
-
-
-function osci_tk_navigation_node_submit($node, $form, &$form_state)
-{
-  
-  if (isset($form_state['node']->field_osci_tk_content_length)) {
-    
-    $wordCount = 0;
-    foreach($form_state['values'] as $k => $v) {
-      
-      $info = field_info_field($k);      
-      if ($info['type'] == 'osci_tk_body_copy') {
-        if (isset($v['und'][0]['body_copy'])) {
-          $wordCount += str_word_count(strip_tags($v['und'][0]['body_copy']['value']));
-        } elseif (isset($v['und'][0]['value'])) {
-          $wordCount += str_word_count(strip_tags($v['und'][0]['value']));
-        }                
-      }
-      
-    }
-
-    $form_state['node']->field_osci_tk_content_length['und'][0]['value'] = $wordCount;
-    
-  }
-  
-}
-
 
 /**
  * Recursively build up the toc metadata for the given book node's subtree
