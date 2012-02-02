@@ -9,6 +9,7 @@ jQuery(document).ready(function() {
 			'book_id'		: $('#edit-book-id').val(),
 			'section_id'	: $('#edit-section-id').val(),
 			'paragraph_id'	: $('#edit-paragraph-id').val(),
+			'tags'			: $('#edit-tags').val().split(/\s*,\s*/),
 			'note'			: $('#edit-note').val(),
 		};
 		var target = $('#store-result');
@@ -26,7 +27,6 @@ jQuery(document).ready(function() {
 		};
 		var target = $('#ret-result');
 		target.html('');
-		console.log(data);
 		retrieve_note(data, target);
 	});
 });

@@ -28,60 +28,109 @@ function osci_tk_notes_request() {
 	if ($user->uid > 0) {
 		if (count($_POST) > 0) {
 			// POST request, insert a note into the db
-			if (isset($_POST['book_id']) && !empty($_POST['book_id'])
-				&& isset($_POST['section_id']) && !empty($_POST['section_id'])
+			if (isset($_POST['section_id']) && !empty($_POST['section_id'])
 				&& isset($_POST['paragraph_id']) && !empty($_POST['paragraph_id'])
 				&& isset($_POST['note']) && !empty($_POST['note'])) {
-			
-				$bid 	= $_POST['book_id'];
-				$sid 	= $_POST['section_id'];
-				$pid 	= $_POST['paragraph_id'];
-				$note 	= $_POST['note'];
-				$result = db_query("INSERT INTO {notes} (uid, book_id, section_id, paragraph_id, note)
-					VALUES (:uid, :bid, :sid, :pid, :note)",
-					array(':uid' => $user->uid, ':bid' => $bid, ':sid' => $sid, ':pid' => $pid, ':note' => $note))
-					->rowCount();
-				if ($result > 0) {
+				
+				// find the section id
+				$section = node_load($_POST['section_id']);
+				if ($section) {
+					// form the new note object
+					$note = new stdClass();
+					$note->type = "note";
+					node_object_prepare($note);
+					$note->language = LANGUAGE_NONE;
+					$note->uid = $user->uid;
+					$note->status = 1;
+					$note->title = $user->name.' s'.$section->nid.' p'.$_POST['paragraph_id'];
+					$note->body['und'][0]['value'] = $_POST['note'];
+					$note->field_section['und'][0]['nid'] = $section->nid;
+					$note->field_paragraph_id['und'][0]['value'] = $_POST['paragraph_id'];
+					
+					// support tags
+					$vocab_list = taxonomy_vocabulary_get_names();
+					$tags_vid = $vocab_list['note_tags']->vid;
+					if (isset($_POST['tags']) && count($_POST['tags']) > 0) {
+						foreach ($_POST['tags'] as $tag) {
+							if (!empty($tag)) {
+								// test if this tag already exist in our vocab
+								$matched = FALSE;
+								$matches = taxonomy_get_term_by_name($tag);
+								foreach ($matches as $match) {
+									if ($match->vid == $tags_vid) {
+										$matched = TRUE;
+										$note->field_note_tags['und'][]['tid'] = $match->tid;
+									}
+								}
+								if (!$matched) {
+									// no existing tag, create a new term
+									$term = new stdClass();
+									$term->vid = $tags_vid;
+									$term->name = $tag;
+									taxonomy_term_save($term);
+									$note->field_note_tags['und'][]['tid'] = $term->tid;
+								}
+							}
+						}
+					}
+					
+					node_save($note);
 					print json_encode(array('success' => TRUE));
 					return;
 				}
-				else {
-					print json_encode(array('success' => FALSE));
-					return;
-				}
 			}
-			else {
-				print json_encode(array('success' => FALSE));
-				return;
-			}
+			// if execution reaches this point, the note submission wasn't saved, send error
+			print json_encode(array('success' => FALSE));
+			return;
 		}
+
+		// GET request, retreive user's notes
 		else {
-			// GET request, retreive user's notes
-			$query = "SELECT * from {notes} WHERE uid = :uid";
-			$args[':uid'] = $user->uid;
-			if (isset($_GET['book_id']) && !empty($_GET['book_id'])) {
-				$query 			.= " AND book_id = :bid";
-				$args[':bid'] 	= $_GET['book_id'];
-			}
+			$query = db_select('node', 'n');
+			$query->fields('n', array('nid'));
+			$query->condition('n.uid', $user->uid, '=');
+			$query->condition('n.type', 'note', '=');
+			
+			$query->join('field_data_body', 'b', 'n.nid = b.entity_id');
+			$query->addField('b', 'body_value', 'body');
+			
+			$query->join('field_data_field_section', 's', 'n.nid = s.entity_id');
+			$query->addField('s', 'field_section_nid', 'sid');
+			
+			$query->join('field_data_field_paragraph_id', 'p', 'n.nid = p.entity_id');
+			$query->addField('p', 'field_paragraph_id_value', 'pid');
+			
 			if (isset($_GET['section_id']) && !empty($_GET['section_id'])) {
-				$query 			.= " AND section_id = :sid";
-				$args[':sid'] 	= $_GET['section_id'];
+				$query->condition('s.field_section_nid', $_GET['section_id']);
 			}
+			
 			if (isset($_GET['paragraph_id']) && !empty($_GET['paragraph_id'])) {
-				$query 			.= " AND paragraph_id = :pid";
-				$args[':pid'] 	= $_GET['paragraph_id'];
+				$query->condition('p.field_paragraph_id_value', $_GET['paragraph_id']);
 			}
-			$result = db_query($query, $args);
-			$return = array();
+			$result = $query->execute();
+			$notes = array();
 			foreach ($result as $row) {
-				$return[] = array(
-					'book_id' => $row->book_id,
-					'section_id' => $row->section_id,
-					'paragraph_id' => $row->paragraph_id,
-					'note' => $row->note
+				// get the tags for this note
+				$tags = array();
+				$tag_result = db_query('SELECT field_note_tags_tid as tid 
+					FROM {field_data_field_note_tags} 
+					WHERE entity_id = :nid', 
+					array('nid' => $row->nid));
+				foreach ($tag_result as $tag_row) {
+					$tag = taxonomy_term_load($tag_row->tid);
+					if ($tag) {
+						$tags[] = $tag->name;
+					}
+				}
+				// form the returned note
+				$notes[] = array(
+					'section_id' 	=> $row->sid,
+					'paragraph_id' 	=> $row->pid,
+					'note' 			=> $row->body,
+					'tags' 			=> $tags
 				);
 			}
-			print json_encode(array('success' => FALSE, 'notes' => $return));
+			print json_encode(array('success' => TRUE, 'notes' => $notes));
 			return;
 		}
 	}
@@ -102,13 +151,8 @@ function osci_tk_notes_demo() {
 		'#type'				=> 'textfield',
 		'#title'			=> 'User id',
 		'#default_value'	=> $user->uid,
-		'#required'			=> TRUE,
+		'#required'			=> FALSE,
 		'#disabled'			=> TRUE
-	);
-	$form['store']['book_id'] = array(
-		'#type'				=> 'textfield',
-		'#title'			=> 'Book id',
-		'#required'			=> TRUE
 	);
 	$form['store']['section_id'] = array(
 		'#type'				=> 'textfield',
@@ -120,10 +164,15 @@ function osci_tk_notes_demo() {
 		'#title'			=> 'Paragraph id',
 		'#required'			=> TRUE
 	);
+	$form['store']['tags'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'Tags',
+		'#description'		=> 'Comma separated list of tags'
+	);
 	$form['store']['note'] = array(
-			'#type'				=> 'textarea',
-			'#title'			=> 'Note',
-			'#required'			=> TRUE
+		'#type'				=> 'textarea',
+		'#title'			=> 'Note',
+		'#required'			=> TRUE
 	);
 	$form['store']['submit'] = array(
 		'#type'				=> 'button',
@@ -146,12 +195,8 @@ function osci_tk_notes_demo() {
 		'#type'				=> 'textfield',
 		'#title'			=> 'User id',
 		'#default_value'	=> $user->uid,
-		'#required'			=> TRUE,
+		'#required'			=> FALSE,
 		'#disabled'			=> TRUE
-	);
-	$form['retrieve']['book_id'] = array(
-		'#type'				=> 'textfield',
-		'#title'			=> 'Book id',
 	);
 	$form['retrieve']['section_id'] = array(
 		'#type'				=> 'textfield',
