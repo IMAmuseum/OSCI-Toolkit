@@ -43,7 +43,7 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 			'template'	=> 'templates/node__book__epub'
 		),
 		'epub_package' => array(
-		    'arguments' => array(
+		    'variables' => array(
 		        'pub_id' => null,
 		        'title' => null,
 		        'language' => 'en',
@@ -105,30 +105,65 @@ function osci_tk_epub_render_navigation($node)
 function osci_tk_epub_render_package($node)
 {
     // Find the corresponding book for this node
-    // TODO: check the cache for this book
+    if (!isset($node->book)) return null;    
+    
+    // Check the cache
+    $cache_key = "osci_epub_package_{$node->book['bid']}";    
+    $output = _osci_tk_epub_check_cache($cache_key);    
+    if (!is_null($output)) {
+      print $output; exit();
+    }    
+    
+    $book = node_load($node->book['bid']);    
     
     // Find all of the resources for this book
+    $data = array(
+      'modified' => 0,    
+    );
+    
+    $subtree = book_menu_subtree_data($book->book);
+    // There should only be one node at the top level
+    _osci_tk_epub_package_build_data(array_pop($subtree), $data);    
+    
 
     $arguments = array(
         'pub_id' => 'urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809',
-        'title' => 'Book Title',
+        'title' => check_plain($book->title),
         'properties' => array(
-            'modified' => date(DATE_W3C, time())
+            'modified' => date(DATE_W3C, $data['modified'])
         ),
         'manifest' => array(),
         'spine' => array()
     );
     
-    // Build the manifest and spine
+    // Build the manifest and spine    
   
     $output = theme('epub_package', $arguments);
 	
     // TODO: cache the output for this book
-    
+
+    return $output;
     //header('Content-type: application/oebps-package+xml');
     print $output;
 	exit();
 	
+}
+
+
+function _osci_tk_epub_check_cache($cache_key) {
+  
+  // Check static variable    
+  $output = &drupal_static($cache_key); 
+  if (!is_null($output)) return $output;
+  
+  // Check cache
+  if ($cache = cache_get($cache_key)) {
+    $output = $cache->data; // Sets the static variable as well
+    return $output;
+  }
+  
+  return null;
+  
 }
 
 
@@ -204,23 +239,6 @@ function _osci_tk_epub_navigation_build_toc($tree_node) {
 }
 
 
-function _osci_tk_epub_check_cache($cache_key) {
-  
-  // Check static variable    
-  $output = &drupal_static($cache_key); 
-  if (!is_null($output)) return $output;
-  
-  // Check cache
-  if ($cache = cache_get($cache_key)) {
-    $output = $cache->data; // Sets the static variable as well
-    return $output;
-  }
-  
-  return null;
-  
-}
-
-
 /**
  * Gather table of contents data for the given node
  */
@@ -259,25 +277,22 @@ function _osci_tk_epub_navigation_node_toc_data($nid) {
  */
 function _osci_tk_epub_navigation_render_book_toc($node)
 {
-
+  
+  if (!isset($node->book)) return null;  
+  
   // Check the cache
-  $cache_key = "osci_epub_toc_{$node->nid}";    
+  $cache_key = "osci_epub_toc_{$node->book['bid']}";    
   $output = _osci_tk_epub_check_cache($cache_key);
   if (!is_null($output)) {
-    print $output; exit();
+    //print $output; exit();
   }
 
+  // Build the toc for the book
   $toc = null;
-  if (isset($node->book)) {
-    foreach (book_get_books() as $book_id => $book) {
-      if ($book['bid'] == $node->book['bid']) {
-        $subtree = book_menu_subtree_data($node->book);
-        // There should only be one node at the top level
-        $toc = _osci_tk_epub_navigation_build_toc(array_pop($subtree));
-        break;
-      }
-    }
-  }
+  $book = node_load($node->book['bid']);  
+  $subtree = book_menu_subtree_data($book->book);
+  // There should only be one node at the top level  
+  $toc = _osci_tk_epub_navigation_build_toc(array_pop($subtree));
 
   $output = null;
   
@@ -339,5 +354,25 @@ function _osci_tk_epub_navigation_render_toc_subtree($tree_node, $attr_fields = 
   
   // Build children    
   return "<li>$content<ol>$children</ol></li>";    
+  
+}
+
+
+/**
+ * Recursively collects data to build the package document
+ */
+function _osci_tk_epub_package_build_data($tree_node, &$data) {
+  
+    $nid = $tree_node['link']['nid'];
+    $node = node_load($nid);
+  
+    if ($node->changed > $data['modified']) $data['modified'] = $node->changed;
+  
+    /*** Recurse if this node has children ***/
+    if (!empty($tree_node['below'])) {
+        foreach ($tree_node['below'] as $child) {    
+            _osci_tk_epub_package_build_data($child, $data);   
+        }
+    }  
   
 }
