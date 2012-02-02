@@ -33,16 +33,16 @@ function osci_tk_citations_request() {
 			: $section;
 		
 		// for missing values on the section, inherit from the book-parent section
-		if (!isset($section->author) && empty($section->author) && isset($book->author)) {
+		if ((!isset($section->author) || empty($section->author)) && isset($book->author)) {
 			$section->author = $book->author;
 		}
-		if (!isset($section->publisher) && empty($section->publisher) && isset($book->publisher)) {
+		if ((!isset($section->publisher) || empty($section->publisher)) && isset($book->publisher)) {
 			$section->publisher = $book->publisher;
 		}
-		if (!isset($section->publication_date) && empty($section->publication_date) && isset($book->publication_date)) {
+		if ((!isset($section->publication_date) || empty($section->publication_date)) && isset($book->publication_date)) {
 			$section->publication_date = $book->publication_date;
 		}
-		if (!isset($section->editor) && empty($section->editor) && isset($book->editor)) {
+		if ((!isset($section->editor) || empty($section->editor)) && isset($book->editor)) {
 			$section->editor = $book->editor;
 		}
 		
