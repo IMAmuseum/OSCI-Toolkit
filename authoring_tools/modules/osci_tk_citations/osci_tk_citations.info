@@ -3,3 +3,4 @@ description = "Provides the ability to retrieve citation data for body copy text
 package = "OSCI ToolKit"
 version = "1.0"
 core = "7.x"
+dependencies[] = osci_tk_features
