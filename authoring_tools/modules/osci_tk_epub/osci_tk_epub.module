@@ -32,6 +32,24 @@ function osci_tk_epub_menu()
 }
 
 
+/**
+ * hook_node_submit
+ * TODO: consider rebuilding navigation/package output at this time?
+ */
+function osci_tk_epub_node_submit($node, $form, &$form_state)
+{
+  
+  if (isset($node->book)) {
+    
+    // Clear the caches for the book containing this node
+    cache_set("osci_epub_package_{$node->book['bid']}", null);     
+    cache_set("osci_epub_toc_{$node->book['bid']}", null);  
+    
+  }
+  
+}
+
+
 function osci_tk_epub_theme($existing, $type, $theme, $path) {
 	return array(
 		'node__book__epub' => array(
@@ -284,7 +302,7 @@ function _osci_tk_epub_navigation_render_book_toc($node)
   $cache_key = "osci_epub_toc_{$node->book['bid']}";    
   $output = _osci_tk_epub_check_cache($cache_key);
   if (!is_null($output)) {
-    //print $output; exit();
+    print $output; exit();
   }
 
   // Build the toc for the book
