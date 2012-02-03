@@ -73,6 +73,14 @@ function osci_tk_features_node_info() {
       'title_label' => t('Title'),
       'help' => '',
     ),
+    'section' => array(
+      'name' => t('Section'),
+      'base' => 'node_content',
+      'description' => t('A section of a book'),
+      'has_title' => '1',
+      'title_label' => t('Administrative Title'),
+      'help' => '',
+    ),
     'svg_asset' => array(
       'name' => t('SVG Asset'),
       'base' => 'node_content',
