@@ -21,9 +21,10 @@ jQuery(document).ready(function() {
 	ret_submit.click(function(event) {
 		event.preventDefault();
 		var data = {
-			'book_id'		: $('#edit-book-id--2').val(),
-			'section_id'	: $('#edit-section-id--2').val(),
-			'paragraph_id'	: $('#edit-paragraph-id--2').val(),
+			'book_id'			: $('#edit-book-id--2').val(),
+			'section_id'		: $('#edit-section-id--2').val(),
+			'paragraph_id'		: $('#edit-paragraph-id--2').val(),
+			'include_children'	: $('#edit-include-children').is(':checked')
 		};
 		var target = $('#ret-result');
 		target.html('');
@@ -43,7 +44,6 @@ function store_note(data, target) {
 function retrieve_note(data, target) {
 	var $ = jQuery;
 	var endpoint = Drupal.settings.basePath + 'notes/';
-	
 	$.get(endpoint, data, function(data) {
 		target.html(data);
 	})
