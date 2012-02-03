@@ -121,7 +121,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 				'figure_id'     => array(
 					'#markup'   => '<div class="figure_identifier">' . $itemDelta . ' <span>[figure:' . $figId . ']</span> </div>'
 				),
-				'figure_options' => array(
+				'options' => array(
 					'#type' => 'hidden',
 					'#default_value' => isset($item['options']) ? $item['options'] : '',
 					'#attributes' => array('class' => 'figure_options'),
