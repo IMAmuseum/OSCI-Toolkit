@@ -36,7 +36,7 @@ function osci_tk_filters_filter_info() {
 
     $filters['osci_tk_figure'] = array(
         'title'             => t('Figure filter'),
-        'description'       => t('Add references to figure images in content'),
+        'description'       => t('Add references to figures in content'),
         'process callback'  => '_filter_figure',
         'settings callback' => '_filter_settings',
         'tips callback'     => '_filter_figure_tips',
@@ -97,18 +97,8 @@ function _filter_footnote($text, $filter, $format) {
  */
 function _process_footnote($text) {
     if (empty($text[1])) return $text[0];
-    list($ident) = explode('_fn_', $text[1]);
-    list($ident) = explode('-', $ident);
-    $table = 'field_revision_field_' . $ident;
-    $field = 'field_' . $ident . '_footnotes';
-    $db = db_select($table, 't')
-        ->fields('t', array('entity_id'))
-        ->condition($field, '%' .$text[1]. '%', 'LIKE')
-        ->execute()
-        ->fetchAssoc();
-    if (count($db['entity_id'])) {
-        return '<a href="#'.$text[1].'" class="superscript footnote-link">'.$text[1].'</a>';
-    }
+
+	return '<a href="#'.$text[1].'" class="superscript footnote-link">'.$text[1].'</a>';
 }
 
 /**
@@ -131,26 +121,8 @@ function _filter_figure($text, $filter, $format) {
 
 function _process_figure($text) {
     if (empty($text[1])) return $text[0];
-    static $count;
-    $count++;
 
-    //return '<a href="#'.$text[1].'" class="figure">(fig. '.$count.')</a>';
     return '<a href="#'.$text[1].'" class="figure-link">'.$text[1].'</a>';
-    /*
-    // Get the field
-    $result = db_query('SELECT entity_id FROM {field_data_field_identifier} WHERE field_identifier_value = :identifier', array(':identifier' => $data['id']));
-    $entity = $result->fetchObject();
-
-    // Build the node
-    $node = node_load($entity->entity_id);
-    node_build_content($node, 'full');
-
-    // Build the content
-    $additional_data = 'data-columns="'.$data['args']['col'].'" data-position="'.$data['args']['pos'].'"';
-    $output = drupal_render($node->content['field_image']);
-
-    return '<div '.$additional_data.' id="figure-'.$node->nid.'" class="figure">'.$output.'</div>';
-    */
 }
 
 function _filter_figure_tips() {
