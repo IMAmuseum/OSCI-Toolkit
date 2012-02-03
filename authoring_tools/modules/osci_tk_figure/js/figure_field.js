@@ -2,12 +2,12 @@
 	
 	function getPreviewDiv(id, target) {
 		// retrieve options
-		var options = $.parseJSON($('.figure_options', $(target).parents(".fieldset-wrapper:first")).val());
+		var options = $.parseJSON($(target).parents(".fieldset-wrapper:first").find('.figure_options').val());
 
 		// send nid to server to fetch preview
 		$.get(Drupal.settings.basePath + 'ajax/figurepreview/' + id,
 			function (data) {
-				var dest = $('.figure_reference_preview', $(target).parents(".fieldset-wrapper:first"));
+				var dest = $(target).parents(".fieldset-wrapper:first").find('.figure_reference_preview');
 				dest.html(data.div);
 				
 				// replace the image with the preview url if it's in the options
@@ -60,6 +60,7 @@
 	
 	
 	function figureOptions(optionsInput, figureContents, aspect, figureId, dest) {
+		console.log([optionsInput, figureContents, aspect, figureId, dest]);
 		var options = JSON.parse(optionsInput.val());
 		// we're editing, so mark that in the options
 		options.editing = true;
