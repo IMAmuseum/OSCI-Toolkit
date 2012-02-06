@@ -1031,14 +1031,16 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-section-field_body'
-  $fields['node-section-field_body'] = array(
+  // Exported field: 'node-section-body'
+  $fields['node-section-body'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
       'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_body',
+      'entity_types' => array(
+        0 => 'node',
+      ),
+      'field_name' => 'body',
       'foreign keys' => array(
         'format' => array(
           'columns' => array(
@@ -1055,7 +1057,7 @@ function osci_tk_features_field_default_fields() {
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
-      'type' => 'text_long',
+      'type' => 'text_with_summary',
     ),
     'field_instance' => array(
       'bundle' => 'section',
@@ -1068,12 +1070,6 @@ function osci_tk_features_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '1',
-        ),
-        'epub' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
           'weight' => 0,
         ),
         'teaser' => array(
@@ -1084,10 +1080,11 @@ function osci_tk_features_field_default_fields() {
         ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'field_body',
+      'field_name' => 'body',
       'label' => 'Body',
       'required' => 0,
       'settings' => array(
+        'display_summary' => 0,
         'text_processing' => '1',
         'user_register_form' => FALSE,
       ),
@@ -1095,7 +1092,8 @@ function osci_tk_features_field_default_fields() {
         'active' => 1,
         'module' => 'text',
         'settings' => array(
-          'rows' => '10',
+          'rows' => '20',
+          'summary_rows' => 5,
         ),
         'type' => 'text_textarea',
         'weight' => '6',
@@ -1366,12 +1364,6 @@ function osci_tk_features_field_default_fields() {
           'type' => 'file_default',
           'weight' => 1,
         ),
-        'epub' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
         'teaser' => array(
           'label' => 'above',
           'settings' => array(),
@@ -1408,8 +1400,6 @@ function osci_tk_features_field_default_fields() {
   t('Assets');
   t('Body');
   t('Data');
-  t('Figure');
-  t('Footnote');
   t('IIP Server URL');
   t('Image');
   t('PTIFF Path');
@@ -1420,7 +1410,6 @@ function osci_tk_features_field_default_fields() {
   t('Section');
   t('Tags');
   t('The path on the server to the Pyramidal TIFF image');
-  t('Title');
 
   return $fields;
 }
