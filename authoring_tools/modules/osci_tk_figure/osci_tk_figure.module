@@ -25,7 +25,14 @@ function osci_tk_figure_menu()
         'access arguments'  => array('access content'),
         'type'              => MENU_CALLBACK,
     );
-
+   	
+   	$items['figure/%/%/figure.xml'] = array(
+		'title' 			=> 'Figure content document',
+		'page callback' 	=> 'osci_tk_figure_content_doc',
+		'page arguments'	=> array(1, 2),
+		'access arguments' 	=> array('access content'),
+		'type' 				=> MENU_CALLBACK,
+   	);
     return $items;
 }
 
@@ -490,4 +497,8 @@ function osci_tk_figure_osci_tk_image_types()
 	);
 	
 	return $types;
+}
+
+function osci_tk_figure_content_doc($section, $fig_index) {
+	return;
 }
