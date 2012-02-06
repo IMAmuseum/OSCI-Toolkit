@@ -2,38 +2,38 @@
 
 function osci_tk_figure_menu()
 {
-    $items = array();
+	$items = array();
 
-    $items['ajax/figure'] = array(
-        'title'             => 'Figure search',
-        'page callback'     => 'osci_tk_figure_reference',
-        'access arguments'  => array('access content'),
-        'type'              => MENU_CALLBACK,
-    );
-    
-    $items['ajax/figurepreview/%'] = array(
-        'title'             => 'Figure preview',
-        'page callback'     => 'osci_tk_figure_preview',
-    	'page arguments'	=> array(2),
-        'access arguments'  => array('access content'),
-        'type'              => MENU_CALLBACK,
-    );
-    
-   	$items['ajax/figurethumb/save'] = array(
-        'title'             => 'Save Figure Thumbnail',
-        'page callback'     => 'osci_tk_figure_thumb_save',
-        'access arguments'  => array('access content'),
-        'type'              => MENU_CALLBACK,
-    );
-   	
-   	$items['figure/%/%/figure.xml'] = array(
+	$items['ajax/figure'] = array(
+		'title' 			=> 'Figure search',
+		'page callback' 	=> 'osci_tk_figure_reference',
+		'access arguments' 	=> array('access content'),
+		'type' 				=> MENU_CALLBACK,
+	);
+	
+	$items['ajax/figurepreview/%'] = array(
+		'title' 			=> 'Figure preview',
+		'page callback' 	=> 'osci_tk_figure_preview',
+		'page arguments' 	=> array(2),
+		'access arguments' 	=> array('access content'),
+		'type' 				=> MENU_CALLBACK,
+	);
+	
+	$items['ajax/figurethumb/save'] = array(
+		'title' 			=> 'Save Figure Thumbnail',
+		'page callback' 	=> 'osci_tk_figure_thumb_save',
+		'access arguments' 	=> array('access content'),
+		'type' 				=> MENU_CALLBACK,
+	);
+
+	$items['figure/%/%/figure.xml'] = array(
 		'title' 			=> 'Figure content document',
 		'page callback' 	=> 'osci_tk_figure_content_doc',
 		'page arguments'	=> array(1, 2),
 		'access arguments' 	=> array('access content'),
 		'type' 				=> MENU_CALLBACK,
-   	);
-    return $items;
+	);
+	return $items;
 }
 
 function osci_tk_figure_theme()
@@ -49,10 +49,10 @@ function osci_tk_figure_field_info()
 {
 	return array(
 		'osci_tk_figure' => array(
-			'label'				=> t('Figure'),
-			'description'		=> t('Provides '),
-			'default_widget'	=> 'osci_tk_figure_widget',
-			'default_formatter'	=> 'osci_tk_figure_formatter'
+			'label' 			=> t('Figure'),
+			'description' 		=> t('Provides '),
+			'default_widget' 	=> 'osci_tk_figure_widget',
+			'default_formatter' => 'osci_tk_figure_formatter'
 		)
 	);
 }
@@ -69,20 +69,20 @@ function osci_tk_figure_field_widget_info()
 			'field types' => array('osci_tk_figure', 'text_long'),
 			'settings' => array(),
 			'behaviors' => array('default value' => FIELD_BEHAVIOR_NONE, 'multiple values' => FIELD_BEHAVIOR_CUSTOM)
-        )
-    );
+		)
+	);
 }
 
 function osci_tk_figure_field_is_empty($item, $field)
 {
-    $return = false;
+	$return = false;
 
-    if (empty($item['asset_reference']) || !is_numeric($item['asset_reference'])) 
+	if (empty($item['asset_reference']) || !is_numeric($item['asset_reference'])) 
 	{
-        $return = true;
-    }
+		$return = true;
+	}
 
-    return $return;
+	return $return;
 }
 
 function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element)
@@ -117,16 +117,16 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 			$figId = 'fig_' . $form['nid']['#value'] .'_' . $itemDelta;
 			
 			$figureElement[] = array(
-				'#title'        => $itemDelta . ' <span>[figure:' . $figId . ']</span>',
-				'#type'         => 'fieldset',
-				'#attributes'   => array(),
-				'#weight'       => $itemDelta,
-				'#tree'         => true,
-				'figure_preview' => array(
-					'#markup'	=> '<figure class="figure_reference_preview">&nbsp;</figure>',
+				'#title' 			=> $itemDelta . ' <span>[figure:' . $figId . ']</span>',
+				'#type' 			=> 'fieldset',
+				'#attributes' 		=> array(),
+				'#weight' 			=> $itemDelta,
+				'#tree' 			=> true,
+				'figure_preview' 	=> array(
+					'#markup' => '<figure class="figure_reference_preview">&nbsp;</figure>',
 				),
-				'figure_id'     => array(
-					'#markup'   => '<div class="figure_identifier">' . $itemDelta . ' <span>[figure:' . $figId . ']</span> </div>'
+				'figure_id' => array(
+					'#markup' => '<div class="figure_identifier">' . $itemDelta . ' <span>[figure:' . $figId . ']</span> </div>'
 				),
 				'options' => array(
 					'#type' => 'hidden',
@@ -134,47 +134,47 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 					'#attributes' => array('class' => 'figure_options'),
 				),
 				'asset_reference' => array(
-					'#title'                => t('Asset Reference'),
-					'#description'          => t('Type the identifier of the media asset that this figure should display.'),
-					'#type'                 => 'textfield',
-					'#autocomplete_path'    => 'ajax/figure',
-					'#attributes'			=> array('class' => array('figure_reference_field')),
-					'#default_value'        => isset($item['asset_reference']) ? $item['asset_reference'] : '',
+					'#title' 				=> t('Asset Reference'),
+					'#description' 			=> t('Type the identifier of the media asset that this figure should display.'),
+					'#type' 				=> 'textfield',
+					'#autocomplete_path' 	=> 'ajax/figure',
+					'#attributes' 			=> array('class' => array('figure_reference_field')),
+					'#default_value' 		=> isset($item['asset_reference']) ? $item['asset_reference'] : '',
 				),
 				'number_template' => array(
-					'#title'            => t('Number Template'),
-					'#description'      => t('The template to use for generating the figure number. (cat# will be replaced with the catalog number, fig# will be replaced with the figure number)'),
-					'#type'             => 'textfield',
-					'#default_value'    => isset($item['number_template']) ? $item['number_template'] : 'Fig. cat#.fig#',
+					'#title' 				=> t('Number Template'),
+					'#description' 			=> t('The template to use for generating the figure number. (cat# will be replaced with the catalog number, fig# will be replaced with the figure number)'),
+					'#type' 				=> 'textfield',
+					'#default_value' 		=> isset($item['number_template']) ? $item['number_template'] : 'Fig. cat#.fig#',
 				),
 				'caption' => array(
-					'#title'            => t('Caption'),
-					'#description'      => t('The caption text to associate with this figure'),
-					'#type'             => 'textarea',
-					'#default_value'    => isset($item['caption']) ? $item['caption'] : '',
-					'#rows'             => 5
+					'#title' 				=> t('Caption'),
+					'#description' 			=> t('The caption text to associate with this figure'),
+					'#type' 				=> 'textarea',
+					'#default_value' 		=> isset($item['caption']) ? $item['caption'] : '',
+					'#rows' 				=> 5
 				),
 				'position' => array(
-					'#title'            => t('Position'),
-					'#description'      => t('A hint on how to place the figure on a page.'),
-					'#type'             => 'select',
-					'#default_value'    => isset($item['position']) ? $item['position'] : 'n',
-					'#options'          => array(
-						't'     => 'top',
-						'b'     => 'bottom',
-						'tl'    => 'top left',
-						'tr'    => 'top right',
-						'bl'    => 'bottom left',
-						'br'    => 'bottom right',
-						'p'     => 'full page',
-						'n'     => 'none'
+					'#title' 				=> t('Position'),
+					'#description' 			=> t('A hint on how to place the figure on a page.'),
+					'#type' 				=> 'select',
+					'#default_value' 		=> isset($item['position']) ? $item['position'] : 'n',
+					'#options' 				=> array(
+						't' 	=> 'top',
+						'b' 	=> 'bottom',
+						'tl' 	=> 'top left',
+						'tr' 	=> 'top right',
+						'bl' 	=> 'bottom left',
+						'br' 	=> 'bottom right',
+						'p' 	=> 'full page',
+						'n' 	=> 'none'
 					)
 				),
 				'columns' => array(
-					'#title'            => t('Columns'),
-					'#type'             => 'textfield',
-					'#default_value'    => isset($item['columns']) ? $item['columns'] : '50%',
-					'#description'      => t('A hint of how many columns the figure should span on a page. This can be either a number (1 or greater) or a percentage (0%-100%).')
+					'#title' 				=> t('Columns'),
+					'#type' 				=> 'textfield',
+					'#default_value' 		=> isset($item['columns']) ? $item['columns'] : '50%',
+					'#description' 			=> t('A hint of how many columns the figure should span on a page. This can be either a number (1 or greater) or a percentage (0%-100%).')
 				)
 			);
 		}
@@ -188,15 +188,15 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 		'#limit_validation_errors' => array(),
 		'#submit' => array('figure_add_more_submit'),
 		'#ajax' => array(
-			'callback' => 'figure_add_more_js',
-			'wrapper' => 'figures-container',
-			'effect' => 'fade',
-			'method' => 'replace'
+			'callback' 	=> 'figure_add_more_js',
+			'wrapper' 	=> 'figures-container',
+			'effect' 	=> 'fade',
+			'method' 	=> 'replace'
 		),
 		'#weight' => -100
 	);
 
-    return $element + $figureElement;
+	return $element + $figureElement;
 }
 
 function figure_add_more_submit($form, &$form_state)
@@ -364,15 +364,15 @@ function osci_tk_figure_preview($nid) {
 				$ret->image = file_create_url($node->field_image['und'][0]['uri']);
 				$ret->div = '<div style="width:100%;">'
 					.theme_image_style(array(
-                	    'style_name' => variable_get('osci_tk_image_style_figure_preview', 'osci_tk_default'),
-            			'path' => $node->field_image['und'][0]['uri'],
-                	    'alt' => $node->title,
-        		    	'title' => $node->title,
-            			'attributes' => array(
-        		           	'class' => 'preview_image',
+						'style_name' 	=> variable_get('osci_tk_image_style_figure_preview', 'osci_tk_default'),
+						'path' 			=> $node->field_image['und'][0]['uri'],
+						'alt' 			=> $node->title,
+						'title' 		=> $node->title,
+						'attributes' 	=> array(
+							'class' => 'preview_image',
 							'style' => 'width:100%;'
-        		    	)
-        		    ))
+						)
+					))
 					.'</div>';
 			}
 			break;
@@ -380,22 +380,22 @@ function osci_tk_figure_preview($nid) {
 		case 'svg_asset':
 		case 'image_asset':
 			$node->field_assets['und'][0]['nid'] = $node->nid;
-        case "conservation_asset":
-        	if (count($node->field_image) > 0) {
-        		// there is a representative image, return it in a div
-        		$ret->div = '<img class="preview_image" '
-        			. 'src="'.image_style_url(variable_get('osci_tk_image_style_figure_preview', 'osci_tk_default'), $node->field_image['und'][0]['uri']).'" />'
-        			. '<div style="display:none;" data-aspect="'._osci_tk_conservation_get_conservation_aspect($node).'">'
-        			._osci_tk_conservation_get_conservation_html($nid)
-        			.'</div>';
-        	}
-        	else {
-            	$ret->div = '<div class="preview_image">No Preview Available</div>'
-            		. '<div style="display:none;" data-aspect="'._osci_tk_conservation_get_conservation_aspect($node).'">'
-        			._osci_tk_conservation_get_conservation_html($nid)
-        			.'</div>';
-        	}
-            break;
+		case "conservation_asset":
+			if (count($node->field_image) > 0) {
+				// there is a representative image, return it in a div
+				$ret->div = '<img class="preview_image" '
+					. 'src="'.image_style_url(variable_get('osci_tk_image_style_figure_preview', 'osci_tk_default'), $node->field_image['und'][0]['uri']).'" />'
+					. '<div style="display:none;" data-aspect="'._osci_tk_conservation_get_conservation_aspect($node).'">'
+					._osci_tk_conservation_get_conservation_html($nid)
+					.'</div>';
+			}
+			else {
+				$ret->div = '<div class="preview_image">No Preview Available</div>'
+					. '<div style="display:none;" data-aspect="'._osci_tk_conservation_get_conservation_aspect($node).'">'
+					._osci_tk_conservation_get_conservation_html($nid)
+					.'</div>';
+			}
+			break;
 	}
 	return drupal_json_output($ret);
 }
@@ -441,24 +441,24 @@ function osci_tk_figure_thumb_save() {
 
 function osci_tk_figure_reference($args) 
 {
-    $figs = db_select('node', 'n')
-        ->fields('n', array('title', 'nid'))
-        ->condition('type', array('html_figure', 'conservation_asset', 'image_asset', 'iip_asset', 'svg_asset'), 'IN')
-        ->condition('status', 1)
-        ->condition('title', '%'.db_like($args).'%', 'LIKE')
-        ->orderBy('created', 'DESC')
-        ->addTag('node_access')
-        ->range(0, 100)
-        ->execute();
+	$figs = db_select('node', 'n')
+		->fields('n', array('title', 'nid'))
+		->condition('type', array('html_figure', 'conservation_asset', 'image_asset', 'iip_asset', 'svg_asset'), 'IN')
+		->condition('status', 1)
+		->condition('title', '%'.db_like($args).'%', 'LIKE')
+		->orderBy('created', 'DESC')
+		->addTag('node_access')
+		->range(0, 100)
+		->execute();
 	
-    $matches = array();
+	$matches = array();
 	
-    foreach($figs as $result) 
+	foreach($figs as $result) 
 	{
-        $matches[$result->nid] = $result->title;
-    }
+		$matches[$result->nid] = $result->title;
+	}
 	
-    return drupal_json_output($matches);
+	return drupal_json_output($matches);
 }
 
 function osci_tk_figure_osci_tk_image_types() 
