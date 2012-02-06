@@ -4,9 +4,10 @@ function osci_tk_figure_menu()
 {
     $items = array();
 
-    $items['ajax/figure'] = array(
+    $items['ajax/figure/%/%/%'] = array(
         'title'             => 'Figure search',
         'page callback'     => 'osci_tk_figure_reference',
+		'page arguments'	=> array(2,3,4),
         'access arguments'  => array('access content'),
         'type'              => MENU_CALLBACK,
     );
@@ -64,6 +65,30 @@ function osci_tk_figure_field_widget_info()
 			'behaviors' => array('default value' => FIELD_BEHAVIOR_NONE, 'multiple values' => FIELD_BEHAVIOR_CUSTOM)
         )
     );
+}
+
+function osci_tk_figure_field_widget_settings_form($field, $instance)
+{
+    $widget = $instance['widget'];
+    $settings = $widget['settings'];
+	$form = array();
+
+	if ($widget['type'] === 'osci_tk_figure_widget')
+	{
+		$contentTypes = array();
+		
+		$form['osci_tk_figure_types'] = array(
+			'#type' => 'checkboxes',
+			'#title' => t('Content types that can be referenced'),
+			'#description' => t('The available content types for use as a figure.'),
+			'#default_value' => $settings['osci_tk_figure_types'],
+			'#required' => TRUE,
+			'#mulitple' => true,
+			'#options' => array_map('check_plain', node_type_get_names())
+		);
+	}
+
+    return $form;
 }
 
 function osci_tk_figure_field_is_empty($item, $field)
@@ -130,7 +155,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 					'#title'                => t('Asset Reference'),
 					'#description'          => t('Type the identifier of the media asset that this figure should display.'),
 					'#type'                 => 'textfield',
-					'#autocomplete_path'    => 'ajax/figure',
+					'#autocomplete_path'    => 'ajax/figure/' . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $field['field_name'],
 					'#attributes'			=> array('class' => array('figure_reference_field')),
 					'#default_value'        => isset($item['asset_reference']) ? $item['asset_reference'] : '',
 				),
@@ -432,13 +457,19 @@ function osci_tk_figure_thumb_save() {
 	print json_encode($ret);
 }
 
-function osci_tk_figure_reference($args) 
+function osci_tk_figure_reference($entity_type, $bundle, $field_name, $queryString = '') 
 {
+	$field = field_info_field($field_name);
+	$instance = field_info_instance($entity_type, $field_name, $bundle);
+	
+	$types = $instance['widget']['settings']['osci_tk_figure_types'];
+	$types = array_keys(array_filter($types));
+	
     $figs = db_select('node', 'n')
         ->fields('n', array('title', 'nid'))
-        ->condition('type', array('html_figure', 'conservation_asset', 'image_asset', 'iip_asset', 'svg_asset'), 'IN')
+        ->condition('type', $types, 'IN')
         ->condition('status', 1)
-        ->condition('title', '%'.db_like($args).'%', 'LIKE')
+        ->condition('title', '%'.db_like($queryString).'%', 'LIKE')
         ->orderBy('created', 'DESC')
         ->addTag('node_access')
         ->range(0, 100)

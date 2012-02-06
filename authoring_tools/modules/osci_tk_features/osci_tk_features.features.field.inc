@@ -1150,9 +1150,21 @@ function osci_tk_features_field_default_fields() {
         'user_register_form' => FALSE,
       ),
       'widget' => array(
-        'active' => 0,
+        'active' => 1,
         'module' => 'osci_tk_figure',
-        'settings' => array(),
+        'settings' => array(
+          'osci_tk_figure_types' => array(
+            'article' => 0,
+            'book' => 0,
+            'conservation_asset' => 'conservation_asset',
+            'iip_asset' => 'iip_asset',
+            'image_asset' => 'image_asset',
+            'note' => 0,
+            'page' => 0,
+            'section' => 0,
+            'svg_asset' => 'svg_asset',
+          ),
+        ),
         'type' => 'osci_tk_figure_widget',
         'weight' => '8',
       ),
