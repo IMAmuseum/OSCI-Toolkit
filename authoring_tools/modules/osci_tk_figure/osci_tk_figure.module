@@ -137,14 +137,16 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 			$figureElement[] = array(
 				'#title' 			=> $itemDelta . ' <span>[figure:' . $figId . ']</span>',
 				'#type' 			=> 'fieldset',
-				'#attributes' 		=> array(),
+				'#attributes' 		=> array(
+					'class'			=> array('figure-wrapper')
+				),
 				'#weight' 			=> $itemDelta,
 				'#tree' 			=> true,
 				'figure_preview' 	=> array(
 					'#markup' => '<figure class="figure_reference_preview">&nbsp;</figure>',
 				),
 				'figure_id' => array(
-					'#markup' => '<div class="figure_identifier">' . $itemDelta . ' <span>[figure:' . $figId . ']</span> </div>'
+					'#markup' => '<div class="figure_identifier" data-figId="' . $figId . '">' . $itemDelta . ' <span>[figure:' . $figId . ']</span> </div>'
 				),
 				'options' => array(
 					'#type' => 'hidden',
@@ -288,6 +290,8 @@ function osci_tk_figure_form_alter(&$form, &$form_state, $form_id)
 				if (isset($form['field_footnote'][LANGUAGE_NONE][$key]['_weight']))
 				{
 					$form['field_footnote'][LANGUAGE_NONE][$key]['_weight']['#type'] = 'hidden';
+					$fnId = 'fn_'. $form['nid']['#value'] . '_' . $key;
+					$form['field_footnote'][LANGUAGE_NONE][$key]['#prefix'] = '<div class="footnote_identifier" data-fnId="' . $fnId . '">' . $key . ' <span>[footnote:' . $fnId . ']</span></div>';
 				}
 			}
 		}

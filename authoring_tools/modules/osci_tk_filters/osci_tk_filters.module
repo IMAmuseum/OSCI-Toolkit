@@ -61,7 +61,7 @@ function osci_tk_filters_wysiwyg_plugin($editor, $version) {
         case 'ckeditor':
             return array(
                 'osci_tk_filters' => array(
-                    'path'      => drupal_get_path('module', 'osci_tk_filters').'/js/osci_tk_filters',
+                    'path'      => drupal_get_path('module', 'osci_tk_filters').'/js',
                     'buttons'   => array(
                         'footnote'  => t('OSCI - Footnote'),
                         'figure'    => t('OSCI - Figure'),

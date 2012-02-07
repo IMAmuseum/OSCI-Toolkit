@@ -8,7 +8,7 @@
     CKEDITOR.timestamp = ( new Date() ).valueOf();
     $(document).ready(function() {
 
-        $('.field-type-osci-tk-body-copy').each(function() {
+        $('.field-type-text-long').each(function() {
             var id = $(this).attr('id');
             listenForPaste($('#' + id + ' textarea').attr('id'));
         });
