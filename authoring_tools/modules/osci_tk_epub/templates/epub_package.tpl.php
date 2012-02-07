@@ -10,13 +10,13 @@
   <manifest>
     <?php foreach ($manifest as $item): ?>
       <?php $properties = isset($item['properties']) ? "properties='{$item['properties']}'" : ''; ?>      
-	  <item id="<?=$item['id']?>" href="<?=$item['href']?>" 
-	        media-type="<?=$item['media-type']?>" <?=properties?> />
+	  <item id="<?= $item['id'] ?>" href="<?= $item['href'] ?>" 
+	        media-type="<?= $item['media-type'] ?>" <?= $properties ?> />
     <?php endforeach ?>
   </manifest>
   <spine>
     <?php foreach ($spine as $itemref): ?>
-      <itemref idref='<?=$itemref['idref']?>'/>
+      <itemref idref='<?= $itemref['idref'] ?>'/>
     <?php endforeach ?>
   </spine>
 </package>

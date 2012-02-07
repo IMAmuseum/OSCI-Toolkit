@@ -132,7 +132,7 @@ function osci_tk_epub_render_package($node)
     // Find the corresponding book for this node
     if (!isset($node->book)) return null;    
     
-    // Check the cache
+    /***** Check the cache *****/
     $cache_key = "osci_epub_package_{$node->book['bid']}";    
     $output = _osci_tk_epub_check_cache($cache_key);    
     if (!is_null($output)) {
@@ -141,16 +141,17 @@ function osci_tk_epub_render_package($node)
     
     $book = node_load($node->book['bid']);    
     
-    // Find all of the resources for this book
+    /***** Find all of the resources for this book *****/
     $data = array(
       'modified' => 0,    
+      'content_nids' => array()
     );
     
     $subtree = book_menu_subtree_data($book->book);
     // There should only be one node at the top level
-    _osci_tk_epub_package_build_data(array_pop($subtree), $data);    
-    
+    _osci_tk_epub_package_build_data(array_pop($subtree), $data);        
 
+    // Should this data structure be passed through _osci_tk_epub_package_build_data instead?
     $arguments = array(
         'pub_id' => 'urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809',
         'title' => check_plain($book->title),
@@ -161,13 +162,36 @@ function osci_tk_epub_render_package($node)
         'spine' => array()
     );
     
-    // Build the manifest and spine    
+    /***** Build the manifest and spine *****/
+    
+    // Navigation document
+    $arguments['manifest'][] = array(
+      'id' => 'nav',
+      'href' => url("node/{$node->book['bid']}/nav.xhtml", array('absolute' => true)),
+      'media-type' => 'application/xhtml+xml',
+      'properties' => 'nav'
+    );
   
+    // Content documents go into the manifest and the spine
+    foreach($data['content_nids'] as $nid) {
+      $id = "section-$nid";
+      $arguments['manifest'][] = array(
+        'id' => $id,
+        'href' => url("node/{$nid}/epub.xhtml", array('absolute' => true)),
+        'media-type' => 'application/xhtml+xml',      
+      );      
+      $arguments['spine'][] = array(
+        'idref' => $id,
+      );
+    }
+    
+    // TODO: Additional stuff for the manifest (figures, etc.)    
+    
     $output = theme('epub_package', $arguments);
 	
     // TODO: cache the output for this book
 
-    return $output;
+    //return $output;
     //header('Content-type: application/oebps-package+xml');
     print $output;
 	exit();
@@ -406,6 +430,7 @@ function _osci_tk_epub_package_build_data($tree_node, &$data) {
     $node = node_load($nid);
   
     if ($node->changed > $data['modified']) $data['modified'] = $node->changed;
+    $data['content_nids'][] = $nid;
   
     /*** Recurse if this node has children ***/
     if (!empty($tree_node['below'])) {
