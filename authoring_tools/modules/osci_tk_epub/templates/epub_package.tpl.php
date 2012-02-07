@@ -11,12 +11,12 @@
     <?php foreach ($manifest as $item): ?>
       <?php $properties = isset($item['properties']) ? "properties='{$item['properties']}'" : ''; ?>      
 	  <item id="<?= $item['id'] ?>" href="<?= $item['href'] ?>" 
-	        media-type="<?= $item['media-type'] ?>" <?= $properties ?> />
+	        media-type="<?= $item['media-type'] ?>" <?= $properties ?> ></item>
     <?php endforeach ?>
   </manifest>
   <spine>
     <?php foreach ($spine as $itemref): ?>
-      <itemref idref='<?= $itemref['idref'] ?>'/>
+      <itemref idref='<?= $itemref['idref'] ?>'></itemref>
     <?php endforeach ?>
   </spine>
 </package>
