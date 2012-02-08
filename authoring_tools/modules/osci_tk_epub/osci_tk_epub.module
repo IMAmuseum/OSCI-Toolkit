@@ -44,7 +44,7 @@ function osci_tk_epub_menu()
  */
 function osci_tk_epub_node_insert($node) {
 
-  if (!isset($node->book)) return;
+  if (!isset($node->book) || (!$node->book['bid'])) return;
   
   // Pre-generate epub content
   _osci_tk_epub_generate_navigation_document($node);
@@ -59,7 +59,7 @@ function osci_tk_epub_node_insert($node) {
 function osci_tk_epub_node_submit($node, $form, &$form_state)
 {
   
-  if (isset($node->book)) {
+  if (isset($node->book) && $node->book['bid']) {
     
     // Clearing the epub caches here will cause the output to be regenerated 
     // even if the node is being removed from the book
@@ -76,7 +76,7 @@ function osci_tk_epub_node_submit($node, $form, &$form_state)
  */
 function osci_tk_epub_node_update($node) {
 
-  if (!isset($node->book)) return;
+  if (!isset($node->book) || (!$node->book['bid'])) return;
   
   // Pre-generate epub content
   _osci_tk_epub_generate_navigation_document($node);
@@ -232,7 +232,8 @@ function _osci_tk_epub_generate_package_document($node, $no_cache = false) {
     /***** Find all of the resources for this book *****/
     $data = array(
       'modified' => 0,    
-      'content_nids' => array()
+      'content_nids' => array(),
+      'figures' => array()
     );
     
     $subtree = book_menu_subtree_data($book->book);
@@ -258,7 +259,7 @@ function _osci_tk_epub_generate_package_document($node, $no_cache = false) {
       'href' => url("node/{$node->book['bid']}/nav.xhtml", array('absolute' => true)),
       'media-type' => 'application/xhtml+xml',
       'properties' => 'nav'
-    );
+    );    
   
     // Content documents go into the manifest and the spine
     foreach($data['content_nids'] as $nid) {
@@ -271,6 +272,15 @@ function _osci_tk_epub_generate_package_document($node, $no_cache = false) {
       $arguments['spine'][] = array(
         'idref' => $id,
       );
+    }
+    
+    // Add figures to the manifest
+    foreach($data['figures'] as $figure) {
+      $arguments['manifest'][] = array(
+        'id' => "figure-{$figure['nid']}-{$figure['index']}",
+        'href' => url("node/{$figure['nid']}/{$figure['index']}/figure.xhtml", array('absolute' => true)),
+        'media-type' => 'application/xhtml+xml',
+      );      
     }
     
     // TODO: Additional stuff for the manifest (figures, etc.)    
@@ -492,6 +502,15 @@ function _osci_tk_epub_package_build_data($tree_node, &$data) {
   
     if ($node->changed > $data['modified']) $data['modified'] = $node->changed;
     $data['content_nids'][] = $nid;
+    
+    if (isset($node->field_figure['und'])) {
+      foreach($node->field_figure['und'] as $index => $figure) {
+        $data['figures'][] = array(
+          'nid' => $nid,
+          'index' => $index
+        );
+      }
+    }
   
     /*** Recurse if this node has children ***/
     if (!empty($tree_node['below'])) {
