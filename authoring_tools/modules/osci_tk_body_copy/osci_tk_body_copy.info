@@ -1,4 +1,4 @@
-name = "Body Copy"
+name = "Body Copy (deprecated)"
 description = "Provides body copy markup for the OSCI ToolKit"
 package = "OSCI ToolKit"
 version = "1.0"

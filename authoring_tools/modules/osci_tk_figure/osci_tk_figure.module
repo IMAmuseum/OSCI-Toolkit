@@ -30,15 +30,6 @@ function osci_tk_figure_menu()
 	return $items;
 }
 
-function osci_tk_figure_theme()
-{
-	return array(
-		'osci_tk_fieldset_tabs' => array(
-			'render element' => 'element'
-		)
-	);
-}
-
 function osci_tk_figure_field_info()
 {
 	return array(
@@ -230,106 +221,30 @@ function figure_add_more_js($form, $form_state)
 	return $form['field_figure'];
 }
 
-function theme_osci_tk_fieldset_tabs($variables)
-{
-	drupal_add_library('system', 'ui.tabs');
-	drupal_add_js(drupal_get_path('module','osci_tk_figure') . '/js/fieldset_tabs.js');
-	
-	$element = $variables['element'];
-	
-	$items = array();
-	$childElements = element_children($element);
-
-	foreach($childElements as $key)
-	{
-		if ($key === 'add_more')
-		{
-			$addAnother = &$element[$key];
-		} 
-		else {
-			$items[] = &$element[$key];
-		}
-	}
-	
-	$tabHtml = '';
-	$itemHtml = '';
-	foreach($items as $item)
-	{
-		$id = 'fieldset-tab-' . $item['#id'];
-		$itemHtml .= '<div id="' . $id . '" class="fieldset-tab-content">' . drupal_render($item) . '</div>';
-		$tabHtml .= '<li><a href="#' . $id . '">' . $item['#weight'] . '</a>';
-	}
-	
-	$output = drupal_render($addAnother);
-	$output .= '<div id="fieldset-tabs-' . $element['#field_name'] . '" class="fieldset-tabs">';
-	$output .= '<ul>' . $tabHtml . '</ul>';
-	$output .= $itemHtml;
-	$output .= '</div>';
-	
-	return $output;
-}
-
 function osci_tk_figure_form_alter(&$form, &$form_state, $form_id)
 {
 	if (strpos($form_id, '_node_form') !== false)
 	{
-		if (isset($form['field_footnote']) || isset($form['field_figure']))
+		//if the figure field is enabled and the utility module is not handling this, add the callback
+		if (isset($form['field_figure']) && !function_exists("osci_tk_utility_node_submit"))
 		{
-			array_unshift($form['actions']['submit']['#submit'], 'osci_tk_node_submit');
-		}
-		
-		if (isset($form['field_footnote']))
-		{
-			$form['field_footnote'][LANGUAGE_NONE]['#theme'] = 'osci_tk_fieldset_tabs';
-			unset($form['field_footnote'][LANGUAGE_NONE][$form['field_footnote'][LANGUAGE_NONE]['#max_delta']]);
-			$form['field_footnote'][LANGUAGE_NONE]['#max_delta']--;
-			
-			$childElements = element_children($form['field_footnote'][LANGUAGE_NONE]);
-			foreach($childElements as $key)
-			{
-				if (isset($form['field_footnote'][LANGUAGE_NONE][$key]['_weight']))
-				{
-					$form['field_footnote'][LANGUAGE_NONE][$key]['_weight']['#type'] = 'hidden';
-					$fnId = 'fn_'. $form['nid']['#value'] . '_' . $key;
-					$form['field_footnote'][LANGUAGE_NONE][$key]['#prefix'] = '<div class="footnote_identifier" data-fnId="' . $fnId . '">' . $key . ' <span>[footnote:' . $fnId . ']</span></div>';
-				}
-			}
+			array_unshift($form['actions']['submit']['#submit'], 'osci_tk_figure_node_submit');
 		}
 	}
 }
 
-function osci_tk_node_submit($form, &$form_state)
+function osci_tk_figure_node_submit($form, &$form_state)
 {
+	//let the utility module handle this if enabled (reduces the number of loops)
+	if (function_exists("osci_tk_utility_node_submit")) 
+	{
+		return;
+	}
+	
 	$offset = 0;
 	$replaceIds = array();
 	$newIds = array();
 	
-	//update footnote references for renumbering if one deleted
-	if (isset($form_state['values']['field_footnote']))
-	{
-		$footnoteTemplate = '[footnote:fn_' . $form_state['values']['nid'] . '_';
-		foreach($form_state['values']['field_footnote'][LANGUAGE_NONE] as $k => $v)
-		{
-			if ($k === 'add_more')
-			{
-				continue;
-			}
-			
-			if (!strlen(trim($v['value'])))
-			{
-				$offset++;
-				$replaceIds[] = $footnoteTemplate . $k . ']';
-				$newIds[] = '';
-			} 
-			else if ($offset > 0) 
-			{
-				$replaceIds[] = $footnoteTemplate . $k . ']';
-				$newIds[] = $footnoteTemplate . ($k - $offset) . ']';
-			}
-		}
-	}
-	
-	$offset = 0;
 	//update figure references for renumbering if one deleted
 	if (isset($form_state['values']['field_figure']))
 	{

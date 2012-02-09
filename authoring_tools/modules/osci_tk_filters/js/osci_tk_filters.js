@@ -3,53 +3,102 @@
      * CKEditor Paste from word and create footnotes
      */
 
-    if (typeof(CKEDITOR) === 'undefined') return;
+	window.osci_tk_new_footnotes = null;
+
+    if (typeof(CKEDITOR) === 'undefined') 
+	{
+		return;
+	}
+	
+	if (!CKEDITOR.cleanWord) {
+		CKEDITOR.scriptLoader.load(CKEDITOR.basePath + 'plugins/pastefromword/filter/default.js');
+	}
+	
+	$('document').ready(function(){
+		$(this).ajaxComplete(function(e, xhr, settings) {
+			if (settings && settings.extraData && settings.extraData._triggering_element_name && settings.extraData._triggering_element_name == 'field_footnote_add_more')
+			{
+				var numFootnotes = window.osci_tk_new_footnotes.length;
+				if (numFootnotes)
+				{
+					var footnoteContainers = $(".field-name-field-footnote").find(".fieldset-tab-content"),
+						updateContainerNum = footnoteContainers.length;
+
+					for (var i = numFootnotes - 1; i >= 0; i--)
+					{
+						updateContainerNum--;
+						var updateId = $(footnoteContainers[updateContainerNum]).find("textarea").attr("id");
+						CKEDITOR.instances[updateId].setData(window.osci_tk_new_footnotes[i].content);
+					}
+					
+					window.osci_tk_new_footnotes = null;
+				}
+				
+				$("[name='field_footnote[und][num_add]']").val(1);
+			}
+		});
+	});
+
+	CKEDITOR.on('instanceCreated', function(e) 
+	{
+		e.editor.on("paste", function(event)
+		{
+			//  replace footnotes with data
+			var data = $('<span>' + event.data.html + '</span>'),
+				footnotes = [];
+			
+			var nextDelta = parseInt($(".field-name-field-footnote").find(".ui-tabs-nav").find("a:last").text(), 10) + 1;
+
+			// Search for footnote links in body text
+			data.find('a').each(function(idx, val) {
+				var $this = $(this),
+					$val = $(val),
+					name = $this.attr('name');
+
+				if (name.indexOf('_ftnref') === 0) 
+				{
+					var footnote = name.replace('ref', ''),
+						content  = data.find('#' + footnote.replace('_', ''));
+						
+					content.find("a").remove();
+					content = content.text();
+					if (content !== null)
+					{
+						content = CKEDITOR.cleanWord(content, event.editor);
+					}
+					
+					$val.replaceWith('[footnote:fn_' + Drupal.settings.osci_tk_filters.current_nid + '_' + nextDelta + ']');
+					
+					data.find('#' + footnote.replace('_', '')).remove();
+					footnotes.push({
+						footnoteId : footnote,
+						content : content
+					});
+					
+					nextDelta++;
+				} 
+				else 
+				{
+					$(this).next().html('');
+					$(this).html('');
+				}
+			}); 
+
+			var numFootnotes = footnotes.length;
+			if (numFootnotes)
+			{
+				$("[name='field_footnote[und][num_add]']").val(numFootnotes);
+				window.osci_tk_new_footnotes = footnotes;
+				
+				var addAnother = $(".field-name-field-footnote").find("input.field-add-more-submit");
+				addAnother.trigger("mousedown");
+				
+			}
+			
+			event.data.html = data.html();
+		});
+	});
 
     CKEDITOR.timestamp = ( new Date() ).valueOf();
-    $(document).ready(function() {
 
-        $('.field-type-text-long').each(function() {
-            var id = $(this).attr('id');
-            listenForPaste($('#' + id + ' textarea').attr('id'));
-        });
-
-        function listenForPaste(selector) {
-            var editor = CKEDITOR.instances[selector];
-
-            // Load paste from word function if we don't already have it
-            if (!CKEDITOR.cleanWord) {
-                CKEDITOR.scriptLoader.load(CKEDITOR.basePath + 'plugins/pastefromword/filter/default.js');
-            }
-
-            editor.on('paste', function(evt) {
-                //  replace footnotes with data
-                var data = $('<span>' + evt.data.html + '</span>');
-                // Search for footnote links in body text
-                $('a', data).each(function(idx, val) {
-                    var name = $(this).attr('name');
-
-                    if (name.indexOf('_ftnref') === 0) {
-                        $('#' + selector).parents('.fieldset-wrapper').find('.footnote-add-another').trigger('click', true);
-                        var newIdSelector = $('#' + selector).parents('.fieldset-wrapper').find('.footnote-wrapper').last().attr('id');
-                        var footnote = name.replace('ref', '');
-                        var content  = data.find('#' + footnote.replace('_', ''));
-                        $('a', content).remove();
-                        content = $(content).text();
-                        if (content !== null) {
-                            content = CKEDITOR.cleanWord(content, editor);
-                        }
-
-                        $(val).replaceWith('[footnote:' + newIdSelector + ']');
-                        $('#' + newIdSelector + ' textarea').html(content);
-                        data.find('#' + footnote.replace('_', '')).remove();
-                    } else {
-                        $(this).next().html('');
-                        $(this).html('');
-                    }
-                }); 
-                evt.data.html = data.html();
-            });
-        }
-
-    });
 })(jQuery);

@@ -1,0 +1,227 @@
+<?php
+
+function osci_tk_utility_theme()
+{
+	return array(
+		'osci_tk_fieldset_tabs' => array(
+			'render element' => 'element'
+		)
+	);
+}
+
+function theme_osci_tk_fieldset_tabs($variables)
+{
+	drupal_add_library('system', 'ui.tabs');
+	drupal_add_js(drupal_get_path('module','osci_tk_utility') . '/js/fieldset_tabs.js');
+	
+	$element = $variables['element'];
+	
+	$items = array();
+	$childElements = element_children($element);
+	$addAnother = null;
+	$numAdd = null;
+	$output = '';
+	
+	foreach($childElements as $key)
+	{
+		if ($key === 'add_more')
+		{
+			$addAnother = &$element[$key];
+		}
+		else if ($key === 'num_add')
+		{
+			$numAdd = &$element[$key];
+		}
+		else
+		{
+			$items[] = &$element[$key];
+		}
+	}
+	
+	$tabHtml = '';
+	$itemHtml = '';
+	foreach($items as $item)
+	{
+		$id = 'fieldset-tab-' . $item['#id'];
+		$itemHtml .= '<div id="' . $id . '" class="fieldset-tab-content">' . drupal_render($item) . '</div>';
+		$tabHtml .= '<li><a href="#' . $id . '">' . $item['#weight'] . '</a>';
+	}
+	
+	if ($addAnother)
+	{
+		$output .= drupal_render($addAnother);
+	}
+	
+	if ($numAdd)
+	{
+		$output .= drupal_render($numAdd);
+	}
+	
+	$output .= '<div id="fieldset-tabs-' . $element['#field_name'] . '" class="fieldset-tabs">';
+	$output .= '<ul>' . $tabHtml . '</ul>';
+	$output .= $itemHtml;
+	$output .= '</div>';
+	
+	return $output;
+}
+
+function osci_tk_utility_form_alter(&$form, &$form_state, $form_id)
+{
+	if (strpos($form_id, '_node_form') !== false)
+	{
+		if (isset($form['field_footnote']))
+		{
+			array_unshift($form['actions']['submit']['#submit'], 'osci_tk_utility_node_submit');
+		}
+		
+		if (isset($form['field_footnote']))
+		{
+			$form['field_footnote'][LANGUAGE_NONE]['#theme'] = 'osci_tk_fieldset_tabs';
+			unset($form['field_footnote'][LANGUAGE_NONE][$form['field_footnote'][LANGUAGE_NONE]['#max_delta']]);
+			$form['field_footnote'][LANGUAGE_NONE]['#max_delta']--;
+			
+			$form['field_footnote'][LANGUAGE_NONE]['add_more']['#submit'] = array('osci_tk_add_more_footnote_submit');
+			$form['field_footnote'][LANGUAGE_NONE]['add_more']['#ajax']['callback'] = 'osci_tk_add_more_footnote_ajax';
+			$form['field_footnote'][LANGUAGE_NONE]['num_add'] = array(
+				'#type' => 'hidden',
+				'#default_value' => 1,
+				'#weight' => -100
+			);
+			
+			$childElements = element_children($form['field_footnote'][LANGUAGE_NONE]);
+			foreach($childElements as $key)
+			{
+				if (isset($form['field_footnote'][LANGUAGE_NONE][$key]['_weight']))
+				{
+					$form['field_footnote'][LANGUAGE_NONE][$key]['_weight']['#type'] = 'hidden';
+					$fnId = 'fn_'. $form['nid']['#value'] . '_' . $key;
+					$form['field_footnote'][LANGUAGE_NONE][$key]['#prefix'] = '<div class="footnote_identifier" data-fnId="' . $fnId . '">' . $key . ' <span>[footnote:' . $fnId . ']</span></div>';
+				}
+			}
+		}
+	}
+}
+
+/**
+ * Update the figure & footnote numbering if items were deleted
+ * @param array $form
+ * @param array $form_state 
+ */
+function osci_tk_utility_node_submit($form, &$form_state)
+{
+	$offset = 0;
+	$replaceIds = array();
+	$newIds = array();
+	
+	//update footnote references for renumbering if one deleted
+	if (isset($form_state['values']['field_footnote']))
+	{
+		$footnoteTemplate = '[footnote:fn_' . $form_state['values']['nid'] . '_';
+		foreach($form_state['values']['field_footnote'][LANGUAGE_NONE] as $k => $v)
+		{
+			if ($k === 'add_more')
+			{
+				continue;
+			}
+			
+			if (!strlen(trim($v['value'])))
+			{
+				$offset++;
+				$replaceIds[] = $footnoteTemplate . $k . ']';
+				$newIds[] = '';
+			} 
+			else if ($offset > 0) 
+			{
+				$replaceIds[] = $footnoteTemplate . $k . ']';
+				$newIds[] = $footnoteTemplate . ($k - $offset) . ']';
+			}
+		}
+	}
+	
+	$offset = 0;
+	//update figure references for renumbering if one deleted
+	if (isset($form_state['values']['field_figure']))
+	{
+		$figureTemplate = '[figure:fig_' . $form_state['values']['nid'] . '_';
+		foreach($form_state['values']['field_figure'][LANGUAGE_NONE] as $k => $v)
+		{
+			if ($k === 'add_more')
+			{
+				continue;
+			}
+			
+			if (empty($v['asset_reference']) || !is_numeric($v['asset_reference']))
+			{
+				$offset++;
+				$replaceIds[] = $figureTemplate . $k . ']';
+				$newIds[] = '';
+			}
+			else if ($offset > 0) 
+			{
+				$replaceIds[] = $figureTemplate . $k . ']';
+				$newIds[] = $figureTemplate . ($k - $offset) . ']';
+			}
+		}
+	}
+	
+	if (count($replaceIds))
+	{
+		foreach($form_state['values'] as $k => $v)
+		{
+			if (is_array($v) && isset($v[LANGUAGE_NONE]))
+			{
+				foreach($v[LANGUAGE_NONE] as $delta => $value)
+				{
+					if (isset($form_state['values'][$k][LANGUAGE_NONE][$delta]['value']))
+					{
+						$form_state['values'][$k][LANGUAGE_NONE][$delta]['value'] = 
+							str_replace($replaceIds, $newIds, $form_state['values'][$k][LANGUAGE_NONE][$delta]['value']);
+					}
+				}
+			}
+		}
+	}
+}
+
+function osci_tk_add_more_footnote_submit($form, &$form_state)
+{
+	$button = $form_state['triggering_element'];
+
+	// Go one level up in the form, to the widgets container.
+	$element = drupal_array_get_nested_value($form, array_slice($button['#array_parents'], 0, -1));
+	$field_name = $element['#field_name'];
+	$langcode = $element['#language'];
+	$parents = $element['#field_parents'];
+
+	// Increment the items count.
+	$field_state = field_form_get_state($parents, $field_name, $langcode, $form_state);
+	$field_state['items_count'] = $field_state['items_count'] + $form_state['values']['field_footnote']['und']['num_add'];
+	field_form_set_state($parents, $field_name, $langcode, $form_state, $field_state);
+
+	$form_state['rebuild'] = TRUE;
+}
+
+function osci_tk_add_more_footnote_ajax($form, $form_state)
+{
+	$button = $form_state['triggering_element'];
+
+	// Go one level up in the form, to the widgets container.
+	$element = drupal_array_get_nested_value($form, array_slice($button['#array_parents'], 0, -1));
+	$field_name = $element['#field_name'];
+	$langcode = $element['#language'];
+	$parents = $element['#field_parents'];
+
+	$field_state = field_form_get_state($parents, $field_name, $langcode, $form_state);
+
+	$field = $field_state['field'];
+	if ($field['cardinality'] != FIELD_CARDINALITY_UNLIMITED) {
+		return;
+	}
+
+	// Add a DIV around the delta receiving the Ajax effect.
+	$delta = $element['#max_delta'];
+	$element[$delta]['#prefix'] = '<div class="ajax-new-content">' . (isset($element[$delta]['#prefix']) ? $element[$delta]['#prefix'] : '');
+	$element[$delta]['#suffix'] = (isset($element[$delta]['#suffix']) ? $element[$delta]['#suffix'] : '') . '</div>';
+
+	return $element;
+}

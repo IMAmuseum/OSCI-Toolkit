@@ -14,6 +14,7 @@ function osci_tk_filters_init() {
     $settings = array(
         'osci_tk_filters' => array(
             'modulePath' => base_path().drupal_get_path('module', 'osci_tk_filters'),
+			'current_nid' => arg(1)
         ),
     );
     drupal_add_js($settings, 'setting');
