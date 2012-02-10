@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
 	<head></head>
 <body>
-	<div epub:type="osci-tk-conservation-figure-viewer">
+	<figure epub:type="osci-tk-conservation-figure-viewer" data-options="<?php print addslashes($options); ?>">
 		<?php print $figure_markup; ?>
-	</div>
+	</figure>
 </body>
 </html>
