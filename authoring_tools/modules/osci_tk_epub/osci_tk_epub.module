@@ -4,7 +4,7 @@ function osci_tk_epub_menu()
 {
 	$items = array();
 	
-	$items['node/%node/epub.xhtml'] = array(
+	$items['node/%/epub.xhtml'] = array(
 		'title' => 'ePub',
 		'page callback' => 'osci_tk_epub_render',
 		'page arguments' => array(1),
@@ -133,8 +133,13 @@ function osci_tk_filter_figure_epub() {
 	return "this is test text";
 }
 
-function osci_tk_epub_render($node)
+function osci_tk_epub_render($nid)
 {
+	global $osci_tk_view_mode;
+	
+	$osci_tk_view_mode = 'epub';
+	
+	$node = node_load($nid);
 	$view = node_view($node, 'epub');
 	print drupal_render($view);
 }
