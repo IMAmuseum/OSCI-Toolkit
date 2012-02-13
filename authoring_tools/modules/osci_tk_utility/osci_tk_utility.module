@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * hook_theme implementation
+ * @return array
+ */
 function osci_tk_utility_theme()
 {
 	return array(
@@ -9,6 +13,11 @@ function osci_tk_utility_theme()
 	);
 }
 
+/**
+ * Theme function for multi-value field tabs
+ * @param array $variables the theme variables
+ * @return string the processed html
+ */
 function theme_osci_tk_fieldset_tabs($variables)
 {
 	drupal_add_library('system', 'ui.tabs');

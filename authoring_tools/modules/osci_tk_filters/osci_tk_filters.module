@@ -33,6 +33,7 @@ function osci_tk_filters_filter_info() {
         'process callback'  => '_filter_footnote',
         'settings callback' => '_filter_settings',
         'tips callback'     => '_filter_footnote_tips',
+		'cache'				=> false
     );
 
     $filters['osci_tk_figure'] = array(
@@ -41,6 +42,7 @@ function osci_tk_filters_filter_info() {
         'process callback'  => '_filter_figure',
         'settings callback' => '_filter_settings',
         'tips callback'     => '_filter_figure_tips',
+		'cache'				=> false
     );
     
     $filters['osci_tk_cross_link'] = array(
@@ -48,7 +50,8 @@ function osci_tk_filters_filter_info() {
         'description'       => t('Allow cross content linking within a book'),
         'process callback'  => '_filter_cross_link',
         'settings callback' => '_filter_settings',
-        'tips callback'     => '_filter_cross_link_tips'
+        'tips callback'     => '_filter_cross_link_tips',
+		'cache'				=> false
     );
 
     return $filters;
@@ -89,8 +92,15 @@ function _filter_settings() {}
  * Process callback for filter
  */
 function _filter_footnote($text, $filter, $format) {
-    $regex = '/\[footnote:(.*?)\]/i';
-    return preg_replace_callback($regex, '_process_footnote', $text);
+	global $osci_tk_view_mode;
+	
+	$osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
+	
+	$result = module_invoke_all('osci_tk_filter_footnote_' . $osci_tk_view_mode, $text, $filter, $format);
+	return is_array($result) ? $result[0] : $result;
+	
+//    $regex = '/\[footnote:(.*?)\]/i';
+//    return preg_replace_callback($regex, '_process_footnote', $text);
 }
 
 /**
@@ -116,8 +126,16 @@ function _filter_footnote_tips() {
  */
 
 function _filter_figure($text, $filter, $format) {
-    $regex = '/\[figure:(.*?)\]/i';
-    return preg_replace_callback($regex, '_process_figure', $text);
+	
+	global $osci_tk_view_mode;
+	
+	$osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
+	
+	$result = module_invoke_all('osci_tk_filter_figure_' . $osci_tk_view_mode, $text, $filter, $format);
+	return is_array($result) ? $result[0] : $result;
+	
+//    $regex = '/\[figure:(.*?)\]/i';
+//    return preg_replace_callback($regex, '_process_figure', $text);
 }
 
 function _process_figure($text) {
@@ -175,8 +193,15 @@ function _process_args($text) {
  * Process callback for filter
  */
 function _filter_cross_link($text, $filter, $format) {
-    $regex = '/\[link:(.*?)\]/i';
-    return preg_replace_callback($regex, '_process_cross_link', $text);
+	global $osci_tk_view_mode;
+	
+	$osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
+	
+	$result = module_invoke_all('osci_tk_filter_cross_link_' . $osci_tk_view_mode, $text, $filter, $format);
+	return is_array($result) ? $result[0] : $result;
+	
+//    $regex = '/\[link:(.*?)\]/i';
+//    return preg_replace_callback($regex, '_process_cross_link', $text);
 }
 
 /**
