@@ -1,6 +1,8 @@
-<object id='figref-3-13-4' type='application/osci-tk-conservation-figure' data='figure-2.xml'>
-	<div class='figure-reference'>
-		<img src="url-to-fallback-image"/>
-		<div class='caption'>Fig. 13.4</div>
-    </div>
+<object id="figref-<?php print $section->nid.'-'.$fig_index.'-'.md5(microtime()); ?>" 
+	class="figref-<?php print $section->nid.'-'.$fig_index; ?>" 
+	type="application/osci-tk-conservation-figure" 
+	data="<?php print $base_url.'node/'.$section->nid.'/'.$fig_index.'/figure.xhtml'; ?>">
+	<div class="figure-reference">
+		<img src="http://www.cgexplorer.com/_sys/images/female-figure-reference.jpg"/>
+	</div>
 </object>

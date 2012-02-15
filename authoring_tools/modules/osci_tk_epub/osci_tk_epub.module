@@ -92,24 +92,32 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 		),
 		'epub_package' => array(
 		    'variables' => array(
-		        'pub_id' => null,
-		        'title' => null,
-		        'language' => 'en',
-		        'properties' => array(),
-		        'manifest' => array(),
-		        'spine' => array()
+		        'pub_id' 		=> null,
+		        'title' 		=> null,
+		        'language' 		=> 'en',
+		        'properties' 	=> array(),
+		        'manifest' 		=> array(),
+		        'spine' 		=> array()
 		    ),
 		    'template' => 'templates/epub_package'
 		),
 		'epub_figure_content_document' => array(
-			'template'	=> 'templates/epub_figure_content_document'
+			'template' 	=> 'templates/epub_figure_content_document',
+			'variables' => array()
 		),
 		'epub_figure_inline' => array(
-			'template'	=> 'templates/epub_figure_inline'
+			'template'	=> 'templates/epub_figure_inline',
+			'variables' => array(
+				'section' 	=> NULL,
+				'figure' 	=> NULL,
+				'fig_index' => NULL
+			)
 		),
-		'field__field_footnote__epub' => array(
-			'template' => 'templates/field-field_footnote-epub',
-			'file' => 'osci_tk_epub.templates.inc'
+		'epub_footnote_inline' => array(
+			'template'	=> 'templates/epub_footnote_inline',
+			'variables' => array(
+				'footnote_id' => NULL
+			)
 		)
 	);
 }
@@ -126,16 +134,37 @@ function osci_tk_epub_entity_info_alter(&$entity_info)
 	}
 }
 
+function osci_tk_epub_preprocess_node(&$vars) {
+	if ($vars['view_mode'] == 'epub') {
+		// provide a custom template for nodes by type when view mode is epub
+		$vars['theme_hook_suggestions'][] = 'node__' . $vars['type'] . '__epub';
+		
+		// prepare variables for the epub section document
+		if (isset($vars['type']) && $vars['type'] == 'section') {
+			dpm($vars, 'vars');
+		}
+	}
+}
+
+/**
+ * Implements hook_osci_tk_filter_TYPE_VIEWMODE
+ * see osci_tk_filters.module 
+ */
+function osci_tk_epub_osci_tk_filter_figure_epub($text, $filter, $format) {
+	return _osci_tk_epub_filter_figures($text);
+}
+function osci_tk_epub_osci_tk_filter_footnote_epub($text, $filter, $format) {
+	return _osci_tk_epub_filter_footnotes($text);
+}
 
 function osci_tk_epub_render($nid)
 {
 	global $osci_tk_view_mode;
-	
 	$osci_tk_view_mode = 'epub';
-	
 	$node = node_load($nid);
 	$view = node_view($node, 'epub');
-	return drupal_render($view);
+	print drupal_render($view);
+	drupal_exit();
 }
 
 
@@ -149,7 +178,7 @@ function osci_tk_epub_render_navigation_document($node)
   $output = _osci_tk_epub_generate_navigation_document($node, $dev);
   if ($dev) return $output;
   print $output;
-  exit();  
+  drupal_exit();  
   
 }
 
@@ -199,7 +228,7 @@ function osci_tk_epub_preprocess_epub_figure_content_document(&$vars) {
 }
 
 function osci_tk_epub_preprocess_epub_figure_inline(&$vars) {
-	dpm($vars, 'preprocess epub figure inline');
+	$vars['base_url'] = url('', array('absolute' => TRUE));
 }
 
 function _osci_tk_epub_check_cache($cache_key) {
@@ -247,7 +276,7 @@ function _osci_tk_epub_generate_package_document($node, $no_cache = false) {
     $book = node_load($node->book['bid']);    
     /***** Find all of the resources for this book *****/
     $data = array(
-      'modified' => 0,    
+      'modified' => 0,
       'content_nids' => array(),
       'figures' => array()
     );
@@ -535,4 +564,45 @@ function _osci_tk_epub_package_build_data($tree_node, &$data) {
         }
     }  
   
+}
+
+/**
+ * Replace figure links with object markup
+ */
+function _osci_tk_epub_filter_figures($text) {
+	$filtered = $text;
+	$regex = '/\[figure:fig_(\d+)_(\d+)\]/i';
+	$matches = array();
+	preg_match_all($regex, $text, $matches);
+	foreach ($matches[0] as $index => $match) {
+		$section_id = $matches[1][$index];
+		$fig_index = $matches[2][$index];
+		$section_node = node_load($section_id);
+		if ($section_node) {
+			if (isset($section_node->field_figure['und'][$fig_index])) {
+				$markup = theme('epub_figure_inline', array(
+					'section' 	=> $section_node, 
+					'figure' 	=> $section_node->field_figure['und'][$fig_index],
+					'fig_index' => $fig_index
+				));
+				$filtered = str_replace($match, $markup, $filtered);
+			}
+		}
+	}
+	return $filtered;
+}
+
+function _osci_tk_epub_filter_footnotes($text) {
+	$filtered = $text;
+	$regex = '/\[footnote:(fn_\d+_(\d+))\]/i';
+	$matches = array();
+	preg_match_all($regex, $text, $matches);
+	foreach ($matches[0] as $index => $match) {
+		$replace = theme('epub_footnote_inline', array(
+			'footnote_id' 		=> $matches[1][$index],
+			'footnote_index' 	=> $matches[2][$index]
+		));
+		$filtered = str_replace($match, $replace, $filtered);
+	}
+	return $filtered;
 }
