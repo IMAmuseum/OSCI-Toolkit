@@ -106,6 +106,10 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 		),
 		'epub_figure_content' => array(
 			'template'	=> 'templates/epub_figure_content'
+		),
+		'field__field_footnote__epub' => array(
+			'template' => 'templates/field-field_footnote-epub',
+			'file' => 'osci_tk_epub.templates.inc'
 		)
 	);
 }
@@ -123,13 +127,6 @@ function osci_tk_epub_entity_info_alter(&$entity_info)
 	}
 }
 
-function osci_tk_epub_preprocess_node(&$vars) {
-	if ($vars['view_mode'] == 'epub') {
-		// provide a custom template for nodes by type when view mode is epub
-		$vars['theme_hook_suggestions'][] = 'node__' . $vars['type'] . '__epub';
-	}
-}
-
 
 function osci_tk_epub_render($nid)
 {
@@ -139,7 +136,7 @@ function osci_tk_epub_render($nid)
 	
 	$node = node_load($nid);
 	$view = node_view($node, 'epub');
-	print drupal_render($view);
+	return drupal_render($view);
 }
 
 
