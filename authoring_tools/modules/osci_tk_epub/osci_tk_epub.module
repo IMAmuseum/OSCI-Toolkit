@@ -88,7 +88,8 @@ function osci_tk_epub_node_update($node) {
 function osci_tk_epub_theme($existing, $type, $theme, $path) {
 	return array(
 		'node__epub' => array(
-			'template'	=> 'templates/node__epub'
+			'template'	=> 'templates/node__epub',
+			'variables' => array()
 		),
 		'epub_package' => array(
 		    'variables' => array(
@@ -118,6 +119,11 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 			'variables' => array(
 				'footnote_id' => NULL
 			)
+		),
+		'field__field_footnote__epub' => array(
+			'template' => 'templates/field-field_footnote-epub',
+			'variables' => array(),
+			'file' => 'osci_tk_epub.templates.inc'
 		)
 	);
 }
@@ -131,18 +137,6 @@ function osci_tk_epub_entity_info_alter(&$entity_info)
 			'label' 			=> t('ePub'),
 			'custom settings' 	=> TRUE,
 		);
-	}
-}
-
-function osci_tk_epub_preprocess_node(&$vars) {
-	if ($vars['view_mode'] == 'epub') {
-		// provide a custom template for nodes by type when view mode is epub
-		$vars['theme_hook_suggestions'][] = 'node__' . $vars['type'] . '__epub';
-		
-		// prepare variables for the epub section document
-		if (isset($vars['type']) && $vars['type'] == 'section') {
-			dpm($vars, 'vars');
-		}
 	}
 }
 
