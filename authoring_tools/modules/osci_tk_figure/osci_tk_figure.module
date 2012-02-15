@@ -42,6 +42,37 @@ function osci_tk_figure_field_info()
 	);
 }
 
+function osci_tk_figure_field_formatter_info() 
+{
+	$formatters = array(
+		'osci_tk_figure' => array(
+			'label'         => t('Default'),
+            'field types'   => array('osci_tk_figure'),
+		)
+	);
+	
+	return $formatters;
+}
+
+function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display)
+{
+	dpm(array($entity_type, $entity, $field, $instance, $langcode, $items, $display));
+	$element = array();
+	switch($display['type'])
+	{
+		case 'osci_tk_figure':
+			foreach($items as $delta => $item)
+			{
+				$element[$delta] = array(
+					
+				);
+			}
+			break;
+	}
+	
+	return $element;
+}
+
 /**************************************************************************
  * Field Type API: Widget
  **************************************************************************/
@@ -100,6 +131,18 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 	{
 		drupal_add_library('system', 'ui.dialog');
 		drupal_add_js(drupal_get_path('module','osci_tk_figure') . '/js/figure_field.js');
+		
+		// load any additional module javascript for handling figure options
+		if (isset($instance['widget']['settings']['osci_tk_figure_types']))
+		{
+			foreach($instance['widget']['settings']['osci_tk_figure_types'] as $type => $active)
+			{
+				if ($active)
+				{
+					module_invoke_all("osci_tk_figure_preview_add_callback_js_" . $type);
+				}
+			}
+		}
 		
 		$figureElement = array(
 			'#theme' => 'osci_tk_fieldset_tabs',
@@ -295,45 +338,34 @@ function osci_tk_figure_preview($nid) {
 	$ret = new stdClass();
 	$time = time();
 	$ret->time = $time;
-	switch($node->type) {
-		case "image":
-			if (isset($node->field_image['und'][0])) {
-				$ret->image = file_create_url($node->field_image['und'][0]['uri']);
-				$ret->div = '<div style="width:100%;">'
-					.theme_image_style(array(
-						'style_name' 	=> variable_get('osci_tk_image_style_figure_preview', 'osci_tk_default'),
-						'path' 			=> $node->field_image['und'][0]['uri'],
-						'alt' 			=> $node->title,
-						'title' 		=> $node->title,
-						'attributes' 	=> array(
-							'class' => 'preview_image',
-							'style' => 'width:100%;'
-						)
-					))
-					.'</div>';
-			}
-			break;
-		case 'iip_asset':
-		case 'svg_asset':
-		case 'image_asset':
-			$node->field_assets['und'][0]['nid'] = $node->nid;
-		case "conservation_asset":
-			if (count($node->field_image) > 0) {
-				// there is a representative image, return it in a div
-				$ret->div = '<img class="preview_image" '
-					. 'src="'.image_style_url(variable_get('osci_tk_image_style_figure_preview', 'osci_tk_default'), $node->field_image['und'][0]['uri']).'" />'
-					. '<div style="display:none;" data-aspect="'._osci_tk_conservation_get_conservation_aspect($node).'">'
-					._osci_tk_conservation_get_conservation_html($nid)
-					.'</div>';
-			}
-			else {
-				$ret->div = '<div class="preview_image">No Preview Available</div>'
-					. '<div style="display:none;" data-aspect="'._osci_tk_conservation_get_conservation_aspect($node).'">'
-					._osci_tk_conservation_get_conservation_html($nid)
-					.'</div>';
-			}
-			break;
+	$ret->div = '';
+	
+	//invoke hook per content type to load a preview image and get js callback function name for figure options
+	$results = array_merge(
+		array('image_uri' => null, 'callback' => null),
+		module_invoke_all("osci_tk_figure_preview_" . $node->type, $node)
+	);
+	
+	//Add the image preview to the return
+	if ($results['image_uri'])
+	{
+		$ret->div = theme_image_style(array(
+			'style_name' 	=> variable_get('osci_tk_image_style_figure_preview', 'osci_tk_default'),
+			'path' 			=> $results['image_uri'],
+			'alt' 			=> $node->title,
+			'title' 		=> $node->title,
+			'attributes' 	=> array(
+				'class' => 'preview_image',
+			)
+		));
+	} else {
+		$ret->div = '<div class="preview_image">No Preview Available</div>';
 	}
+	
+	//Add the js callback name to the return
+	$ret->callback = $results['callback'];
+	$ret->nid = $nid;
+
 	return drupal_json_output($ret);
 }
 

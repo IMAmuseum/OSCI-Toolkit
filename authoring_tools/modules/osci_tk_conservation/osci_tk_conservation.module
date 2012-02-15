@@ -42,6 +42,14 @@ function osci_tk_conservation_menu() {
         'access arguments'  => array('access content'),
         'type'              => MENU_CALLBACK
     );
+	
+	$items['conservation/%/data.json'] = array(
+		'title'				=> t('Get conservation asset data in json format'),
+		'page callback'		=> 'osci_tk_conservation_get_json',
+		'page arguments'	=> array(1),
+		'access arguments'	=> array('access content'),
+		'type'				=> MENU_CALLBACK
+	);
     
     return $items;
 }
@@ -539,4 +547,105 @@ function _osci_tk_conservation_get_conservation_aspect($node) {
 
     if ($width > 0 && $height > 0) return ($width / $height);
     else return 1;
+}
+
+function osci_tk_conservation_get_json($nid)
+{
+	$ret = new stdClass();
+	
+	$node = node_load($nid);
+	
+	switch($node->type) 
+	{
+		case 'iip_asset':
+		case 'svg_asset':
+		case 'image_asset':
+			$node->field_assets['und'][0]['nid'] = $node->nid;
+	}
+	
+	$ret->content = _osci_tk_conservation_get_conservation_html($nid);
+	$ret->aspect  = _osci_tk_conservation_get_conservation_aspect($node);
+	
+	return drupal_json_output($ret);
+}
+
+
+/**
+ * Retrieve the figure preview thumbnail and callback function for iip_assets
+ * @param array $node
+ * @return array 
+ */
+function osci_tk_conservation_osci_tk_figure_preview_iip_asset($node)
+{
+	return osci_tk_conservation_osci_tk_figure_preview_conservation_asset($node);
+}
+
+/**
+ * Retrieve the figure preview thumbnail and callback function for svg_assets
+ * @param array $node
+ * @return array 
+ */
+function osci_tk_conservation_osci_tk_figure_preview_svg_asset($node)
+{
+	return osci_tk_conservation_osci_tk_figure_preview_conservation_asset($node);
+}
+
+/**
+ * Retrieve the figure preview thumbnail and callback function for image_assets
+ * @param array $node
+ * @return array 
+ */
+function osci_tk_conservation_osci_tk_figure_preview_image_asset($node)
+{
+	return osci_tk_conservation_osci_tk_figure_preview_conservation_asset($node);
+}
+
+/**
+ * Retrieve the figure preview thumbnail and callback function for conservation_assets
+ * @param array $node
+ * @return array 
+ */
+function osci_tk_conservation_osci_tk_figure_preview_conservation_asset($node)
+{
+	$return = array();
+	if (count($node->field_image) > 0) {
+		// there is a representative image, return it in a div
+		$return['image_uri'] = $node->field_image['und'][0]['uri'];
+	}
+	
+	$return['callback'] = 'osci_tk_conservation_preview';
+	
+	return $return;
+}
+
+/**
+ * Load the javascript necessary for the figure options 
+ */
+function osci_tk_conservation_osci_tk_figure_preview_add_callback_js_iip_asset()
+{
+	osci_tk_conservation_osci_tk_figure_preview_add_callback_js_conservation_asset();
+}
+
+/**
+ * Load the javascript necessary for the figure options 
+ */
+function osci_tk_conservation_osci_tk_figure_preview_add_callback_js_svg_asset()
+{
+	osci_tk_conservation_osci_tk_figure_preview_add_callback_js_conservation_asset();
+}
+
+/**
+ * Load the javascript necessary for the figure options 
+ */
+function osci_tk_conservation_osci_tk_figure_preview_add_callback_js_image_asset()
+{
+	osci_tk_conservation_osci_tk_figure_preview_add_callback_js_conservation_asset();
+}
+
+/**
+ * Load the javascript necessary for the figure options 
+ */
+function osci_tk_conservation_osci_tk_figure_preview_add_callback_js_conservation_asset()
+{
+	drupal_add_js(drupal_get_path('module','osci_tk_conservation') . '/js/osci_tk_conservation_figure_options.js');
 }

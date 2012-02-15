@@ -14,6 +14,19 @@ function osci_tk_utility_theme()
 }
 
 /**
+ * This is terrible, but we might need it
+ * @param type $node
+ * @param type $view_mode
+ * @param type $langcode
+ * @return type 
+ */
+//function node_content_view($node, $view_mode, $langcode)
+//{
+//	$node->view_mode = $view_mode;
+//	return $node;
+//}
+
+/**
  * Add theme hook suggestions to fields for the current view mode
  * @param type $variables
  * @param type $hook 
