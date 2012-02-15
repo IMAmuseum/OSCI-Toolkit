@@ -3,6 +3,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head></head>
 <body>
-	<div>node_section_epub</div>
+	<div id="<?php print "section-".$nid; ?>">
+		<div class="body">
+			<?php print $content['field_body'][0]['#markup']; ?>
+		</div>
+		<div class="footnotes">
+			<?php foreach(element_children($content['field_footnotes']) as $index => $footnote): ?>
+				<div class="footnote">
+				</div>
+			<?php endforeach; ?>
+		</div>
+	</div>
 </body>
 </html>

@@ -96,14 +96,10 @@ function _filter_footnote($text, $filter, $format) {
 	
 	$osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
 	$result = module_invoke_all('osci_tk_filter_footnote_' . $osci_tk_view_mode, $text, $filter, $format);
-	
 	return is_array($result) && count($result) ? $result[0] : $text;
-}
-
-function osci_tk_filters_osci_tk_filter_footnote_default($text, $filter, $format)
-{
-	$regex = '/\[footnote:(.*?)\]/i';
-	return preg_replace_callback($regex, '_process_footnote', $text);
+	
+	// $regex = '/\[footnote:(.*?)\]/i';
+	// return preg_replace_callback($regex, '_process_footnote', $text);
 }
 
 /**
@@ -134,8 +130,10 @@ function _filter_figure($text, $filter, $format) {
 	
 	$osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
 	$result = module_invoke_all('osci_tk_filter_figure_' . $osci_tk_view_mode, $text, $filter, $format);
-	
 	return is_array($result) && count($result) ? $result[0] : $text;
+	
+	// $regex = '/\[figure:(.*?)\]/i';
+	// return preg_replace_callback($regex, '_process_figure', $text);
 }
 
 function osci_tk_filters_osci_tk_filter_figure_default($text, $filter, $format)
@@ -204,14 +202,10 @@ function _filter_cross_link($text, $filter, $format) {
 	
 	$osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
 	$result = module_invoke_all('osci_tk_filter_cross_link_' . $osci_tk_view_mode, $text, $filter, $format);
-	
 	return is_array($result) && count($result) ? $result[0] : $text;
-}
-
-function osci_tk_filters_osci_tk_filter_cross_link_default($text, $filter, $format)
-{
-	$regex = '/\[link:(.*?)\]/i';
-	return preg_replace_callback($regex, '_process_cross_link', $text);
+	
+	// $regex = '/\[link:(.*?)\]/i';
+	// return preg_replace_callback($regex, '_process_cross_link', $text);
 }
 
 /**
