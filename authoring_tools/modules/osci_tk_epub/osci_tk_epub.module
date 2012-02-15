@@ -106,16 +106,16 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 			'template' 	=> 'templates/epub_figure_content_document',
 			'variables' => array()
 		),
-		'epub_figure_inline' => array(
-			'template'	=> 'templates/epub_figure_inline',
+		'epub_figure_link' => array(
+			'template'	=> 'templates/epub_figure_link',
 			'variables' => array(
 				'section' 	=> NULL,
 				'figure' 	=> NULL,
 				'fig_index' => NULL
 			)
 		),
-		'epub_footnote_inline' => array(
-			'template'	=> 'templates/epub_footnote_inline',
+		'epub_footnote_link' => array(
+			'template'	=> 'templates/epub_footnote_link',
 			'variables' => array(
 				'footnote_id' => NULL
 			)
@@ -221,7 +221,7 @@ function osci_tk_epub_preprocess_epub_figure_content_document(&$vars) {
 	$vars['figure_markup'] = _osci_tk_conservation_get_conservation_html($vars['asset_reference']);
 }
 
-function osci_tk_epub_preprocess_epub_figure_inline(&$vars) {
+function osci_tk_epub_preprocess_epub_figure_link(&$vars) {
 	$vars['base_url'] = url('', array('absolute' => TRUE));
 }
 
@@ -574,7 +574,7 @@ function _osci_tk_epub_filter_figures($text) {
 		$section_node = node_load($section_id);
 		if ($section_node) {
 			if (isset($section_node->field_figure['und'][$fig_index])) {
-				$markup = theme('epub_figure_inline', array(
+				$markup = theme('epub_figure_link', array(
 					'section' 	=> $section_node, 
 					'figure' 	=> $section_node->field_figure['und'][$fig_index],
 					'fig_index' => $fig_index
@@ -592,7 +592,7 @@ function _osci_tk_epub_filter_footnotes($text) {
 	$matches = array();
 	preg_match_all($regex, $text, $matches);
 	foreach ($matches[0] as $index => $match) {
-		$replace = theme('epub_footnote_inline', array(
+		$replace = theme('epub_footnote_link', array(
 			'footnote_id' 		=> $matches[1][$index],
 			'footnote_index' 	=> $matches[2][$index]
 		));
