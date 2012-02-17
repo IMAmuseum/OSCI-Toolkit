@@ -27,18 +27,6 @@ function osci_tk_utility_theme()
 //}
 
 /**
- * Add theme hook suggestions to fields for the current view mode
- * @param type $variables
- * @param type $hook 
- */
-function osci_tk_utility_preprocess_field(&$variables, $hook)
-{
-	$variables['theme_hook_suggestions'][] = $variables['theme_hook_suggestions'][0] . '__' . $variables['element']['#view_mode'];
-	$variables['theme_hook_suggestions'][] = $variables['theme_hook_suggestions'][1] . '__' . $variables['element']['#view_mode'];
-}
-
-
-/**
  * Add theme hook suggestions to the node for the current view mode
  * @param type $variables
  * @param type $hook 

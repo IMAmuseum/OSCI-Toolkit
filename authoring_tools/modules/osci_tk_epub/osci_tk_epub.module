@@ -157,7 +157,10 @@ function osci_tk_epub_render($nid)
 	$osci_tk_view_mode = 'epub';
 	$node = node_load($nid);
 	$view = node_view($node, 'epub');
-	print drupal_render($view);
+	
+	dpm($view);
+	
+	return drupal_render($view);
 	drupal_exit();
 }
 

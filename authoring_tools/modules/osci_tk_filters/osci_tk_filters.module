@@ -94,7 +94,7 @@ function _filter_settings() {}
 function _filter_footnote($text, $filter, $format) {
 	global $osci_tk_view_mode;
 	
-	$osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
+	$osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'full';
 	$result = module_invoke_all('osci_tk_filter_footnote_' . $osci_tk_view_mode, $text, $filter, $format);
 	return is_array($result) && count($result) ? $result[0] : $text;
 	

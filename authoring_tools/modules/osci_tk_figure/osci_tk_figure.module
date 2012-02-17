@@ -30,6 +30,22 @@ function osci_tk_figure_menu()
 	return $items;
 }
 
+function osci_tk_figure_theme()
+{
+	return array(
+		'osci_tk_figure_formatter' => array(
+			'template'	=> 'templates/osci_tk_figure_formatter',
+			'variables' => array(
+				'item'	=> array()
+			),
+		),
+		'field__field_figure' => array(
+			'template' => 'templates/field__field_figure',
+			'variables' => array()
+		)
+	);
+}
+
 function osci_tk_figure_field_info()
 {
 	return array(
@@ -56,15 +72,23 @@ function osci_tk_figure_field_formatter_info()
 
 function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display)
 {
-	dpm(array($entity_type, $entity, $field, $instance, $langcode, $items, $display));
 	$element = array();
 	switch($display['type'])
 	{
 		case 'osci_tk_figure':
 			foreach($items as $delta => $item)
 			{
+				$item['fig_id'] = 'fig_' . $entity->nid . '_' . $delta;
+			
+				$item['number_template'] = str_replace(
+					array('fig#', 'cat#.'), 
+					array($delta, ''), 
+					$item['number_template']
+				);
+				
 				$element[$delta] = array(
-					
+					'#theme'	=> 'osci_tk_figure_formatter',
+					'#item'		=> $item,
 				);
 			}
 			break;
@@ -97,8 +121,6 @@ function osci_tk_figure_field_widget_settings_form($field, $instance)
 
 	if ($widget['type'] === 'osci_tk_figure_widget')
 	{
-		$contentTypes = array();
-		
 		$form['osci_tk_figure_types'] = array(
 			'#type' => 'checkboxes',
 			'#title' => t('Content types that can be referenced'),
