@@ -116,6 +116,7 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 		),
 		'osci_tk_figure_formatter_epub' => array(
 			'template'	=> 'templates/osci_tk_figure_formatter_epub',
+			'file' => 'osci_tk_epub.templates.inc',
 			'variables' => array(
 				'item' => array()
 			)
@@ -178,7 +179,7 @@ function osci_tk_epub_render($nid)
 			case 'field_figure':
 				$items = element_children($element);
 				foreach($items as $delta)
-				{
+				{  
 					$view[$key][$delta]['#theme'] .= '_epub';
 					$view[$key][$delta]['#item']['content_url'] = url('node/' . $node->nid . '/' . $delta . '/figure.xhtml');
 				}
