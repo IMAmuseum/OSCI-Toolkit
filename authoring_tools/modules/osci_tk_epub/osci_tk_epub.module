@@ -114,6 +114,12 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 				'fig_index' => NULL
 			)
 		),
+		'osci_tk_figure_formatter_epub' => array(
+			'template'	=> 'templates/osci_tk_figure_formatter_epub',
+			'variables' => array(
+				'item' => array()
+			)
+		),
 		'epub_footnote_link' => array(
 			'template'	=> 'templates/epub_footnote_link',
 			'variables' => array(
@@ -147,6 +153,7 @@ function osci_tk_epub_entity_info_alter(&$entity_info)
 function osci_tk_epub_osci_tk_filter_figure_epub($text, $filter, $format) {
 	return _osci_tk_epub_filter_figures($text);
 }
+
 function osci_tk_epub_osci_tk_filter_footnote_epub($text, $filter, $format) {
 	return _osci_tk_epub_filter_footnotes($text);
 }
@@ -158,9 +165,29 @@ function osci_tk_epub_render($nid)
 	$node = node_load($nid);
 	$view = node_view($node, 'epub');
 	
-	dpm($view);
+	$fields = element_children($view);
+	foreach($fields as $key)
+	{
+		$element = $view[$key];
 	
-	return drupal_render($view);
+		switch($key)
+		{
+			case 'field_footnote':
+				
+				break;
+			case 'field_figure':
+				$items = element_children($element);
+				foreach($items as $delta)
+				{
+					$view[$key][$delta]['#theme'] .= '_epub';
+					$view[$key][$delta]['#item']['content_url'] = url('node/' . $node->nid . '/' . $delta . '/figure.xhtml');
+				}
+				
+				break;
+		}
+	}
+	
+	print drupal_render($view);
 	drupal_exit();
 }
 
