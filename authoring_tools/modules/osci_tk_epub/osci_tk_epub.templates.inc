@@ -1,10 +1,5 @@
 <?php
 
-function osci_tk_epub_preprocess_field(&$variables, $hook)
-{
-	dpm($vars);
-}
-
 function osci_tk_epub_preprocess_osci_tk_figure_formatter_epub(&$vars) {
 
     $asset = node_load($vars['item']['asset_reference']);

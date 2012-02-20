@@ -127,11 +127,14 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 				'footnote_id' => NULL
 			)
 		),
-		'field__field_footnote__epub' => array(
-			'template' => 'templates/field-field_footnote-epub',
-			'variables' => array(),
+		'osci_tk_footnote_epub' => array(
+			'template' => 'templates/osci_tk_footnote_epub',
+			'variables' => array(
+		        'items' => array()
+		     ),
 			'file' => 'osci_tk_epub.templates.inc'
-		)
+		),		
+		
 	);
 }
 
@@ -174,8 +177,9 @@ function osci_tk_epub_render($nid)
 		switch($key)
 		{
 			case 'field_footnote':
-				
+				$view[$key]['#theme'] = 'osci_tk_footnote_epub';
 				break;
+				
 			case 'field_figure':
 				$items = element_children($element);
 				foreach($items as $delta)
