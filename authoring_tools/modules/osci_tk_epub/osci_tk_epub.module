@@ -245,7 +245,6 @@ function osci_tk_epub_render_navigation_document($node)
  */
 function osci_tk_epub_render_package_document($node)
 {
-
   $dev = false;  
   $output = _osci_tk_epub_generate_package_document($node, false, $dev);
   if ($dev) return $output;
@@ -257,12 +256,24 @@ function osci_tk_epub_render_package_document($node)
 }
 
 
-function osci_tk_epub_render_figure_content_document($section, $fig_index) {
-	if ($section->type != 'section') return MENU_NOT_FOUND;
-	if (!is_numeric($fig_index)) return MENU_NOT_FOUND;
-	
+function osci_tk_epub_render_figure_content_document($node, $index) {
+
+	if (!isset($node->field_figure) || !isset($node->field_figure['und'][$index])) return MENU_NOT_FOUND;
+	if (!is_numeric($index)) return MENU_NOT_FOUND;
+
+	$dev = false;  
+	$output = _osci_tk_epub_generate_figure_document($node, $index, $dev);
+	if ($dev) return $output;
+
+	//header('Content-type: application/oebps-package+xml');
+	print $output;
+	drupal_exit();
+}
+
+function _osci_tk_epub_generate_figure_document($node, $index, $noCache = false)
+{
 	// prepare the figure from the section's figure field node reference
-	$figure = $section->field_figure['und'][$fig_index];
+	$figure = $node->field_figure['und'][$fig_index];
 	$figure['node'] = node_load($figure['asset_reference']);
 	
 	// if this isn't a conservation asset, fake the funk and make it look like
@@ -276,7 +287,7 @@ function osci_tk_epub_render_figure_content_document($section, $fig_index) {
 	$themed_figure = theme('epub_figure_content_document', $figure);
 	
 	// output the themed figure
-	print $themed_figure;
+	return $themed_figure;
 }
 
 function osci_tk_epub_preprocess_epub_figure_content_document(&$vars) {
