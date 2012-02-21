@@ -185,6 +185,16 @@ function osci_tk_epub_render($nid)
 {
 	global $osci_tk_view_mode;
 	$osci_tk_view_mode = 'epub';
+	
+	$dev = false;
+	$output = _osci_tk_epub_generate_content_document($nid, false, $dev);
+	if ($dev) return $output;
+	print $output;
+	drupal_exit(); 
+}
+
+function _osci_tk_epub_generate_content_document($nid, $forExport = false, $noCache = false)
+{
 	$node = node_load($nid);
 	$view = node_view($node, 'epub');
 	
@@ -204,15 +214,14 @@ function osci_tk_epub_render($nid)
 				foreach($items as $delta)
 				{  
 					$view[$key][$delta]['#theme'] .= '_epub';
-					$view[$key][$delta]['#item']['content_url'] = url('node/' . $node->nid . '/' . $delta . '/figure.xhtml');
+					$view[$key][$delta]['#item']['content_url'] = $forExport ? _osci_tk_epub_node_figure_filename($node, $delta) : _osci_tk_epub_node_figure_url($node->nid, $delta);
 				}
 				
 				break;
 		}
 	}
 	
-	print drupal_render($view);
-	drupal_exit();
+	return drupal_render($view);
 }
 
 
@@ -322,17 +331,7 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
     }
     
     $book = node_load($node->book['bid']);    
-    /***** Find all of the resources for this book *****/
-//    $data = array(
-//      'modified' => 0,
-//      'content_nids' => array(),
-//      'figures' => array()
-//    );
-//    
-//    $subtree = book_menu_subtree_data($book->book);
-//    // There should only be one node at the top level
-//    _osci_tk_epub_package_build_data(array_pop($subtree), $data);    
-	
+    /***** Find all of the resources for this book *****/	
 	$data = _osci_tk_epub_get_book_resources($book);
 
     // Should this data structure be passed through _osci_tk_epub_package_build_data instead?
