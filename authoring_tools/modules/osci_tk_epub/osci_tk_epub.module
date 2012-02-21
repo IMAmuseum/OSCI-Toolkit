@@ -59,6 +59,7 @@ function osci_tk_epub_node_insert($node) {
   // Pre-generate epub content
   _osci_tk_epub_generate_navigation_document($node);
   _osci_tk_epub_generate_package_document($node);  
+  _osci_tk_epub_generate_content_document($node);
   
 }
 
@@ -70,11 +71,12 @@ function osci_tk_epub_node_submit($node, $form, &$form_state)
 {
   
   if (isset($node->book) && $node->book['bid']) {
-    
+
     // Clearing the epub caches here will cause the output to be regenerated 
     // even if the node is being removed from the book
     cache_set("osci_epub_package_{$node->book['bid']}", null);     
     cache_set("osci_epub_toc_{$node->book['bid']}", null);  
+    cache_set("osci_epub_content_{$node->nid}", null);
     
   }
   
@@ -87,10 +89,11 @@ function osci_tk_epub_node_submit($node, $form, &$form_state)
 function osci_tk_epub_node_update($node) {
 
   if (!isset($node->book) || (!$node->book['bid'])) return;
-  
+
   // Pre-generate epub content
   _osci_tk_epub_generate_navigation_document($node);
   _osci_tk_epub_generate_package_document($node);    
+  _osci_tk_epub_generate_content_document($node);  
   
 }
 
@@ -187,15 +190,25 @@ function osci_tk_epub_render($nid)
 	$osci_tk_view_mode = 'epub';
 	
 	$dev = false;
-	$output = _osci_tk_epub_generate_content_document($nid, false, $dev);
+	$node = node_load($nid);
+	$output = _osci_tk_epub_generate_content_document($node, false, $dev);
 	if ($dev) return $output;
 	print $output;
 	drupal_exit(); 
 }
 
-function _osci_tk_epub_generate_content_document($nid, $forExport = false, $noCache = false)
+function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_cache = false)
 {
-	$node = node_load($nid);
+    
+    /***** Check the cache *****/
+    if (!$no_cache) {
+      $cache_key = "osci_epub_content_{$node->nid}"; 
+      $output = _osci_tk_epub_check_cache($cache_key);    
+      if (!is_null($output)) {
+        return $output; 
+      }    
+    }  
+  
 	$view = node_view($node, 'epub');
 	
 	$fields = element_children($view);
@@ -221,7 +234,14 @@ function _osci_tk_epub_generate_content_document($nid, $forExport = false, $noCa
 		}
 	}
 	
-	return drupal_render($view);
+	$output = drupal_render($view);
+	
+    if (!$no_cache) {
+      cache_set($cache_key, $output, 'cache');              
+    }  
+    
+    return $output;	
+    
 }
 
 
@@ -326,7 +346,7 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
       $cache_key = "osci_epub_package_{$node->book['bid']}"; 
       $output = _osci_tk_epub_check_cache($cache_key);    
       if (!is_null($output)) {
-        print $output; drupal_exit();
+        return $output; 
       }    
     }
     
