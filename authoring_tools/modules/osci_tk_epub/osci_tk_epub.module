@@ -35,6 +35,16 @@ function osci_tk_epub_menu()
 		'access arguments' 	=> array('access content'),
 		'type' 				=> MENU_CALLBACK,
 	);
+	
+	$items['node/%/epub/publish'] = array(	
+		'title' => 'Publish ePub',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('osci_tk_epub_publish_form', 1),
+		'access arguments' => array('access content'),
+		'type' => MENU_LOCAL_TASK,
+		'file' => 'osci_tk_epub.publish.inc'
+	);
+	
 	return $items;
 }
 
@@ -133,8 +143,17 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 		        'items' => array()
 		     ),
 			'file' => 'osci_tk_epub.templates.inc'
-		),		
-		
+		),
+		'osci_tk_epub_mimetype' => array(
+			'template' => 'templates/osci_tk_epub_mimetype',
+			'variables' => array(),
+		),
+		'osci_tk_epub_container_xml' => array(
+			'template' => 'templates/osci_tk_epub_container_xml',
+			'variables' => array(
+				'rootPath' => ''
+			),
+		)
 	);
 }
 
@@ -204,7 +223,7 @@ function osci_tk_epub_render_navigation_document($node)
 {
 
   $dev = false;
-  $output = _osci_tk_epub_generate_navigation_document($node, $dev);
+  $output = _osci_tk_epub_generate_navigation_document($node, false, $dev);
   if ($dev) return $output;
   print $output;
   drupal_exit();  
@@ -219,7 +238,7 @@ function osci_tk_epub_render_package_document($node)
 {
 
   $dev = false;  
-  $output = _osci_tk_epub_generate_package_document($node, $dev);
+  $output = _osci_tk_epub_generate_package_document($node, false, $dev);
   if ($dev) return $output;
   
   //header('Content-type: application/oebps-package+xml');
@@ -277,10 +296,10 @@ function _osci_tk_epub_check_cache($cache_key) {
 }
 
 
-function _osci_tk_epub_generate_navigation_document($node, $no_cache = false) {
+function _osci_tk_epub_generate_navigation_document($node, $forExport = false, $no_cache = false) {
   
     // Generate table of contents
-    $output = _osci_tk_epub_navigation_generate_book_toc($node, $no_cache);
+    $output = _osci_tk_epub_navigation_generate_book_toc($node, $forExport, $no_cache);
     
     // Generate other tables...
     
@@ -289,13 +308,13 @@ function _osci_tk_epub_generate_navigation_document($node, $no_cache = false) {
 }
 
 
-function _osci_tk_epub_generate_package_document($node, $no_cache = false) {
+function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_cache = false) {
       // Find the corresponding book for this node
     if (!isset($node->book)) return null;    
     
     /***** Check the cache *****/
     if (!$no_cache) {
-      $cache_key = "osci_epub_package_{$node->book['bid']}";    
+      $cache_key = "osci_epub_package_{$node->book['bid']}"; 
       $output = _osci_tk_epub_check_cache($cache_key);    
       if (!is_null($output)) {
         print $output; drupal_exit();
@@ -304,15 +323,17 @@ function _osci_tk_epub_generate_package_document($node, $no_cache = false) {
     
     $book = node_load($node->book['bid']);    
     /***** Find all of the resources for this book *****/
-    $data = array(
-      'modified' => 0,
-      'content_nids' => array(),
-      'figures' => array()
-    );
-    
-    $subtree = book_menu_subtree_data($book->book);
-    // There should only be one node at the top level
-    _osci_tk_epub_package_build_data(array_pop($subtree), $data);        
+//    $data = array(
+//      'modified' => 0,
+//      'content_nids' => array(),
+//      'figures' => array()
+//    );
+//    
+//    $subtree = book_menu_subtree_data($book->book);
+//    // There should only be one node at the top level
+//    _osci_tk_epub_package_build_data(array_pop($subtree), $data);    
+	
+	$data = _osci_tk_epub_get_book_resources($book);
 
     // Should this data structure be passed through _osci_tk_epub_package_build_data instead?
     $arguments = array(
@@ -330,17 +351,17 @@ function _osci_tk_epub_generate_package_document($node, $no_cache = false) {
     // Navigation document
     $arguments['manifest'][] = array(
       'id' => 'nav',
-      'href' => url("node/{$node->book['bid']}/nav.xhtml", array('absolute' => true)),
+      'href' => $forExport ? 'nav.xhtml' : url("node/{$node->book['bid']}/nav.xhtml", array('absolute' => true)),
       'media-type' => 'application/xhtml+xml',
       'properties' => 'nav'
     );    
   
     // Content documents go into the manifest and the spine
-    foreach($data['content_nids'] as $nid) {
-      $id = "section-$nid";
+    foreach($data['content_nids'] as $content) {
+      $id = 'section-' . $content['nid'];
       $arguments['manifest'][] = array(
         'id' => $id,
-        'href' => url("node/{$nid}/epub.xhtml", array('absolute' => true)),
+        'href' => $forExport ? $content['filename'] : $content['url'],
         'media-type' => 'application/xhtml+xml',      
       );      
       $arguments['spine'][] = array(
@@ -352,7 +373,7 @@ function _osci_tk_epub_generate_package_document($node, $no_cache = false) {
     foreach($data['figures'] as $figure) {
       $arguments['manifest'][] = array(
         'id' => "figure-{$figure['nid']}-{$figure['index']}",
-        'href' => url("node/{$figure['nid']}/{$figure['index']}/figure.xhtml", array('absolute' => true)),
+        'href' => $forExport ? $figure['filename'] : $figure['url'],
         'media-type' => 'application/xhtml+xml',
       );      
     }
@@ -402,22 +423,19 @@ function _osci_tk_epub_navigation_build_toc($tree_node) {
           //$nids[] = $nextPage;
       }
   }   
-  
-  $alias = drupal_lookup_path("alias", $tree_node['link']['href']);
-  
+
   $result['data'] = array(  
 	'nid'      => $nid,
   	'mlid'     => $tree_node['link']['mlid'],
   	'title'    => $tree_node['link']['title'],  
-    'href'     => url("reader/" . $alias),
-    'print'    => url("print/" . $alias),
-    'bodycopy' => url($alias['href'] . '/bodycopy'),  
+	'url'      => _osci_tk_epub_node_content_url($nid),
+	'filename' => _osci_tk_epub_node_content_filename(node_load($nid)),
     'next'     => $nextPage,
     'prev'     => $prevPage,
     'parent'   => $parentPage,
     'length'   => 0
   );
-  
+
   if (isset($tree_node['link']['bid'])) {
     $result['data']['bid'] = $tree_node['link']['bid'];
   }
@@ -478,7 +496,7 @@ function _osci_tk_epub_navigation_node_toc_data($nid) {
 /**
  * Render the ePub table of contents for the book of the given node
  */
-function _osci_tk_epub_navigation_generate_book_toc($node, $no_cache = false)
+function _osci_tk_epub_navigation_generate_book_toc($node, $forExport = false, $no_cache = false)
 {
   
   if (!isset($node->book)) return null;  
@@ -517,7 +535,7 @@ function _osci_tk_epub_navigation_generate_book_toc($node, $no_cache = false)
     $attr_fields = array('nid', 'mlid', 'length', 'subtree_length', 'editor', 'timestamp');
   
     foreach($toc['children'] as $child) {
-      $output .= _osci_tk_epub_navigation_generate_toc_subtree($child, $attr_fields);
+      $output .= _osci_tk_epub_navigation_generate_toc_subtree($child, $attr_fields, $forExport);
     }
       
     $output .= "</ol></nav>";
@@ -536,7 +554,7 @@ function _osci_tk_epub_navigation_generate_book_toc($node, $no_cache = false)
 /**
  * Render the ePub table of contents for a node's book subtree
  */
-function _osci_tk_epub_navigation_generate_toc_subtree($tree_node, $attr_fields = array()) {
+function _osci_tk_epub_navigation_generate_toc_subtree($tree_node, $attr_fields = array(), $forExport = false) {
 
   // Export data fields into html attributes
   $attr_data = array();
@@ -548,7 +566,7 @@ function _osci_tk_epub_navigation_generate_toc_subtree($tree_node, $attr_fields 
   }    
     
   // <a> points to the target within the EPUB ContentDocument
-  $url = url("node/{$tree_node['data']['nid']}/epub.xhtml", array('absolute' => true));
+  $url = $forExport ? $tree_node['data']['filename'] : $tree_node['data']['url'];
   $content = "<a $data_str href='$url'>{$tree_node['data']['title']}</a>";      
 
   if (empty($tree_node['children'])) {
@@ -575,13 +593,19 @@ function _osci_tk_epub_package_build_data($tree_node, &$data) {
     $node = node_load($nid);
   
     if ($node->changed > $data['modified']) $data['modified'] = $node->changed;
-    $data['content_nids'][] = $nid;
+    $data['content_nids'][] = array(
+		'nid' => $nid,
+		'filename' => _osci_tk_epub_node_content_filename($node),
+		'url' => _osci_tk_epub_node_content_url($nid)
+	);
     
     if (isset($node->field_figure['und'])) {
       foreach($node->field_figure['und'] as $index => $figure) {
         $data['figures'][] = array(
           'nid' => $nid,
-          'index' => $index
+          'index' => $index,
+		  'filename' => _osci_tk_epub_node_figure_filename($node, $index),
+		  'url' => _osci_tk_epub_node_figure_url($nid, $index)
         );
       }
     }
@@ -634,4 +658,45 @@ function _osci_tk_epub_filter_footnotes($text) {
 		$filtered = str_replace($match, $replace, $filtered);
 	}
 	return $filtered;
+}
+
+function _osci_tk_epub_get_book_resources(&$book)
+{
+	/***** Find all of the resources for this book *****/
+    $data = array(
+      'modified' => 0,
+      'content_nids' => array(),
+      'figures' => array()
+    );
+    
+    $subtree = book_menu_subtree_data($book->book);
+    // There should only be one node at the top level
+    _osci_tk_epub_package_build_data(array_pop($subtree), $data);
+	
+	return $data;
+}
+
+function _osci_tk_clean_filename_string($string)
+{
+	return preg_replace("[^A-Za-z0-9\-]", "", str_replace(' ', '-', strtolower(trim($string))));
+}
+
+function _osci_tk_epub_node_content_filename(&$node)
+{
+	return _osci_tk_clean_filename_string($node->title) . '.xhtml';
+}
+
+function _osci_tk_epub_node_figure_filename(&$node, $index)
+{
+	return 'figure_' . _osci_tk_clean_filename_string($node->title) . '_' . $index . '.xhtml';
+}
+
+function _osci_tk_epub_node_content_url($nid)
+{
+	return url("node/{$nid}/epub.xhtml", array('absolute' => true));
+}
+
+function _osci_tk_epub_node_figure_url($nid, $index)
+{
+	return url("node/{$nid}/{$index}/figure.xhtml", array('absolute' => true));
 }
