@@ -167,7 +167,9 @@ function osci_tk_epub_publish_content_document($epubFile, $content)
 	$epub = _osci_tk_epub_zip_init($epubFile);
 	if ($epub)
 	{
-		dpm($content);
+		$fileName = 'OEBPS/ ' . _osci_tk_epub_node_content_filename(node_load($content['nid']));
+		$epub->addFromString($fileName, _osci_tk_epub_generate_content_document($content['nid'], true, true));
+		$epub->close();
 	}
 }
 
@@ -176,7 +178,10 @@ function osci_tk_epub_publish_figure_document($epubFile, $figure)
 	$epub = _osci_tk_epub_zip_init($epubFile);
 	if ($epub)
 	{
-		dpm($figure);
+		$node = node_load($figure['nid']);
+		$fileName = 'OEBPS/ ' . _osci_tk_epub_node_figure_filename($node, $figure['index']);
+		$epub->addFromString($fileName, _osci_tk_epub_generate_figure_document($node, $figure['index'], true));
+		$epub->close();
 	}
 }
 
