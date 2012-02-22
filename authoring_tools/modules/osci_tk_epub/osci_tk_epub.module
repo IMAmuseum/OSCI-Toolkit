@@ -305,8 +305,10 @@ function _osci_tk_epub_generate_figure_document($node, $index, $no_cache = false
     }      
   
 	// prepare the figure from the section's figure field node reference
-	$figure = $node->field_figure['und'][$fig_index];
+	$figure = $node->field_figure['und'][$index];
 	$figure['node'] = node_load($figure['asset_reference']);
+	
+	$result = module_invoke_all('osci_tk_generate_figure_document');	
 	
 	// if this isn't a conservation asset, fake the funk and make it look like
 	// it references itself as one
