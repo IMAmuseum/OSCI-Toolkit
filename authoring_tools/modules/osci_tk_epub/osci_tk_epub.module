@@ -282,7 +282,7 @@ function osci_tk_epub_render_figure_content_document($node, $index) {
 	if (!isset($node->field_figure) || !isset($node->field_figure['und'][$index])) return MENU_NOT_FOUND;
 	if (!is_numeric($index)) return MENU_NOT_FOUND;
 
-	$dev = true;  
+	$dev = false;  
 	$output = _osci_tk_epub_generate_figure_document($node, $index, $dev);
 	if ($dev) return $output;
 
