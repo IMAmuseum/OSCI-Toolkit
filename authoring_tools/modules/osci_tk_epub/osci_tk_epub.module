@@ -129,13 +129,6 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 				'fig_index' => NULL
 			)
 		),
-		'osci_tk_figure_formatter_epub' => array(
-			'template'	=> 'templates/osci_tk_figure_formatter_epub',
-			'file' => 'osci_tk_epub.templates.inc',
-			'variables' => array(
-				'item' => array()
-			)
-		),
 		'epub_footnote_link' => array(
 			'template'	=> 'templates/epub_footnote_link',
 			'variables' => array(
@@ -147,7 +140,6 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 			'variables' => array(
 		        'items' => array()
 		     ),
-			'file' => 'osci_tk_epub.templates.inc'
 		),
 		'osci_tk_epub_mimetype' => array(
 			'template' => 'templates/osci_tk_epub_mimetype',
@@ -197,7 +189,7 @@ function osci_tk_epub_render($nid)
 	global $osci_tk_view_mode;
 	$osci_tk_view_mode = 'epub';
 	
-	$dev = false;
+	$dev = true;
 	$node = node_load($nid);
 	$output = _osci_tk_epub_generate_content_document($node, false, $dev);
 	if ($dev) return $output;
@@ -207,7 +199,7 @@ function osci_tk_epub_render($nid)
 
 function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_cache = false)
 {
-    
+  
     /***** Check the cache *****/
     if (!$no_cache) {
       $cache_key = "osci_epub_content_{$node->nid}"; 
@@ -234,8 +226,9 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_
 				$items = element_children($element);
 				foreach($items as $delta)
 				{  
-					$view[$key][$delta]['#theme'] .= '_epub';
+				    // TODO: Implement this somewhere else
 					$view[$key][$delta]['#item']['content_url'] = $forExport ? _osci_tk_epub_node_figure_filename($node, $delta) : _osci_tk_epub_node_figure_url($node->nid, $delta);
+					$view[$key][$delta]['#item']['export'] = $forExport;
 				}
 				
 				break;
