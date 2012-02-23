@@ -189,7 +189,7 @@ function osci_tk_epub_render($nid)
 	global $osci_tk_view_mode;
 	$osci_tk_view_mode = 'epub';
 	
-	$dev = true;
+	$dev = false;
 	$node = node_load($nid);
 	$output = _osci_tk_epub_generate_content_document($node, false, $dev);
 	if ($dev) return $output;
