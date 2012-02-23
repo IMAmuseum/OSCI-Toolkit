@@ -282,7 +282,7 @@ function osci_tk_epub_render_figure_content_document($node, $index) {
 	if (!isset($node->field_figure) || !isset($node->field_figure['und'][$index])) return MENU_NOT_FOUND;
 	if (!is_numeric($index)) return MENU_NOT_FOUND;
 
-	$dev = false;  
+	$dev = true;  
 	$output = _osci_tk_epub_generate_figure_document($node, $index, $dev);
 	if ($dev) return $output;
 
@@ -303,21 +303,13 @@ function _osci_tk_epub_generate_figure_document($node, $index, $no_cache = false
       }    
     }      
   
-	// prepare the figure from the section's figure field node reference
-	$figure = $node->field_figure['und'][$index];
-	$figure['node'] = node_load($figure['asset_reference']);
-	
-	$result = module_invoke_all('osci_tk_generate_figure_document');	
-	
-	// if this isn't a conservation asset, fake the funk and make it look like
-	// it references itself as one
-	if ($figure['node']->type != "conservation_asset") {
-		$figure['node']->field_assets['und'][0]['nid'] = $figure['node']->nid;
-	}
+	$view = node_view($node, 'epub');
+	// TODO: Handle the export case?	
+	$content = drupal_render($view['field_figure'][$index]);
 	
 	// pass the prepared figure to the theme function which wraps it in 
 	// a valid epub3 content document
-	$themed_figure = theme('epub_figure_content_document', $figure);
+	$themed_figure = theme('epub_figure_content_document', array('figure_markup' => $content));
 	
     if (!$no_cache) {
       cache_set($cache_key, $themed_figure, 'cache');              
@@ -325,11 +317,6 @@ function _osci_tk_epub_generate_figure_document($node, $index, $no_cache = false
 	
 	// output the themed figure
 	return $themed_figure;
-}
-
-function osci_tk_epub_preprocess_epub_figure_content_document(&$vars) {
-	// render the conservation asset into markup for the template
-	$vars['figure_markup'] = _osci_tk_conservation_get_conservation_html($vars['asset_reference']);
 }
 
 function osci_tk_epub_preprocess_epub_figure_link(&$vars) {
