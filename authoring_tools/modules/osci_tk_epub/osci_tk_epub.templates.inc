@@ -7,7 +7,7 @@ function osci_tk_epub_preprocess_osci_tk_figure_formatter_epub(&$vars) {
     // TODO: Figure out a way to do this without hard-coding
     switch($asset->type) {
       case 'image_asset':
-        $vars['media_type'] = 'image'; break;
+        $vars['media_type'] = 'image/jpeg'; break;
       case 'svg_asset':
         $vars['media_type'] = 'image/svg+xml'; break;
       case 'iip_asset':

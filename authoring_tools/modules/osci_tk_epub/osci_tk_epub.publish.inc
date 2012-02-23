@@ -35,7 +35,7 @@ function osci_tk_epub_publish_form_submit($form, &$form_state)
 	}
 	
 	$epubTitle = _osci_tk_clean_filename_string($currentNode->book['link_title']);
-	$epubFilePath = 'public://epub/' . $epubTitle . '.zip';
+	$epubFilePath = 'public://epub/' . $epubTitle . '.epub';
 	
 	// If we have a stale tmp file delete it
     if (file_exists($epubFilePath)) {
@@ -45,10 +45,6 @@ function osci_tk_epub_publish_form_submit($form, &$form_state)
 	$operations = array(
 		array(
 			'osci_tk_epub_publish_create_container', 
-			array($epubFilePath)
-		),
-		array(
-			'osci_tk_epub_publish_create_mimetype_file',
 			array($epubFilePath)
 		),
 		array(
@@ -66,6 +62,7 @@ function osci_tk_epub_publish_form_submit($form, &$form_state)
 	);
 	
 	$data = _osci_tk_epub_get_book_resources(node_load($currentNode->book['bid']));
+
 	if (count($data['content_nids']))
 	{
 		foreach($data['content_nids'] as $content)
@@ -76,7 +73,7 @@ function osci_tk_epub_publish_form_submit($form, &$form_state)
 			);
 		}
 	}
-	
+
 	if (count($data['figures']))
 	{
 		foreach($data['figures'] as $figure)
@@ -101,27 +98,30 @@ function osci_tk_epub_publish_form_submit($form, &$form_state)
 
 function osci_tk_epub_publish_finish($success, $results, $operations)
 {
+	$fileUrl = file_create_url($results['epub_file']);
 	
+	if ($success) {
+        $message = 'ePub has been created with ' . format_plural(count($results['files']), 'One file included', '@count files included') . '. <a href="' . $fileUrl . '">Download: ' . $fileUrl . '</a>';
+    } else {
+        $message = t('An error occurred');
+    }
+
+    drupal_set_message($message);
 }
 
 function osci_tk_epub_publish_create_container($epubFile, &$context)
 {
+	$context['results']['files'] = array();
+	
 	$epub = _osci_tk_epub_zip_init($epubFile, ZIPARCHIVE::CREATE);
 	if ($epub)
 	{
+		$fileName = 'mimetype';
+		$epub->addFromString($fileName , theme("osci_tk_epub_mimetype"));
 		$epub->addEmptyDir("META-INF");
 		$epub->addEmptyDir("OEBPS");
 		$epub->close();
-	}
-}
-
-function osci_tk_epub_publish_create_mimetype_file($epubFile, &$context)
-{
-	$epub = _osci_tk_epub_zip_init($epubFile);
-	if ($epub)
-	{
-		$epub->addFromString("mimetype" , theme("osci_tk_epub_mimetype"));
-		$epub->close();	
+		$context['results']['epub_file'] = $epubFile;
 	}
 }
 
@@ -133,8 +133,9 @@ function osci_tk_epub_publish_create_container_file($epubFile, $epubTitle, &$con
 		$fileName = 'META-INF/container.xml';
 		$rootPath = 'OEBPS/' . $epubTitle . '.opf';
 		$epub->addFromString($fileName, theme("osci_tk_epub_container_xml", array("rootPath" => $rootPath)));
-		
 		$epub->close();
+		
+		$context['results']['files'][] = $fileName;
 	}
 }
 
@@ -147,6 +148,8 @@ function osci_tk_epub_publish_get_package($epubFile, $epubTitle, $nid, &$context
 		$fileName = 'OEBPS/' . $epubTitle . '.opf';
 		$epub->addFromString($fileName, _osci_tk_epub_generate_package_document($node, true, true));
 		$epub->close();
+		
+		$context['results']['files'][] = $fileName;
 	}
 }
 
@@ -159,29 +162,35 @@ function osci_tk_epub_publish_get_nav($epubFile, $nid, &$context)
 		$fileName = 'OEBPS/nav.xhtml';
 		$epub->addFromString($fileName, _osci_tk_epub_generate_navigation_document($node, true, true));
 		$epub->close();
+		
+		$context['results']['files'][] = $fileName;
 	}
 }
 
-function osci_tk_epub_publish_content_document($epubFile, $content)
+function osci_tk_epub_publish_content_document($epubFile, $content, &$context)
 {
 	$epub = _osci_tk_epub_zip_init($epubFile);
 	if ($epub)
 	{
-		$fileName = 'OEBPS/ ' . _osci_tk_epub_node_content_filename(node_load($content['nid']));
+		$fileName = 'OEBPS/' . _osci_tk_epub_node_content_filename(node_load($content['nid']));
 		$epub->addFromString($fileName, _osci_tk_epub_generate_content_document($content['nid'], true, true));
 		$epub->close();
+		
+		$context['results']['files'][] = $fileName;
 	}
 }
 
-function osci_tk_epub_publish_figure_document($epubFile, $figure)
+function osci_tk_epub_publish_figure_document($epubFile, $figure, &$context)
 {
 	$epub = _osci_tk_epub_zip_init($epubFile);
 	if ($epub)
 	{
 		$node = node_load($figure['nid']);
-		$fileName = 'OEBPS/ ' . _osci_tk_epub_node_figure_filename($node, $figure['index']);
+		$fileName = 'OEBPS/' . _osci_tk_epub_node_figure_filename($node, $figure['index']);
 		$epub->addFromString($fileName, _osci_tk_epub_generate_figure_document($node, $figure['index'], true));
 		$epub->close();
+		
+		$context['results']['files'][] = $fileName;
 	}
 }
 

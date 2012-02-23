@@ -4,6 +4,6 @@
 	  xmlns:epub="http://www.idpf.org/2007/ops">
 <head></head>
 <body>
-	<div><?php print drupal_render($content); ?></div>
+	<?php print $content; ?>
 </body>
 </html>

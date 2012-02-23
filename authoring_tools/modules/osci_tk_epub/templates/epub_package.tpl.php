@@ -1,5 +1,5 @@
 <?php echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"; ?>
-<package version='3.0' unique-identifier="publication-id">
+<package version="3.0" unique-identifier="publication-id" xmlns="http://www.idpf.org/2007/opf" xml:lang="en">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     <dc:identifier id="publication-id"><?= $pub_id ?></dc:identifier>
     <dc:title><?= $title ?></dc:title>

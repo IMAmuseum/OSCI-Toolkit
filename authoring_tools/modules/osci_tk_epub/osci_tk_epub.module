@@ -153,6 +153,12 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 			'variables' => array(
 				'rootPath' => ''
 			),
+		),
+		'osci_tk_epub_navigation' => array(
+			'template' => 'templates/osci_tk_epub_navigation',
+			'variables' => array(
+				'content' => ''
+			)
 		)
 	);
 }
@@ -350,7 +356,7 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
         'pub_id' => 'urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809',
         'title' => check_plain($book->title),
         'properties' => array(
-            'modified' => date(DATE_W3C, $data['modified'])
+            'dcterms:modified' => date(DATE_W3C, $data['modified'])
         ),
         'manifest' => array(),
         'spine' => array()
@@ -549,7 +555,9 @@ function _osci_tk_epub_navigation_generate_book_toc($node, $forExport = false, $
     }
       
     $output .= "</ol></nav>";
-            
+    
+	$output = theme("osci_tk_epub_navigation", array('content' => $output));
+	
     if (!$no_cache) {
       cache_set($cache_key, $output, 'cache');              
     }
