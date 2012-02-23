@@ -253,6 +253,21 @@ function osci_tk_conservation_node_load($nodes, $types) {
 }
 
 
+function osci_tk_conservation_theme() {
+  
+    return array(
+  		'osci_tk_conservation_figure_formatter' => array(
+			'template'	=> 'templates/osci_tk_conservation_figure_formatter',
+            'file'      => 'osci_tk_conservation.templates.inc',
+			'variables' => array(
+				'item'	=> array()
+			),
+		),		
+	);
+  
+}
+
+
 function osci_tk_conservation_view($nid)
 {
 	drupal_add_library('system', 'ui.slider');

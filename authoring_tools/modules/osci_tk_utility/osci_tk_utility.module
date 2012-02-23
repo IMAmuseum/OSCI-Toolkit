@@ -1,5 +1,73 @@
 <?php
 
+
+/**
+ * Create the content for a figure based on the asset type
+ */
+function osci_tk_utility_osci_tk_figure_content($args) {
+  
+  $asset = node_load($args['item']['asset_reference']); 
+  
+  switch($asset->type) {
+    case 'video_asset':
+      $url = file_create_url($asset->field_video_file['und'][0]['uri']);
+      return "<video src='$url'><p>Fallback thumbnail</p></video>";
+      $view = node_view($asset);
+      return drupal_render($view);
+      break;
+    case 'conservation_asset':
+    case 'iip_asset':
+    case 'image_asset':
+    case 'svg_asset':
+      // TODO: Handle content resources appropriately
+      /*
+      if ($args['item']['export']) {
+        //$args['item']['content_url'] = _osci_tk_epub_node_figure_filename($node, $delta);
+      } else {
+        //$args['item']['content_url'] = _osci_tk_epub_node_figure_url($node->nid, $delta);
+      }
+      */
+      if (!isset($args['item']['content_url'])) {
+        $args['item']['content_url'] = 'foo';
+      }
+      return theme('osci_tk_conservation_figure_formatter', array('item' => $args['item']));
+            
+  }  
+  
+  return '<p>Could not generate figure content</p>';  
+  
+}
+
+
+/**
+ * Return resources associated with the figure
+ * @param array $args
+ * 				Set $args['type'] to 'url' for absolute url, otherwise drupal uri is returned
+ */
+function osci_tk_utility_osci_tk_figure_resources($args) {
+  
+  $asset = node_load($args['asset_id']);
+  
+  $items = array();
+  
+  switch($asset->type) {
+    case 'video_asset':
+      $item = array(
+      	'media-type' => 'video',
+        'href' => $asset->field_video_file['und'][0]['uri']
+      );
+      if ($args['type'] = 'url') {
+        $item['href'] = file_create_url($item['href']);
+      }
+      $items[] = $item;
+        
+  }
+  
+  return $items;  
+  
+}
+
+
 /**
  * hook_theme implementation
  * @return array

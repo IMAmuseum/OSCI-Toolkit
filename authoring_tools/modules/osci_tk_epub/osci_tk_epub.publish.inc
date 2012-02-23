@@ -173,7 +173,7 @@ function osci_tk_epub_publish_content_document($epubFile, $content, &$context)
 	if ($epub)
 	{
 	    $node = node_load($content['nid']);
-		$fileName = 'OEBPS/ ' . _osci_tk_epub_node_content_filename($node);
+		$fileName = 'OEBPS/' . _osci_tk_epub_node_content_filename($node);
 		$epub->addFromString($fileName, _osci_tk_epub_generate_content_document($node, true, true));
 		$epub->close();
 		

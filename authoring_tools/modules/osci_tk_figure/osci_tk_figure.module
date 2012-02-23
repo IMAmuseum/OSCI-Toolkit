@@ -39,7 +39,7 @@ function osci_tk_figure_theme()
 			'variables' => array(
 				'item'	=> array()
 			),
-		),
+		), 		 
 		'field__field_figure' => array(
 			'template' => 'templates/field__field_figure',
 			'variables' => array()

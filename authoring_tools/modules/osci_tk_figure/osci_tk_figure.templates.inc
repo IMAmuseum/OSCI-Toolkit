@@ -2,7 +2,8 @@
 
 function osci_tk_figure_preprocess_osci_tk_figure_formatter(&$vars) {
   
-  // TODO: invoke the hook to generate content for the asset  
-  $vars['figure_content'] = "<div class='figure_content'>Figure Content</div>";  
+  $content = module_invoke_all('osci_tk_figure_content', array('item' => $vars['item']));
+  
+  $vars['figure_content'] = implode('', $content);
   
 }
