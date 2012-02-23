@@ -266,7 +266,7 @@ function osci_tk_epub_render_navigation_document($node)
  */
 function osci_tk_epub_render_package_document($node)
 {
-  $dev = false;  
+  $dev = true;  
   $output = _osci_tk_epub_generate_package_document($node, false, $dev);
   if ($dev) return $output;
   
@@ -437,13 +437,25 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
       );
     }
     
-    // Add figures to the manifest
-    foreach($data['figures'] as $figure) {
-      $arguments['manifest'][] = array(
-        'id' => "figure-{$figure['nid']}-{$figure['index']}",
-        'href' => $forExport ? $figure['filename'] : $figure['url'],
-        'media-type' => 'application/xhtml+xml',
-      );      
+    // Add figure resources to the manifest
+    foreach($data['figures'] as $figure) {      
+      
+      if (isset($figure['content-doc'])) {
+        $arguments['manifest'][] = array(
+          'id' => "figure-{$figure['nid']}-{$figure['index']}",
+          'href' => $forExport ? $figure['content-doc']['filename'] : $figure['content-doc']['url'],
+          'media-type' => $figure['content-doc']['media-type'],        
+        );
+      }
+      
+      foreach($figure['resources'] as $index => $item) {
+        $arguments['manifest'][] = array(
+          'id' => "figure-{$figure['nid']}-{$figure['index']}-$index",
+          'href' => $forExport ? $item['filename'] : $item['url'],
+          'media-type' => $item['media-type'],
+        );      
+      }
+      
     }
     
     // TODO: Additional stuff for the manifest (figures, etc.)    
@@ -670,13 +682,30 @@ function _osci_tk_epub_package_build_data($tree_node, &$data) {
 	);
     
     if (isset($node->field_figure['und'])) {
+      
       foreach($node->field_figure['und'] as $index => $figure) {
-        $data['figures'][] = array(
-          'nid' => $nid,
-          'index' => $index,
-		  'filename' => _osci_tk_epub_node_figure_filename($node, $index),
-		  'url' => _osci_tk_epub_node_figure_url($nid, $index)
-        );
+
+        // Invoke the hook to get information about resources for this figure        
+        $resources = module_invoke_all('osci_tk_figure_resources', $figure);        
+        
+        $figure_data = array(
+        	'nid' => $nid,
+        	'index' => $index,
+        	'resources' => $resources['items'],
+        );                
+        
+        // If the figure has a media type for the content document, add it as a resource
+        // Otherwise, a content document is assumed not to be required for the figure
+        if (isset($resources['content_doc_media_type'])) {
+          $figure_data['content-doc'] = array(
+            'media-type' => $resources['content_doc_media_type'],
+    	    'filename' => _osci_tk_epub_node_figure_filename($node, $index),
+    		'url' => _osci_tk_epub_node_figure_url($nid, $index)          
+          );          
+        }         
+
+        $data['figures'][] = $figure_data;
+        
       }
     }
   
