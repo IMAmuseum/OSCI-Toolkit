@@ -18,7 +18,7 @@
 		$(this).ajaxComplete(function(e, xhr, settings) {
 			if (settings && settings.extraData && settings.extraData._triggering_element_name && settings.extraData._triggering_element_name == 'field_footnote_add_more')
 			{
-				var numFootnotes = window.osci_tk_new_footnotes.length;
+				var numFootnotes = window.osci_tk_new_footnotes ? window.osci_tk_new_footnotes.length : 0;
 				if (numFootnotes)
 				{
 					var footnoteContainers = $(".field-name-field-footnote").find(".fieldset-tab-content"),
