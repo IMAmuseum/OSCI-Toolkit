@@ -57,8 +57,7 @@ function osci_tk_epub_node_insert($node) {
   if (!isset($node->book) || (!$node->book['bid'])) return;
   
   // Pre-generate epub content
-  _osci_tk_epub_generate_navigation_document($node);
-  _osci_tk_epub_generate_package_document($node);  
+  _osci_tk_epub_generate_node_documents($node);
   
 }
 
@@ -70,11 +69,18 @@ function osci_tk_epub_node_submit($node, $form, &$form_state)
 {
   
   if (isset($node->book) && $node->book['bid']) {
-    
+
     // Clearing the epub caches here will cause the output to be regenerated 
     // even if the node is being removed from the book
     cache_set("osci_epub_package_{$node->book['bid']}", null);     
     cache_set("osci_epub_toc_{$node->book['bid']}", null);  
+    cache_set("osci_epub_content_{$node->nid}", null);
+    
+    if (isset($node->field_figure['und'])) {
+      foreach ($node->field_figure['und'] as $index => $value) {
+        cache_set("osci_epub_figure_{$node->nid}-$index", null);
+      }      
+    }    
     
   }
   
@@ -87,10 +93,9 @@ function osci_tk_epub_node_submit($node, $form, &$form_state)
 function osci_tk_epub_node_update($node) {
 
   if (!isset($node->book) || (!$node->book['bid'])) return;
-  
+
   // Pre-generate epub content
-  _osci_tk_epub_generate_navigation_document($node);
-  _osci_tk_epub_generate_package_document($node);    
+  _osci_tk_epub_generate_node_documents($node);
   
 }
 
@@ -193,15 +198,25 @@ function osci_tk_epub_render($nid)
 	$osci_tk_view_mode = 'epub';
 	
 	$dev = false;
-	$output = _osci_tk_epub_generate_content_document($nid, false, $dev);
+	$node = node_load($nid);
+	$output = _osci_tk_epub_generate_content_document($node, false, $dev);
 	if ($dev) return $output;
 	print $output;
 	drupal_exit(); 
 }
 
-function _osci_tk_epub_generate_content_document($nid, $forExport = false, $noCache = false)
+function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_cache = false)
 {
-	$node = node_load($nid);
+    
+    /***** Check the cache *****/
+    if (!$no_cache) {
+      $cache_key = "osci_epub_content_{$node->nid}"; 
+      $output = _osci_tk_epub_check_cache($cache_key);    
+      if (!is_null($output)) {
+        return $output; 
+      }    
+    }  
+  
 	$view = node_view($node, 'epub');
 	
 	$fields = element_children($view);
@@ -227,7 +242,14 @@ function _osci_tk_epub_generate_content_document($nid, $forExport = false, $noCa
 		}
 	}
 	
-	return drupal_render($view);
+	$output = drupal_render($view);
+	
+    if (!$no_cache) {
+      cache_set($cache_key, $output, 'cache');              
+    }  
+    
+    return $output;	
+    
 }
 
 
@@ -276,11 +298,23 @@ function osci_tk_epub_render_figure_content_document($node, $index) {
 	drupal_exit();
 }
 
-function _osci_tk_epub_generate_figure_document($node, $index, $noCache = false)
+function _osci_tk_epub_generate_figure_document($node, $index, $no_cache = false)
 {
+  
+    /***** Check the cache *****/
+    if (!$no_cache) {
+      $cache_key = "osci_epub_figure_{$node->nid}-$index"; 
+      $output = _osci_tk_epub_check_cache($cache_key);    
+      if (!is_null($output)) {
+        return $output; 
+      }    
+    }      
+  
 	// prepare the figure from the section's figure field node reference
-	$figure = $node->field_figure['und'][$fig_index];
+	$figure = $node->field_figure['und'][$index];
 	$figure['node'] = node_load($figure['asset_reference']);
+	
+	$result = module_invoke_all('osci_tk_generate_figure_document');	
 	
 	// if this isn't a conservation asset, fake the funk and make it look like
 	// it references itself as one
@@ -291,6 +325,10 @@ function _osci_tk_epub_generate_figure_document($node, $index, $noCache = false)
 	// pass the prepared figure to the theme function which wraps it in 
 	// a valid epub3 content document
 	$themed_figure = theme('epub_figure_content_document', $figure);
+	
+    if (!$no_cache) {
+      cache_set($cache_key, $themed_figure, 'cache');              
+    }  	
 	
 	// output the themed figure
 	return $themed_figure;
@@ -334,6 +372,27 @@ function _osci_tk_epub_generate_navigation_document($node, $forExport = false, $
 }
 
 
+/**
+ * Generate all documents related to a node. Used to pre-load the cache.
+ */
+function _osci_tk_epub_generate_node_documents($node) {
+  
+    _osci_tk_epub_generate_navigation_document($node);
+    _osci_tk_epub_generate_package_document($node);  
+    _osci_tk_epub_generate_content_document($node);  
+  
+    /*
+     * TODO: resolve _osci_tk_conservation_get_conservation_html() being undefined
+    if (isset($node->field_figure['und'])) {
+        foreach ($node->field_figure['und'] as $index => $value) {
+            _osci_tk_epub_generate_figure_document($node, $index);
+        }      
+    } 
+    */       
+    
+}
+
+
 function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_cache = false) {
       // Find the corresponding book for this node
     if (!isset($node->book)) return null;    
@@ -343,7 +402,7 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
       $cache_key = "osci_epub_package_{$node->book['bid']}"; 
       $output = _osci_tk_epub_check_cache($cache_key);    
       if (!is_null($output)) {
-        print $output; drupal_exit();
+        return $output; 
       }    
     }
     

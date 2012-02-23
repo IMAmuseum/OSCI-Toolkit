@@ -40,13 +40,14 @@
         /**************************************************
          * Figure Preview
          */
+		// live events for the figure fields
         $('.figure_reference_field').live({
         	'keyup': function(event) {
 	        	// wait a second to see if anything else was pressed
 	        	var origVal = event.target.value;
 	        	setTimeout(function() {
 	        		var currentVal = event.target.value;
-	        		if (currentVal == origVal && currentVal != "" && currentVal == parseInt(currentVal)) {
+	        		if (currentVal == origVal && currentVal != "" && currentVal == parseInt(currentVal, 10)) {
 	        			// remove figure options and get new preview
 	            		jQuery(event.target).parents('.fieldset-wrapper').find('.figure_options').val("{}");
 	            		getPreviewDiv(currentVal, event.target);
@@ -57,7 +58,7 @@
 	        'blur': function(event) {
 	        	setTimeout( function() {
 	        		var currentVal = event.target.value;
-	            	if (currentVal == parseInt(currentVal)) {
+	            	if (currentVal == parseInt(currentVal, 10)) {
 	            		// remove figure options and get new preview
 	            		jQuery(event.target).parents('.fieldset-wrapper').find('.figure_options').val("{}");
 	            		getPreviewDiv(currentVal, event.target);
@@ -66,6 +67,13 @@
 	        }
         });
         
+        // for the figure reference fields already populated on page load
+        $('.figure_reference_field').each(function() {
+        	var nid = parseInt($(this).val(), 10);
+        	if ($(this).val() == nid) {
+        		getPreviewDiv(nid, this);
+        	}
+        })
     });
 	
 })(jQuery);

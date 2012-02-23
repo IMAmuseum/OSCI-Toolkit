@@ -35,6 +35,7 @@ function osci_tk_figure_theme()
 	return array(
 		'osci_tk_figure_formatter' => array(
 			'template'	=> 'templates/osci_tk_figure_formatter',
+	        'file'      => 'osci_tk_figure.templates.inc',
 			'variables' => array(
 				'item'	=> array()
 			),
