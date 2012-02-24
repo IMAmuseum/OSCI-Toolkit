@@ -41,29 +41,48 @@ function osci_tk_utility_osci_tk_figure_content($args) {
 
 /**
  * Return resources associated with the figure
- * @param array $args
- * 				Set $args['type'] to 'url' for absolute url, otherwise drupal uri is returned
  */
-function osci_tk_utility_osci_tk_figure_resources($args) {
+function osci_tk_utility_osci_tk_figure_resources($figure) {
   
-  $asset = node_load($args['asset_id']);
+  dd('figure_resources');
   
-  $items = array();
+  $result = array(
+  	'items' => array(), 
+  	'content_doc_media_type' => null
+  );
+  
+  $asset = node_load($figure['asset_reference']);  
+  if (empty($asset)) return $result;
   
   switch($asset->type) {
     case 'video_asset':
+      // Leave the content doc media type as null to indicate there is none
       $item = array(
       	'media-type' => 'video',
-        'href' => $asset->field_video_file['und'][0]['uri']
+        'filename' => $asset->field_video_file['und'][0]['uri'],
       );
-      if ($args['type'] = 'url') {
-        $item['href'] = file_create_url($item['href']);
-      }
-      $items[] = $item;
-        
+      $item['url'] = file_create_url($item['filename']);
+      $result['items'][] = $item;
+      return $result;
+    case 'conservation_asset':
+      $result['content_doc_media_type'] = 'application/osci-tk-conservation-figure';
+      // TODO: add files?
+      return $result;
+    case 'iip_asset':
+      $result['content_doc_media_type'] = 'application/osci-tk-iip-figure';
+      // TODO: add files?     
+      return $result;
+    case 'image_asset':
+      $result['content_doc_media_type'] = 'application/osci-tk-image-figure';
+      // TODO: add files?     
+      return $result;
+    case 'svg_asset':
+      $result['content_doc_media_type'] = 'application/osci-tk-svg-figure';
+      // TODO: add files?      
+      return $result;
   }
   
-  return $items;  
+  return null;  
   
 }
 

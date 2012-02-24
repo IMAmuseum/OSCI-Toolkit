@@ -115,7 +115,8 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 		        'manifest' 		=> array(),
 		        'spine' 		=> array()
 		    ),
-		    'template' => 'templates/epub_package'
+		    'template' => 'templates/epub_package',
+			'file' => 'osci_tk_epub.templates.inc',
 		),
 		'epub_figure_content_document' => array(
 			'template' 	=> 'templates/epub_figure_content_document',
@@ -303,21 +304,13 @@ function _osci_tk_epub_generate_figure_document($node, $index, $no_cache = false
       }    
     }      
   
-	// prepare the figure from the section's figure field node reference
-	$figure = $node->field_figure['und'][$index];
-	$figure['node'] = node_load($figure['asset_reference']);
-	
-	$result = module_invoke_all('osci_tk_generate_figure_document');	
-	
-	// if this isn't a conservation asset, fake the funk and make it look like
-	// it references itself as one
-	if ($figure['node']->type != "conservation_asset") {
-		$figure['node']->field_assets['und'][0]['nid'] = $figure['node']->nid;
-	}
+	$view = node_view($node, 'epub');
+	// TODO: Handle the export case?	
+	$content = drupal_render($view['field_figure'][$index]);
 	
 	// pass the prepared figure to the theme function which wraps it in 
 	// a valid epub3 content document
-	$themed_figure = theme('epub_figure_content_document', $figure);
+	$themed_figure = theme('epub_figure_content_document', array('figure_markup' => $content));
 	
     if (!$no_cache) {
       cache_set($cache_key, $themed_figure, 'cache');              
@@ -325,11 +318,6 @@ function _osci_tk_epub_generate_figure_document($node, $index, $no_cache = false
 	
 	// output the themed figure
 	return $themed_figure;
-}
-
-function osci_tk_epub_preprocess_epub_figure_content_document(&$vars) {
-	// render the conservation asset into markup for the template
-	$vars['figure_markup'] = _osci_tk_conservation_get_conservation_html($vars['asset_reference']);
 }
 
 function osci_tk_epub_preprocess_epub_figure_link(&$vars) {
@@ -399,17 +387,16 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
       }    
     }
     
-    $book = node_load($node->book['bid']);    
+    $book = node_load($node->book['bid']);
+	
     /***** Find all of the resources for this book *****/	
 	$data = _osci_tk_epub_get_book_resources($book);
 
+	$metadata = _osci_tk_epub_get_book_metadata($book, $data);
+	
     // Should this data structure be passed through _osci_tk_epub_package_build_data instead?
     $arguments = array(
-        'pub_id' => 'urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809',
-        'title' => check_plain($book->title),
-        'properties' => array(
-            'dcterms:modified' => date(DATE_W3C, $data['modified'])
-        ),
+		'metadata' => $metadata,
         'manifest' => array(),
         'spine' => array()
     );
@@ -423,6 +410,17 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
       'media-type' => 'application/xhtml+xml',
       'properties' => 'nav'
     );    
+
+	//Cover Image
+	if (isset($book->field_osci_tk_cover_image))
+	{
+		$arguments['manifest'][] = array(
+			'id' => 'cover-image',
+			'href' => $forExport ? 'images/' . $book->field_osci_tk_cover_image['und'][0]['filename'] : file_create_url($book->field_osci_tk_cover_image['und'][0]['uri']),
+			'media-type' => $book->field_osci_tk_cover_image['und'][0]['filemime'],
+			'properties' => 'cover-image'
+		);
+	}
   
     // Content documents go into the manifest and the spine
     foreach($data['content_nids'] as $content) {
@@ -437,13 +435,25 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
       );
     }
     
-    // Add figures to the manifest
-    foreach($data['figures'] as $figure) {
-      $arguments['manifest'][] = array(
-        'id' => "figure-{$figure['nid']}-{$figure['index']}",
-        'href' => $forExport ? $figure['filename'] : $figure['url'],
-        'media-type' => 'application/xhtml+xml',
-      );      
+    // Add figure resources to the manifest
+    foreach($data['figures'] as $figure) {      
+      
+      if (isset($figure['content-doc'])) {
+        $arguments['manifest'][] = array(
+          'id' => "figure-{$figure['nid']}-{$figure['index']}",
+          'href' => $forExport ? $figure['content-doc']['filename'] : $figure['content-doc']['url'],
+          'media-type' => $figure['content-doc']['media-type'],        
+        );
+      }
+      
+      foreach($figure['resources'] as $index => $item) {
+        $arguments['manifest'][] = array(
+          'id' => "figure-{$figure['nid']}-{$figure['index']}-$index",
+          'href' => $forExport ? $item['filename'] : $item['url'],
+          'media-type' => $item['media-type'],
+        );      
+      }
+      
     }
     
     // TODO: Additional stuff for the manifest (figures, etc.)    
@@ -670,13 +680,30 @@ function _osci_tk_epub_package_build_data($tree_node, &$data) {
 	);
     
     if (isset($node->field_figure['und'])) {
+      
       foreach($node->field_figure['und'] as $index => $figure) {
-        $data['figures'][] = array(
-          'nid' => $nid,
-          'index' => $index,
-		  'filename' => _osci_tk_epub_node_figure_filename($node, $index),
-		  'url' => _osci_tk_epub_node_figure_url($nid, $index)
-        );
+
+        // Invoke the hook to get information about resources for this figure        
+        $resources = module_invoke_all('osci_tk_figure_resources', $figure);        
+        
+        $figure_data = array(
+        	'nid' => $nid,
+        	'index' => $index,
+        	'resources' => $resources['items'],
+        );                
+        
+        // If the figure has a media type for the content document, add it as a resource
+        // Otherwise, a content document is assumed not to be required for the figure
+        if (isset($resources['content_doc_media_type'])) {
+          $figure_data['content-doc'] = array(
+            'media-type' => $resources['content_doc_media_type'],
+    	    'filename' => _osci_tk_epub_node_figure_filename($node, $index),
+    		'url' => _osci_tk_epub_node_figure_url($nid, $index)          
+          );          
+        }         
+
+        $data['figures'][] = $figure_data;
+        
       }
     }
   
@@ -769,4 +796,81 @@ function _osci_tk_epub_node_content_url($nid)
 function _osci_tk_epub_node_figure_url($nid, $index)
 {
 	return url("node/{$nid}/{$index}/figure.xhtml", array('absolute' => true));
+}
+
+function _osci_tk_epub_get_book_metadata(&$book, &$data)
+{
+	$metadata = array();
+	
+	if ($book->type !== 'cover_section')
+	{
+		return $metadata;
+	}
+	
+	$lang = $book->language;
+	
+	//get the title
+	$metadata['title'] = $book->title;
+	
+	//get any subtitles
+	if (isset($book->field_osci_tk_subtitle) && isset($book->field_osci_tk_subtitle[$lang]))
+	{
+		$metadata['subtitle'] = array();
+		foreach($book->field_osci_tk_subtitle[$lang] as $k => $v)
+		{			
+			$metadata['subtitle'][] = $v['value'];
+		}
+	}
+	
+	//Get the identifier
+	if (isset($book->field_osci_tk_identifier) && 
+		isset($book->field_osci_tk_identifier[$lang]) &&
+		strlen($book->field_osci_tk_identifier[$lang][0]['value']))
+	{
+		$metadata['identifier'] = $book->field_osci_tk_identifier[$lang][0]['value'];
+	}
+	
+	//Get the creator
+	if (isset($book->field_osci_tk_creator) && isset($book->field_osci_tk_creator[$lang]))
+	{
+		$metadata['creator'] = array();
+		foreach($book->field_osci_tk_creator[$lang] as $k => $v)
+		{			
+			$metadata['creator'][] = $v['value'];
+		}
+	}
+	
+	//Get the description
+	if (isset($book->field_osci_tk_description) && 
+		isset($book->field_osci_tk_description[$lang]) &&
+		strlen($book->field_osci_tk_description[$lang][0]['value']))
+	{
+		$metadata['description'] = $book->field_osci_tk_description[$lang][0]['value'];
+	}
+	
+	//Get the publisher
+	if (isset($book->field_osci_tk_publisher) && 
+		isset($book->field_osci_tk_publisher[$lang]) &&
+		strlen($book->field_osci_tk_publisher[$lang][0]['value']))
+	{
+		$metadata['publisher'] = $book->field_osci_tk_publisher[$lang][0]['value'];
+	}
+	
+	//Get the rights
+	if (isset($book->field_osci_tk_rights) && 
+		isset($book->field_osci_tk_rights[$lang]) &&
+		strlen($book->field_osci_tk_rights[$lang][0]['value']))
+	{
+		$metadata['rights'] = $book->field_osci_tk_rights[$lang][0]['value'];
+	}
+	
+	//add date element
+	$metadata['date'] = date(DATE_W3C, $data['modified']);
+	
+	//add meta elements
+	$metadata['meta'] = array(
+		'dcterms:modified' => date(DATE_W3C, $data['modified'])
+	);
+	
+	return $metadata;
 }
