@@ -267,7 +267,7 @@ function osci_tk_epub_render_navigation_document($node)
  */
 function osci_tk_epub_render_package_document($node)
 {
-  $dev = true;  
+  $dev = false;  
   $output = _osci_tk_epub_generate_package_document($node, false, $dev);
   if ($dev) return $output;
   
