@@ -421,7 +421,7 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
 			'properties' => 'cover-image'
 		);
 	}
-  
+
     // Content documents go into the manifest and the spine
     foreach($data['content_nids'] as $content) {
       $id = 'section-' . $content['nid'];
@@ -671,41 +671,45 @@ function _osci_tk_epub_package_build_data($tree_node, &$data) {
   
     $nid = $tree_node['link']['nid'];
     $node = node_load($nid);
-  
+
     if ($node->changed > $data['modified']) $data['modified'] = $node->changed;
-    $data['content_nids'][] = array(
-		'nid' => $nid,
-		'filename' => _osci_tk_epub_node_content_filename($node),
-		'url' => _osci_tk_epub_node_content_url($nid)
-	);
     
-    if (isset($node->field_figure['und'])) {
-      
-      foreach($node->field_figure['und'] as $index => $figure) {
+	if ($tree_node['link']['plid'] !== '0')
+	{
+		$data['content_nids'][] = array(
+			'nid' => $nid,
+			'filename' => _osci_tk_epub_node_content_filename($node),
+			'url' => _osci_tk_epub_node_content_url($nid)
+		);
 
-        // Invoke the hook to get information about resources for this figure        
-        $resources = module_invoke_all('osci_tk_figure_resources', $figure);        
-        
-        $figure_data = array(
-        	'nid' => $nid,
-        	'index' => $index,
-        	'resources' => $resources['items'],
-        );                
-        
-        // If the figure has a media type for the content document, add it as a resource
-        // Otherwise, a content document is assumed not to be required for the figure
-        if (isset($resources['content_doc_media_type'])) {
-          $figure_data['content-doc'] = array(
-            'media-type' => $resources['content_doc_media_type'],
-    	    'filename' => _osci_tk_epub_node_figure_filename($node, $index),
-    		'url' => _osci_tk_epub_node_figure_url($nid, $index)          
-          );          
-        }         
+		if (isset($node->field_figure['und'])) {
 
-        $data['figures'][] = $figure_data;
-        
-      }
-    }
+			foreach($node->field_figure['und'] as $index => $figure) {
+
+				// Invoke the hook to get information about resources for this figure        
+				$resources = module_invoke_all('osci_tk_figure_resources', $figure);        
+
+				$figure_data = array(
+					'nid' => $nid,
+					'index' => $index,
+					'resources' => $resources['items'],
+				);                
+
+				// If the figure has a media type for the content document, add it as a resource
+				// Otherwise, a content document is assumed not to be required for the figure
+				if (isset($resources['content_doc_media_type'])) {
+					$figure_data['content-doc'] = array(
+						'media-type' => $resources['content_doc_media_type'],
+						'filename' => _osci_tk_epub_node_figure_filename($node, $index),
+						'url' => _osci_tk_epub_node_figure_url($nid, $index)          
+					);          
+				}         
+
+				$data['figures'][] = $figure_data;
+
+			}
+		}
+	}
   
     /*** Recurse if this node has children ***/
     if (!empty($tree_node['below'])) {
