@@ -115,7 +115,8 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 		        'manifest' 		=> array(),
 		        'spine' 		=> array()
 		    ),
-		    'template' => 'templates/epub_package'
+		    'template' => 'templates/epub_package',
+			'file' => 'osci_tk_epub.templates.inc',
 		),
 		'epub_figure_content_document' => array(
 			'template' 	=> 'templates/epub_figure_content_document',
@@ -266,7 +267,7 @@ function osci_tk_epub_render_navigation_document($node)
  */
 function osci_tk_epub_render_package_document($node)
 {
-  $dev = false;  
+  $dev = true;  
   $output = _osci_tk_epub_generate_package_document($node, false, $dev);
   if ($dev) return $output;
   
@@ -386,17 +387,16 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
       }    
     }
     
-    $book = node_load($node->book['bid']);    
+    $book = node_load($node->book['bid']);
+	
     /***** Find all of the resources for this book *****/	
 	$data = _osci_tk_epub_get_book_resources($book);
 
+	$metadata = _osci_tk_epub_get_book_metadata($book, $data);
+	
     // Should this data structure be passed through _osci_tk_epub_package_build_data instead?
     $arguments = array(
-        'pub_id' => 'urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809',
-        'title' => check_plain($book->title),
-        'properties' => array(
-            'dcterms:modified' => date(DATE_W3C, $data['modified'])
-        ),
+		'metadata' => $metadata,
         'manifest' => array(),
         'spine' => array()
     );
@@ -410,6 +410,17 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
       'media-type' => 'application/xhtml+xml',
       'properties' => 'nav'
     );    
+
+	//Cover Image
+	if (isset($book->field_osci_tk_cover_image))
+	{
+		$arguments['manifest'][] = array(
+			'id' => 'cover-image',
+			'href' => $forExport ? 'images/' . $book->field_osci_tk_cover_image['und'][0]['filename'] : file_create_url($book->field_osci_tk_cover_image['und'][0]['uri']),
+			'media-type' => $book->field_osci_tk_cover_image['und'][0]['filemime'],
+			'properties' => 'cover-image'
+		);
+	}
   
     // Content documents go into the manifest and the spine
     foreach($data['content_nids'] as $content) {
@@ -785,4 +796,81 @@ function _osci_tk_epub_node_content_url($nid)
 function _osci_tk_epub_node_figure_url($nid, $index)
 {
 	return url("node/{$nid}/{$index}/figure.xhtml", array('absolute' => true));
+}
+
+function _osci_tk_epub_get_book_metadata(&$book, &$data)
+{
+	$metadata = array();
+	
+	if ($book->type !== 'cover_section')
+	{
+		return $metadata;
+	}
+	
+	$lang = $book->language;
+	
+	//get the title
+	$metadata['title'] = $book->title;
+	
+	//get any subtitles
+	if (isset($book->field_osci_tk_subtitle) && isset($book->field_osci_tk_subtitle[$lang]))
+	{
+		$metadata['subtitle'] = array();
+		foreach($book->field_osci_tk_subtitle[$lang] as $k => $v)
+		{			
+			$metadata['subtitle'][] = $v['value'];
+		}
+	}
+	
+	//Get the identifier
+	if (isset($book->field_osci_tk_identifier) && 
+		isset($book->field_osci_tk_identifier[$lang]) &&
+		strlen($book->field_osci_tk_identifier[$lang][0]['value']))
+	{
+		$metadata['identifier'] = $book->field_osci_tk_identifier[$lang][0]['value'];
+	}
+	
+	//Get the creator
+	if (isset($book->field_osci_tk_creator) && isset($book->field_osci_tk_creator[$lang]))
+	{
+		$metadata['creator'] = array();
+		foreach($book->field_osci_tk_creator[$lang] as $k => $v)
+		{			
+			$metadata['creator'][] = $v['value'];
+		}
+	}
+	
+	//Get the description
+	if (isset($book->field_osci_tk_description) && 
+		isset($book->field_osci_tk_description[$lang]) &&
+		strlen($book->field_osci_tk_description[$lang][0]['value']))
+	{
+		$metadata['description'] = $book->field_osci_tk_description[$lang][0]['value'];
+	}
+	
+	//Get the publisher
+	if (isset($book->field_osci_tk_publisher) && 
+		isset($book->field_osci_tk_publisher[$lang]) &&
+		strlen($book->field_osci_tk_publisher[$lang][0]['value']))
+	{
+		$metadata['publisher'] = $book->field_osci_tk_publisher[$lang][0]['value'];
+	}
+	
+	//Get the rights
+	if (isset($book->field_osci_tk_rights) && 
+		isset($book->field_osci_tk_rights[$lang]) &&
+		strlen($book->field_osci_tk_rights[$lang][0]['value']))
+	{
+		$metadata['rights'] = $book->field_osci_tk_rights[$lang][0]['value'];
+	}
+	
+	//add date element
+	$metadata['date'] = date(DATE_W3C, $data['modified']);
+	
+	//add meta elements
+	$metadata['meta'] = array(
+		'dcterms:modified' => date(DATE_W3C, $data['modified'])
+	);
+	
+	return $metadata;
 }

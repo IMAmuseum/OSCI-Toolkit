@@ -5,6 +5,16 @@
  */
 
 /**
+ * Implements hook_ctools_plugin_api().
+ */
+function osci_tk_features_ctools_plugin_api() {
+  list($module, $api) = func_get_args();
+  if ($module == "field_group" && $api == "field_group") {
+    return array("version" => "1");
+  }
+}
+
+/**
  * Implements hook_image_default_styles().
  */
 function osci_tk_features_image_default_styles() {
@@ -45,6 +55,14 @@ function osci_tk_features_node_info() {
       'name' => t('Conservation Asset'),
       'base' => 'node_content',
       'description' => t('A collection of other assets pulled together in a multi-layer display'),
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
+    'cover_section' => array(
+      'name' => t('Cover Section'),
+      'base' => 'node_content',
+      'description' => t('A book cover section provides fields to store metadata about the book.'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',
