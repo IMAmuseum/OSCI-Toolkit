@@ -2,39 +2,20 @@
 	function figureDialog(editor) {
 		var buttons = [ CKEDITOR.dialog.okButton, CKEDITOR.dialog.cancelButton ];
 		var figures = $('.figure_identifier');
-		var items = [['', '']];
+		var items = [];
 		
 		figures.each(function(idx) {
 			var $this = $(this);
 			items.push([(idx) + ' (' + $this.data("figId") + ')', $this.data("figId")]);
 		});
+		items.push(['New Figure', 'new']);
 		
 		var elements = [{
-			type:           'text',
-			id:             'figureId',
-			label:          'Enter a figure ID',
-			labelLayout:    'horizontal'
-		},
-		{
-			type:           'html',
-			html:           '<b>OR</b>'
-		},
-		{
 			type:           'select',
-			id:             'existingFigure',
+			id:             'figureId',
 			items:          items,
-			label:          'Select an existing figure',
+			label:          'Select a figure',
 			labelLayout:    'horizontal'
-		},
-		{
-			type:           'html',
-			html:           '<b>OR</b>'
-		},
-		{
-			type:           'button',
-			id:             'addNewButton',
-			label:          'Add New Figure',
-			onClick:        addNewFigure
 		}];
 		
 		var contents = [{
@@ -58,21 +39,28 @@
 		var editor = this.getParentEditor(),
 			dialog = CKEDITOR.dialog.getCurrent(),
 			figureId = dialog.getValueOf('figure', 'figureId'),
-			existingFigure = dialog.getValueOf('figure', 'existingFigure'),
 			replace;
 	
-		if (existingFigure != '') {
-			replace = existingFigure;
-		} else if (figureId != '') {
-			replace = figureId;
+		if (figureId == 'new') {
+			// create new figure tab
+			$('input[id^="edit-field-figure-und-add-more"]').trigger('mousedown');
+			// wait in a loop until the tab count goes up
+			var tabCountStart = $('#fieldset-tabs-field_figure').find('ul.ui-tabs-nav').find('li').length;
+			var interval = setInterval(function() {
+				var tabCount = $('#fieldset-tabs-field_figure').find('ul.ui-tabs-nav').find('li').length;
+				if (tabCount > tabCountStart) {
+					clearInterval(interval);
+					replace = $('#fieldset-tab-edit-field-figure-und-' + (tabCount -1))
+					.find('.figure_identifier')
+					.attr('data-figid');
+					editor.insertText('[figure:' + replace + ']');
+				}
+			});
 		}
-		
-		editor.insertText('[figure:' + replace + ']');
-	}
-	
-	function addNewFigure(data) {
-		console.log(data);
-		$('<div></div>').dialog();
+		else {
+			replace = figureId;
+			editor.insertText('[figure:' + replace + ']');
+		}
 	}
 	
 	CKEDITOR.dialog.add('figure', function(editor) {

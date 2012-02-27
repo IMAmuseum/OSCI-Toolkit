@@ -85,14 +85,12 @@
 		if (existingFootnote == "new") {
 			// get footnote text
 			var newFootnote = dialog.getValueOf('footnote', 'newFootnote');
-			console.log(newFootnote, 'newFootnote');
 			// create new footnote tab
 			$('input[id^="edit-field-footnote-und-add-more"]').trigger('mousedown');
 			// wait in a loop until the tab count goes up
 			var tabCountStart = $('#fieldset-tabs-field_footnote').find('ul.ui-tabs-nav').find('li').length;
 			var interval = setInterval(function() {
 				var tabCount = $('#fieldset-tabs-field_footnote').find('ul.ui-tabs-nav').find('li').length;
-				console.log(tabCount, 'tabCount');
 				if (tabCount > tabCountStart) {
 					clearInterval(interval);
 					// populate new tab with footnote text
@@ -100,7 +98,6 @@
 					replace = $('#fieldset-tab-edit-field-footnote-und-' + (tabCount -1))
 						.find('.footnote_identifier')
 						.attr('data-fnid');
-					console.log(replace, 'replace');
 					editor.insertText('[footnote:' + replace + ']');
 				}
 			});
@@ -109,48 +106,6 @@
 			editor.insertText('[footnote:' + replace + ']');
 		}
 	}
-	
-	/*
-	function addNewFootnote(data) {
-		// count the number of footnote tabs
-		var tabCountStart = $('#fieldset-tabs-field_footnote').find('ul.ui-tabs-nav').find('li').length;
-		console.log(tabCountStart, 'tabCountStart');
-		// create new footnote tab
-		$('input[id^="edit-field-footnote-und-add-more"]').trigger('mousedown');
-		// wait in a loop until the tab count goes up
-		var interval = setInterval(function() {
-			var tabCount = $('#fieldset-tabs-field_footnote').find('ul.ui-tabs-nav').find('li').length;
-			console.log(tabCount, 'tabCount');
-			if (tabCount > tabCountStart) {
-				clearInterval(interval);
-				// new tab detected, get form contents
-				console.log('new tab detected');
-				tabContents = $('#fieldset-tab-edit-field-footnote-und-' + (tabCount - 1)).remove();
-				console.log(tabContents, 'tabContents');
-				// place into modal
-				$(tabContents).dialog({
-					'title':   'Add a Footnote',
-					'zIndex':  10011,
-					'modal':   true,
-					'width':   700,
-					'buttons': {
-						'Ok': function() {
-							console.log(this);
-						},
-						'Cancel': function() {
-							console.log(this);
-						}
-					},
-				});
-				
-			}
-		}, 1000)
-		
-		
-		// $('<div></div>').dialog(dialogOptions);
-		
-	}
-	*/
 	
 	CKEDITOR.dialog.add('footnote', function(editor) {
 		return footnoteDialog(editor);
