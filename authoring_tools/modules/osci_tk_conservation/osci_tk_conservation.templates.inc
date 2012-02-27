@@ -16,6 +16,5 @@ function osci_tk_conservation_preprocess_osci_tk_conservation_figure_formatter(&
         $vars['media_type'] = 'application/osci-tk-conservation-figure'; break;      
       default:
         $vars['media_type'] = 'application/xhtml+xml';
-    }  
-    
+    }
 }
