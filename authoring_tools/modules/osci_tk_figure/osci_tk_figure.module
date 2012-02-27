@@ -355,6 +355,20 @@ function osci_tk_figure_node_submit($form, &$form_state)
 	}
 }
 
+
+function osci_tk_figure_node_view($node, $view_mode, $langcode) {
+  
+  if (($node->type == 'section') && ($view_mode == 'full')) {
+
+    // Add the authoring figure preview UI
+    drupal_add_js(drupal_get_path('module', 'osci_tk_figure') . '/js/figure_preview.js');
+    
+  }
+  
+  
+}
+
+
 function osci_tk_figure_preview($nid) {
 	// get node and ensure it's a valid figure type
 	$node = node_load($nid);
