@@ -83,11 +83,31 @@
 		// if the user selected new, create a new footnote, populate it, and change 'replace'
 		// to the proper footnote reference
 		if (existingFootnote == "new") {
+			// get footnote text
 			var newFootnote = dialog.getValueOf('footnote', 'newFootnote');
-			console.log(newFootnote, 'newFootnote')
-			
+			console.log(newFootnote, 'newFootnote');
+			// create new footnote tab
+			$('input[id^="edit-field-footnote-und-add-more"]').trigger('mousedown');
+			// wait in a loop until the tab count goes up
+			var tabCountStart = $('#fieldset-tabs-field_footnote').find('ul.ui-tabs-nav').find('li').length;
+			var interval = setInterval(function() {
+				var tabCount = $('#fieldset-tabs-field_footnote').find('ul.ui-tabs-nav').find('li').length;
+				console.log(tabCount, 'tabCount');
+				if (tabCount > tabCountStart) {
+					clearInterval(interval);
+					// populate new tab with footnote text
+					CKEDITOR.instances['edit-field-footnote-und-' + (tabCount -1) + '-value'].setData(newFootnote);
+					replace = $('#fieldset-tab-edit-field-footnote-und-' + (tabCount -1))
+						.find('.footnote_identifier')
+						.attr('data-fnid');
+					console.log(replace, 'replace');
+					editor.insertText('[footnote:' + replace + ']');
+				}
+			});
 		}
-		editor.insertText('[footnote:' + replace + ']');
+		else {
+			editor.insertText('[footnote:' + replace + ']');
+		}
 	}
 	
 	/*
