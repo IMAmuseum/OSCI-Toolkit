@@ -80,6 +80,8 @@
 		var existingFootnote = dialog.getValueOf('footnote', 'existingFootnote');
 		var replace = existingFootnote;
 		
+		// hide the footnote textarea so it doesn't show up on next button press
+		$('.newFootnote').hide();
 		// if the user selected new, create a new footnote, populate it, and change 'replace'
 		// to the proper footnote reference
 		if (existingFootnote == "new") {

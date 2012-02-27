@@ -22,7 +22,7 @@
 			id:             'figure',
 			label:          'Add figure',
 			elements:       elements
-		}] 
+		}]; 
 		
 		return {
 			title:          'Add a figure',
@@ -51,9 +51,16 @@
 				if (tabCount > tabCountStart) {
 					clearInterval(interval);
 					replace = $('#fieldset-tab-edit-field-figure-und-' + (tabCount -1))
-					.find('.figure_identifier')
-					.attr('data-figid');
+						.find('.figure_identifier')
+						.attr('data-figid');
 					editor.insertText('[figure:' + replace + ']');
+					// ensure the figures vert tab is selected
+					$('li.vertical-tab-button').each(function() {
+						var tab = $(this);
+						if (tab.find('strong').text() == 'Figures') {
+							tab.find('a').click();
+						}
+					});
 				}
 			});
 		}
