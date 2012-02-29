@@ -1,4 +1,4 @@
-name = "Citations"
+name = "Citations API"
 description = "Provides the ability to retrieve citation data for body copy text"
 package = "OSCI ToolKit"
 version = "1.0"

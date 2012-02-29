@@ -3,14 +3,14 @@
 function osci_tk_citations_menu() {
 	$items = array();
 
-	$items['citations'] = array(
+	$items['api/citations'] = array(
 		'title'			 	=> t('Process a citation request'),
 		'page callback'	 	=> 'osci_tk_citations_request',
 		'access callback'	=> TRUE
 	);
 
-	$items['citations/demo'] = array(
-		'title'			 	=> t('Demonstrate Citation Functionality'),
+	$items['api/citations/demo'] = array(
+		'title'			 	=> t('Demonstrate Citation API'),
 		'page callback'		=> 'drupal_get_form',
 		'page arguments' 	=> array('osci_tk_citations_demo'),
 		'access callback'	=> TRUE

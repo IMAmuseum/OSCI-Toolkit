@@ -19,7 +19,7 @@ jQuery(document).ready(function() {
 
 function retrieve_note(data, target) {
 	var $ = jQuery;
-	var endpoint = Drupal.settings.basePath + 'citations/';
+	var endpoint = Drupal.settings.basePath + 'api/citations/';
 	
 	$.get(endpoint, data, function(data) {
 		target.html(data);

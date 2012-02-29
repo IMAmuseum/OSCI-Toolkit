@@ -5,14 +5,14 @@ function osci_tk_notes_menu() {
 	global $user;
 	$items = array();
 	
-	$items['notes'] = array(
+	$items['api/notes'] = array(
 		'title'			 	=> t('Process a note request'),
 		'page callback'	 	=> 'osci_tk_notes_request',
 		'access callback' 	=> array($user->uid)
 	);
 	
-	$items['notes/demo'] = array(
-		'title'			 	=> t('Demonstrate Notes Functionality'),
+	$items['api/notes/demo'] = array(
+		'title'			 	=> t('Demonstrate Notes API'),
 		'page callback'		=> 'drupal_get_form',
 		'page arguments' 	=> array('osci_tk_notes_demo'),
 		'access callback'  	=> array(($user->uid == 1))

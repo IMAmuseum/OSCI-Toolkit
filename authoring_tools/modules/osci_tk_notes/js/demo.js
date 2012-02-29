@@ -34,7 +34,7 @@ jQuery(document).ready(function() {
 
 function store_note(data, target) {
 	var $ = jQuery;
-	var endpoint = Drupal.settings.basePath + 'notes/';
+	var endpoint = Drupal.settings.basePath + 'api/notes/';
 	
 	$.post(endpoint, data, function(data) {
 		target.html(data);
@@ -43,7 +43,7 @@ function store_note(data, target) {
 
 function retrieve_note(data, target) {
 	var $ = jQuery;
-	var endpoint = Drupal.settings.basePath + 'notes/';
+	var endpoint = Drupal.settings.basePath + 'api/notes/';
 	$.get(endpoint, data, function(data) {
 		target.html(data);
 	})
