@@ -209,7 +209,7 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_
         return $output; 
       }    
     }  
-  
+
 	$view = node_view($node, 'epub');
 	
 	$fields = element_children($view);
@@ -238,6 +238,14 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_
 				
 				break;
 		}
+	}
+
+	$css = _osci_tk_epub_get_book_css($node, $forExport);
+
+	drupal_static_reset('drupal_add_css');
+	if ($css)
+	{
+		drupal_add_css($css, array('type' => 'external'));
 	}
 	
 	$output = drupal_render($view);
@@ -1026,4 +1034,22 @@ function _osci_tk_epub_index_build_data($tree_node, &$data) {
         }
     }  
   
+}
+
+function _osci_tk_epub_get_book_css($node, $forExport = false)
+{
+	$book = null;
+	$css = null;
+
+	if (isset($node->book))
+	{
+		$book = node_load($node->book['bid']);
+	}
+
+	if ($book && isset($book->field_osci_tk_css) && $book->field_osci_tk_css['und'][0])
+	{
+		$css = _osci_tk_epub_asset_process_uri($book->field_osci_tk_css['und'][0]['uri'], $forExport);
+	}
+
+	return $css;
 }
