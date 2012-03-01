@@ -1,9 +1,10 @@
 var OsciTkNote = Backbone.Model.extend({
 	defaults: function() {
 		return {
-			body: null,
-			section_id: '',
-			paragraph_id: '',
+			id: null,
+			note: null,
+			section_id: null,
+			paragraph_id: null,
 			tags: []
 		};
 	},

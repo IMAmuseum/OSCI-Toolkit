@@ -75,7 +75,16 @@ function osci_tk_notes_request() {
 					}
 					
 					node_save($note);
-					print json_encode(array('success' => TRUE));
+					print json_encode(array(
+						'success' => TRUE, 
+						'note' => array(
+							'id' => $note->nid,
+							'note' => $node->body['und'][0]['value'],
+							'section_id' => $note->field_section['und'][0]['nid'],
+							'paragraph_id' => $note->field_paragraph_id['und'][0]['value'],
+							'tags' =>  implode(", ", $_POST['tags'])
+						)
+					));
 					return;
 				}
 			}
@@ -119,6 +128,7 @@ function osci_tk_notes_request() {
 				}
 				// form the returned note
 				$notes[] = array(
+					'id'			=> $row->nid,
 					'section_id' 	=> $row->sid,
 					'paragraph_id' 	=> $row->pid,
 					'note' 			=> $row->body,
