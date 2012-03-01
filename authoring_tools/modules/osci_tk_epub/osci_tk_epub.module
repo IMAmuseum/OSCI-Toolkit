@@ -646,7 +646,7 @@ function _osci_tk_epub_navigation_generate_book_toc($node, $forExport = false, $
      * the order of Content Documents in the Publication spine.
      */
     
-    $attr_fields = array('nid', 'mlid', 'length', 'subtree_length', 'editor', 'timestamp');
+    $attr_fields = array('nid', 'length', 'subtree_length', 'editor', 'timestamp');
   
     foreach($toc['children'] as $child) {
       $output .= _osci_tk_epub_navigation_generate_toc_subtree($child, $attr_fields, $forExport);
@@ -676,7 +676,16 @@ function _osci_tk_epub_navigation_generate_toc_subtree($tree_node, $attr_fields 
   $attr_data = array();
   foreach ($attr_fields as $field) {
     if (isset($tree_node['data'][$field])) {
-      $attr_data[]= "data-$field='{$tree_node['data'][$field]}'";
+      switch($field)
+      {
+      	case 'nid':
+      	  $attr = "data-section_id";
+      	  break;
+      	default:
+      	  $attr = "data-$field";
+      }
+      
+      $attr_data[]= "$attr='{$tree_node['data'][$field]}'";
     }
     $data_str = count($attr_data) ? join(' ', $attr_data) : '';    
   }    
