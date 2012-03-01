@@ -1,3 +1,3 @@
-var OsciTkNotes = Backbone.Collection.extend({
+window.OsciTkNotes = Backbone.Collection.extend({
 	model: Note
 });

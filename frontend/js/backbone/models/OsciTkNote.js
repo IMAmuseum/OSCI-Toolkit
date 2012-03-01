@@ -1,4 +1,4 @@
-var OsciTkNote = Backbone.Model.extend({
+window.OsciTkNote = Backbone.Model.extend({
 	defaults: function() {
 		return {
 			body: null,

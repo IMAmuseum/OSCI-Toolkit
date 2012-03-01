@@ -1,4 +1,4 @@
-var OsciTkFigure = Backbone.Model.extend({
+window.OsciTkFigure = Backbone.Model.extend({
 	defaults: function() {
 		return {
 			asset_id: '',
