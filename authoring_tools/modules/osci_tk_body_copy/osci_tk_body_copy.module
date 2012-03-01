@@ -191,7 +191,7 @@ function osci_tk_body_copy_field_formatter_view($object_type, $object, $field, $
             }
             break;
     }
-    osci_tk_default
+
     return $element;
 }
 
