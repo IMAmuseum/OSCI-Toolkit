@@ -3,7 +3,8 @@ if (!OsciTk) {
 	
 	OsciTk.settings = {
 		'endpoints': {
-			'OsciTkNotes': '/api/notes/'
+			'OsciTkNotes': '/api/notes/',
+			'OsciTkNote': '/api/notes/',
 		}
 	};	
 
@@ -24,7 +25,7 @@ if (!OsciTk) {
 		OsciTk.notes = new OsciTkNotes;
 		OsciTk.notes.url = OsciTk.settings.endpoints.OsciTkNotes;
 		OsciTk.notes.fetch();		
-		
+
 		// Initilize section collection
 		// OsciTk.sections = new OsciTkSectionCollection;
 		// Retrieve sections from local storage
@@ -50,6 +51,7 @@ if (!OsciTk) {
 	OsciTk.processPackageDocument = function(package_url) {
 
 		var data = xmlToJson(loadXMLDoc(package_url));
+
 		
 	}	
 	
