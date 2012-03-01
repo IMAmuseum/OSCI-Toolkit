@@ -3,18 +3,19 @@ if (!OsciTk) {
 	
 	OsciTk.settings = {
 		'endpoints': {
-			'OsciTkNotes': '/api/notes/'
+			'OsciTkNotes': '/api/notes/',
+			'OsciTkNote': '/api/notes/',
 		}
 	};	
 
-	var OsciTk.notes = null;
-	var OsciTk.sections = null;
+	OsciTk.notes = null;
+	OsciTk.sections = null;
 	
 	/* 
 	 * document_url can either be set to the URL of an ePub document (zipped container) 
 	 * or it can be set to the URL of an ePub package document
 	 */
-	var OsciTk.document_url = null;
+	OsciTk.document_url = null;
 	
 	_.extend(OsciTk, Backbone.Events);
 	
@@ -24,8 +25,6 @@ if (!OsciTk) {
 		OsciTk.notes.url = OsciTk.settings.endpoints.OsciTkNotes;
 		OsciTk.notes.fetch();		
 
-		OsciTkNotes.fetch();
-		
 		// Initilize section collection
 		// OsciTk.sections = new OsciTkSectionCollection;
 		// Retrieve sections from local storage
@@ -48,7 +47,7 @@ if (!OsciTk) {
 	 * Loads the package document so that models can be created for components of the publication
 	 * TODO: determine how this would work if an ePub document is unzipped into memory
 	 */
-	OsciTk.loadPackageDocument(package_url) {
+	OsciTk.loadPackageDocument = function(package_url){
 		
 		
 		
