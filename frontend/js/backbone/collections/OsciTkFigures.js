@@ -1,3 +1,3 @@
 window.OsciTkFigures = Backbone.Collection.extend({
-	model: Figure
+	model: OsciTkFigure
 });
