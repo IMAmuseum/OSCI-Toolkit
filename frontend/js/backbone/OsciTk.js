@@ -51,7 +51,21 @@ if (!OsciTk) {
 	OsciTk.processPackageDocument = function(package_url) {
 
 		var data = xmlToJson(loadXMLDoc(package_url));
+		
+		var spine = data.package.spine;
+		
+		if (spine.length = 0) return; // Invertabrate!
+		
+		var sections = new OsciTkSections(null, data.package['unique-identifier']);
 
+		// For now, assuming that each item in the spine is a section
+		for (var i=0; i<spine.itemref.length; i++) {
+			
+			sections.create({
+				section_id: spine.itemref[i].idref
+			});
+
+		}
 		
 	}	
 	

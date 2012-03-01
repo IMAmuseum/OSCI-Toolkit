@@ -6,8 +6,10 @@
   <manifest>
     <item id="nav" href="sample/nav.xhtml"  media-type="application/xhtml+xml" properties='nav' ></item>
     <item id="section-1" href="sample/section-1.xhtml" media-type="application/xhtml+xml"  ></item>
+    <item id="section-2" href="sample/section-2.xhtml" media-type="application/xhtml+xml"  ></item>    
   </manifest>
   <spine>
     <itemref idref='section-1'></itemref>
+    <itemref idref='section-2'></itemref>    
   </spine>
 </package>
