@@ -366,11 +366,11 @@ function osci_tk_figure_node_view($node, $view_mode, $langcode) {
   if (($node->type == 'section') && ($view_mode == 'full')) {
 
     // Add the authoring figure preview UI
+    drupal_add_library('system', 'ui.dialog');
     drupal_add_js(drupal_get_path('module', 'osci_tk_figure') . '/js/figure_preview.js');
     
   }
-  
-  
+
 }
 
 

@@ -13,26 +13,20 @@ function osci_tk_utility_osci_tk_figure_content($args) {
   }
   
   switch($asset->type) {
+  	//TODO: video & audio were simple tests to make sure this worked... should probably be moved somewhere else
     case 'video_asset':
 	  $src = _osci_tk_epub_asset_process_uri($asset->field_video_file['und'][0]['uri'], $args['item']['export']);
       return '<video controls="controls"><source src="' . $src . '" type="' . $asset->field_video_file['und'][0]['filemime'] . '" /></video>';
+      break;
+    case 'audio_asset':
+	  $src = _osci_tk_epub_asset_process_uri($asset->field_audio_file['und'][0]['uri'], $args['item']['export']);
+      return '<audio controls="controls" preload="auto" autobuffer="autobuffer"><source src="' . $src . '" type="' . $asset->field_audio_file['und'][0]['filemime'] . '" /></audio>';
       break;
     case 'image_asset':
 	  $src = _osci_tk_epub_asset_process_uri($asset->field_image['und'][0]['uri'], $args['item']['export']);
 	  return '<img src="' . $src . '" />';
 	  break;
-    case 'conservation_asset':
-    case 'iip_asset':
-    case 'svg_asset':
-      if (!isset($args['item']['content_url'])) {
-        $args['item']['content_url'] = 'foo';
-      }
-      return theme('osci_tk_conservation_figure_formatter', array('item' => $args['item']));
-            
   }  
-  
-  return '<p>Could not generate figure content</p>';  
-  
 }
 
 
