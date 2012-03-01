@@ -40,6 +40,9 @@ if (!OsciTk) {
 			OsciTk.processPackageDocument(OsciTk.document_url);			
 			
 		}
+		
+		// Fetch content for the first section in the spine
+		OsciTk.sections.at(0).fetch();
 	
 	}
 	
@@ -56,15 +59,24 @@ if (!OsciTk) {
 		
 		if (spine.length = 0) return; // Invertabrate!
 		
-		var sections = new OsciTkSections(null, data.package['unique-identifier']);
+		OsciTk.sections = new OsciTkSections(null, data.package['unique-identifier']);
 
+		var manifest_map = {}
+		for (var i in data.package.manifest.item) {
+			manifest_map[data.package.manifest.item[i].id] = i
+		}
+		
 		// For now, assuming that each item in the spine is a section
 		for (var i=0; i<spine.itemref.length; i++) {
 			
-			sections.create({
-				section_id: spine.itemref[i].idref
+			var id = spine.itemref[i].idref;
+			
+			OsciTk.sections.create({
+				section_id: id,
+				uri: data.package.manifest.item[manifest_map[id]].href,
+				media_type: data.package.manifest.item[manifest_map[id]]['media-type']
 			});
-
+		
 		}
 		
 	}	

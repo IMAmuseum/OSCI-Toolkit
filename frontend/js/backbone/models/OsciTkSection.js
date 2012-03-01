@@ -3,15 +3,17 @@ var OsciTkSection = Backbone.Model.extend({
 		return {
 			body: null,
 			section_id: null,
+			uri: null,
+			media_type: 'application/xhtml+xml'
 		};
 	},
 	
-	/*
-	 * Fetch expects the url for the host
-	 */
+
 	fetch: function(options) {
 
 		// TODO: custom fetch
+		var xml = loadXMLDoc(this.attributes.uri);		
+		
 		return;
 		
 	},
