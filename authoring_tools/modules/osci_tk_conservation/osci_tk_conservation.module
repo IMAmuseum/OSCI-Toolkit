@@ -664,3 +664,23 @@ function osci_tk_conservation_osci_tk_figure_preview_add_callback_js_conservatio
 {
 	drupal_add_js(drupal_get_path('module','osci_tk_conservation') . '/js/osci_tk_conservation_figure_options.js');
 }
+
+function osci_tk_conservation_osci_tk_figure_content($args) {
+  
+  $asset = node_load($args['item']['asset_reference']); 
+
+  if (!isset($args['item']['export'])) {
+      $args['item']['export'] = false;
+  }
+  
+  switch($asset->type) {
+    case 'conservation_asset':
+    case 'iip_asset':
+    case 'svg_asset':
+      if (!isset($args['item']['content_url'])) {
+        $args['item']['content_url'] = 'foo';
+      }
+      return theme('osci_tk_conservation_figure_formatter', array('item' => $args['item']));
+            
+  }  
+}
