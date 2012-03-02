@@ -38,14 +38,13 @@ var OsciTkNote = Backbone.Model.extend({
 			// all responses are successful by design, check the returned success attribute for real status
 			// and properly error if necessary
 			options.success = function(data, textStatus, jqXHR) {
-				console.log([data, textStatus, jqXHR], 'create success function');
-				options.error(model, jqXHR);
+				response = JSON.parse(data);
+				if (!response.success) {
+					options.error(model, jqXHR);
+				}
 			}
-			
 			options.type = 'POST';
 			$.ajax(endpoint, options);
 		}
 	}
-
-	
 });
