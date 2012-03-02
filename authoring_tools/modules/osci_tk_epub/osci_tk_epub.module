@@ -19,6 +19,14 @@ function osci_tk_epub_menu()
 		'access arguments' => array('access content'),
 		'type' => MENU_CALLBACK
 	);		
+
+	$items['api/epub/%node/toc.ncx'] = array(
+		'title' => 'ePub Ncx Document',
+		'page callback' => 'osci_tk_epub_render_ncx_document',
+		'page arguments' => array(2),
+		'access arguments' => array('access content'),
+		'type' => MENU_CALLBACK
+	);	
 	
 	$items['api/epub/%node/package.opf'] = array(
 		'title' => 'ePub Package Document',
@@ -156,6 +164,13 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 			'template' => 'templates/osci_tk_epub_navigation',
 			'variables' => array(
 				'content' => ''
+			)
+		),
+		'osci_tk_epub_ncx' => array(
+			'template' => 'templates/osci_tk_epub_ncx',
+			'variables' => array(
+				'navMap' => '',
+				'metadata' => array()
 			)
 		)
 	);
@@ -424,7 +439,14 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
       'href' => $forExport ? 'nav.xhtml' : url("api/epub/{$node->book['bid']}/nav.xhtml", array('absolute' => true)),
       'media-type' => 'application/xhtml+xml',
       'properties' => 'nav'
-    );    
+    );  
+
+    // NCX document
+    $arguments['manifest'][] = array(
+      'id' => 'ncxtoc',
+      'href' => $forExport ? 'toc.ncx' : url("api/epub/{$node->book['bid']}/toc.ncx", array('absolute' => true)),
+      'media-type' => 'application/x-dtbncx+xml'
+    );   
 
 	//Cover Image
 	if (isset($book->field_osci_tk_cover_image) && $book->field_osci_tk_cover_image['und'][0])
@@ -724,7 +746,8 @@ function _osci_tk_epub_package_build_data($tree_node, &$data) {
 		$data['content_nids'][] = array(
 			'nid' => $nid,
 			'filename' => _osci_tk_epub_node_content_filename($node),
-			'url' => _osci_tk_epub_node_content_url($nid)
+			'url' => _osci_tk_epub_node_content_url($nid),
+			'title' => $node->title
 		);
 
 		if (isset($node->field_figure['und'])) {
@@ -1088,6 +1111,7 @@ function osci_tk_epub_block_view($delta = '')
 			$links = array(
 				l("Content Document", "api/epub/{$nid}/content.xhtml"),
 				l("Nav Document", "api/epub/{$nid}/nav.xhtml"),
+				l("NCX Document", "api/epub/{$nid}/toc.ncx"),
 				l("Package Document", "api/epub/{$nid}/package.opf"),
 				l("Publish ePub", "api/epub/{$nid}/publish"),
 			);
@@ -1101,4 +1125,71 @@ function osci_tk_epub_block_view($delta = '')
 	}
 
 	return $block;
+}
+
+/**
+ * Render the navigation document for the book corresponding to this node
+ */
+function osci_tk_epub_render_ncx_document($node)
+{
+  $dev = false;
+  $output = _osci_tk_epub_generate_ncx_document($node, false, $dev);
+  if ($dev) return $output;
+  print $output;
+  drupal_exit();  
+}
+
+function _osci_tk_epub_generate_ncx_document($node, $forExport = false, $no_cache = false) 
+{
+	if (!isset($node->book)) return null;  
+
+	// Check the cache
+	if (!$no_cache) {
+		$cache_key = "osci_epub_ncx_{$node->book['bid']}";    
+		$output = _osci_tk_epub_check_cache($cache_key);
+		if (!is_null($output)) {
+			return $output;
+		}
+	}
+
+	// Build the toc for the book
+	$book = node_load($node->book['bid']);
+
+	/***** Find all of the resources for this book *****/	
+	$data = _osci_tk_epub_get_book_resources($book);
+    $metadata = _osci_tk_epub_get_book_metadata($book, $data);
+
+    $navMap = _osci_tk_epub_ncx_generate_navmap($data, $forExport);
+
+	$output = theme("osci_tk_epub_ncx", array('navMap' => $navMap, 'metadata' => $metadata));
+	
+	if (!$no_cache) {
+		cache_set($cache_key, $output, 'cache');              
+	}
+
+    return $output;
+}
+
+/**
+ * Render the ePub table of contents for the book of the given node
+ */
+function _osci_tk_epub_ncx_generate_navmap($data, $forExport = false)
+{
+	$output = null;
+
+	if (!is_null($data['content_nids'])) {
+          
+		// Not using templates for performance. Might consider an XML library.
+		$output = "<navMap>";
+		$count = 0;
+		foreach($data['content_nids'] as $content) {
+			$count++;
+			$url = $forExport ? $content['filename'] : $content['url'];
+  			$output .= '<navPoint id="section-' . $content['nid'] . '" playOrder="' . $count . '"><navLabel><text>' . $content['title'] . '</text></navLabel><content src="' . $url . '" /></navPoint>';      
+		}
+      
+    	$output .= "</navMap>";
+  	}
+
+  	return $output;
 }

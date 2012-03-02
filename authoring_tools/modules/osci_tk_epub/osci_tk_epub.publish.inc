@@ -47,7 +47,7 @@ function osci_tk_epub_publish_form_submit($form, &$form_state)
 	$operations = array(
 		array(
 			'osci_tk_epub_publish_create_container', 
-			array($epubFilePath)
+			array($epubFilePath, $form_state['nid'])
 		),
 		array(
 			'osci_tk_epub_publish_create_container_file',
@@ -59,6 +59,10 @@ function osci_tk_epub_publish_form_submit($form, &$form_state)
 		),
 		array(
 			'osci_tk_epub_publish_get_nav',
+			array($epubFilePath, $form_state['nid'])
+		),
+		array(
+			'osci_tk_epub_publish_get_ncx',
 			array($epubFilePath, $form_state['nid'])
 		),
 		array(
@@ -113,11 +117,14 @@ function osci_tk_epub_publish_finish($success, $results, $operations)
     }
 
     drupal_set_message($message);
+
+    drupal_goto("node/" . $results['nid']);
 }
 
-function osci_tk_epub_publish_create_container($epubFile, &$context)
+function osci_tk_epub_publish_create_container($epubFile, $nid, &$context)
 {
 	$context['results']['files'] = array();
+	$context['results']['nid'] = $nid;
 	
 	$epub = _osci_tk_epub_zip_init($epubFile, ZIPARCHIVE::CREATE);
 	if ($epub)
@@ -168,6 +175,20 @@ function osci_tk_epub_publish_get_nav($epubFile, $nid, &$context)
 		$node = node_load($nid);
 		$fileName = 'OEBPS/nav.xhtml';
 		$epub->addFromString($fileName, _osci_tk_epub_generate_navigation_document($node, true, true));
+		$epub->close();
+		
+		$context['results']['files'][] = $fileName;
+	}
+}
+
+function osci_tk_epub_publish_get_ncx($epubFile, $nid, &$context)
+{
+	$epub = _osci_tk_epub_zip_init($epubFile);
+	if ($epub)
+	{
+		$node = node_load($nid);
+		$fileName = 'OEBPS/toc.ncx';
+		$epub->addFromString($fileName, _osci_tk_epub_generate_ncx_document($node, true, true));
 		$epub->close();
 		
 		$context['results']['files'][] = $fileName;
