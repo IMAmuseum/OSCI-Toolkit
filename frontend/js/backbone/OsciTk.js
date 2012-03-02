@@ -11,6 +11,8 @@ if (!OsciTk) {
 	OsciTk.notes = null;
 	OsciTk.sections = null;
 	OsciTk.nav = null;
+	OsciTk.figures = null;
+	OsciTk.footnotes = null;
 	
 	/* 
 	 * document_url can either be set to the URL of an ePub document (zip container) 
@@ -27,8 +29,10 @@ if (!OsciTk) {
 		OsciTk.notes.url = OsciTk.settings.endpoints.OsciTkNotes;
 		OsciTk.notes.fetch();		
 
-		// Initilize section collection
+		// Initilize collections
 		OsciTk.sections = new OsciTkSections;
+		OsciTk.figures = new OsciTkFigures;
+		OsciTk.footnotes = new OsciTkFootnotes;
 		
 		// TODO: Attempt to retrieve nav from local storage
 		
@@ -45,7 +49,7 @@ if (!OsciTk) {
 		if (OsciTk.nav != null) {
 			
 			// Connect event handlers
-			OsciTk.nav.on('change:current_section', OsciTk.onNavigationSectionChange)
+			OsciTk.nav.on('change:current_section', OsciTk.onNavigationSectionChanged)
 		
 			// Fetch the navigation document, launcing the event sequence
 			OsciTk.nav.fetch();
@@ -60,7 +64,7 @@ if (!OsciTk) {
 	/**
 	 * Respond when navigation occurs
 	 */
-	OsciTk.onNavigationSectionChange = function(model, current_section) {
+	OsciTk.onNavigationSectionChanged = function(model, current_section) {
 		
 		console.log('OsciTk.onNavigationSectionChange')
 		
@@ -70,6 +74,9 @@ if (!OsciTk) {
 			section = OsciTk.sections.create({
 				id: current_section['data-section_id'],
 				uri: current_section.href,
+			}, { 
+				figure_collection: OsciTk.figures,
+				footnote_collection: OsciTk.footnotes
 			});
 		}		
 
