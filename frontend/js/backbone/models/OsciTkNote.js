@@ -28,7 +28,7 @@ var OsciTkNote = Backbone.Model.extend({
 			for (var key in model.attributes) {
 				if ($.isArray(model.attributes[key])) {
 					for (var element in model.attributes[key]) {
-						options.data = options.data + key + '=' + model.attributes[key][element];
+						options.data = options.data + key + '=' + model.attributes[key][element] + '&';
 					}
 				}
 				else {
