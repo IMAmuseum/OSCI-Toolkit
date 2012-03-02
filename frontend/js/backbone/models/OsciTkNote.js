@@ -9,16 +9,43 @@ var OsciTkNote = Backbone.Model.extend({
 		};
 	},
 	
+	initialize: function(attributes, options) {
+		this.bind('error', function(model, error) {
+			console.log([model, error], 'error fired');
+		});
+	},
+
 	sync: function(method, model, options) {
-		var endpoint = '/api/notes';
+		var endpoint = OsciTk.settings.endpoints.OsciTkNote;
 		
 		console.log('Note.sync: ' + method);
 		console.log(model, 'model');
 		console.log(options, 'options');
-		
+
 		if (method == 'create') {
-			var data = {};
-			return $.post(endpoint, data, options);
+			// convert the model attributes to standard form encoding
+			options.data = '';
+			for (var key in model.attributes) {
+				if ($.isArray(model.attributes[key])) {
+					for (var element in model.attributes[key]) {
+						options.data = options.data + key + '=' + model.attributes[key][element];
+					}
+				}
+				else {
+					options.data = options.data + key + '=' + model.attributes[key] + '&';
+				}
+			}
+			// all responses are successful by design, check the returned success attribute for real status
+			// and properly error if necessary
+			options.success = function(data, textStatus, jqXHR) {
+				console.log([data, textStatus, jqXHR], 'create success function');
+				options.error(model, jqXHR);
+			}
+			
+			options.type = 'POST';
+			$.ajax(endpoint, options);
 		}
 	}
+
+	
 });
