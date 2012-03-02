@@ -35,8 +35,6 @@ function osci_tk_utility_osci_tk_figure_content($args) {
  */
 function osci_tk_utility_osci_tk_figure_resources($figure) {
   
-  dd('figure_resources');
-  
   $result = array(
   	'items' => array(), 
   	'content_doc_media_type' => null
@@ -51,6 +49,14 @@ function osci_tk_utility_osci_tk_figure_resources($figure) {
       $item = array(
       	'media-type' => $asset->field_video_file['und'][0]['filemime'],
         'uri' => $asset->field_video_file['und'][0]['uri'],
+      );
+      $result['items'][] = $item;
+      return $result;
+    case 'audio_asset':
+      // Leave the content doc media type as null to indicate there is none
+      $item = array(
+      	'media-type' => $asset->field_audio_file['und'][0]['filemime'],
+        'uri' => $asset->field_audio_file['und'][0]['uri'],
       );
       $result['items'][] = $item;
       return $result;
