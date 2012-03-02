@@ -4,44 +4,44 @@ function osci_tk_epub_menu()
 {
 	$items = array();
 	
-	$items['node/%/epub.xhtml'] = array(
+	$items['api/epub/%/content.xhtml'] = array(
 		'title' => 'ePub',
 		'page callback' => 'osci_tk_epub_render',
-		'page arguments' => array(1),
+		'page arguments' => array(2),
 		'access arguments' => array('access content'),
-		'type' => MENU_LOCAL_TASK
+		'type' => MENU_CALLBACK
 	);
 	
-	$items['node/%node/nav.xhtml'] = array(
+	$items['api/epub/%node/nav.xhtml'] = array(
 		'title' => 'ePub Navigation Document',
 		'page callback' => 'osci_tk_epub_render_navigation_document',
-		'page arguments' => array(1),
+		'page arguments' => array(2),
 		'access arguments' => array('access content'),
-		'type' => MENU_LOCAL_TASK
+		'type' => MENU_CALLBACK
 	);		
 	
-	$items['node/%node/package.opf'] = array(
+	$items['api/epub/%node/package.opf'] = array(
 		'title' => 'ePub Package Document',
 		'page callback' => 'osci_tk_epub_render_package_document',
-		'page arguments' => array(1),
+		'page arguments' => array(2),
 		'access arguments' => array('access content'),
-		'type' => MENU_LOCAL_TASK
+		'type' => MENU_CALLBACK
 	);	
 	
-	$items['node/%node/%/figure.xhtml'] = array(
+	$items['api/epub/%node/%/figure.xhtml'] = array(
 		'title' 			=> 'Figure content document',
 		'page callback' 	=> 'osci_tk_epub_render_figure_content_document',
-		'page arguments'	=> array(1, 2),
+		'page arguments'	=> array(2, 3),
 		'access arguments' 	=> array('access content'),
 		'type' 				=> MENU_CALLBACK,
 	);
 	
-	$items['node/%/epub/publish'] = array(	
+	$items['api/epub/%/publish'] = array(	
 		'title' => 'Publish ePub',
 		'page callback' => 'drupal_get_form',
-		'page arguments' => array('osci_tk_epub_publish_form', 1),
+		'page arguments' => array('osci_tk_epub_publish_form', 2),
 		'access arguments' => array('access content'),
-		'type' => MENU_LOCAL_TASK,
+		'type' => MENU_CALLBACK,
 		'file' => 'osci_tk_epub.publish.inc'
 	);
 	
@@ -421,7 +421,7 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
     // Navigation document
     $arguments['manifest'][] = array(
       'id' => 'nav',
-      'href' => $forExport ? 'nav.xhtml' : url("node/{$node->book['bid']}/nav.xhtml", array('absolute' => true)),
+      'href' => $forExport ? 'nav.xhtml' : url("api/epub/{$node->book['bid']}/nav.xhtml", array('absolute' => true)),
       'media-type' => 'application/xhtml+xml',
       'properties' => 'nav'
     );    
@@ -843,12 +843,12 @@ function _osci_tk_epub_node_figure_filename(&$node, $index)
 
 function _osci_tk_epub_node_content_url($nid)
 {
-	return url("node/{$nid}/epub.xhtml", array('absolute' => true));
+	return url("api/epub/{$nid}/content.xhtml", array('absolute' => true));
 }
 
 function _osci_tk_epub_node_figure_url($nid, $index)
 {
-	return url("node/{$nid}/{$index}/figure.xhtml", array('absolute' => true));
+	return url("api/epub/{$nid}/{$index}/figure.xhtml", array('absolute' => true));
 }
 
 function _osci_tk_epub_asset_process_uri($uri, $forExport = false)
@@ -1061,4 +1061,44 @@ function _osci_tk_epub_get_book_css($node, $forExport = false)
 	}
 
 	return $css;
+}
+
+function osci_tk_epub_block_info()
+{
+	$blocks['epub_links'] = array(
+		'info' => t('Epub Links'),
+		'cache' => DRUPAL_CACHE_PER_PAGE
+	);
+
+	return $blocks;
+}
+
+function osci_tk_epub_block_view($delta = '')
+{
+	$block = array();
+
+	switch($delta)
+	{
+		case 'epub_links':
+			if (arg(0) == 'node') 
+			{
+				$nid = arg(1);
+			}
+
+			$links = array(
+				l("Content Document", "api/epub/{$nid}/content.xhtml"),
+				l("Nav Document", "api/epub/{$nid}/nav.xhtml"),
+				l("Package Document", "api/epub/{$nid}/package.opf"),
+				l("Publish ePub", "api/epub/{$nid}/publish"),
+			);
+
+			$block['subject'] = t('ePub Links');
+			$block['content'] = array(
+				'#theme' => 'item_list',
+				'#items' => $links
+			);
+			break;
+	}
+
+	return $block;
 }
