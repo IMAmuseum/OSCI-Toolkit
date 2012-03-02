@@ -48,7 +48,7 @@ var OsciTkSection = Backbone.Model.extend({
 						section_id: section.id,
 						position: figure.attr('data-position'),
 						columns: figure.attr('data-columns'),
-						options: eval(figure.attr('options')),
+						options: eval('(' + figure.attr('data-options') + ')'),
 						caption: $('figcaption', figure).html(),
 						content: $('.figure_content', figure).html()
 					});
