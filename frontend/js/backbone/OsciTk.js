@@ -28,7 +28,7 @@ if (!OsciTk) {
 		OsciTk.notes.fetch();		
 
 		// Initilize section collection
-		OsciTk.sections = new OsciTkSectionCollection;
+		OsciTk.sections = new OsciTkSections;
 		
 		// TODO: Attempt to retrieve nav from local storage
 		
