@@ -1,26 +1,33 @@
 var OsciTkSection = Backbone.Model.extend({
+	
 	defaults: function() {
 		return {
-			body: null,
-			section_id: null,
+			xml: null,
 			uri: null,
 			media_type: 'application/xhtml+xml'
 		};
-	},
-	
+	},	
 
-	fetch: function(options) {
-
-		// TODO: custom fetch
-		var xml = loadXMLDoc(this.attributes.uri);		
-		
-		return;
-		
-	},
-	
-	
 	sync: function(method, model, options) {
 		console.log('OsciTkSection.sync: ' + method);
+		
+		if (method == 'update') {			
+			
+			if (this.attributes.xml == null) {
+			
+				var xml_doc = loadXMLDoc(this.attributes.uri);				
+				// Error check?
+				
+				this.set({xml: xml_doc});	
+				
+			} else {
+				
+				// Already loaded... check modification time?
+				
+			}
+			
+		}
+		
 	}
 	
 });

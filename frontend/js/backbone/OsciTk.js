@@ -10,6 +10,7 @@ if (!OsciTk) {
 
 	OsciTk.notes = null;
 	OsciTk.sections = null;
+	OsciTk.nav = null;
 	
 	/* 
 	 * document_url can either be set to the URL of an ePub document (zip container) 
@@ -27,11 +28,11 @@ if (!OsciTk) {
 		OsciTk.notes.fetch();		
 
 		// Initilize section collection
-		// OsciTk.sections = new OsciTkSectionCollection;
-		// Retrieve sections from local storage
-		// OsciTk.sections.fetch();
+		OsciTk.sections = new OsciTkSectionCollection;
 		
-		if (OsciTk.sections == null) {
+		// TODO: Attempt to retrieve nav from local storage
+		
+		if (OsciTk.nav == null) {
 			
 			if (OsciTk.document_url == null) return false;			
 			// TODO: check if the URL points to an ePub or package document. 
@@ -41,9 +42,39 @@ if (!OsciTk) {
 			
 		}
 		
-		// Fetch content for the first section in the spine
-		OsciTk.sections.at(0).fetch();
+		if (OsciTk.nav != null) {
+			
+			// Connect event handlers
+			OsciTk.nav.on('change:current_section', OsciTk.onNavigationSectionChange)
+		
+			// Fetch the navigation document, launcing the event sequence
+			OsciTk.nav.fetch();
+			
+		}
+		
+		// TODO: Pre-load sections from local storage?
 	
+	}
+	
+	
+	/**
+	 * Respond when navigation occurs
+	 */
+	OsciTk.onNavigationSectionChange = function(model, current_section) {
+		
+		console.log('OsciTk.onNavigationSectionChange')
+		
+		// Check if the section is loaded
+		var section = OsciTk.sections.get(current_section['data-section_id'])		
+		if (section == undefined) {			
+			section = OsciTk.sections.create({
+				id: current_section['data-section_id'],
+				uri: current_section.href,
+			});
+		}		
+
+		// Set the section as active, should trigger view update
+		
 	}
 	
 	
@@ -58,25 +89,12 @@ if (!OsciTk) {
 		var spine = data.package.spine;
 		
 		if (spine.length = 0) return; // Invertabrate!
-		
-		OsciTk.sections = new OsciTkSections(null, data.package['unique-identifier']);
 
-		var manifest_map = {}
+		// Find the nav document and create the Navigation model
 		for (var i in data.package.manifest.item) {
-			manifest_map[data.package.manifest.item[i].id] = i
-		}
-		
-		// For now, assuming that each item in the spine is a section
-		for (var i=0; i<spine.itemref.length; i++) {
-			
-			var id = spine.itemref[i].idref;
-			
-			OsciTk.sections.create({
-				section_id: id,
-				uri: data.package.manifest.item[manifest_map[id]].href,
-				media_type: data.package.manifest.item[manifest_map[id]]['media-type']
-			});
-		
+			if (data.package.manifest.item[i].properties == 'nav') {
+				OsciTk.nav = new OsciTkNavigation({uri: data.package.manifest.item[i].href});
+			}			
 		}
 		
 	}	
