@@ -232,7 +232,7 @@ function _osci_tk_utility_node_submit($form, &$form_state)
 	$offset = 0;
 	$replaceIds = array();
 	$newIds = array();
-	
+	dpm($form_state);
 	//update footnote references for renumbering if one deleted
 	if (isset($form_state['values']['field_footnote']))
 	{
@@ -264,7 +264,7 @@ function _osci_tk_utility_node_submit($form, &$form_state)
 	//update figure references for renumbering if one deleted
 	if (function_exists("_osci_tk_figure_node_get_replace_ids")) 
 	{
-		list($figureReplaceIds, $figureNewIds) = _osci_tk_figure_node_get_replace_ids($form, &$form_state);
+		list($figureReplaceIds, $figureNewIds) = _osci_tk_figure_node_get_replace_ids($form, $form_state);
 		$replaceIds = array_merge($replaceIds, $figureReplaceIds);
 		$newIds = array_merge($newIds, $figureNewIds);
 	}

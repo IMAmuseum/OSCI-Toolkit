@@ -303,7 +303,7 @@ function osci_tk_figure_node_submit($form, &$form_state)
 		return;
 	}
 	
-	list($replaceIds, $newIds) = _osci_tk_figure_node_get_replace_ids($form, &$form_state);
+	list($replaceIds, $newIds) = _osci_tk_figure_node_get_replace_ids($form, $form_state);
 	
 	if (count($replaceIds))
 	{
