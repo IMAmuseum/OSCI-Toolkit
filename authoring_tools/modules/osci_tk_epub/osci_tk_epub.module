@@ -204,9 +204,11 @@ function osci_tk_epub_render($nid)
 {
 	global $osci_tk_view_mode;
 	$osci_tk_view_mode = 'epub';
-	
 	$dev = false;
-	$node = node_load($nid);
+
+	$vid = _osci_tk_epub_get_revision_id($nid);
+	$node = node_load($nid, $vid);
+
 	$output = _osci_tk_epub_generate_content_document($node, false, $dev);
 	if ($dev) return $output;
 	print $output;
@@ -215,10 +217,9 @@ function osci_tk_epub_render($nid)
 
 function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_cache = false)
 {
-  
     /***** Check the cache *****/
     if (!$no_cache) {
-      $cache_key = "osci_epub_content_{$node->nid}"; 
+      $cache_key = "osci_epub_content_{$node->nid}_($node->vid}"; 
       $output = _osci_tk_epub_check_cache($cache_key);    
       if (!is_null($output)) {
         return $output; 
@@ -851,7 +852,15 @@ function _osci_tk_epub_get_book_resources(&$book)
 
 function _osci_tk_clean_filename_string($string)
 {
-	return preg_replace("[^A-Za-z0-9\-]", "", str_replace(' ', '-', strtolower(trim($string))));
+	//return preg_replace("[^A-Za-z0-9\-]", "", str_replace(' ', '-', strtolower(trim($string))));
+	$string = preg_replace('/[\x00-\x1F]/u', '', $string);
+	$string = str_replace(' ', '-', strtolower(trim($string)));
+  	if (substr(PHP_OS, 0, 3) == 'WIN') {
+    	// These characters are not allowed in Windows filenames
+    	$string = str_replace(array(':', '*', '?', '"', '<', '>', '|'), '', $string);
+  	}
+
+  	return $string;
 }
 
 function _osci_tk_epub_node_content_filename(&$node)
@@ -878,6 +887,12 @@ function _osci_tk_epub_asset_process_uri($uri, $forExport = false)
 {
 	if ($forExport)
 	{
+		$start = strrpos($uri, '/') + 1;
+		$len = strrpos($uri, '.') - $start;
+		$filename = substr($uri, $start, $len);
+		$cleanFilename = _osci_tk_clean_filename_string($filename);
+		$uri = str_replace($filename, $cleanFilename, $uri);
+
 		return str_replace(file_uri_scheme($uri) . '://', "resources/", $uri);
 	} 
 	else 
@@ -1192,4 +1207,17 @@ function _osci_tk_epub_ncx_generate_navmap($data, $forExport = false)
   	}
 
   	return $output;
+}
+
+function _osci_tk_epub_get_revision_id($nid)
+{
+	$vid = null;
+
+	if (isset($_GET['revision']) && is_numeric($_GET['revision']))
+	{
+		$time = $_GET['revision'];
+		$vid = _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time);
+	}
+	
+	return $vid ? $vid: null;
 }

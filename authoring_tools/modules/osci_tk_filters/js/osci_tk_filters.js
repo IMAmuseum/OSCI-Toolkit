@@ -67,7 +67,7 @@
 						content = CKEDITOR.cleanWord(content, event.editor);
 					}
 					
-					$val.replaceWith('[footnote:fn_' + Drupal.settings.osci_tk_filters.current_nid + '_' + nextDelta + ']');
+					$val.replaceWith('[footnote:fn-' + Drupal.settings.osci_tk_filters.current_nid + '-' + nextDelta + ']');
 					
 					data.find('#' + footnote.replace('_', '')).remove();
 					footnotes.push({

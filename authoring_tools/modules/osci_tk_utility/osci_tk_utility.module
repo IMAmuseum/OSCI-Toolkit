@@ -330,3 +330,54 @@ function osci_tk_add_more_footnote_ajax($form, $form_state)
 
 	return $element;
 }
+
+function _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time = null)
+{
+	if ($time === null)
+	{
+		$time = time();
+	}
+	$vid = null;
+
+	if (module_exists('workbench_moderation'))
+	{
+		$where = 'n.nid = :nid AND n.stamp <= :stamp AND (n.from_state = "published" OR n.state = "published")';
+
+		$results = db_select('workbench_moderation_node_history', 'n')
+	        ->fields('n', array('nid', 'vid', 'state'))
+	        ->where($where, array(
+	        	':nid' => $nid,
+	        	':stamp' => $time
+	        ))
+	        ->orderBy('stamp', 'DESC')
+	        ->range(0, 1)
+	        ->execute();
+
+	    if ($results)
+	    {
+	    	foreach($results as $k => $v)
+			{
+				$vid = $v->vid;
+			}
+	    }
+	} else 
+	{
+		$results = db_select('node_revision', 'n')
+	        ->fields('n', array('nid', 'vid', 'status'))
+	        ->condition('nid', $nid)
+	        ->condition('timestamp', $time, '<=')
+	        ->orderBy('timestamp', 'DESC')
+	        ->range(0, 1)
+	        ->execute();
+
+	    if ($results)
+	    {
+	    	foreach($results as $k => $v)
+			{
+				$vid = $v->vid;
+			}
+	    }
+	}
+
+	return $vid;
+}
