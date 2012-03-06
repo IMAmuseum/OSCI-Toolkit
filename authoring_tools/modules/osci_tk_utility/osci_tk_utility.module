@@ -232,7 +232,7 @@ function _osci_tk_utility_node_submit($form, &$form_state)
 	$offset = 0;
 	$replaceIds = array();
 	$newIds = array();
-	dpm($form_state);
+
 	//update footnote references for renumbering if one deleted
 	if (isset($form_state['values']['field_footnote']))
 	{
