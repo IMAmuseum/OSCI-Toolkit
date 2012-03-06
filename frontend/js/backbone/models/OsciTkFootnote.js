@@ -8,6 +8,6 @@ var OsciTkFootnote = Backbone.Model.extend({
 	},
 	
 	sync: function(method, model, options) {
-		console.log('Note.sync: ' + method);
+		console.log('Footnote.sync: ' + method);
 	}
 });
