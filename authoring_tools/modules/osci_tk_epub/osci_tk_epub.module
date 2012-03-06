@@ -887,6 +887,12 @@ function _osci_tk_epub_asset_process_uri($uri, $forExport = false)
 {
 	if ($forExport)
 	{
+		$start = strrpos($uri, '/') + 1;
+		$len = strrpos($uri, '.') - $start;
+		$filename = substr($uri, $start, $len);
+		$cleanFilename = _osci_tk_clean_filename_string($filename);
+		$uri = str_replace($filename, $cleanFilename, $uri);
+
 		return str_replace(file_uri_scheme($uri) . '://', "resources/", $uri);
 	} 
 	else 
