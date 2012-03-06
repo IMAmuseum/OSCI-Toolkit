@@ -853,10 +853,11 @@ function _osci_tk_epub_get_book_resources(&$book)
 function _osci_tk_clean_filename_string($string)
 {
 	//return preg_replace("[^A-Za-z0-9\-]", "", str_replace(' ', '-', strtolower(trim($string))));
-	$string = preg_replace('/[\x00-\x1F]/u', '', str_replace(' ', '-', strtolower(trim($string))));
+	$string = preg_replace('/[\x00-\x1F]/u', '', $string);
+	$string = str_replace(' ', '-', strtolower(trim($string)));
   	if (substr(PHP_OS, 0, 3) == 'WIN') {
     	// These characters are not allowed in Windows filenames
-    	$string = str_replace(array(':', '*', '?', '"', '<', '>', '|'), '_', $string);
+    	$string = str_replace(array(':', '*', '?', '"', '<', '>', '|'), '', $string);
   	}
 
   	return $string;
