@@ -23,11 +23,6 @@ if (!OsciTk) {
 	_.extend(OsciTk, Backbone.Events);
 	
 	OsciTk.init = function() {
-		
-		// get user notes for current user and section
-		OsciTk.notes = new OsciTkNotes;
-		OsciTk.notes.url = OsciTk.settings.endpoints.OsciTkNotes;
-		OsciTk.notes.fetch();		
 
 		// Initilize collections
 		OsciTk.sections = new OsciTkSections;
@@ -56,8 +51,17 @@ if (!OsciTk) {
 			
 		}
 		
+		// initalize notes based on section
+		OsciTk.notes = new OsciTkNotes;
+		OsciTk.notes.url = OsciTk.settings.endpoints.OsciTkNotes;
+		OsciTk.notes.fetch({
+			data: {
+				section_id: OsciTk.nav.get('current_section')['data-section_id']
+			}
+		});
+		
 		// TODO: Pre-load sections from local storage?
-	
+		
 	}
 	
 	
@@ -92,7 +96,7 @@ if (!OsciTk) {
 	OsciTk.processPackageDocument = function(package_url) {
 
 		var data = xmlToJson(loadXMLDoc(package_url));
-		
+		console.log(data, 'processPackageDocument');
 		var spine = data.package.spine;
 		
 		if (spine.length = 0) return; // Invertabrate!

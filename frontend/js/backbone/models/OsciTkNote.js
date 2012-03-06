@@ -51,7 +51,17 @@ var OsciTkNote = Backbone.Model.extend({
 		}
 
 		if (method == 'delete') {
-
+			options.data = this.urlFormEncode(model);
+			options.data = options.data + 'delete=1';
+			options.type = 'POST';
+			options.success = function(data, textStatus, jqXHR) {
+				var response = JSON.parse(data);
+				console.log(response, 'delete response');
+				if (!response.success) {
+					options.error(model, jqXHR);
+				}
+			}
+			$.ajax(endpoint, options);
 		}
 	},
 	

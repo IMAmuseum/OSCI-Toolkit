@@ -34,30 +34,38 @@ function osci_tk_notes_request() {
 				&& isset($_POST['paragraph_id']) && !empty($_POST['paragraph_id'])
 				&& isset($_POST['note']) && !empty($_POST['note'])) {
 				
-				// if id is provided this is an update
+				// if id is provided this is an update or delete
 				if (isset($_POST['id'])) {
 					$note = node_load($_POST['id']);
 					if ($note) {
 						if ($note->uid == $user->uid) {
-							// update the body
-							$note->body['und'][0]['value'] = $_POST['note'];
-							// update the tags
-							$note->field_note_tags['und'] = _osci_tk_notes_extract_tags($note);
-							// save the node and return
-							node_save($note);
-							// form the response
-							print json_encode(array(
-								'success' => true,
-								'note' => array(
-									'id'			=> $note->nid,
-									'section_id' 	=> $note->field_section['und'][0]['nid'],
-									'paragraph_id' 	=> $note->field_paragraph_id['und'][0]['value'],
-									'note' 			=> $note->body['und'][0]['value'],
-									'tags' 			=> $_POST['tags']
+							// check if this is a delete op
+							if (isset($_POST['delete']) && $_POST['delete'] > 0) {
+								node_delete($note->nid);
+								print json_encode(array('success' => true));
+								drupal_exit();
+							}
+							else {
+								// update the body
+								$note->body['und'][0]['value'] = $_POST['note'];
+								// update the tags
+								$note->field_note_tags['und'] = _osci_tk_notes_extract_tags($note);
+								// save the node and return
+								node_save($note);
+								// form the response
+								print json_encode(array(
+									'success' => true,
+									'note' => array(
+										'id'			=> $note->nid,
+										'section_id' 	=> $note->field_section['und'][0]['nid'],
+										'paragraph_id' 	=> $note->field_paragraph_id['und'][0]['value'],
+										'note' 			=> $note->body['und'][0]['value'],
+										'tags' 			=> $_POST['tags']
 								)
-							));
-							// dpm($note, 'note');
-							drupal_exit();
+								));
+								// dpm($note, 'note');
+								drupal_exit();
+							}
 						}
 						else {
 							print json_encode(array('success' => false, 'error' => 'this is not your note'));
