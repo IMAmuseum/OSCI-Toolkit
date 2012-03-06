@@ -13,6 +13,6 @@ var OsciTkFigure = Backbone.Model.extend({
 	},
 	
 	sync: function(method, model, options) {
-		console.log('Note.sync: ' + method);
+		console.log('Figure.sync: ' + method);
 	}
 });
