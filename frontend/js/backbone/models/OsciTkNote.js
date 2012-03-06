@@ -24,27 +24,49 @@ var OsciTkNote = Backbone.Model.extend({
 
 		if (method == 'create') {
 			// convert the model attributes to standard form encoding
-			options.data = '';
-			for (var key in model.attributes) {
-				if ($.isArray(model.attributes[key])) {
-					for (var element in model.attributes[key]) {
-						options.data = options.data + key + '=' + model.attributes[key][element] + '&';
-					}
-				}
-				else {
-					options.data = options.data + key + '=' + model.attributes[key] + '&';
-				}
-			}
+			options.data = this.urlFormEncode(model);
 			// all responses are successful by design, check the returned success attribute for real status
 			// and properly error if necessary
 			options.success = function(data, textStatus, jqXHR) {
-				response = JSON.parse(data);
+				var response = JSON.parse(data);
 				if (!response.success) {
 					options.error(model, jqXHR);
 				}
-			}
+			};
 			options.type = 'POST';
 			$.ajax(endpoint, options);
 		}
+
+		if (method == 'update') {
+			options.data = this.urlFormEncode(model);
+			options.success = function(data, textStatus, jqXHR) {
+				var response = JSON.parse(data);
+				console.log(response, 'update response');
+				if (!response.success) {
+					options.error(model, jqXHR);
+				}
+			};
+			options.type = 'POST';
+			$.ajax(endpoint, options);
+		}
+
+		if (method == 'delete') {
+
+		}
+	},
+	
+	urlFormEncode: function(model) {
+		var data = '';
+		for (var key in model.attributes) {
+			if ($.isArray(model.attributes[key])) {
+				for (var element in model.attributes[key]) {
+					data = data + key + '[]=' + model.attributes[key][element] + '&';
+				}
+			}
+			else {
+				data = data + key + '=' + model.attributes[key] + '&';
+			}
+		}
+		return data;
 	}
 });
