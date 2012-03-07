@@ -54,6 +54,24 @@ function osci_tk_filters_filter_info() {
 		'cache'				=> false
     );
 
+    $filters['osci_tk_cross_link'] = array(
+        'title'             => t('Cross Link filter'),
+        'description'       => t('Allow cross content linking within a book'),
+        'process callback'  => '_filter_cross_link',
+        'settings callback' => '_filter_settings',
+        'tips callback'     => '_filter_cross_link_tips',
+        'cache'             => false
+    );
+
+    $filters['osci_tk_clean_content'] = array(
+        'title'             => t('Clean Content'),
+        'description'       => t('Remove encoded html entities and replace with proper characters.'),
+        'process callback'  => '_filter_clean_content',
+        'settings callback' => '_filter_settings',
+        'tips callback'     => '_filter_clean_content_tips',
+        'cache'             => false
+    );
+
     return $filters;
 }
 
@@ -247,4 +265,38 @@ function _process_cross_link($text) {
  */
 function _filter_cross_link_tips() {
     return t('Insert a Link with [link:Node ID]');
+}
+
+/***********************************************************************
+ *
+ * Clean Content
+ *
+ */
+
+/**
+ * Process callback for filter
+ */
+function _filter_clean_content($text, $filter, $format) {
+    global $osci_tk_view_mode;
+    
+    $osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
+    $result = module_invoke_all('osci_tk_filter_cross_link_' . $osci_tk_view_mode, $text, $filter, $format);
+    return is_array($result) && count($result) ? $result[0] : $text;
+
+    $remove = array(
+        '&nbsp;'
+    );
+
+    $replace = array(
+        ''
+    );
+
+    return str_replace($remove, $replace, $text);
+}
+
+/**
+ * Tooltip funcion
+ */
+function _filter_clean_content_tips() {
+    return null;
 }
