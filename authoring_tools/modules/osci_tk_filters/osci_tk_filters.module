@@ -291,7 +291,7 @@ function _filter_clean_content($text, $filter, $format) {
     //     ''
     // );
 
-    return html_entity_decode($text);
+    return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 }
 
 
