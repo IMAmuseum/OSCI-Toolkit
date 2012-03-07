@@ -277,22 +277,24 @@ function _filter_cross_link_tips() {
  * Process callback for filter
  */
 function _filter_clean_content($text, $filter, $format) {
-    global $osci_tk_view_mode;
+    // global $osci_tk_view_mode;
     
-    $osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
-    $result = module_invoke_all('osci_tk_filter_cross_link_' . $osci_tk_view_mode, $text, $filter, $format);
-    return is_array($result) && count($result) ? $result[0] : $text;
+    // $osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
+    // $result = module_invoke_all('osci_tk_filter_cross_link_' . $osci_tk_view_mode, $text, $filter, $format);
+    // return is_array($result) && count($result) ? $result[0] : $text;
 
-    $remove = array(
-        '&nbsp;'
-    );
+    // $remove = array(
+    //     '&nbsp;'
+    // );
 
-    $replace = array(
-        ''
-    );
+    // $replace = array(
+    //     ''
+    // );
 
-    return str_replace($remove, $replace, $text);
+    return html_entity_decode($text);
 }
+
+
 
 /**
  * Tooltip funcion
