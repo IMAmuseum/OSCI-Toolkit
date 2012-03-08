@@ -200,6 +200,9 @@ function osci_tk_epub_publish_content_document($epubFile, $content, &$context)
 	$epub = _osci_tk_epub_zip_init($epubFile);
 	if ($epub)
 	{
+		global $osci_tk_view_mode;
+		$osci_tk_view_mode = 'epub';
+
 	    $node = node_load($content['nid']);
 		$fileName = 'OEBPS/' . _osci_tk_epub_node_content_filename($node);
 		$epub->addFromString($fileName, _osci_tk_epub_generate_content_document($node, true, true));

@@ -91,7 +91,13 @@ function osci_tk_epub_node_submit($node, $form, &$form_state)
     }    
     
   }
-  
+
+  //add a uuid if not added by user
+  if (isset($form_state['values']['field_osci_tk_identifier']) && !strlen($form_state['values']['field_osci_tk_identifier']['und'][0]['value']))
+  {
+  	$node->field_osci_tk_identifier['und'][0]['value'] = uniqid(" urn:uuid:", true);
+  }
+
 }
 
 
@@ -103,7 +109,7 @@ function osci_tk_epub_node_update($node) {
   if (!isset($node->book) || (!$node->book['bid'])) return;
 
   // Pre-generate epub content
-  _osci_tk_epub_generate_node_documents($node);
+  //_osci_tk_epub_generate_node_documents($node);
   
 }
 
@@ -760,7 +766,7 @@ function _osci_tk_epub_package_build_data($tree_node, &$data) {
 				$figure_data = array(
 					'nid' => $nid,
 					'index' => $index,
-					'resources' => $resources['items'],
+					'resources' => isset($resources['items']) ? $resources['items'] : null,
 				);                
 
 				// If the figure has a media type for the content document, add it as a resource

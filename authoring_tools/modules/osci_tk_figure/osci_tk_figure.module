@@ -528,7 +528,7 @@ function _osci_tk_figure_process_number_template($figure)
 {
 	$numberTemplate = str_replace(
 		array('fig#', 'cat#.'), 
-		array($figure['delta'], ''), 
+		array(((int)$figure['delta']) + 1, ''), 
 		$figure['number_template']
 	);
 	
