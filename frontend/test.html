@@ -4,6 +4,8 @@
 	<script src="http://documentcloud.github.com/backbone/test/vendor/jquery-1.7.1.js"></script>
 	<script src="http://documentcloud.github.com/backbone/test/vendor/underscore-1.3.1.js"></script>
 	<script src="http://documentcloud.github.com/backbone/backbone.js"></script>
+	<script src="js/backbone/models/OsciTkModel.js"></script>
+	<script src="js/backbone/models/OsciTkPackage.js"></script>
 	<script src="js/backbone/models/OsciTkFigure.js"></script>
 	<script src="js/backbone/models/OsciTkFootnote.js"></script>
 	<script src="js/backbone/models/OsciTkNavigation.js"></script>			
@@ -15,7 +17,7 @@
 	<script src="js/backbone/collections/OsciTkSections.js"></script>	
 	<script src="js/backbone/OsciTk.js"></script>
 	<script src="js/backbone/OsciTk.helper.js"></script>	
-	<script>jQuery(function() { OsciTk.document_url = 'sample/package.opf'; OsciTk.init(); })</script>
+	<script>jQuery(function() { OsciTk.init('sample/package.opf'); })</script>
 </head>
 <body>
 	<h1>Backbone Environment Test</h1>
