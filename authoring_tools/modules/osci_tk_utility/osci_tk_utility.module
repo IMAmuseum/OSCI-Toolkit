@@ -27,7 +27,7 @@ function osci_tk_utility_osci_tk_figure_content($args) {
 	  return '<img src="' . $src . '" />';
 	  break;
 	case 'html_asset':
-	  return $asset->field_body['und'][0]['value'];
+	  return $asset->body['und'][0]['value'];
 	  break;
   }  
 }
