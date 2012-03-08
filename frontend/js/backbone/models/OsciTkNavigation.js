@@ -42,7 +42,7 @@ var OsciTkNavigation = OsciTkModel.extend({
 			}
 		}
 		// Go to the beginning if we haven't started yet
-		if (this.current_section == null) {
+		if (this.get('current_section') == null) {
 			this.goToBeginning();
 		}
 		this.dispatcher.trigger('navigationLoaded', this);

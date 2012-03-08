@@ -69,6 +69,10 @@ var OsciTkSection = Backbone.Model.extend({
 	parse: function(response) {
 		console.log('parse');
 
+	},
+	
+	loadContent: function() {
+		console.log(this, 'loading section content');
 	}
 
 	
