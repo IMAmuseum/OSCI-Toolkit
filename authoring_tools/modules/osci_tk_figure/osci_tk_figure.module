@@ -73,12 +73,20 @@ function osci_tk_figure_field_formatter_info()
 
 function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display)
 {
+	global $osci_tk_placed_figures;
+
 	$element = array();
 	switch($display['type'])
 	{
 		case 'osci_tk_figure':
 			foreach($items as $delta => $item)
 			{
+				//if figure placed inline do not output it again
+				if (in_array($delta, $osci_tk_placed_figures))
+				{
+					continue;
+				}
+
 				$item['fig_id'] = _osci_tk_figure_create_id($entity->nid, $delta);
 				$item['delta'] = $delta;
 				$item['number_template'] = _osci_tk_figure_process_number_template($item);
