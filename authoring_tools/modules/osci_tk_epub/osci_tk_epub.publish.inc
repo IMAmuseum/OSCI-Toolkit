@@ -51,11 +51,11 @@ function osci_tk_epub_publish_form_submit($form, &$form_state)
 		),
 		array(
 			'osci_tk_epub_publish_create_container_file',
-			array($epubFilePath, $epubTitle)
+			array($epubFilePath)
 		),
 		array(
 			'osci_tk_epub_publish_get_package',
-			array($epubFilePath, $epubTitle, $form_state['nid'])
+			array($epubFilePath, $form_state['nid'])
 		),
 		array(
 			'osci_tk_epub_publish_get_nav',
@@ -139,13 +139,13 @@ function osci_tk_epub_publish_create_container($epubFile, $nid, &$context)
 	}
 }
 
-function osci_tk_epub_publish_create_container_file($epubFile, $epubTitle, &$context)
+function osci_tk_epub_publish_create_container_file($epubFile, &$context)
 {
 	$epub = _osci_tk_epub_zip_init($epubFile);
 	if ($epub)
 	{
 		$fileName = 'META-INF/container.xml';
-		$rootPath = 'OEBPS/' . $epubTitle . '.opf';
+		$rootPath = 'OEBPS/package.opf';
 		$epub->addFromString($fileName, theme("osci_tk_epub_container_xml", array("rootPath" => $rootPath)));
 		$epub->close();
 		
@@ -153,13 +153,13 @@ function osci_tk_epub_publish_create_container_file($epubFile, $epubTitle, &$con
 	}
 }
 
-function osci_tk_epub_publish_get_package($epubFile, $epubTitle, $nid, &$context)
+function osci_tk_epub_publish_get_package($epubFile, $nid, &$context)
 {
 	$epub = _osci_tk_epub_zip_init($epubFile);
 	if ($epub)
 	{
 		$node = node_load($nid);
-		$fileName = 'OEBPS/' . $epubTitle . '.opf';
+		$fileName = 'OEBPS/package.opf';
 		$epub->addFromString($fileName, _osci_tk_epub_generate_package_document($node, true, true));
 		$epub->close();
 		
