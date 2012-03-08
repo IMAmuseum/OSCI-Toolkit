@@ -818,12 +818,18 @@ function _osci_tk_clean_filename_string($string)
 
 function _osci_tk_epub_node_content_filename(&$node)
 {
-	return _osci_tk_clean_filename_string($node->title) . '.xhtml';
+	//TODO: switch this back to using title when we can actually clean it correctly
+	return 'section-' . $node->nid . '.xhtml';
+
+	//return _osci_tk_clean_filename_string($node->title) . '.xhtml';
 }
 
 function _osci_tk_epub_node_figure_filename(&$node, $index)
 {
-	return 'figure-' . _osci_tk_clean_filename_string($node->title) . '-' . $index . '.xhtml';
+	//TODO: switch this back to using title when we can actually clean it correctly
+	return 'figure-' . $node->nid . '-' . $index . '.xhtml';
+
+	//return 'figure-' . _osci_tk_clean_filename_string($node->title) . '-' . $index . '.xhtml';
 }
 
 function _osci_tk_epub_node_content_url($nid)
