@@ -113,6 +113,43 @@ function osci_tk_epub_node_update($node) {
   
 }
 
+/**
+ * hook_field_formatter_info
+ */
+function osci_tk_epub_field_formatter_info() {
+	$formatters = array(
+		'osci_tk_section' => array(
+			'label'         => t('OSCI Toolkit Section'),
+			'field types'   => array('text_long', 'text'),
+		)
+	);
+	
+	return $formatters;
+}
+
+
+function osci_tk_epub_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+	$element = array();
+	
+	switch($display['type'])
+	{
+		case 'osci_tk_section':
+			dpm(array($field, $instance, $items) , 'field, instance, items');
+			foreach($items as $delta => $item)
+			{
+				$item['delta'] = $delta;
+				$item['field_name'] = $field['field_name'];
+				$element[$delta] = array(
+					'#theme'	=> 'osci_tk_epub_section',
+					'#item'		=> $item,
+				);
+			}
+			break;
+	}
+	
+	return $element;
+}
+
 
 function osci_tk_epub_theme($existing, $type, $theme, $path) {
 	return array(
@@ -159,13 +196,9 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 				'items' => array()
 			),
 		),
-		'osci_tk_body_epub' => array(
-			'template' => 'templates/osci_tk_body_epub',
-			'variables' => array(),
-		),
-		'osci_tk_title_epub' => array(
-			'template' => 'templates/osci_tk_title_epub',
-			'variables' => array(),
+		'osci_tk_epub_section' => array(
+			'template' => 'templates/osci_tk_epub_section',
+			'variables' => array('item' => ''),
 		),
 		'osci_tk_epub_mimetype' => array(
 			'template' => 'templates/osci_tk_epub_mimetype',

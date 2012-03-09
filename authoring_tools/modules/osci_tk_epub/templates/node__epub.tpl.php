@@ -6,6 +6,6 @@
 	<?php print drupal_get_css(); ?>
 </head>
 <body>
-	<div><?php print drupal_render($content); ?></div>
+	<?php print drupal_render($content); ?>
 </body>
 </html>
