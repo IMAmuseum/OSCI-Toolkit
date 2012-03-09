@@ -1,0 +1,99 @@
+<?php
+
+/**
+ * Implements hook_menu()
+ */
+function osci_tk_search_menu() {
+	$items = array();
+	$items['content/search'] = array(
+		'title' => 'Content Search',
+		'page callback' => 'osci_tk_search_query',
+		'type' => MENU_CALLBACK,
+	);
+	return $items;
+}
+
+/**
+ * Implements hook_init()
+ */
+function osci_tk_init() {
+	
+}
+
+/**
+ * Perform primary query
+ */
+function osci_tk_search_query() {
+
+}
+
+/**
+ * Generates open search results 
+ */
+function osci_tk_search_build_open_search_results($results) {
+
+}
+
+/**
+ * Implements hook_apachesolr_index_document_build()
+ */
+function osci_tk_search_apachesolr_index_document_build(ApacheSolrDocument $document, $entity, $entity_type, $env_id) {
+	switch($entity->type) {
+		case 'section':
+			_osci_tk_search_get_path_hierarchy($entity->book, $document);
+			break;
+	}
+}
+
+/**
+ * Generate content path
+ * @param  Object             $book     The book object
+ * @param  ApacheSolrDocument $document The solr document
+ */
+function _osci_tk_search_get_path_hierarchy($book, ApacheSolrDocument $document) {
+	// retrieve the books menu tree
+	$subtree_data = array_pop(book_menu_subtree_data($book));
+	// generate the content path tree
+	$tree_hierarchy = array_reverse(_osci_tk_search_generate_content_path_tree($subtree_data['link']));
+	
+	$current_path = '';
+	foreach($tree_hierarchy as $key => $path) {
+		$current_path .= '/' . $path;
+		// add paths to the solr document
+		$document->addField('sm_path_hierarchy', $current_path);
+		$document->addField('sm_path_hierarchy_depth', $key . $current_path);
+	}
+}
+
+/**
+ * Generate the content path hierachy
+ * @param  object $link         The current link object
+ * @param  array $content_path An array of paths
+ * @return array
+ */
+function _osci_tk_search_generate_content_path_tree($link, $content_path = null) {
+	// set initial path
+	if(!$content_path) {
+		$content_path[$link['depth'] - 1] = _osci_tk_search_clean_title($link['title']);
+	}
+	// check to see if the section is already at the root
+	if($link['depth'] <= 1) return $content_path;
+
+	// load the book link
+	$parent_link = book_link_load($link['plid']);
+	$content_path[$parent_link['depth'] - 1] = _osci_tk_search_clean_title($parent_link['title']);
+	// continue to obtain the parent links
+	if($parent_link['depth'] > 1) {
+		$content_path = _osci_tk_search_generate_content_path_tree($parent_link, $content_path);
+	}
+	return $content_path;
+}
+
+/**
+ * Replaces title spacing with hyphens
+ * @param  string $title Book/section title
+ * @return string
+ */
+function _osci_tk_search_clean_title($title) {
+	return str_replace(' ', '-', $title);
+}

@@ -1,0 +1,7 @@
+name = "OSCI Search"
+description = "Provides Solr search functionality for the OSCI ToolKit"
+package = "OSCI ToolKit"
+version = "1.0"
+core = "7.x"
+
+files[] = osci_tk_search.module
