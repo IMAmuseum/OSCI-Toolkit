@@ -13,9 +13,10 @@
 	        media-type="<?= $item['media-type'] ?>" <?= $properties ?> ></item>
     <?php endforeach ?>
   </manifest>
-  <spine>
+  <spine toc="ncxtoc">
     <?php foreach ($spine as $itemref): ?>
       <itemref idref='<?= $itemref['idref'] ?>'></itemref>
     <?php endforeach ?>
   </spine>
 </package>
+<!-- Generated Using the OSCI Toolkit on <?php print gmdate(DATE_W3C); ?> -->

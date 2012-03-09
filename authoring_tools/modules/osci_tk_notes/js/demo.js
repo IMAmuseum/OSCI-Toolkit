@@ -6,7 +6,6 @@ jQuery(document).ready(function() {
 	store_submit.click(function(event) {
 		event.preventDefault();
 		var data = {
-			'book_id'		: $('#edit-book-id').val(),
 			'section_id'	: $('#edit-section-id').val(),
 			'paragraph_id'	: $('#edit-paragraph-id').val(),
 			'tags'			: $('#edit-tags').val().split(/\s*,\s*/),
@@ -21,7 +20,6 @@ jQuery(document).ready(function() {
 	ret_submit.click(function(event) {
 		event.preventDefault();
 		var data = {
-			'book_id'			: $('#edit-book-id--2').val(),
 			'section_id'		: $('#edit-section-id--2').val(),
 			'paragraph_id'		: $('#edit-paragraph-id--2').val(),
 			'include_children'	: $('#edit-include-children').is(':checked')

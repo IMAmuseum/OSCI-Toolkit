@@ -7,35 +7,29 @@
 function osci_tk_utility_osci_tk_figure_content($args) {
   
   $asset = node_load($args['item']['asset_reference']); 
+
+  if (!isset($args['item']['export'])) {
+	  $args['item']['export'] = false;
+  }
   
   switch($asset->type) {
+  	//TODO: video & audio were simple tests to make sure this worked... should probably be moved somewhere else
     case 'video_asset':
-      $url = file_create_url($asset->field_video_file['und'][0]['uri']);
-      return "<video src='$url'><p>Fallback thumbnail</p></video>";
-      $view = node_view($asset);
-      return drupal_render($view);
+	  $src = _osci_tk_epub_asset_process_uri($asset->field_video_file['und'][0]['uri'], $args['item']['export']);
+      return '<video controls="controls"><source src="' . $src . '" type="' . $asset->field_video_file['und'][0]['filemime'] . '" /></video>';
       break;
-    case 'conservation_asset':
-    case 'iip_asset':
+    case 'audio_asset':
+	  $src = _osci_tk_epub_asset_process_uri($asset->field_audio_file['und'][0]['uri'], $args['item']['export']);
+      return '<audio controls="controls" preload="auto" autobuffer="autobuffer"><source src="' . $src . '" type="' . $asset->field_audio_file['und'][0]['filemime'] . '" /></audio>';
+      break;
     case 'image_asset':
-    case 'svg_asset':
-      // TODO: Handle content resources appropriately
-      /*
-      if ($args['item']['export']) {
-        //$args['item']['content_url'] = _osci_tk_epub_node_figure_filename($node, $delta);
-      } else {
-        //$args['item']['content_url'] = _osci_tk_epub_node_figure_url($node->nid, $delta);
-      }
-      */
-      if (!isset($args['item']['content_url'])) {
-        $args['item']['content_url'] = 'foo';
-      }
-      return theme('osci_tk_conservation_figure_formatter', array('item' => $args['item']));
-            
+	  $src = _osci_tk_epub_asset_process_uri($asset->field_image['und'][0]['uri'], $args['item']['export']);
+	  return '<img src="' . $src . '" />';
+	  break;
+	case 'html_asset':
+	  return drupal_render(field_view_field('node', $asset, 'body', 'epub'));
+	  break;
   }  
-  
-  return '<p>Could not generate figure content</p>';  
-  
 }
 
 
@@ -43,8 +37,6 @@ function osci_tk_utility_osci_tk_figure_content($args) {
  * Return resources associated with the figure
  */
 function osci_tk_utility_osci_tk_figure_resources($figure) {
-  
-  dd('figure_resources');
   
   $result = array(
   	'items' => array(), 
@@ -58,10 +50,17 @@ function osci_tk_utility_osci_tk_figure_resources($figure) {
     case 'video_asset':
       // Leave the content doc media type as null to indicate there is none
       $item = array(
-      	'media-type' => 'video',
-        'filename' => $asset->field_video_file['und'][0]['uri'],
+      	'media-type' => $asset->field_video_file['und'][0]['filemime'],
+        'uri' => $asset->field_video_file['und'][0]['uri'],
       );
-      $item['url'] = file_create_url($item['filename']);
+      $result['items'][] = $item;
+      return $result;
+    case 'audio_asset':
+      // Leave the content doc media type as null to indicate there is none
+      $item = array(
+      	'media-type' => $asset->field_audio_file['und'][0]['filemime'],
+        'uri' => $asset->field_audio_file['und'][0]['uri'],
+      );
       $result['items'][] = $item;
       return $result;
     case 'conservation_asset':
@@ -73,7 +72,11 @@ function osci_tk_utility_osci_tk_figure_resources($figure) {
       // TODO: add files?     
       return $result;
     case 'image_asset':
-      $result['content_doc_media_type'] = 'application/osci-tk-image-figure';
+	  $item = array(
+		'media-type' => $asset->field_image['und'][0]['filemime'],
+		'uri' => $asset->field_image['und'][0]['uri']
+	  );
+	  $result['items'][] = $item;
       // TODO: add files?     
       return $result;
     case 'svg_asset':
@@ -214,7 +217,7 @@ function osci_tk_utility_form_alter(&$form, &$form_state, $form_id)
 				if (isset($form['field_footnote'][LANGUAGE_NONE][$key]['_weight']))
 				{
 					$form['field_footnote'][LANGUAGE_NONE][$key]['_weight']['#type'] = 'hidden';
-					$fnId = 'fn_'. $form['nid']['#value'] . '_' . $key;
+					$fnId = 'fn-'. $form['nid']['#value'] . '-' . $key;
 					$form['field_footnote'][LANGUAGE_NONE][$key]['#prefix'] = '<div class="footnote_identifier" data-fnId="' . $fnId . '">' . $key . ' <span>[footnote:' . $fnId . ']</span></div>';
 				}
 			}
@@ -232,14 +235,14 @@ function _osci_tk_utility_node_submit($form, &$form_state)
 	$offset = 0;
 	$replaceIds = array();
 	$newIds = array();
-	
+
 	//update footnote references for renumbering if one deleted
 	if (isset($form_state['values']['field_footnote']))
 	{
 		//remove hidden field so that drupal saves this field correctly
 		unset($form_state['values']['field_footnote'][LANGUAGE_NONE]['num_add']);
 		
-		$footnoteTemplate = '[footnote:fn_' . $form_state['values']['nid'] . '_';
+		$footnoteTemplate = '[footnote:fn-' . $form_state['values']['nid'] . '-';
 		foreach($form_state['values']['field_footnote'][LANGUAGE_NONE] as $k => $v)
 		{
 			if ($k === 'add_more')
@@ -261,30 +264,12 @@ function _osci_tk_utility_node_submit($form, &$form_state)
 		}
 	}
 	
-	$offset = 0;
 	//update figure references for renumbering if one deleted
-	if (isset($form_state['values']['field_figure']))
+	if (function_exists("_osci_tk_figure_node_get_replace_ids")) 
 	{
-		$figureTemplate = '[figure:fig_' . $form_state['values']['nid'] . '_';
-		foreach($form_state['values']['field_figure'][LANGUAGE_NONE] as $k => $v)
-		{
-			if ($k === 'add_more')
-			{
-				continue;
-			}
-			
-			if (empty($v['asset_reference']) || !is_numeric($v['asset_reference']))
-			{
-				$offset++;
-				$replaceIds[] = $figureTemplate . $k . ']';
-				$newIds[] = '';
-			}
-			else if ($offset > 0) 
-			{
-				$replaceIds[] = $figureTemplate . $k . ']';
-				$newIds[] = $figureTemplate . ($k - $offset) . ']';
-			}
-		}
+		list($figureReplaceIds, $figureNewIds) = _osci_tk_figure_node_get_replace_ids($form, $form_state);
+		$replaceIds = array_merge($replaceIds, $figureReplaceIds);
+		$newIds = array_merge($newIds, $figureNewIds);
 	}
 	
 	if (count($replaceIds))
@@ -347,4 +332,55 @@ function osci_tk_add_more_footnote_ajax($form, $form_state)
 	$element[$delta]['#suffix'] = (isset($element[$delta]['#suffix']) ? $element[$delta]['#suffix'] : '') . '</div>';
 
 	return $element;
+}
+
+function _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time = null)
+{
+	if ($time === null)
+	{
+		$time = time();
+	}
+	$vid = null;
+
+	if (module_exists('workbench_moderation'))
+	{
+		$where = 'n.nid = :nid AND n.stamp <= :stamp AND (n.from_state = "published" OR n.state = "published")';
+
+		$results = db_select('workbench_moderation_node_history', 'n')
+	        ->fields('n', array('nid', 'vid', 'state'))
+	        ->where($where, array(
+	        	':nid' => $nid,
+	        	':stamp' => $time
+	        ))
+	        ->orderBy('stamp', 'DESC')
+	        ->range(0, 1)
+	        ->execute();
+
+	    if ($results)
+	    {
+	    	foreach($results as $k => $v)
+			{
+				$vid = $v->vid;
+			}
+	    }
+	} else 
+	{
+		$results = db_select('node_revision', 'n')
+	        ->fields('n', array('nid', 'vid', 'status'))
+	        ->condition('nid', $nid)
+	        ->condition('timestamp', $time, '<=')
+	        ->orderBy('timestamp', 'DESC')
+	        ->range(0, 1)
+	        ->execute();
+
+	    if ($results)
+	    {
+	    	foreach($results as $k => $v)
+			{
+				$vid = $v->vid;
+			}
+	    }
+	}
+
+	return $vid;
 }

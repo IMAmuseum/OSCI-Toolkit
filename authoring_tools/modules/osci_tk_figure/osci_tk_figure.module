@@ -73,19 +73,23 @@ function osci_tk_figure_field_formatter_info()
 
 function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display)
 {
+	global $osci_tk_placed_figures;
+
 	$element = array();
 	switch($display['type'])
 	{
 		case 'osci_tk_figure':
 			foreach($items as $delta => $item)
 			{
-				$item['fig_id'] = 'fig_' . $entity->nid . '_' . $delta;
-			
-				$item['number_template'] = str_replace(
-					array('fig#', 'cat#.'), 
-					array($delta, ''), 
-					$item['number_template']
-				);
+				//if figure placed inline do not output it again
+				if (in_array($delta, $osci_tk_placed_figures))
+				{
+					continue;
+				}
+
+				$item['fig_id'] = _osci_tk_figure_create_id($entity->nid, $delta);
+				$item['delta'] = $delta;
+				$item['number_template'] = _osci_tk_figure_process_number_template($item);
 				
 				$element[$delta] = array(
 					'#theme'	=> 'osci_tk_figure_formatter',
@@ -189,7 +193,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 			$itemDelta = $i;
 			$item = $items[$itemDelta];
 			
-			$figId = 'fig_' . $form['nid']['#value'] .'_' . $itemDelta;
+			$figId = _osci_tk_figure_create_id($form['nid']['#value'], $itemDelta);
 			
 			$figureElement[] = array(
 				'#title' 			=> $itemDelta . ' <span>[figure:' . $figId . ']</span>',
@@ -307,34 +311,7 @@ function osci_tk_figure_node_submit($form, &$form_state)
 		return;
 	}
 	
-	$offset = 0;
-	$replaceIds = array();
-	$newIds = array();
-	
-	//update figure references for renumbering if one deleted
-	if (isset($form_state['values']['field_figure']))
-	{
-		$figureTemplate = '[figure:fig_' . $form_state['values']['nid'] . '_';
-		foreach($form_state['values']['field_figure'][LANGUAGE_NONE] as $k => $v)
-		{
-			if ($k === 'add_more')
-			{
-				continue;
-			}
-			
-			if (empty($v['asset_reference']) || !is_numeric($v['asset_reference']))
-			{
-				$offset++;
-				$replaceIds[] = $figureTemplate . $k . ']';
-				$newIds[] = '';
-			}
-			else if ($offset > 0) 
-			{
-				$replaceIds[] = $figureTemplate . $k . ']';
-				$newIds[] = $figureTemplate . ($k - $offset) . ']';
-			}
-		}
-	}
+	list($replaceIds, $newIds) = _osci_tk_figure_node_get_replace_ids($form, $form_state);
 	
 	if (count($replaceIds))
 	{
@@ -355,17 +332,53 @@ function osci_tk_figure_node_submit($form, &$form_state)
 	}
 }
 
+function _osci_tk_figure_node_get_replace_ids($form, &$form_state)
+{
+	$offset = 0;
+	$replaceIds = array();
+	$newIds = array();
+	
+	//update figure references for renumbering if one deleted
+	if (isset($form_state['values']['field_figure']))
+	{
+		$figureTemplate = '[figure:';
+		foreach($form_state['values']['field_figure'][LANGUAGE_NONE] as $k => $v)
+		{
+			if ($k === 'add_more')
+			{
+				continue;
+			}
+			
+			$figId = _osci_tk_figure_create_id($form_state['values']['nid'], $k);
+			if (empty($v['asset_reference']) || !is_numeric($v['asset_reference']))
+			{
+				$offset++;
+				$replaceIds[] = $figureTemplate . $figId . ']';
+				$newIds[] = '';
+			}
+			else if ($offset > 0) 
+			{
+				$replaceIds[] = $figureTemplate . $figId . ']';
+				$newFigId = _osci_tk_figure_create_id($form_state['values']['nid'], $k - $offset);
+				$newIds[] = $figureTemplate . $newFigId . ']';
+			}
+		}
+	}
+	
+	return array($replaceIds, $newIds);
+}
+
 
 function osci_tk_figure_node_view($node, $view_mode, $langcode) {
   
   if (($node->type == 'section') && ($view_mode == 'full')) {
 
     // Add the authoring figure preview UI
+    drupal_add_library('system', 'ui.dialog');
     drupal_add_js(drupal_get_path('module', 'osci_tk_figure') . '/js/figure_preview.js');
     
   }
-  
-  
+
 }
 
 
@@ -509,4 +522,20 @@ function osci_tk_figure_osci_tk_image_types()
 	);
 	
 	return $types;
+}
+
+function _osci_tk_figure_process_number_template($figure)
+{
+	$numberTemplate = str_replace(
+		array('fig#', 'cat#.'), 
+		array(((int)$figure['delta']) + 1, ''), 
+		$figure['number_template']
+	);
+	
+	return $numberTemplate;
+}
+
+function _osci_tk_figure_create_id($nid, $delta)
+{
+	return 'fig-' . $nid . '-' . $delta;
 }

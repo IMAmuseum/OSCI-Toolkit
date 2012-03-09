@@ -1,8 +1,8 @@
-<div id="figures">
+<section id="figures">
 	<?php 
 		foreach($items as $item)
 		{
 			print drupal_render($item); 
 		}
 	?>
-</div>
+</section>

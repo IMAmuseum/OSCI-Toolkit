@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package version="3.0" unique-identifier="publication-id" xmlns="http://www.idpf.org/2007/opf" xml:lang="en">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:title id="t1">Example Book Cover</dc:title><meta refines="#t1" property="title-type">main</meta><meta refines="#t1" property="display-seq">1</meta>    		<dc:identifier id="publication-id">42</dc:identifier>    		<dc:creator>IMA Lab</dc:creator>    		<dc:description>It's about stuff</dc:description>    		<dc:publisher>IMA Lab</dc:publisher>    		<dc:rights>Your rights are belong to us</dc:rights>    		<dc:date>1970-01-01T00:00:00Z</dc:date>    		<meta property="dcterms:modified">1970-01-01T00:00:00Z</meta>        <dc:language>en</dc:language>
+  </metadata>
+  <manifest>
+    <item id="nav" href="sample/nav.xhtml"  media-type="application/xhtml+xml" properties='nav' ></item>
+    <item id="section-1" href="sample/section-1.xhtml" media-type="application/xhtml+xml"  ></item>
+    <item id="section-2" href="sample/section-2.xhtml" media-type="application/xhtml+xml"  ></item>    
+  </manifest>
+  <spine>
+    <itemref idref='section-1'></itemref>
+    <itemref idref='section-2'></itemref>    
+  </spine>
+</package>
