@@ -134,7 +134,6 @@ function osci_tk_epub_field_formatter_view($entity_type, $entity, $field, $insta
 	switch($display['type'])
 	{
 		case 'osci_tk_section':
-			dpm(array($field, $instance, $items) , 'field, instance, items');
 			foreach($items as $delta => $item)
 			{
 				$item['delta'] = $delta;
