@@ -1122,6 +1122,8 @@ function osci_tk_epub_block_view($delta = '')
 	switch($delta)
 	{
 		case 'epub_links':
+			module_load_include('inc', 'osci_tk_epub', 'osci_tk_epub.publish');
+
 			if (arg(0) == 'node') 
 			{
 				$nid = arg(1);
@@ -1132,7 +1134,7 @@ function osci_tk_epub_block_view($delta = '')
 				l("Nav Document", "api/epub/{$nid}/nav.xhtml"),
 				l("NCX Document", "api/epub/{$nid}/toc.ncx"),
 				l("Package Document", "api/epub/{$nid}/package.opf"),
-				l("Publish ePub", "api/epub/{$nid}/publish"),
+				drupal_render(drupal_get_form('osci_tk_epub_publish_form', $nid))
 			);
 
 			$block['subject'] = t('ePub Links');
