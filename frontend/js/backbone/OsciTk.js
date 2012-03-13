@@ -31,14 +31,16 @@ if (!OsciTk) {
 		// Bindings
 		//
 		OsciTk.dispatcher.on('packageLoaded', function(package) {
+			console.log(package, 'packageLoaded');
 			for (var i in package.get('manifest').item) {
 				if (package.get('manifest').item[i].properties == 'nav') {
 					this.parent.navigation = new OsciTkNavigation({
 						uri: package.get('manifest').item[i].href
-					}, OsciTk.dispatcher);
+					}, {dispatcher: this});
 				}			
 			}
 		});
+		
 		OsciTk.dispatcher.on('navigationLoaded', function(navigation) {
 			console.log(navigation, 'loaded navigation');
 			// populate the sections collection
@@ -53,13 +55,52 @@ if (!OsciTk) {
 					.loadContent();
 				// load the notes for the current section
 				OsciTk.notes.fetch({section_id: navigation.get('current_section')['data-section_id']});
+				// signal finished
+				//this.trigger
 			}
+		});
+		
+		OsciTk.dispatcher.on('footnotesAvailable', function(data) {
+			console.log(data, 'footnotesAvailable');
+			// parse the footnotes
+			_.each($('aside', data), function(markup) {
+				var idComponents = markup.id.match(/\w+-(\d+)-(\d+)/);
+				var footnote = {
+					id:         markup.id,
+					rawData:    markup,
+					body:       markup.innerHTML,
+					section_id: idComponents[1],
+					delta:      idComponents[2]
+				};
+				this.parent.footnotes.create(footnote, {dispatcher: this})
+			}, this);
+		});
+		
+		OsciTk.dispatcher.on('figuresAvailable', function(data) {
+			console.log(data, 'figuresAvailable');
+			_.each($('figure', data), function(markup) {
+				console.log(markup);
+				var idComponents = markup.id.match(/\w+-(\d+)-(\d+)/);
+				var figure = {
+					id:         markup.id,
+					rawData:    markup,
+					body:       markup.innerHTML,
+					section_id: idComponents[1],
+					delta:      idComponents[2],
+					title:      $(markup).attr('title'),
+					caption:    $('figcaption', markup).html(),
+					position:   $(markup).attr('data-position'),
+					columns:    $(markup).attr('data-columns'),
+					options:    JSON.parse($(markup).attr('data-options'))
+				};
+				this.parent.figures.create(figure, {dispatcher: this})
+			}, this);
 		});
 		
 		//
 		// initialize the package
 		//
-		OsciTk.package = new OsciTkPackage({url: package_url}, OsciTk.dispatcher);
+		OsciTk.package = new OsciTkPackage({url: package_url}, {dispatcher: OsciTk.dispatcher});
 	}
 	
 	OsciTk.populateSections = function(origSection) {
@@ -71,6 +112,7 @@ if (!OsciTk) {
 			}
 		}
 		section.id = section['data-section_id'];
-		this.sections.create(section);
+		
+		this.sections.create(section, {dispatcher: this.dispatcher});
 	}
 }

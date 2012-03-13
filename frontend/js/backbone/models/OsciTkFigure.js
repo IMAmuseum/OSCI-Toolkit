@@ -1,13 +1,13 @@
-var OsciTkFigure = Backbone.Model.extend({
+var OsciTkFigure = OsciTkModel.extend({
 	defaults: function() {
 		return {
-			asset_id: '',
-			section_id: '',
-			delta: '',
-			number_template: '',
-			caption: '',
-			position: '',
-			columns: '',
+			asset_id: null,
+			section_id: null,
+			delta: null,
+			caption: null,
+			position: null,
+			columns: null,
+			body: null,
 			options: {}
 		};
 	},

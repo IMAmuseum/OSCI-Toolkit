@@ -1,4 +1,4 @@
-var OsciTkModel = Backbone.Model.extend({
+var OsciTkCollection = Backbone.Collection.extend({
 	constructor: function(attrs, options) {
 		this.dispatcher = (options && options.dispatcher) ? options.dispatcher : null;
 		if (this.dispatcher == null) this.dispatcher = this;

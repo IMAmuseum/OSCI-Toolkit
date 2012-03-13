@@ -1,4 +1,4 @@
-var OsciTkFootnote = Backbone.Model.extend({
+var OsciTkFootnote = OsciTkModel.extend({
 	defaults: function() {
 		return {
 			body: '',
