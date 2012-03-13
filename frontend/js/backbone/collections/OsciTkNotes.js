@@ -1,13 +1,14 @@
-var OsciTkNotes = Backbone.Collection.extend({
-	model: OsciTkNote,
-	parse: function(response) {
-		if (response.success) {
-			// return response.notes;
-			return response.notes;
+jQuery(function() {
+	window.OsciTkNotes = Backbone.Collection.extend({
+		model: OsciTkNote,
+		parse: function(response) {
+			if (response.success) {
+				// return response.notes;
+				return response.notes;
+			}
+			else {
+				return false;
+			}
 		}
-		else {
-			return false;
-		}
-	}
+	});
 });
-

@@ -1,3 +1,5 @@
-var OsciTkFigures = Backbone.Collection.extend({
-	model: OsciTkFigure
+jQuery(function() {
+	window.OsciTkFigures = Backbone.Collection.extend({
+		model: OsciTkFigure
+	});
 });
