@@ -334,6 +334,12 @@ function osci_tk_add_more_footnote_ajax($form, $form_state)
 	return $element;
 }
 
+/**
+ * Retrieve a revision based on timestamp and nid (uses workbench module if installed, otherwise node revisions)
+ * @param int $nid The node id to find a version id for
+ * @param timestamp $time The timestamp to use for discovering a version id
+ * @return int The version id of node nearest the tiemstamp
+ */
 function _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time = null)
 {
 	if ($time === null)
