@@ -44,6 +44,7 @@ jQuery(function() {
 						this.parent.navigation = new OsciTkNavigation({
 							uri: package.get('manifest').item[i].href
 						}, {dispatcher: this});
+						break; // There can be only one... navigation document
 					}			
 				}
 			});
