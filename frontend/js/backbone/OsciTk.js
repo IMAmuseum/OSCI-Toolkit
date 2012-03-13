@@ -29,9 +29,10 @@ jQuery(function() {
 			OsciTk.figures = new OsciTkFigures;
 			OsciTk.footnotes = new OsciTkFootnotes;
 			
-			// create a reader
+			// create a reader and add components
 			OsciTk.readerView = new OsciTkReaderView;
-			//OsciTk.toolbar = new OsciTkToolbar();
+			OsciTk.toolbarView = new OsciTkToolbarView;
+			OsciTk.readerView.addView(OsciTk.toolbarView);
 			
 			//
 			// Bindings

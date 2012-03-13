@@ -1,12 +1,14 @@
 jQuery(function() {
-	window.OsciTkReaderView = Backbone.View.extend({
+	window.OsciTkReaderView = OsciTkView.extend({
 		id: 'reader',
 		template: _.template($('#template-reader').html()),
 		
 		initialize: function() {
-			// apply our reader div
-			this.$el.html(this.template());
 			$('body').append(this.el);
+		},
+		
+		render: function() {
+			this.$el.html(this.template());
 		},
 		
 		addView: function(view) {
