@@ -1,7 +1,7 @@
 jQuery(function() {
 	if (!window.OsciTk) {
 		window.OsciTk = {};
-	
+
 		OsciTk.settings = {
 			'endpoints': {
 				'OsciTkNotes': '/api/notes/',
@@ -106,6 +106,9 @@ jQuery(function() {
 			// initialize the package
 			//
 			OsciTk.package = new OsciTkPackage({url: package_url}, {dispatcher: OsciTk.dispatcher});
+			
+			// Route the URL - should this come prior to initializing the package?
+			Backbone.history.start();
 		};
 		
 		OsciTk.populateSections = function(origSection) {
