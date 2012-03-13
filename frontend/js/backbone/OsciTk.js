@@ -17,6 +17,8 @@ if (!OsciTk) {
 	_.extend(OsciTk.dispatcher, Backbone.Events);
 		
 	OsciTk.init = function(package_url) {
+
+		OsciTk.router = new OsciTkRouter(OsciTk.dispatcher);	
 		
 		//
 		// init global collections
@@ -101,6 +103,10 @@ if (!OsciTk) {
 		// initialize the package
 		//
 		OsciTk.package = new OsciTkPackage({url: package_url}, {dispatcher: OsciTk.dispatcher});
+
+		// Route the URL - should this come prior to initializing the package?
+		Backbone.history.start();
+
 	}
 	
 	OsciTk.populateSections = function(origSection) {
