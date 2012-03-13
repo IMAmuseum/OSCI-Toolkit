@@ -30,7 +30,7 @@ jQuery(function() {
 			OsciTk.footnotes = new OsciTkFootnotes;
 			
 			// create a reader
-			OsciTk.reader = new OsciTkReader;
+			OsciTk.readerView = new OsciTkReaderView;
 			//OsciTk.toolbar = new OsciTkToolbar();
 			
 			//
@@ -108,7 +108,7 @@ jQuery(function() {
 			OsciTk.package = new OsciTkPackage({url: package_url}, {dispatcher: OsciTk.dispatcher});
 			
 			// Route the URL - should this come prior to initializing the package?
-			Backbone.history.start();
+			// Backbone.history.start();
 		};
 		
 		OsciTk.populateSections = function(origSection) {
