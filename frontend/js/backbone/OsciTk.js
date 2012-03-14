@@ -29,10 +29,14 @@ jQuery(function() {
 			OsciTk.figures = new OsciTkFigures;
 			OsciTk.footnotes = new OsciTkFootnotes;
 			
-			// create a reader and add components
+			// create a reader view and add components
 			OsciTk.readerView = new OsciTkReaderView;
 			OsciTk.toolbarView = new OsciTkToolbarView;
+			OsciTk.sectionView = new OsciTkSectionView;
+			OsciTk.navigationView = new OsciTkNavigationView;
 			OsciTk.readerView.addView(OsciTk.toolbarView);
+			OsciTk.readerView.addView(OsciTk.sectionView);
+			OsciTk.readerView.addView(OsciTk.navigationView);
 			
 			//
 			// Bindings
@@ -85,7 +89,6 @@ jQuery(function() {
 			OsciTk.dispatcher.on('figuresAvailable', function(data) {
 				console.log(data, 'figuresAvailable');
 				_.each($('figure', data), function(markup) {
-					console.log(markup);
 					var idComponents = markup.id.match(/\w+-(\d+)-(\d+)/);
 					var figure = {
 						id:         markup.id,
