@@ -1,16 +1,17 @@
 jQuery(function() {
 	window.OsciTkRouter = Backbone.Router.extend({
 	
-		dispatcher: null,
-	
 		routes: {
 			'' : 'root',
 			'section/:section_id' : 'section', // TODO: add params for paragraph, etc.
 			'search/:query' : 'search'
 		},
 	
-		initialize: function(dispatcher) {
-			this.dispatcher = dispatcher;
+		initialize: function(options) {
+			console.log(options.package_url, 'router url');
+			this.dispatcher = _.extend({}, Backbone.Events);
+			options.dispatcher = this.dispatcher;
+			window.appView = new OsciTkAppView(options);
 		},
 	
 		/**

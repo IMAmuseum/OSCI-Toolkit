@@ -30,7 +30,6 @@ jQuery(function() {
 			this.dispatcher.trigger('footnotesAvailable', footnotes);
 			this.dispatcher.trigger('figuresAvailable', figures);
 			console.log(this, 'loaded section');
-			OsciTk.sectionView = new OsciTkSectionView;
 		}
 	
 		
