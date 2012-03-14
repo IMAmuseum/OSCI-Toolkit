@@ -5,33 +5,95 @@
  */
 function osci_tk_search_menu() {
 	$items = array();
-	$items['content/search'] = array(
-		'title' => 'Content Search',
-		'page callback' => 'osci_tk_search_query',
-		'type' => MENU_CALLBACK,
+	$items['api/search'] = array(
+		'title' 			=> t('Search'),
+		'page callback' 	=> 'osci_tk_search_query',
+		'type' 				=> MENU_CALLBACK,
+		'access arguments'  => array('access content'),
+	);
+	$items['api/opensearch'] = array(
+		'title' 			=> t('Search'),
+		'page callback' 	=> 'osci_tk_search_opensearch_query',
+		'type' 				=> MENU_CALLBACK,
+		'access arguments'  => array('access content'),
+	);
+	$items['admin/config/search/opensearch'] = array(
+	  	'title' 			=> t('Open Search Settings'),
+	  	'page callback' 	=> 'drupal_get_form',
+	  	'page arguments' 	=> array('osci_tk_search_opensearch'),
+	  	'access arguments' 	=> array('administer site configuration'),
+	  	'file' 				=> 'osci_tk_search.admin.inc',
+	);
+	$items['opensearch/document'] = array(
+		'title'				=> t('OpenSearch Document'),
+		'page callback'		=> 'osci_tk_search_display_opensearch_document',
+		'access arguments'  => array('access content'),
+		'type'				=> MENU_CALLBACK,
 	);
 	return $items;
 }
 
 /**
- * Implements hook_init()
+ * Implements hook_theme().
  */
-function osci_tk_init() {
-	
+function osci_tk_search_theme($existing, $type, $theme, $path) {
+	return array(
+		'opensearch_description' => array(
+			'variables' => array(),
+			'template' 	=> 'templates/opensearch-description',
+			'file' 		=> 'osci_tk_search.templates.inc'
+		),
+		'opensearch_results' => array(
+			'variables' => array(
+				'response' => NULL,
+			),
+			'template'	=> 'templates/opensearch-results',
+			'file'		=> 'osci_tk_search.templates.inc'
+		),
+	);
 }
 
 /**
- * Perform primary query
+ * Generate basic search results as JSON
  */
 function osci_tk_search_query() {
-
+	$response = osci_tk_search_do_query();
+	print json_encode($response);
 }
 
 /**
  * Generates open search results 
  */
-function osci_tk_search_build_open_search_results($results) {
+function osci_tk_search_opensearch_query() {
+	$response = osci_tk_search_do_query();
+	print theme('opensearch_results', array('response' => $response));
+}
 
+/**
+ * Perform primary query
+ * @return Object
+ */
+function osci_tk_search_do_query() {
+	// setup query parameters
+	$params['q']	= arg(2);
+	$params['fl']	= 'label, url, teaser';
+	$solrsort		= '';
+	$filters 		= isset($_GET['filters']) ? $_GET['filters'] : '';
+
+	$query = apachesolr_drupal_query('oscitk', $params, $solrsort);
+	$query->page = pager_find_page();
+	// add content boost parameters to the query
+	apachesolr_search_add_boost_params($query);
+	// execute query
+	list($final_query, $response) = apachesolr_do_query($query, $query->page);
+	return $response->response;
+}
+
+/**
+ * Display the OpenSearch document
+ */
+function osci_tk_search_display_opensearch_document() {
+	print theme('opensearch_description');
 }
 
 /**

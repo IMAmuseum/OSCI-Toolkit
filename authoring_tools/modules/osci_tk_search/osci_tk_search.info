@@ -5,3 +5,5 @@ version = "1.0"
 core = "7.x"
 
 files[] = osci_tk_search.module
+files[] = osci_tk_search.admin.inc
+files[] = osci_tk_search.templates.inc
