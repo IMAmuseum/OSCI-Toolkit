@@ -54,6 +54,12 @@ jQuery(function() {
 			}
 		},
 		
+		goToSection: function(id) {
+			// TODO: traverse the TOC and find the actual section
+			if (this.get('toc').children[0]) {
+				this.set({current_section: this.get('toc').children[0]});
+			}
+		},
 		
 		parseChildren: function(item, parent) {
 			var parsedItem = {};

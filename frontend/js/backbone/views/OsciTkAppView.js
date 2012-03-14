@@ -52,7 +52,7 @@ jQuery(function() {
 			
 			// bind routedToSection
 			this.dispatcher.on('routedToSection', function(id) {
-				this.navigation.set('current_section', id)
+				this.navigation.goToSection(id);
 			}, this);
 
 			
