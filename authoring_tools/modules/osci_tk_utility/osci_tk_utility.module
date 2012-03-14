@@ -348,6 +348,19 @@ function _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time = null)
 	}
 	$vid = null;
 
+	$valid = db_select('node', 'n')
+		->fields('n', array('nid', 'created'))
+		->condition('nid', $nid, '=')
+		->condition('created', $time, '<=')
+		->range(0, 1)
+        ->execute()
+        ->fetchAssoc();
+
+    if (!$valid)
+    {
+    	return $vid;
+    }
+
 	if (module_exists('workbench_moderation'))
 	{
 		$where = 'n.nid = :nid AND n.stamp <= :stamp AND (n.from_state = "published" OR n.state = "published")';
@@ -360,14 +373,12 @@ function _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time = null)
 	        ))
 	        ->orderBy('stamp', 'DESC')
 	        ->range(0, 1)
-	        ->execute();
+	        ->execute()
+	        ->fetchAssoc();
 
 	    if ($results)
 	    {
-	    	foreach($results as $k => $v)
-			{
-				$vid = $v->vid;
-			}
+			$vid = $results['vid'];
 	    }
 	} else 
 	{
@@ -377,14 +388,12 @@ function _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time = null)
 	        ->condition('timestamp', $time, '<=')
 	        ->orderBy('timestamp', 'DESC')
 	        ->range(0, 1)
-	        ->execute();
+	        ->execute()
+	        ->fetchAssoc();
 
 	    if ($results)
 	    {
-	    	foreach($results as $k => $v)
-			{
-				$vid = $v->vid;
-			}
+	    	$vid = $results['vid'];
 	    }
 	}
 
