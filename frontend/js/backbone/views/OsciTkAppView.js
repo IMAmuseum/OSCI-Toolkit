@@ -32,9 +32,11 @@ jQuery(function() {
 				console.log(packageModel, 'packageLoaded');
 				for (var i in packageModel.get('manifest').item) {
 					if (packageModel.get('manifest').item[i].properties == 'nav') {
+						
 						this.navigation = new OsciTkNavigation({
 							uri: packageModel.get('manifest').item[i].href
 						}, {dispatcher: this.dispatcher});
+						
 						this.navigation.on('change:current_section', function() {
 							this.dispatcher.trigger('sectionChanged');
 						});
