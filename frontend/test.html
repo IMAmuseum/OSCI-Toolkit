@@ -10,16 +10,38 @@
 	<script src="js/backbone/models/OsciTkFootnote.js"></script>
 	<script src="js/backbone/models/OsciTkNavigation.js"></script>			
 	<script src="js/backbone/models/OsciTkNote.js"></script>
-	<script src="js/backbone/models/OsciTkSection.js"></script>		
+	<script src="js/backbone/models/OsciTkSection.js"></script>	
+	<script src="js/backbone/collections/OsciTkCollection.js"></script>	
 	<script src="js/backbone/collections/OsciTkFigures.js"></script>
 	<script src="js/backbone/collections/OsciTkFootnotes.js"></script>
 	<script src="js/backbone/collections/OsciTkNotes.js"></script>
-	<script src="js/backbone/collections/OsciTkSections.js"></script>	
-	<script src="js/backbone/OsciTk.js"></script>
-	<script src="js/backbone/OsciTk.helper.js"></script>	
-	<script>jQuery(function() { OsciTk.init('sample/package.opf'); })</script>
+	<script src="js/backbone/collections/OsciTkSections.js"></script>
+	<script src="js/backbone/views/OsciTkView.js"></script>
+	<script src="js/backbone/views/OsciTkAppView.js"></script>
+	<script src="js/backbone/views/OsciTkToolbarView.js"></script>
+	<script src="js/backbone/views/OsciTkSectionView.js"></script>
+	<script src="js/backbone/views/OsciTkNavigationView.js"></script>
+	<script src="js/backbone/OsciTkRouter.js"></script>	
+	<script src="js/backbone/OsciTk.helper.js"></script>		
+	<script>jQuery(function() { 
+			window.appRouter = new OsciTkRouter({
+				package_url: 'sample/package.opf', 
+				endpoints: {
+					'endpoints': {
+						'OsciTkNotes': '/api/notes/',
+						'OsciTkNote': '/api/notes/'
+					}
+				}
+			});
+			Backbone.history.start();	
+		});
+	</script>
 </head>
 <body>
-	<h1>Backbone Environment Test</h1>
+	<script id="template-app" type="text/template"><p>this is the reader</p></script>
+	<script id="template-toolbar" type="text/template"></script>
+	<script id="template-section" type="text/template"><%= body %></script>
+	<script id="template-navigation" type="text/template"></script>
+	<script id="template-reader" type="text/template"></script>
 </body>
 </html>

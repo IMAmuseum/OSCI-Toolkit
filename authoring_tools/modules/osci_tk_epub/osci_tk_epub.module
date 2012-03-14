@@ -113,6 +113,42 @@ function osci_tk_epub_node_update($node) {
   
 }
 
+/**
+ * hook_field_formatter_info
+ */
+function osci_tk_epub_field_formatter_info() {
+	$formatters = array(
+		'osci_tk_section' => array(
+			'label'         => t('OSCI Toolkit Section'),
+			'field types'   => array('text_long', 'text'),
+		)
+	);
+	
+	return $formatters;
+}
+
+
+function osci_tk_epub_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+	$element = array();
+	
+	switch($display['type'])
+	{
+		case 'osci_tk_section':
+			foreach($items as $delta => $item)
+			{
+				$item['delta'] = $delta;
+				$item['field_name'] = $field['field_name'];
+				$element[$delta] = array(
+					'#theme'	=> 'osci_tk_epub_section',
+					'#item'		=> $item,
+				);
+			}
+			break;
+	}
+	
+	return $element;
+}
+
 
 function osci_tk_epub_theme($existing, $type, $theme, $path) {
 	return array(
@@ -156,8 +192,12 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 		'osci_tk_footnote_epub' => array(
 			'template' => 'templates/osci_tk_footnote_epub',
 			'variables' => array(
-		        'items' => array()
-		     ),
+				'items' => array()
+			),
+		),
+		'osci_tk_epub_section' => array(
+			'template' => 'templates/osci_tk_epub_section',
+			'variables' => array('item' => ''),
 		),
 		'osci_tk_epub_mimetype' => array(
 			'template' => 'templates/osci_tk_epub_mimetype',
@@ -218,7 +258,7 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_
 
     /***** Check the cache *****/
     if (!$no_cache) {
-      $cache_key = "osci_epub_content_{$node->nid}_($node->vid}"; 
+      $cache_key = "osci_epub_content_{$node->nid}_{$node->vid}"; 
       $output = _osci_tk_epub_check_cache($cache_key);    
       if (!is_null($output)) {
         return $output; 
@@ -231,7 +271,6 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_
 	foreach($fields as $key)
 	{
 		$element = $view[$key];
-	
 		switch($key)
 		{
 			case 'field_footnote':
@@ -1083,6 +1122,8 @@ function osci_tk_epub_block_view($delta = '')
 	switch($delta)
 	{
 		case 'epub_links':
+			module_load_include('inc', 'osci_tk_epub', 'osci_tk_epub.publish');
+
 			if (arg(0) == 'node') 
 			{
 				$nid = arg(1);
@@ -1093,7 +1134,7 @@ function osci_tk_epub_block_view($delta = '')
 				l("Nav Document", "api/epub/{$nid}/nav.xhtml"),
 				l("NCX Document", "api/epub/{$nid}/toc.ncx"),
 				l("Package Document", "api/epub/{$nid}/package.opf"),
-				l("Publish ePub", "api/epub/{$nid}/publish"),
+				drupal_render(drupal_get_form('osci_tk_epub_publish_form', $nid))
 			);
 
 			$block['subject'] = t('ePub Links');
