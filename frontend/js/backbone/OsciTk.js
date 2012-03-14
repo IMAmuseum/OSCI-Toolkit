@@ -16,7 +16,8 @@ jQuery(function() {
 		OsciTk.footnotes = null;
 		OsciTk.dispatcher = { parent: OsciTk };
 		_.extend(OsciTk.dispatcher, Backbone.Events);
-		
+
+		OsciTk.router = new OsciTkRouter(OsciTk.dispatcher);		
 		
 		OsciTk.init = function(package_url) {
 			
@@ -48,6 +49,10 @@ jQuery(function() {
 						this.parent.navigation = new OsciTkNavigation({
 							uri: package.get('manifest').item[i].href
 						}, {dispatcher: this});
+						this.parent.navigation.on('change:current_section', function() {
+							OsciTk.dispatcher.trigger('sectionChanged');
+						});
+						break; // There can be only one... navigation document
 					}			
 				}
 			});
@@ -58,18 +63,34 @@ jQuery(function() {
 				_.each(navigation.get('toc').children, function(section) {
 					this.parent.populateSections(section);
 				}, this);
+
+				// The initialization event chain stops here, 
+				// at which point the router figures out what content has been requested
 				
-				if (navigation.get('current_section')) {
+			});
+
+			OsciTk.dispatcher.on('routedToRoot', function() {
+				this.parent.navigation.goToBeginning();
+			});
+
+			OsciTk.dispatcher.on('routedToSection', function(id) {
+				this.parent.navigation.set('current_section', id)
+			});
+
+			OsciTk.dispatcher.on('sectionChanged', function() {
+
+				console.log('section changed')
+				if (this.parent.navigation.get('current_section')) {
 					// loading section content for first section
 					this.parent.sections
-						.get(navigation.get('current_section')['data-section_id'])
+						.get(this.parent.navigation.get('current_section')['data-section_id'])
 						.loadContent();
 					// load the notes for the current section
-					OsciTk.notes.fetch({section_id: navigation.get('current_section')['data-section_id']});
+					OsciTk.notes.fetch({section_id: this.parent.navigation.get('current_section')['data-section_id']});
 					
 				}
 			});
-			
+
 			OsciTk.dispatcher.on('footnotesAvailable', function(data) {
 				console.log(data, 'footnotesAvailable');
 				// parse the footnotes
@@ -112,7 +133,8 @@ jQuery(function() {
 			OsciTk.package = new OsciTkPackage({url: package_url}, {dispatcher: OsciTk.dispatcher});
 			
 			// Route the URL - should this come prior to initializing the package?
-			// Backbone.history.start();
+			Backbone.history.start()
+
 		};
 		
 		OsciTk.populateSections = function(origSection) {

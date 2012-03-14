@@ -42,15 +42,13 @@ jQuery(function() {
 					this.set(nav[i].type, nav[i]);
 				}
 			}
-			// Go to the beginning if we haven't started yet
-			if (this.get('current_section') == null) {
-				this.goToBeginning();
-			}
+
 			this.dispatcher.trigger('navigationLoaded', this);
 		},
 		
 		
 		goToBeginning: function() {
+			console.log('going to begnning');
 			if (this.get('toc').children[0]) {
 				this.set({current_section: this.get('toc').children[0]});
 			}
