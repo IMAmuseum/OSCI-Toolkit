@@ -14,11 +14,12 @@ jQuery(function() {
 			}, this);
 			// bind sectionChanged
 			this.dispatcher.on('sectionChanged', function() {
-				console.log('section changed')
+				console.log('section changed');
 				if (this.parent.navigation.get('current_section')) {
 					// loading section content for first section
-					var section = this.parent.sections
-						.get(this.parent.navigation.get('current_section')['data-section_id']);
+					var section = this.parent.sections.get(
+						this.parent.navigation.get('current_section')['id']
+					);
 					section.loadContent();
 					this.changeModel(section);
 					this.render();
