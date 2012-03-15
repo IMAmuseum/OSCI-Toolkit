@@ -45,8 +45,32 @@ jQuery(function() {
 
 			this.dispatcher.trigger('navigationLoaded', this);
 		},
+
 		
-		
+		/**
+		 * Get a section from a subtree of the TOC
+		 */
+		getSectionFromSubtree: function(section_id, subtree) {
+
+			for (i in subtree.children) {
+				if (subtree.children[i]['data-section_id'] == section_id) {
+					return subtree.children[i];
+				}
+				if (subtree.children[i].children != undefined) {
+					var section = this.getSectionFromSubtree(section_id, subtree.children[i])
+					if (section != null) return section;
+				}
+			}
+
+			// Not found
+			return null
+
+		},
+
+		getSection: function(section_id) {
+			return this.getSectionFromSubtree(section_id, this.attributes.toc);
+		},
+
 		goToBeginning: function() {
 			console.log('going to begnning');
 			if (this.get('toc').children[0]) {
@@ -56,9 +80,11 @@ jQuery(function() {
 		
 		goToSection: function(id) {
 			// TODO: traverse the TOC and find the actual section
-			if (this.get('toc').children[0]) {
-				this.set({current_section: this.get('toc').children[0]});
+			section = this.getSection(id);
+			if (section != null) {
+				this.set({current_section: section});
 			}
+
 		},
 		
 		parseChildren: function(item, parent) {

@@ -18,7 +18,7 @@ jQuery(function() {
 				if (this.parent.navigation.get('current_section')) {
 					// loading section content for first section
 					var section = this.parent.sections.get(
-						this.parent.navigation.get('current_section')['id']
+						this.parent.navigation.get('current_section')['data-section_id']
 					);
 					section.loadContent();
 					this.changeModel(section);
@@ -40,6 +40,11 @@ jQuery(function() {
 			section.id = section['data-section_id'];
 			
 			this.parent.sections.create(section, {dispatcher: this.dispatcher});
+
+			_.each(origSection.children, function(section) {
+				this.populateSections(section);
+			}, this);
+
 		}
 	});
 });
