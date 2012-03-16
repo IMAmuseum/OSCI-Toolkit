@@ -6,9 +6,9 @@ jQuery(function() {
 				title: null,
 				body: null,
 				uri: null,
-				media_type: 'application/xhtml+xml',
+				media_type: 'application/xhtml+xml'
 			};
-		},	
+		},
 	
 		sync: function(method, model, options) {
 			console.log('OsciTkSection.sync: ' + method);

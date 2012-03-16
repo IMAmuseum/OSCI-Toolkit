@@ -20,9 +20,10 @@
 	<script src="js/backbone/views/OsciTkAppView.js"></script>
 	<script src="js/backbone/views/OsciTkToolbarView.js"></script>
 	<script src="js/backbone/views/OsciTkSectionView.js"></script>
+	<script src="js/backbone/views/OsciTkMultiColumnSectionView.js"></script>
 	<script src="js/backbone/views/OsciTkNavigationView.js"></script>
 	<script src="js/backbone/OsciTkRouter.js"></script>	
-	<script src="js/backbone/OsciTk.helper.js"></script>		
+	<script src="js/backbone/OsciTk.helper.js"></script>	
 	<script>jQuery(function() { 
 			window.appRouter = new OsciTkRouter({
 				package_url: 'sample/package.opf', 
@@ -31,7 +32,8 @@
 						'OsciTkNotes': '/api/notes/',
 						'OsciTkNote': '/api/notes/'
 					}
-				}
+				},
+				section_view: OsciTkMultiColumnSectionView
 			});
 			Backbone.history.start();	
 		});

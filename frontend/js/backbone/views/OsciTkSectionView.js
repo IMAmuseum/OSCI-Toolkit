@@ -12,6 +12,7 @@ jQuery(function() {
 				}, this);
 				// initialization complete, router takes back over
 			}, this);
+
 			// bind sectionChanged
 			this.dispatcher.on('sectionChanged', function() {
 				console.log('section changed');
@@ -27,6 +28,13 @@ jQuery(function() {
 			}, this);
 		},
 		render: function() {
+			this.renderContent();
+
+			//TODO: add paging information to this event
+			this.dispatcher.trigger("layoutComplete");
+		},
+		renderContent: function()
+		{
 			this.$el.html(this.template(this.model.toJSON()));
 		},
 		populateSections: function(origSection) {
