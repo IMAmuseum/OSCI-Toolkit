@@ -7,12 +7,12 @@ jQuery(function() {
 				toc: null,
 				current_section: null
 			};
-		},	
+		},
 	
 		
 		initialize: function() {
 			// TODO: ERROR CHECK THE RETURNED XML
-			var data = xmlToJson(loadXMLDoc(this.get('uri')));		
+			var data = xmlToJson(loadXMLDoc(this.get('uri')));
 			var nav = data.html[1].body.nav;
 			// parse the toc and index
 			for (var i in nav) {
@@ -21,7 +21,7 @@ jQuery(function() {
 						id: nav[i].id,
 						title: nav[i].h1.value,
 						children: []
-					}
+					};
 					_.each(nav[i].ol.li, function(tocItem) {
 						this.parseChildren(tocItem, toc);
 					}, this);
@@ -32,7 +32,7 @@ jQuery(function() {
 						id: nav[i].id,
 						title: nav[i].h1.value,
 						children: []
-					}
+					};
 					_.each(nav[i].ol.li, function(indexItem) {
 						this.parseChildren(indexItem, index);
 					}, this);
@@ -52,18 +52,18 @@ jQuery(function() {
 		 */
 		getSectionFromSubtree: function(section_id, subtree) {
 
-			for (i in subtree.children) {
+			for (var i in subtree.children) {
 				if (subtree.children[i]['data-section_id'] == section_id) {
 					return subtree.children[i];
 				}
-				if (subtree.children[i].children != undefined) {
-					var section = this.getSectionFromSubtree(section_id, subtree.children[i])
-					if (section != null) return section;
+				if (subtree.children[i].children !== undefined) {
+					var section = this.getSectionFromSubtree(section_id, subtree.children[i]);
+					if (section !== null) return section;
 				}
 			}
 
 			// Not found
-			return null
+			return null;
 
 		},
 
@@ -81,7 +81,7 @@ jQuery(function() {
 		goToSection: function(id) {
 			// TODO: traverse the TOC and find the actual section
 			section = this.getSection(id);
-			if (section != null) {
+			if (section !== null) {
 				this.set({current_section: section});
 			}
 
@@ -96,12 +96,13 @@ jQuery(function() {
 			// if 'ol' tag is present, sub sections exist, process:
 			if (item.ol && item.ol.li) {
 				parsedItem.children = [];
+				var items;
 				// due to the way the xml is parsed, it comes back as an array or a direct object
 				if (typeof(item.ol.li.length) != 'undefined') {
-					var items = item.ol.li;
+					items = item.ol.li;
 				}
 				else {
-					var items = [item.ol.li];
+					items = [item.ol.li];
 				}
 				_.each(items, function(item2) {
 					this.parseChildren(item2, parsedItem);

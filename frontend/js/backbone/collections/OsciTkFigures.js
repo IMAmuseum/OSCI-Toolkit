@@ -24,7 +24,7 @@ jQuery(function() {
 					columns:    $(markup).attr('data-columns'),
 					options:    JSON.parse($(markup).attr('data-options'))
 				};
-				this.create(figure, {dispatcher: this.dispatcher})
+				this.create(figure, {dispatcher: this.dispatcher});
 			}, this);
 		}
 	});

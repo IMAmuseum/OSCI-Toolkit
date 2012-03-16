@@ -18,7 +18,7 @@ jQuery(function() {
 					section_id: idComponents[1],
 					delta:      idComponents[2]
 				};
-				this.create(footnote, {dispatcher: this.dispatcher})
+				this.create(footnote, {dispatcher: this.dispatcher});
 			}, this);
 		}
 		
