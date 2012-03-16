@@ -24,7 +24,7 @@ function getAttributeByLanguage(attr) {
 		}
 	}
 	// return all items if no language matched
-	if(items.length == 0) {
+	if(items.length === 0) {
 		items = attr;
 	}
 	return items;
@@ -44,7 +44,7 @@ function loadXMLDoc(url) {
  * Attempt to make the variable an array
  */
 function objectToArray(obj) {
-	if(obj == undefined) return;
+	if(obj === undefined) return;
 	return Object.prototype.toString.call(obj) !== '[object Array]' ? [obj] : obj;
 }
 
@@ -86,19 +86,18 @@ function xmlToJson(xml, namespace) {
 				item = xml.childNodes.item(i);
 				key = item.nodeType === 3 ? 'value' : item.nodeName.replaceArray(namespace, '').toCamel();
 				value = xmlToJson(item, namespace);
-				if(value.length != 0 && key != '#comment') { // ignore empty nodes and comments
+				if(value.length !== 0 && key !== '#comment') { // ignore empty nodes and comments
 					if (obj.hasOwnProperty(key)) {
-						if(item.nodeType === 3) { 
-							obj[key] += value; 
+						if(item.nodeType === 3) {
+							obj[key] += value;
 						} else {
-							if (obj[key].constructor !== Array) { 
-								obj[key] = [obj[key]]; 
+							if (obj[key].constructor !== Array) {
+								obj[key] = [obj[key]];
 							}
 							obj[key].push(value);
 						}
-					} else if (item.nodeType !== 3 || value !== '') { 
-						obj[key] = value; 
-					}
+					} else if (item.nodeType !== 3 || value !== '') {
+						obj[key] = value;					}
 				}
 			}
 		}

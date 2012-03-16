@@ -27,7 +27,7 @@ jQuery(function() {
 		 */
 		section: function(section_id) {
 			console.log('routing to section ' + section_id);
-			this.dispatcher.trigger('routedToSection', { id: section_id });
+			this.dispatcher.trigger('routedToSection', section_id);
 		},
 	
 		/**

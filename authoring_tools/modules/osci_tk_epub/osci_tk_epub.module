@@ -28,7 +28,7 @@ function osci_tk_epub_menu()
 		'type' => MENU_CALLBACK
 	);	
 	
-	$items['api/epub/%node/package.opf'] = array(
+	$items['api/epub/%/package.opf'] = array(
 		'title' => 'ePub Package Document',
 		'page callback' => 'osci_tk_epub_render_package_document',
 		'page arguments' => array(2),
@@ -243,10 +243,17 @@ function osci_tk_epub_render($nid)
 	$osci_tk_view_mode = 'epub';
 	$dev = false;
 
+	$output = '';
 	$vid = _osci_tk_epub_get_revision_id($nid);
-	$node = node_load($nid, $vid);
 
-	$output = _osci_tk_epub_generate_content_document($node, false, $dev);
+	if ($vid || !isset($_GET['revision']))
+	{
+		$node = node_load($nid, $vid);
+		$output = _osci_tk_epub_generate_content_document($node, false, $dev);
+	} else {
+		return drupal_not_found();
+	}
+	
 	if ($dev) return $output;
 	print $output;
 	drupal_exit(); 
@@ -337,9 +344,12 @@ function osci_tk_epub_render_navigation_document($node)
 /**
  * Render the package document for the book corresponding to this node
  */
-function osci_tk_epub_render_package_document($node)
+function osci_tk_epub_render_package_document($nid)
 {
   $dev = false;  
+
+  $node = node_load($nid);
+
   $output = _osci_tk_epub_generate_package_document($node, false, $dev);
   if ($dev) return $output;
   

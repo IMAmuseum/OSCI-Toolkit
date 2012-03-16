@@ -61,7 +61,7 @@ jQuery(function() {
 					if (!response.success) {
 						options.error(model, jqXHR);
 					}
-				}
+				};
 				$.ajax(endpoint, options);
 			}
 		},

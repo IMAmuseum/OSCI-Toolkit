@@ -6,9 +6,9 @@ jQuery(function() {
 				title: null,
 				body: null,
 				uri: null,
-				media_type: 'application/xhtml+xml',
+				media_type: 'application/xhtml+xml'
 			};
-		},	
+		},
 	
 		sync: function(method, model, options) {
 			console.log('OsciTkSection.sync: ' + method);
@@ -19,8 +19,7 @@ jQuery(function() {
 		},
 		
 		loadContent: function() {
-			window.data = (loadXMLDoc(this.get('href')));
-			console.log(data, 'raw section content');
+			var data = (loadXMLDoc(this.get('href')));
 			this.set('rawData', data);
 			this.set('title', $('section.title', data.body).html());
 			this.set('body', $('section.body', data.body).html());
@@ -31,7 +30,5 @@ jQuery(function() {
 			this.dispatcher.trigger('figuresAvailable', figures);
 			console.log(this, 'loaded section');
 		}
-	
-		
 	});
 });

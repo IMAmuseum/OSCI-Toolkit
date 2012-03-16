@@ -1,5 +1,5 @@
 jQuery(function() {
-	window.OsciTkNotes = Backbone.Collection.extend({
+	window.OsciTkNotes = OsciTkCollection.extend({
 		model: OsciTkNote,
 		parse: function(response) {
 			if (response.success) {

@@ -1,5 +1,5 @@
 jQuery(function() {
-	window.OsciTkSections = Backbone.Collection.extend({
+	window.OsciTkSections = OsciTkCollection.extend({
 		model: OsciTkSection
 	});
 });
