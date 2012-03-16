@@ -2,7 +2,6 @@ jQuery(function() {
 	window.OsciTkFigure = OsciTkModel.extend({
 		defaults: function() {
 			return {
-				asset_id: null,
 				section_id: null,
 				delta: null,
 				caption: null,

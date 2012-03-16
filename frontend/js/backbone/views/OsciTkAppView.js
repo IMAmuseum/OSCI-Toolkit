@@ -13,11 +13,11 @@ jQuery(function() {
 			//
 			// init global collections
 			//
-			this.notes = new OsciTkNotes;
+			this.notes = new OsciTkNotes(null, {dispatcher: this.dispatcher});
 			this.notes.url = options.endpoints.OsciTkNotes;
-			this.sections = new OsciTkSections;
-			this.figures = new OsciTkFigures;
-			this.footnotes = new OsciTkFootnotes;
+			this.sections = new OsciTkSections(null, {dispatcher: this.dispatcher});
+			this.figures = new OsciTkFigures(null, {dispatcher: this.dispatcher});
+			this.footnotes = new OsciTkFootnotes(null, {dispatcher: this.dispatcher});
 			
 			// create a reader view and add components
 			this.toolbarView = new OsciTkToolbarView(options);
