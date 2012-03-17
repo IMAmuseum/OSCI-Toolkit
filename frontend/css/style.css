@@ -3,4 +3,5 @@ div#toolbar {
 	height: 80%;
 	margin-top: -78%;
 	background-color: #ccc;
+	position: absolute;
 }

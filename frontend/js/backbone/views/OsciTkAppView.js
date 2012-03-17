@@ -38,6 +38,21 @@ jQuery(function() {
 			this.navigationView = new OsciTkNavigationView(this.options);
 			this.addView(this.navigationView);
 			
+			//setup window resizing, to trigger an event
+			window.onresize = (function(dispatcher){
+				return function() {
+					if (window.resizeTimer) {
+						clearTimeout(window.resizeTimer);
+					}
+
+					var onWindowResize = function(){
+						dispatcher.trigger("windowResized");
+					};
+
+					window.resizeTimer = setTimeout(onWindowResize, 100);
+				};
+			})(this.dispatcher);
+			
 			// bind packageLoaded to build navigation model
 			this.dispatcher.on('packageLoaded', function(packageModel) {
 				console.log(packageModel, 'packageLoaded');
