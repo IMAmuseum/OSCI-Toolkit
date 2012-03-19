@@ -4,3 +4,11 @@ div#toolbar {
 	margin-top: -78%;
 	background-color: #ccc;
 }
+div#toolbar-content {
+	height: 80%;
+	margin-top: -78%;
+	background-color: #ccc;
+}
+div#toolbar-handle {
+	height: 40px;
+}

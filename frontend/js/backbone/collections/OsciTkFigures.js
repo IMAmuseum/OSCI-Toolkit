@@ -4,13 +4,13 @@ jQuery(function() {
 		
 		initialize: function() {
 			this.dispatcher.bind('figuresAvailable', function(figures) {
+				console.log(figures, 'figuresAvailable');
 				this.populateFromMarkup(figures);
 			}, this);
 		},
 		
 		populateFromMarkup: function(data) {
 			_.each($('figure', data), function(markup) {
-				console.log(markup);
 				var idComponents = markup.id.match(/\w+-(\d+)-(\d+)/);
 				var figure = {
 					id:         markup.id,

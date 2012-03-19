@@ -4,6 +4,7 @@ jQuery(function() {
 		
 		initialize: function() {
 			this.dispatcher.bind('footnotesAvailable', function(footnotes) {
+				console.log(footnotes, 'footnotesAvailable');
 				this.populateFromMarkup(footnotes);
 			}, this);
 		},
