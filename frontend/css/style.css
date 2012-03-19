@@ -11,4 +11,5 @@ div#toolbar-content {
 }
 div#toolbar-handle {
 	height: 40px;
+	position: absolute;
 }
