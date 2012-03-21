@@ -111,7 +111,7 @@ function osci_tk_epub_publish_finish($success, $results, $operations)
 	$fileUrl = file_create_url($results['epub_file']);
 
 	if ($success) {
-        $message = 'ePub has been created with ' . format_plural(count($results['files']), 'One file included', '@count files included') . '. <a href="' . $fileUrl . '?refresh=' . time() . '">Download: ' . $fileUrl . '</a>';
+        $message = 'ePub has been created with ' . format_plural(count($results['files']), 'One file included', '@count files included') . '. <a href="' . $fileUrl . '">Download: ' . $fileUrl . '</a>';
     } else {
         $message = t('An error occurred');
     }
