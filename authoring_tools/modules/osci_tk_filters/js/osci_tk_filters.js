@@ -5,7 +5,7 @@
 
 	window.osci_tk_new_footnotes = null;
 
-    if (typeof(CKEDITOR) === 'undefined') 
+    if (typeof(CKEDITOR) === 'undefined')
 	{
 		return;
 	}
@@ -39,7 +39,7 @@
 		});
 	});
 
-	CKEDITOR.on('instanceCreated', function(e) 
+	CKEDITOR.on('instanceCreated', function(e)
 	{
 		e.editor.on("paste", function(event)
 		{
@@ -55,7 +55,7 @@
 					$val = $(val),
 					name = $this.attr('name');
 
-				if (name.indexOf('_ftnref') === 0) 
+				if (name.indexOf('_ftnref') === 0)
 				{
 					var footnote = name.replace('ref', ''),
 						content  = data.find('#' + footnote.replace('_', ''));
@@ -76,13 +76,13 @@
 					});
 					
 					nextDelta++;
-				} 
-				else 
+				}
+				else
 				{
 					$(this).next().html('');
 					$(this).html('');
 				}
-			}); 
+			});
 
 			var numFootnotes = footnotes.length;
 			if (numFootnotes)

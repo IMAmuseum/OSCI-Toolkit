@@ -41,7 +41,7 @@
 			id:         'footnote',
 			label:      'Add a footnote reference',
 			elements:   elements
-		}] 
+		}];
 		
 		return {
 			title:      'Add a footnote reference',
@@ -51,7 +51,7 @@
 			resizable:  'none',
 			contents:   contents,
 			onOk:       footnoteOk
-		}
+		};
 	}
 
 	function existingFootnoteShow(data) {
@@ -69,7 +69,7 @@
 		$(id).html('');
 		$(id).append(items);
 		// if there weren't any existing footnotes found, unhide the new footnote textarea by default
-		if (footnotes.length == 0) {
+		if (footnotes.length === 0) {
 			$('.newFootnote').show();
 		}
 	}
@@ -105,11 +105,11 @@
 			});
 		}
 		else {
-			editor.insertText('[footnote:' + replace + ']');
+			editor.insertText('[footnoteref:' + replace + ']');
 		}
 	}
 	
-	CKEDITOR.dialog.add('footnote', function(editor) {
+	CKEDITOR.dialog.add('footnote_reference', function(editor) {
 		return footnoteDialog(editor);
 	});
 

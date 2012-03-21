@@ -50,9 +50,9 @@ function osci_tk_filters_filter_info() {
     $filters = array();
 
     // Footnotes
-    $filters['osci_tk_footnote'] = array(
-        'title'             => t('Footnote filter'),
-        'description'       => t('Allow filters for footnotes'),
+    $filters['osci_tk_footnote_reference'] = array(
+        'title'             => t('Footnote Reference filter'),
+        'description'       => t('Add references to footnotes in content'),
         'process callback'  => '_filter_footnote',
         'settings callback' => '_filter_settings',
         'tips callback'     => '_filter_footnote_tips',
@@ -61,11 +61,20 @@ function osci_tk_filters_filter_info() {
 
     $filters['osci_tk_figure'] = array(
         'title'             => t('Figure filter'),
-        'description'       => t('Add references to figures in content'),
+        'description'       => t('Add figures to the content inline'),
         'process callback'  => '_filter_figure',
         'settings callback' => '_filter_settings',
         'tips callback'     => '_filter_figure_tips',
 		'cache'				=> false
+    );
+
+    $filters['osci_tk_figure_reference'] = array(
+        'title'             => t('Figure Reference filter'),
+        'description'       => t('Add references to figures in content'),
+        'process callback'  => '_filter_figure_reference',
+        'settings callback' => '_filter_settings',
+        'tips callback'     => '_filter_figure_reference_tips',
+        'cache'             => false
     );
     
     $filters['osci_tk_cross_link'] = array(
@@ -75,15 +84,6 @@ function osci_tk_filters_filter_info() {
         'settings callback' => '_filter_settings',
         'tips callback'     => '_filter_cross_link_tips',
 		'cache'				=> false
-    );
-
-    $filters['osci_tk_cross_link'] = array(
-        'title'             => t('Cross Link filter'),
-        'description'       => t('Allow cross content linking within a book'),
-        'process callback'  => '_filter_cross_link',
-        'settings callback' => '_filter_settings',
-        'tips callback'     => '_filter_cross_link_tips',
-        'cache'             => false
     );
 
     $filters['osci_tk_clean_content'] = array(
@@ -108,8 +108,9 @@ function osci_tk_filters_wysiwyg_plugin($editor, $version) {
                 'osci_tk_filters' => array(
                     'path'      => drupal_get_path('module', 'osci_tk_filters').'/js',
                     'buttons'   => array(
-                        'footnote'  => t('OSCI - Footnote'),
-                        'figure'    => t('OSCI - Figure'),
+                        'footnote_reference'  => t('OSCI - Footnote Reference'),
+                        'figure_reference'    => t('OSCI - Figure Reference'),
+                        'figure'              => t('OSCI - Figure'),
                     ),
                     'load'      => TRUE,
                 ),
@@ -157,7 +158,7 @@ function _filter_footnote($text, $filter, $format) {
  * Tooltip funcion
  */
 function _filter_footnote_tips() {
-    return t('Insert a footnote with [footnote:ID]');
+    return t('Insert a footnote with [footnoteref:ID]');
 }
 
 /***********************************************************************
@@ -203,6 +204,28 @@ function _filter_figure($text, $filter, $format)
         }
     }
 
+    return $filtered;
+}
+
+function _filter_figure_tips() {
+    return t('Insert a figure with [figure:ID]');
+}
+
+
+/***********************************************************************
+ *
+ * FIGURE Reference
+ *
+ */
+
+function _filter_figure_reference($text, $filter, $format) 
+{
+    global $osci_tk_view_mode, $osci_tk_placed_figures;
+
+    $osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
+
+    $filtered = $text;
+
     //place a figure reference for these figures
     $theme = 'osci_tk_figure_link__' . $osci_tk_view_mode;
     $regex = '/\[figureref:(fig-(\d+)-(\d+))\]/i';
@@ -232,8 +255,8 @@ function _filter_figure($text, $filter, $format)
     return $filtered;
 }
 
-function _filter_figure_tips() {
-    return t('Insert a figure with [figure:ID]');
+function _filter_figure_reference_tips() {
+    return t('Insert a figure reference with [figureref:ID]');
 }
 /************** INSERT OTHER FILTER FUNCTIONS HERE ********************/
 
