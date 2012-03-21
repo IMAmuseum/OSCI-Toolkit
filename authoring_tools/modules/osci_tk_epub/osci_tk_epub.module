@@ -777,7 +777,7 @@ function _osci_tk_epub_navigation_generate_toc_subtree($tree_node, $attr_fields 
 
   $children = '';
   foreach ($tree_node['children'] as $child) {
-    $children .= _osci_tk_epub_navigation_generate_toc_subtree($child, $attr_fields);    
+    $children .= _osci_tk_epub_navigation_generate_toc_subtree($child, $attr_fields, $forExport);    
   }
   
   // Build children    
