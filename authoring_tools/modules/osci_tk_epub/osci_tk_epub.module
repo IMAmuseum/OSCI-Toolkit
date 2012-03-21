@@ -689,7 +689,7 @@ function _osci_tk_epub_navigation_node_toc_data($nid) {
  */
 function _osci_tk_epub_navigation_generate_book_toc($node, $forExport = false, $no_cache = false)
 {
-  
+  $maxDepth = 2;
   if (!isset($node->book)) return null;  
   
   // Check the cache
@@ -726,7 +726,8 @@ function _osci_tk_epub_navigation_generate_book_toc($node, $forExport = false, $
     $attr_fields = array('nid', 'length', 'subtree_length', 'editor', 'timestamp');
   
     foreach($toc['children'] as $child) {
-      $output .= _osci_tk_epub_navigation_generate_toc_subtree($child, $attr_fields, $forExport);
+      $depth = 0;
+      $output .= _osci_tk_epub_navigation_generate_toc_subtree($child, $attr_fields, $forExport, $depth, $maxDepth);
     }
       
     $output .= "</ol></nav>";
@@ -747,7 +748,13 @@ function _osci_tk_epub_navigation_generate_book_toc($node, $forExport = false, $
 /**
  * Render the ePub table of contents for a node's book subtree
  */
-function _osci_tk_epub_navigation_generate_toc_subtree($tree_node, $attr_fields = array(), $forExport = false) {
+function _osci_tk_epub_navigation_generate_toc_subtree($tree_node, $attr_fields = array(), $forExport = false, $depth = 0, $maxDepth = 2) 
+{
+  $depth++;
+  if ($depth > $maxDepth)
+  {
+  	return '';
+  }
 
   // Export data fields into html attributes
   $attr_data = array();
@@ -777,7 +784,7 @@ function _osci_tk_epub_navigation_generate_toc_subtree($tree_node, $attr_fields 
 
   $children = '';
   foreach ($tree_node['children'] as $child) {
-    $children .= _osci_tk_epub_navigation_generate_toc_subtree($child, $attr_fields, $forExport);    
+    $children .= _osci_tk_epub_navigation_generate_toc_subtree($child, $attr_fields, $forExport, $depth, $maxDepth);    
   }
   
   // Build children    
