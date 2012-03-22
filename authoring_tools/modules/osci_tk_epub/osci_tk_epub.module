@@ -549,22 +549,26 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
         );
       }
       
-      foreach($figure['resources'] as $index => $item) {
-		$resourceHref = _osci_tk_epub_asset_process_uri($item['uri'], $forExport);
-		
-		//if the resource has already been added, do not add again
-		if (in_array($resourceHref, $addedResources)) 
-		{
-		  continue;
-		}
-		
-		$addedResources[] = $resourceHref;
-		
-        $arguments['manifest'][] = array(
-          'id' => "figure-resource-" . count($addedResources),
-          'href' => $resourceHref,
-          'media-type' => $item['media-type'],
-        );      
+      if (isset($figure['resources'])) {
+        
+        foreach($figure['resources'] as $index => $item) {
+  		$resourceHref = _osci_tk_epub_asset_process_uri($item['uri'], $forExport);
+  		
+  		//if the resource has already been added, do not add again
+  		if (in_array($resourceHref, $addedResources)) 
+  		{
+  		  continue;
+  		}
+  		
+  		$addedResources[] = $resourceHref;
+  		
+          $arguments['manifest'][] = array(
+            'id' => "figure-resource-" . count($addedResources),
+            'href' => $resourceHref,
+            'media-type' => $item['media-type'],
+          );      
+        }
+        
       }
       
     }
