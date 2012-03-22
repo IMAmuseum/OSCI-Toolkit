@@ -504,7 +504,7 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
     );   
 
 	//Cover Image
-	if (isset($book->field_osci_tk_cover_image) && $book->field_osci_tk_cover_image['und'][0])
+	if (isset($book->field_osci_tk_cover_image) && isset($book->field_osci_tk_cover_image['und'][0]))
 	{
 		$arguments['manifest'][] = array(
 			'id' => 'cover-image',
