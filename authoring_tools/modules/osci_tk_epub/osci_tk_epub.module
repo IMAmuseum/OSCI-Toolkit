@@ -10,7 +10,7 @@ function osci_tk_epub_menu()
 		'page arguments' => array(2),
 		'access arguments' => array('access content'),
 		'type' => MENU_CALLBACK
-	);
+		);
 	
 	$items['api/epub/%node/nav.xhtml'] = array(
 		'title' => 'ePub Navigation Document',
@@ -18,7 +18,7 @@ function osci_tk_epub_menu()
 		'page arguments' => array(2),
 		'access arguments' => array('access content'),
 		'type' => MENU_CALLBACK
-	);		
+		);		
 
 	$items['api/epub/%node/toc.ncx'] = array(
 		'title' => 'ePub Ncx Document',
@@ -26,7 +26,7 @@ function osci_tk_epub_menu()
 		'page arguments' => array(2),
 		'access arguments' => array('access content'),
 		'type' => MENU_CALLBACK
-	);	
+		);	
 	
 	$items['api/epub/%/package.opf'] = array(
 		'title' => 'ePub Package Document',
@@ -34,7 +34,7 @@ function osci_tk_epub_menu()
 		'page arguments' => array(2),
 		'access arguments' => array('access content'),
 		'type' => MENU_CALLBACK
-	);	
+		);	
 	
 	$items['api/epub/%node/%/figure.xhtml'] = array(
 		'title' 			=> 'Figure content document',
@@ -42,7 +42,7 @@ function osci_tk_epub_menu()
 		'page arguments'	=> array(2, 3),
 		'access arguments' 	=> array('access content'),
 		'type' 				=> MENU_CALLBACK,
-	);
+		);
 	
 	$items['api/epub/%/publish'] = array(	
 		'title' => 'Publish ePub',
@@ -51,7 +51,7 @@ function osci_tk_epub_menu()
 		'access arguments' => array('access content'),
 		'type' => MENU_CALLBACK,
 		'file' => 'osci_tk_epub.publish.inc'
-	);
+		);
 	
 	return $items;
 }
@@ -62,11 +62,11 @@ function osci_tk_epub_menu()
  */
 function osci_tk_epub_node_insert($node) {
 
-  if (!isset($node->book) || (!$node->book['bid'])) return;
-  
+	if (!isset($node->book) || (!$node->book['bid'])) return;
+
   // Pre-generate epub content
-  _osci_tk_epub_generate_node_documents($node);
-  
+	_osci_tk_epub_generate_node_documents($node);
+
 }
 
 
@@ -75,28 +75,28 @@ function osci_tk_epub_node_insert($node) {
  */
 function osci_tk_epub_node_submit($node, $form, &$form_state)
 {
-  
-  if (isset($node->book) && $node->book['bid']) {
+
+	if (isset($node->book) && $node->book['bid']) {
 
     // Clearing the epub caches here will cause the output to be regenerated 
     // even if the node is being removed from the book
-    cache_set("osci_epub_package_{$node->book['bid']}", null);     
-    cache_set("osci_epub_toc_{$node->book['bid']}", null);  
-    cache_set("osci_epub_content_{$node->nid}", null);
-    
-    if (isset($node->field_figure['und'])) {
-      foreach ($node->field_figure['und'] as $index => $value) {
-        cache_set("osci_epub_figure_{$node->nid}-$index", null);
-      }      
-    }    
-    
-  }
+		cache_set("osci_epub_package_{$node->book['bid']}", null);     
+		cache_set("osci_epub_toc_{$node->book['bid']}", null);  
+		cache_set("osci_epub_content_{$node->nid}", null);
+
+		if (isset($node->field_figure['und'])) {
+			foreach ($node->field_figure['und'] as $index => $value) {
+				cache_set("osci_epub_figure_{$node->nid}-$index", null);
+			}      
+		}    
+
+	}
 
   //add a uuid if not added by user
-  if (isset($form_state['values']['field_osci_tk_identifier']) && !strlen($form_state['values']['field_osci_tk_identifier']['und'][0]['value']))
-  {
-  	$node->field_osci_tk_identifier['und'][0]['value'] = uniqid(" urn:uuid:", true);
-  }
+	if (isset($form_state['values']['field_osci_tk_identifier']) && !strlen($form_state['values']['field_osci_tk_identifier']['und'][0]['value']))
+	{
+		$node->field_osci_tk_identifier['und'][0]['value'] = uniqid(" urn:uuid:", true);
+	}
 
 }
 
@@ -106,11 +106,11 @@ function osci_tk_epub_node_submit($node, $form, &$form_state)
  */
 function osci_tk_epub_node_update($node) {
 
-  if (!isset($node->book) || (!$node->book['bid'])) return;
+	if (!isset($node->book) || (!$node->book['bid'])) return;
 
   // Pre-generate epub content
   //_osci_tk_epub_generate_node_documents($node);
-  
+
 }
 
 /**
@@ -121,8 +121,8 @@ function osci_tk_epub_field_formatter_info() {
 		'osci_tk_section' => array(
 			'label'         => t('OSCI Toolkit Section'),
 			'field types'   => array('text_long', 'text'),
-		)
-	);
+			)
+		);
 	
 	return $formatters;
 }
@@ -134,16 +134,16 @@ function osci_tk_epub_field_formatter_view($entity_type, $entity, $field, $insta
 	switch($display['type'])
 	{
 		case 'osci_tk_section':
-			foreach($items as $delta => $item)
-			{
-				$item['delta'] = $delta;
-				$item['field_name'] = $field['field_name'];
-				$element[$delta] = array(
-					'#theme'	=> 'osci_tk_epub_section',
-					'#item'		=> $item,
+		foreach($items as $delta => $item)
+		{
+			$item['delta'] = $delta;
+			$item['field_name'] = $field['field_name'];
+			$element[$delta] = array(
+				'#theme'	=> 'osci_tk_epub_section',
+				'#item'		=> $item,
 				);
-			}
-			break;
+		}
+		break;
 	}
 	
 	return $element;
@@ -155,23 +155,23 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 		'node__epub' => array(
 			'template'	=> 'templates/node__epub',
 			'variables' => array()
-		),
+			),
 		'epub_package' => array(
-		    'variables' => array(
-		        'pub_id' 		=> null,
-		        'title' 		=> null,
-		        'language' 		=> 'en',
-		        'properties' 	=> array(),
-		        'manifest' 		=> array(),
-		        'spine' 		=> array()
-		    ),
-		    'template' => 'templates/epub_package',
+			'variables' => array(
+				'pub_id' 		=> null,
+				'title' 		=> null,
+				'language' 		=> 'en',
+				'properties' 	=> array(),
+				'manifest' 		=> array(),
+				'spine' 		=> array()
+				),
+			'template' => 'templates/epub_package',
 			'file' => 'osci_tk_epub.templates.inc',
-		),
+			),
 		'epub_figure_content_document' => array(
 			'template' 	=> 'templates/epub_figure_content_document',
 			'variables' => array()
-		),
+			),
 		'osci_tk_figure_link__epub' => array(
 			'template'	=> 'templates/epub_figure_link',
 			'variables' => array(
@@ -180,49 +180,49 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 				'fig_index' => NULL,
 				'fig_id'    => null,
 				'fig_text'  => null
-			)
-		),
+				)
+			),
 		'osci_tk_footnote_link__epub' => array(
 			'template'	=> 'templates/epub_footnote_link',
 			'variables' => array(
 				'footnote_id' => NULL,
 				'footnote_index' => null
-			)
-		),
+				)
+			),
 		'osci_tk_footnote_epub' => array(
 			'template' => 'templates/osci_tk_footnote_epub',
 			'variables' => array(
 				'items' => array()
+				),
 			),
-		),
 		'osci_tk_epub_section' => array(
 			'template' => 'templates/osci_tk_epub_section',
 			'variables' => array('item' => ''),
-		),
+			),
 		'osci_tk_epub_mimetype' => array(
 			'template' => 'templates/osci_tk_epub_mimetype',
 			'variables' => array(),
-		),
+			),
 		'osci_tk_epub_container_xml' => array(
 			'template' => 'templates/osci_tk_epub_container_xml',
 			'variables' => array(
 				'rootPath' => ''
+				),
 			),
-		),
 		'osci_tk_epub_navigation' => array(
 			'template' => 'templates/osci_tk_epub_navigation',
 			'variables' => array(
 				'content' => ''
-			)
-		),
+				)
+			),
 		'osci_tk_epub_ncx' => array(
 			'template' => 'templates/osci_tk_epub_ncx',
 			'variables' => array(
 				'navMap' => '',
 				'metadata' => array()
+				)
 			)
-		)
-	);
+		);
 }
 
 // register custom view mode 'epub'
@@ -233,7 +233,7 @@ function osci_tk_epub_entity_info_alter(&$entity_info)
 		$entity_info[$type]['view modes']['epub'] = array(
 			'label' 			=> t('ePub'),
 			'custom settings' 	=> TRUE,
-		);
+			);
 	}
 }
 
@@ -263,14 +263,14 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_
 {
 	global $osci_tk_placed_figures;
 
-    /***** Check the cache *****/
-    if (!$no_cache) {
-      $cache_key = "osci_epub_content_{$node->nid}_{$node->vid}"; 
-      $output = _osci_tk_epub_check_cache($cache_key);    
-      if (!is_null($output)) {
-        return $output; 
-      }    
-    }  
+	/***** Check the cache *****/
+	if (!$no_cache) {
+		$cache_key = "osci_epub_content_{$node->nid}_{$node->vid}"; 
+		$output = _osci_tk_epub_check_cache($cache_key);    
+		if (!is_null($output)) {
+			return $output; 
+		}    
+	}  
 
 	$view = node_view($node, 'epub');
 
@@ -281,29 +281,29 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_
 		switch($key)
 		{
 			case 'field_footnote':
-				$view[$key]['#theme'] = 'osci_tk_footnote_epub';
-				$i = 0;
-				foreach($view[$key]['#items'] as $k => $v)
-				{
-					$view[$key]['#items'][$k]['fn_id'] = 'fn-' . $node->nid . '-' . $i;
-					$i++;
-				}
-				break;
-				
+			$view[$key]['#theme'] = 'osci_tk_footnote_epub';
+			$i = 0;
+			foreach($view[$key]['#items'] as $k => $v)
+			{
+				$view[$key]['#items'][$k]['fn_id'] = 'fn-' . $node->nid . '-' . $i;
+				$i++;
+			}
+			break;
+
 			case 'field_figure':
-				$items = element_children($element);
-				foreach($items as $delta)
-				{  
-					$view[$key][$delta]['#item']['export'] = $forExport;
+			$items = element_children($element);
+			foreach($items as $delta)
+			{  
+				$view[$key][$delta]['#item']['export'] = $forExport;
 
 					//if figure placed inline do not output it again
-					if (in_array($delta, $osci_tk_placed_figures))
-					{
-						unset($view[$key][$delta]);
-					}
+				if (in_array($delta, $osci_tk_placed_figures))
+				{
+					unset($view[$key][$delta]);
 				}
-				
-				break;
+			}
+
+			break;
 		}
 	}
 
@@ -317,12 +317,12 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_
 	
 	$output = drupal_render($view);
 	
-    if (!$no_cache) {
-      cache_set($cache_key, $output, 'cache');              
-    }  
-    
-    return $output;	
-    
+	if (!$no_cache) {
+		cache_set($cache_key, $output, 'cache');              
+	}  
+
+	return $output;	
+
 }
 
 
@@ -332,12 +332,12 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_
 function osci_tk_epub_render_navigation_document($node)
 {
 
-  $dev = false;
-  $output = _osci_tk_epub_generate_navigation_document($node, false, $dev);
-  if ($dev) return $output;
-  print $output;
-  drupal_exit();  
-  
+	$dev = false;
+	$output = _osci_tk_epub_generate_navigation_document($node, false, $dev);
+	if ($dev) return $output;
+	print $output;
+	drupal_exit();  
+
 }
 
 
@@ -346,16 +346,16 @@ function osci_tk_epub_render_navigation_document($node)
  */
 function osci_tk_epub_render_package_document($nid)
 {
-  $dev = false;  
+	$dev = false;  
 
-  $node = node_load($nid);
+	$node = node_load($nid);
 
-  $output = _osci_tk_epub_generate_package_document($node, false, $dev);
-  if ($dev) return $output;
-  
+	$output = _osci_tk_epub_generate_package_document($node, false, $dev);
+	if ($dev) return $output;
+
   //header('Content-type: application/oebps-package+xml');
-  print $output;
-  drupal_exit();
+	print $output;
+	drupal_exit();
 	
 }
 
@@ -376,16 +376,16 @@ function osci_tk_epub_render_figure_content_document($node, $index) {
 
 function _osci_tk_epub_generate_figure_document($node, $index, $no_cache = false)
 {
-  
-    /***** Check the cache *****/
-    if (!$no_cache) {
-      $cache_key = "osci_epub_figure_{$node->nid}-$index"; 
-      $output = _osci_tk_epub_check_cache($cache_key);    
-      if (!is_null($output)) {
-        return $output; 
-      }    
-    }      
-  
+
+	/***** Check the cache *****/
+	if (!$no_cache) {
+		$cache_key = "osci_epub_figure_{$node->nid}-$index"; 
+		$output = _osci_tk_epub_check_cache($cache_key);    
+		if (!is_null($output)) {
+			return $output; 
+		}    
+	}      
+
 	$view = node_view($node, 'epub');
 	// TODO: Handle the export case?	
 	$content = drupal_render($view['field_figure'][$index]);
@@ -394,9 +394,9 @@ function _osci_tk_epub_generate_figure_document($node, $index, $no_cache = false
 	// a valid epub3 content document
 	$themed_figure = theme('epub_figure_content_document', array('figure_markup' => $content));
 	
-    if (!$no_cache) {
-      cache_set($cache_key, $themed_figure, 'cache');              
-    }  	
+	if (!$no_cache) {
+		cache_set($cache_key, $themed_figure, 'cache');              
+	}  	
 	
 	// output the themed figure
 	return $themed_figure;
@@ -407,34 +407,34 @@ function osci_tk_epub_preprocess_epub_figure_link(&$vars) {
 }
 
 function _osci_tk_epub_check_cache($cache_key) {
-  
+
   // Check static variable    
-  $output = &drupal_static($cache_key); 
-  if (!is_null($output)) return $output;
-  
+	$output = &drupal_static($cache_key); 
+	if (!is_null($output)) return $output;
+
   // Check cache
-  if ($cache = cache_get($cache_key)) {
+	if ($cache = cache_get($cache_key)) {
     $output = $cache->data; // Sets the static variable as well
     return $output;
-  }
-  
-  return null;
-  
+}
+
+return null;
+
 }
 
 
 function _osci_tk_epub_generate_navigation_document($node, $forExport = false, $no_cache = false) {
-  
+
     // Generate table of contents
-    $output = _osci_tk_epub_navigation_generate_book_toc($node, $forExport, $no_cache);
-    
+	$output = _osci_tk_epub_navigation_generate_book_toc($node, $forExport, $no_cache);
+
     // Generate other tables...
-    $output .= _osci_tk_epub_navigation_generate_index($node, $forExport, $no_cache);
+	$output .= _osci_tk_epub_navigation_generate_index($node, $forExport, $no_cache);
 	
 	$output = theme("osci_tk_epub_navigation", array('content' => $output));
 	
-    return $output;
-  
+	return $output;
+
 }
 
 
@@ -442,11 +442,11 @@ function _osci_tk_epub_generate_navigation_document($node, $forExport = false, $
  * Generate all documents related to a node. Used to pre-load the cache.
  */
 function _osci_tk_epub_generate_node_documents($node) {
-  
-    _osci_tk_epub_generate_navigation_document($node);
-    _osci_tk_epub_generate_package_document($node);  
-    _osci_tk_epub_generate_content_document($node);  
-  
+
+	_osci_tk_epub_generate_navigation_document($node);
+	_osci_tk_epub_generate_package_document($node);  
+	_osci_tk_epub_generate_content_document($node);  
+
     /*
      * TODO: resolve _osci_tk_conservation_get_conservation_html() being undefined
     if (isset($node->field_figure['und'])) {
@@ -461,47 +461,47 @@ function _osci_tk_epub_generate_node_documents($node) {
 
 function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_cache = false) {
       // Find the corresponding book for this node
-    if (!isset($node->book)) return null;    
-    
-    /***** Check the cache *****/
-    if (!$no_cache) {
-      $cache_key = "osci_epub_package_{$node->book['bid']}"; 
-      $output = _osci_tk_epub_check_cache($cache_key);    
-      if (!is_null($output)) {
-        return $output; 
-      }    
-    }
-    
-    $book = node_load($node->book['bid']);
+	if (!isset($node->book)) return null;    
+
+	/***** Check the cache *****/
+	if (!$no_cache) {
+		$cache_key = "osci_epub_package_{$node->book['bid']}"; 
+		$output = _osci_tk_epub_check_cache($cache_key);    
+		if (!is_null($output)) {
+			return $output; 
+		}    
+	}
+
+	$book = node_load($node->book['bid']);
 	
-    /***** Find all of the resources for this book *****/	
+	/***** Find all of the resources for this book *****/	
 	$data = _osci_tk_epub_get_book_resources($book);
 
 	$metadata = _osci_tk_epub_get_book_metadata($book, $data);
 	
     // Should this data structure be passed through _osci_tk_epub_package_build_data instead?
-    $arguments = array(
+	$arguments = array(
 		'metadata' => $metadata,
-        'manifest' => array(),
-        'spine' => array()
-    );
-    
-    /***** Build the manifest and spine *****/
-    
+		'manifest' => array(),
+		'spine' => array()
+		);
+
+	/***** Build the manifest and spine *****/
+
     // Navigation document
-    $arguments['manifest'][] = array(
-      'id' => 'nav',
-      'href' => $forExport ? 'nav.xhtml' : url("api/epub/{$node->book['bid']}/nav.xhtml", array('absolute' => true)),
-      'media-type' => 'application/xhtml+xml',
-      'properties' => 'nav'
-    );  
+	$arguments['manifest'][] = array(
+		'id' => 'nav',
+		'href' => $forExport ? 'nav.xhtml' : url("api/epub/{$node->book['bid']}/nav.xhtml", array('absolute' => true)),
+		'media-type' => 'application/xhtml+xml',
+		'properties' => 'nav'
+		);  
 
     // NCX document
-    $arguments['manifest'][] = array(
-      'id' => 'ncxtoc',
-      'href' => $forExport ? 'toc.ncx' : url("api/epub/{$node->book['bid']}/toc.ncx", array('absolute' => true)),
-      'media-type' => 'application/x-dtbncx+xml'
-    );   
+	$arguments['manifest'][] = array(
+		'id' => 'ncxtoc',
+		'href' => $forExport ? 'toc.ncx' : url("api/epub/{$node->book['bid']}/toc.ncx", array('absolute' => true)),
+		'media-type' => 'application/x-dtbncx+xml'
+		);   
 
 	//Cover Image
 	if (isset($book->field_osci_tk_cover_image) && isset($book->field_osci_tk_cover_image['und'][0]))
@@ -511,7 +511,7 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
 			'href' => _osci_tk_epub_asset_process_uri($book->field_osci_tk_cover_image['und'][0]['uri'], $forExport),
 			'media-type' => $book->field_osci_tk_cover_image['und'][0]['filemime'],
 			'properties' => 'cover-image'
-		);
+			);
 	}
 	
 	//CSS
@@ -521,22 +521,22 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
 			'id' => 'css',
 			'href' => _osci_tk_epub_asset_process_uri($book->field_osci_tk_css['und'][0]['uri'], $forExport),
 			'media-type' => 'text/css'
-		);
+			);
 	}
 
     // Content documents go into the manifest and the spine
-    foreach($data['content_nids'] as $content) {
-      $id = 'section-' . $content['nid'];
-      $arguments['manifest'][] = array(
-        'id' => $id,
-        'href' => $forExport ? $content['filename'] : $content['url'],
-        'media-type' => 'application/xhtml+xml',      
-      );      
-      $arguments['spine'][] = array(
-        'idref' => $id,
-      );
-    }
-    
+	foreach($data['content_nids'] as $content) {
+		$id = 'section-' . $content['nid'];
+		$arguments['manifest'][] = array(
+			'id' => $id,
+			'href' => $forExport ? $content['filename'] : $content['url'],
+			'media-type' => 'application/xhtml+xml',      
+			);      
+		$arguments['spine'][] = array(
+			'idref' => $id,
+			);
+	}
+
 	$addedResources = array();
     // Add figure resources to the manifest
     foreach($data['figures'] as $figure) {      
@@ -572,17 +572,17 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
       }
       
     }
-    
+
     // TODO: Additional stuff for the manifest (figures, etc.)    
-    
-    $output = theme('epub_package', $arguments);
-            
-    if (!$no_cache) {
-      cache_set($cache_key, $output, 'cache');              
-    }  
-    
-    return $output;
-  
+
+	$output = theme('epub_package', $arguments);
+
+	if (!$no_cache) {
+		cache_set($cache_key, $output, 'cache');              
+	}  
+
+	return $output;
+
 }
 
 
@@ -590,68 +590,75 @@ function _osci_tk_epub_generate_package_document($node, $forExport = false, $no_
  * Recursively build up the toc metadata for the given book node's subtree
  */
 function _osci_tk_epub_navigation_build_toc($tree_node) {
-  
-  $result = array();
 
-  /*** Build metadata for this node ***/
-  if (isset($tree_node['link']['nid'])) {
-      $nid = $tree_node['link']['nid'];
-  } else {
-      $nid = substr($tree_node['link']['href'], strrpos($tree_node['link']['href'], '/') + 1);
-  }  
-  
-  $nextPage = null;
-  $prevPage = null;
-  $parentPage = null;
-  
-  if ($tree_node['link']['mlid']) {
-      if ($prev = book_prev($tree_node['link'])) {
-          $prevPage = substr($prev['href'], strrpos($prev['href'], '/') + 1);
+	$result = array();
+
+	/*** Build metadata for this node ***/
+	if (isset($tree_node['link']['nid'])) {
+		$nid = $tree_node['link']['nid'];
+	} else {
+		$nid = substr($tree_node['link']['href'], strrpos($tree_node['link']['href'], '/') + 1);
+	}  
+
+	$nextPage = null;
+	$prevPage = null;
+	$parentPage = null;
+
+	if ($tree_node['link']['mlid']) {
+		if ($prev = book_prev($tree_node['link'])) {
+			$prevPage = substr($prev['href'], strrpos($prev['href'], '/') + 1);
           //$nids[] = $prevPage;
-      }
-      if ($tree_node['link']['plid'] && $parent = book_link_load($tree_node['link']['plid'])) {
-          $parentPage = substr($parent['href'], strrpos($parent['href'], '/') + 1);
+		}
+		if ($tree_node['link']['plid'] && $parent = book_link_load($tree_node['link']['plid'])) {
+			$parentPage = substr($parent['href'], strrpos($parent['href'], '/') + 1);
           //$nids[] = $parentPage;
-      }
-      if ($next = book_next($tree_node['link'])) {
-          $nextPage = substr($next['href'], strrpos($next['href'], '/') + 1);
+		}
+		if ($next = book_next($tree_node['link'])) {
+			$nextPage = substr($next['href'], strrpos($next['href'], '/') + 1);
           //$nids[] = $nextPage;
-      }
-  }   
+		}
+	}
 
-  $result['data'] = array(  
-	'nid'      => $nid,
-  	'mlid'     => $tree_node['link']['mlid'],
-  	'title'    => $tree_node['link']['title'],  
-	'url'      => _osci_tk_epub_node_content_url($nid),
-	'filename' => _osci_tk_epub_node_content_filename(node_load($nid)),
-    'next'     => $nextPage,
-    'prev'     => $prevPage,
-    'parent'   => $parentPage,
-    'length'   => 0
-  );
+	//get the title
+	if (isset($node->field_osci_tk_title) && isset($node->field_osci_tk_title['und'][0]['value'])) {
+		$title = $node->field_osci_tk_title['und'][0]['value'];
+	} else {
+		$title = $tree_node['link']['title'];
+	}
 
-  if (isset($tree_node['link']['bid'])) {
-    $result['data']['bid'] = $tree_node['link']['bid'];
-  }
-  
-  /*** Load additional info from the node ***/
-  $result['data'] = array_merge($result['data'], _osci_tk_epub_navigation_node_toc_data($nid));
-  
-  $result['data']['subtree_length'] = $result['data']['length'];    
-  
-  /*** Recurse if this node has children ***/
-  if (!empty($tree_node['below'])) {
-      $result['children'] = array();
-      foreach ($tree_node['below'] as $child) {    
-        $child_data = _osci_tk_epub_navigation_build_toc($child);   
-        $result['children'][] =  $child_data;
-        $result['data']['subtree_length'] += $child_data['data']['subtree_length'];
-      }
-  }  
-  
-  return $result;  
-  
+	$result['data'] = array(  
+		'nid'      => $nid,
+		'mlid'     => $tree_node['link']['mlid'],
+		'title'    => $title,  
+		'url'      => _osci_tk_epub_node_content_url($nid),
+		'filename' => _osci_tk_epub_node_content_filename(node_load($nid)),
+		'next'     => $nextPage,
+		'prev'     => $prevPage,
+		'parent'   => $parentPage,
+		'length'   => 0
+		);
+
+	if (isset($tree_node['link']['bid'])) {
+		$result['data']['bid'] = $tree_node['link']['bid'];
+	}
+
+	/*** Load additional info from the node ***/
+	$result['data'] = array_merge($result['data'], _osci_tk_epub_navigation_node_toc_data($nid));
+
+	$result['data']['subtree_length'] = $result['data']['length'];    
+
+	/*** Recurse if this node has children ***/
+	if (!empty($tree_node['below'])) {
+		$result['children'] = array();
+		foreach ($tree_node['below'] as $child) {    
+			$child_data = _osci_tk_epub_navigation_build_toc($child);   
+			$result['children'][] = $child_data;
+			$result['data']['subtree_length'] += $child_data['data']['subtree_length'];
+		}
+	}  
+
+	return $result;  
+
 }
 
 
@@ -659,32 +666,32 @@ function _osci_tk_epub_navigation_build_toc($tree_node) {
  * Gather table of contents data for the given node
  */
 function _osci_tk_epub_navigation_node_toc_data($nid) {
-  
-  $data = array();
-  
-  $node = node_load($nid);
-  
-  $data['timestamp'] = $node->changed;  
 
-  if (!empty($node->field_osci_tk_content_length)) {        
-    $data['length'] = $node->field_osci_tk_content_length['und'][0]['value'];
-  }  
+	$data = array();
 
-  if (isset($node->field_osci_tk_plate_image['und']) && $node->field_osci_tk_plate_image['und'][0]['nid']) {
-    $imageNode = node_load($node->field_osci_tk_plate_image['und'][0]['nid']);
-    $fullImageUrl = file_create_url($imageNode->field_image['und'][0]['uri']);
-    $thumbnail165Url = image_style_url('osci_tk_default', $imageNode->field_image['und'][0]['uri']);
-    $thumbnail100Url = image_style_url('osci_tk_default', $imageNode->field_image['und'][0]['uri']);
+	$node = node_load($nid);
 
-    $data['plate_image'] = array(
-      'full_image_url' => $fullImageUrl,
-      'thumbnail_165w_url' => $thumbnail165Url,
-      'thumbnail_100w_url' => $thumbnail100Url
-    );
-  }    
-  
-  return $data;
-  
+	$data['timestamp'] = $node->changed;  
+
+	if (!empty($node->field_osci_tk_content_length)) {        
+		$data['length'] = $node->field_osci_tk_content_length['und'][0]['value'];
+	}  
+
+	if (isset($node->field_osci_tk_plate_image['und']) && $node->field_osci_tk_plate_image['und'][0]['nid']) {
+		$imageNode = node_load($node->field_osci_tk_plate_image['und'][0]['nid']);
+		$fullImageUrl = file_create_url($imageNode->field_image['und'][0]['uri']);
+		$thumbnail165Url = image_style_url('osci_tk_default', $imageNode->field_image['und'][0]['uri']);
+		$thumbnail100Url = image_style_url('osci_tk_default', $imageNode->field_image['und'][0]['uri']);
+
+		$data['plate_image'] = array(
+			'full_image_url' => $fullImageUrl,
+			'thumbnail_165w_url' => $thumbnail165Url,
+			'thumbnail_100w_url' => $thumbnail100Url
+			);
+	}    
+
+	return $data;
+
 }
 
 
@@ -693,59 +700,58 @@ function _osci_tk_epub_navigation_node_toc_data($nid) {
  */
 function _osci_tk_epub_navigation_generate_book_toc($node, $forExport = false, $no_cache = false)
 {
-  $maxDepth = 2;
-  if (!isset($node->book)) return null;  
-  
-  // Check the cache
-  if (!$no_cache) {
-    $cache_key = "osci_epub_toc_{$node->book['bid']}";    
-    $output = _osci_tk_epub_check_cache($cache_key);
-    if (!is_null($output)) {
-      return $output;
-    }
-  }
+	$maxDepth = 2;
+	if (!isset($node->book)) return null;  
 
-  // Build the toc for the book
-  $toc = null;
-  $book = node_load($node->book['bid']);  
-  $subtree = book_menu_subtree_data($book->book);
-  // There should only be one node at the top level  
-  $toc = _osci_tk_epub_navigation_build_toc(array_pop($subtree));
+	// Check the cache
+	if (!$no_cache) {
+		$cache_key = "osci_epub_toc_{$node->book['bid']}";    
+		$output = _osci_tk_epub_check_cache($cache_key);
+		if (!is_null($output)) {
+			return $output;
+		}
+	}
 
-  $output = null;
-  
-  if (!is_null($toc)) {
-          
-    // Not using templates for performance. Might consider an XML library.
-    $output = "<nav epub:type='toc' id='book-{$node->book['bid']}-toc'>";
-    $output .= "<h1>Table of Contents</h1>"; // Optional header
-    $output .= "<ol>"; // The only other element allowed as a child of <nav>
-    
-    /* 
-     * The order of li elements contained within the toc nav element must match the order of 
-     * the targeted elements within each targeted EPUB Content Document, and must also follow 
-     * the order of Content Documents in the Publication spine.
-     */
-    
-    $attr_fields = array('nid', 'length', 'subtree_length', 'editor', 'timestamp');
-  
-    foreach($toc['children'] as $child) {
-      $depth = 0;
-      $output .= _osci_tk_epub_navigation_generate_toc_subtree($child, $attr_fields, $forExport, $depth, $maxDepth);
-    }
-      
-    $output .= "</ol></nav>";
-    
-	//$output = theme("osci_tk_epub_navigation", array('content' => $output));
-	
-    if (!$no_cache) {
-      cache_set($cache_key, $output, 'cache');              
-    }
-    
-  }
+	// Build the toc for the book
+	$toc = null;
+	$book = node_load($node->book['bid']);  
+	$subtree = book_menu_subtree_data($book->book);
+	// There should only be one node at the top level  
+	$toc = _osci_tk_epub_navigation_build_toc(array_pop($subtree));
 
-  return $output;
-    
+	$output = null;
+
+	if (!is_null($toc)) {
+
+	    // Not using templates for performance. Might consider an XML library.
+		$output = "<nav epub:type='toc' id='book-{$node->book['bid']}-toc'>";
+	    $output .= "<h1>Table of Contents</h1>"; // Optional header
+	    $output .= "<ol>"; // The only other element allowed as a child of <nav>
+	    
+	    /* 
+	     * The order of li elements contained within the toc nav element must match the order of 
+	     * the targeted elements within each targeted EPUB Content Document, and must also follow 
+	     * the order of Content Documents in the Publication spine.
+	     */
+	    
+	    $attr_fields = array('nid', 'length', 'subtree_length', 'editor', 'timestamp');
+
+	    foreach($toc['children'] as $child) {
+	    	$depth = 0;
+	    	$output .= _osci_tk_epub_navigation_generate_toc_subtree($child, $attr_fields, $forExport, $depth, $maxDepth);
+	    }
+
+	    $output .= "</ol></nav>";
+	    
+		//$output = theme("osci_tk_epub_navigation", array('content' => $output));
+
+	    if (!$no_cache) {
+	    	cache_set($cache_key, $output, 'cache');              
+	    }
+	    
+	}
+
+	return $output;
 }
 
 
@@ -754,46 +760,51 @@ function _osci_tk_epub_navigation_generate_book_toc($node, $forExport = false, $
  */
 function _osci_tk_epub_navigation_generate_toc_subtree($tree_node, $attr_fields = array(), $forExport = false, $depth = 0, $maxDepth = 2) 
 {
-  $depth++;
-  if ($depth > $maxDepth)
-  {
-  	return '';
-  }
+	$depth++;
+	if ($depth > $maxDepth)
+	{
+		return '';
+	}
 
   // Export data fields into html attributes
-  $attr_data = array();
-  foreach ($attr_fields as $field) {
-    if (isset($tree_node['data'][$field])) {
-      switch($field)
-      {
-      	case 'nid':
-      	  $attr = "data-section_id";
-      	  break;
-      	default:
-      	  $attr = "data-$field";
-      }
-      
-      $attr_data[]= "$attr='{$tree_node['data'][$field]}'";
-    }
-    $data_str = count($attr_data) ? join(' ', $attr_data) : '';    
-  }    
-    
+	$attr_data = array();
+	foreach ($attr_fields as $field) {
+		if (isset($tree_node['data'][$field])) {
+			switch($field)
+			{
+				case 'nid':
+				$attr = "data-section_id";
+				break;
+				default:
+				$attr = "data-$field";
+			}
+
+			$attr_data[]= "$attr='{$tree_node['data'][$field]}'";
+		}
+		$data_str = count($attr_data) ? join(' ', $attr_data) : '';    
+	}    
+
   // <a> points to the target within the EPUB ContentDocument
-  $url = $forExport ? $tree_node['data']['filename'] : $tree_node['data']['url'];
-  $content = "<a $data_str href='$url'>{$tree_node['data']['title']}</a>";      
+	$url = $forExport ? $tree_node['data']['filename'] : $tree_node['data']['url'];
+	$content = "<a $data_str href='$url'>{$tree_node['data']['title']}</a>";      
 
-  if (empty($tree_node['children'])) {
-    return "<li>$content</li>";
-  } 
+	if (empty($tree_node['children'])) {
+		return "<li>$content</li>";
+	} 
 
-  $children = '';
-  foreach ($tree_node['children'] as $child) {
-    $children .= _osci_tk_epub_navigation_generate_toc_subtree($child, $attr_fields, $forExport, $depth, $maxDepth);    
-  }
-  
-  // Build children    
-  return "<li>$content<ol>$children</ol></li>";    
-  
+	$children = '';
+	foreach ($tree_node['children'] as $child) {
+		$children .= _osci_tk_epub_navigation_generate_toc_subtree($child, $attr_fields, $forExport, $depth, $maxDepth);    
+	}
+
+  	// Build children    
+	$output = "<li>$content";
+	if (strlen($children))
+	{
+		$output .= "<ol>$children</ol>";
+	}
+	$output .= "</li>";
+	return $output;
 }
 
 
@@ -801,12 +812,12 @@ function _osci_tk_epub_navigation_generate_toc_subtree($tree_node, $attr_fields 
  * Recursively collects data to build the package document
  */
 function _osci_tk_epub_package_build_data($tree_node, &$data) {
-  
-    $nid = $tree_node['link']['nid'];
-    $node = node_load($nid);
 
-    if ($node->changed > $data['modified']) $data['modified'] = $node->changed;
-    
+	$nid = $tree_node['link']['nid'];
+	$node = node_load($nid);
+
+	if ($node->changed > $data['modified']) $data['modified'] = $node->changed;
+
 	if ($tree_node['link']['plid'] !== '0')
 	{
 		$data['content_nids'][] = array(
@@ -814,7 +825,7 @@ function _osci_tk_epub_package_build_data($tree_node, &$data) {
 			'filename' => _osci_tk_epub_node_content_filename($node),
 			'url' => _osci_tk_epub_node_content_url($nid),
 			'title' => $node->title
-		);
+			);
 
 		if (isset($node->field_figure['und'])) {
 
@@ -827,7 +838,7 @@ function _osci_tk_epub_package_build_data($tree_node, &$data) {
 					'nid' => $nid,
 					'index' => $index,
 					'resources' => isset($resources['items']) ? $resources['items'] : null,
-				);                
+					);                
 
 				// If the figure has a media type for the content document, add it as a resource
 				// Otherwise, a content document is assumed not to be required for the figure
@@ -836,7 +847,7 @@ function _osci_tk_epub_package_build_data($tree_node, &$data) {
 						'media-type' => $resources['content_doc_media_type'],
 						'filename' => _osci_tk_epub_node_figure_filename($node, $index),
 						'url' => _osci_tk_epub_node_figure_url($nid, $index)          
-					);          
+						);          
 				}         
 
 				$data['figures'][] = $figure_data;
@@ -844,27 +855,27 @@ function _osci_tk_epub_package_build_data($tree_node, &$data) {
 			}
 		}
 	}
-  
-    /*** Recurse if this node has children ***/
-    if (!empty($tree_node['below'])) {
-        foreach ($tree_node['below'] as $child) {    
-            _osci_tk_epub_package_build_data($child, $data);   
-        }
-    }  
+
+	/*** Recurse if this node has children ***/
+	if (!empty($tree_node['below'])) {
+		foreach ($tree_node['below'] as $child) {    
+			_osci_tk_epub_package_build_data($child, $data);   
+		}
+	}  
 }
 
 function _osci_tk_epub_get_book_resources(&$book)
 {
 	/***** Find all of the resources for this book *****/
-    $data = array(
-      'modified' => 0,
-      'content_nids' => array(),
-      'figures' => array()
-    );
-    
-    $subtree = book_menu_subtree_data($book->book);
+	$data = array(
+		'modified' => 0,
+		'content_nids' => array(),
+		'figures' => array()
+		);
+
+	$subtree = book_menu_subtree_data($book->book);
     // There should only be one node at the top level
-    _osci_tk_epub_package_build_data(array_pop($subtree), $data);
+	_osci_tk_epub_package_build_data(array_pop($subtree), $data);
 
 	return $data;
 }
@@ -874,12 +885,12 @@ function _osci_tk_clean_filename_string($string)
 	//return preg_replace("[^A-Za-z0-9\-]", "", str_replace(' ', '-', strtolower(trim($string))));
 	$string = mb_ereg_replace('/[\x00-\x1F]/u', '', $string);
 	$string = str_replace(' ', '-', strtolower(trim($string)));
-  	if (substr(PHP_OS, 0, 3) == 'WIN') {
+	if (substr(PHP_OS, 0, 3) == 'WIN') {
     	// These characters are not allowed in Windows filenames
-    	$string = str_replace(array(':', '*', '?', '"', '<', '>', '|'), '', $string);
-  	}
+		$string = str_replace(array(':', '*', '?', '"', '<', '>', '|'), '', $string);
+	}
 
-  	return $string;
+	return $string;
 }
 
 function _osci_tk_epub_node_content_filename(&$node)
@@ -999,7 +1010,7 @@ function _osci_tk_epub_get_book_metadata(&$book, &$data)
 	//add meta elements
 	$metadata['meta'] = array(
 		'dcterms:modified' => $date
-	);
+		);
 	
 	return $metadata;
 }
@@ -1019,13 +1030,13 @@ function _osci_tk_epub_navigation_generate_index($node, $forExport, $noCache)
 	
 	$book = node_load($node->book['bid']);
 	$data = array();
-    $subtree = book_menu_subtree_data($book->book);
+	$subtree = book_menu_subtree_data($book->book);
 	
 	_osci_tk_epub_index_build_data(array_pop($subtree), $data);
 	ksort($data);
 	
 	if (!empty($data)) {
-          
+
 		// Not using templates for performance. Might consider an XML library.
 		$output = "<nav epub:type='index' id='book-{$node->book['bid']}-index'>";
 		$output .= "<h1>Index</h1>"; // Optional header
@@ -1042,14 +1053,14 @@ function _osci_tk_epub_navigation_generate_index($node, $forExport, $noCache)
 			cache_set($cache_key, $output, 'cache');              
 		}
 	}
-		
+
 	return $output;
 }
 
 function _osci_tk_epub_index_build_data($tree_node, &$data) {
-  
-    $nid = $tree_node['link']['nid'];
-    $node = node_load($nid);
+
+	$nid = $tree_node['link']['nid'];
+	$node = node_load($nid);
 	
 	if ($tree_node['link']['plid'] !== '0')
 	{
@@ -1058,7 +1069,7 @@ function _osci_tk_epub_index_build_data($tree_node, &$data) {
 			'filename' => _osci_tk_epub_node_content_filename($node),
 			'url' => _osci_tk_epub_node_content_url($nid),
 			'title' => $node->title
-		);
+			);
 		
 		$data[$node->title] = $contentData;
 
@@ -1077,7 +1088,7 @@ function _osci_tk_epub_index_build_data($tree_node, &$data) {
 					'filename' => $contentData['filename'] . '#' . $figId,
 					'url' => $contentData['url'] . '#' . $figId,
 					'id' => $figId
-				);
+					);
 			}
 		}
 		
@@ -1094,18 +1105,18 @@ function _osci_tk_epub_index_build_data($tree_node, &$data) {
 					'title' => $title,
 					'filename' => $contentData['filename'] . '#' . $fnId,
 					'url' => $contentData['url'] . '#' . $fnId,
-				);
+					);
 			}
 		}
 	}
-  
-    /*** Recurse if this node has children ***/
-    if (!empty($tree_node['below'])) {
-        foreach ($tree_node['below'] as $child) {    
-            _osci_tk_epub_index_build_data($child, $data);   
-        }
-    }  
-  
+
+	/*** Recurse if this node has children ***/
+	if (!empty($tree_node['below'])) {
+		foreach ($tree_node['below'] as $child) {    
+			_osci_tk_epub_index_build_data($child, $data);   
+		}
+	}  
+
 }
 
 function _osci_tk_epub_get_book_css($node, $forExport = false)
@@ -1131,7 +1142,7 @@ function osci_tk_epub_block_info()
 	$blocks['epub_links'] = array(
 		'info' => t('Epub Links'),
 		'cache' => DRUPAL_CACHE_PER_PAGE
-	);
+		);
 
 	return $blocks;
 }
@@ -1143,27 +1154,27 @@ function osci_tk_epub_block_view($delta = '')
 	switch($delta)
 	{
 		case 'epub_links':
-			module_load_include('inc', 'osci_tk_epub', 'osci_tk_epub.publish');
+		module_load_include('inc', 'osci_tk_epub', 'osci_tk_epub.publish');
 
-			if (arg(0) == 'node') 
-			{
-				$nid = arg(1);
-			}
+		if (arg(0) == 'node') 
+		{
+			$nid = arg(1);
+		}
 
-			$links = array(
-				l("Content Document", "api/epub/{$nid}/content.xhtml"),
-				l("Nav Document", "api/epub/{$nid}/nav.xhtml"),
-				l("NCX Document", "api/epub/{$nid}/toc.ncx"),
-				l("Package Document", "api/epub/{$nid}/package.opf"),
-				drupal_render(drupal_get_form('osci_tk_epub_publish_form', $nid))
+		$links = array(
+			l("Content Document", "api/epub/{$nid}/content.xhtml"),
+			l("Nav Document", "api/epub/{$nid}/nav.xhtml"),
+			l("NCX Document", "api/epub/{$nid}/toc.ncx"),
+			l("Package Document", "api/epub/{$nid}/package.opf"),
+			drupal_render(drupal_get_form('osci_tk_epub_publish_form', $nid))
 			);
 
-			$block['subject'] = t('ePub Links');
-			$block['content'] = array(
-				'#theme' => 'item_list',
-				'#items' => $links
+		$block['subject'] = t('ePub Links');
+		$block['content'] = array(
+			'#theme' => 'item_list',
+			'#items' => $links
 			);
-			break;
+		break;
 	}
 
 	return $block;
@@ -1174,11 +1185,11 @@ function osci_tk_epub_block_view($delta = '')
  */
 function osci_tk_epub_render_ncx_document($node)
 {
-  $dev = false;
-  $output = _osci_tk_epub_generate_ncx_document($node, false, $dev);
-  if ($dev) return $output;
-  print $output;
-  drupal_exit();  
+	$dev = false;
+	$output = _osci_tk_epub_generate_ncx_document($node, false, $dev);
+	if ($dev) return $output;
+	print $output;
+	drupal_exit();  
 }
 
 function _osci_tk_epub_generate_ncx_document($node, $forExport = false, $no_cache = false) 
@@ -1199,9 +1210,9 @@ function _osci_tk_epub_generate_ncx_document($node, $forExport = false, $no_cach
 
 	/***** Find all of the resources for this book *****/	
 	$data = _osci_tk_epub_get_book_resources($book);
-    $metadata = _osci_tk_epub_get_book_metadata($book, $data);
+	$metadata = _osci_tk_epub_get_book_metadata($book, $data);
 
-    $navMap = _osci_tk_epub_ncx_generate_navmap($data, $forExport);
+	$navMap = _osci_tk_epub_ncx_generate_navmap($data, $forExport);
 
 	$output = theme("osci_tk_epub_ncx", array('navMap' => $navMap, 'metadata' => $metadata));
 	
@@ -1209,7 +1220,7 @@ function _osci_tk_epub_generate_ncx_document($node, $forExport = false, $no_cach
 		cache_set($cache_key, $output, 'cache');              
 	}
 
-    return $output;
+	return $output;
 }
 
 /**
@@ -1220,20 +1231,20 @@ function _osci_tk_epub_ncx_generate_navmap($data, $forExport = false)
 	$output = null;
 
 	if (!is_null($data['content_nids'])) {
-          
+
 		// Not using templates for performance. Might consider an XML library.
 		$output = "<navMap>";
 		$count = 0;
 		foreach($data['content_nids'] as $content) {
 			$count++;
 			$url = $forExport ? $content['filename'] : $content['url'];
-  			$output .= '<navPoint id="section-' . $content['nid'] . '" playOrder="' . $count . '"><navLabel><text>' . $content['title'] . '</text></navLabel><content src="' . $url . '" /></navPoint>';      
+			$output .= '<navPoint id="section-' . $content['nid'] . '" playOrder="' . $count . '"><navLabel><text>' . $content['title'] . '</text></navLabel><content src="' . $url . '" /></navPoint>';      
 		}
-      
-    	$output .= "</navMap>";
-  	}
 
-  	return $output;
+		$output .= "</navMap>";
+	}
+
+	return $output;
 }
 
 function _osci_tk_epub_get_revision_id($nid)
