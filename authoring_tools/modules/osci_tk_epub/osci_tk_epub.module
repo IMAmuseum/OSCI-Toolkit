@@ -331,7 +331,6 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_
  */
 function osci_tk_epub_render_navigation_document($node)
 {
-
 	$dev = false;
 	$output = _osci_tk_epub_generate_navigation_document($node, false, $dev);
 	if ($dev) return $output;
