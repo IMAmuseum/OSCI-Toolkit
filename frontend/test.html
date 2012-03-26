@@ -22,6 +22,7 @@
 	<script src="js/backbone/views/OsciTkView.js"></script>
 	<script src="js/backbone/views/OsciTkAppView.js"></script>
 	<script src="js/backbone/views/OsciTkToolbarView.js"></script>
+	<script src="js/backbone/views/OsciTkToolbarButtonView.js"></script>
 	<script src="js/backbone/views/OsciTkSectionView.js"></script>
 	<script src="js/backbone/views/OsciTkMultiColumnSectionView.js"></script>
 	<script src="js/backbone/views/OsciTkNavigationView.js"></script>
@@ -37,7 +38,7 @@
 					}
 				},
 				toolbarItems: [
-					{view: OsciTkToolbarSearch, text: 'Search'}
+					{view: OsciTkToolbarButtonView, text: 'Search'}
 				],
 				section_view: OsciTkMultiColumnSectionView
 			});
@@ -54,6 +55,9 @@
 		<div id="toolbar-handle">
 		
 		<div>
+	</script>
+	<script id="template-toolbar-button" type="text/template">
+		<div class="toolbar-button"></div>
 	</script>
 	<script id="template-section" type="text/template"><%= body %></script>
 	<script id="template-navigation" type="text/template"></script>
