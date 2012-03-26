@@ -2,18 +2,23 @@ jQuery(function() {
 	window.OsciTkToolbarView = OsciTkView.extend({
 		id: 'toolbar',
 		template: _.template($('#template-toolbar').html()),
-		initialize: function(options) {
-			console.log(options, 'toolbar-options');
+		initialize: function() {
 			// if toolbar items were provided, store them in the view
-			if (options.toolbarItems && options.toolbarItems.length > 0) {
-				this.toolbarItems = options.toolbarItems;
-			}
+			this.toolbarItems = this.options.toolbarItems ? this.options.toolbarItems : null;
+			this.toolbarItemViews = [];
 			this.render();
 		},
 		render: function() {
-			console.log(this.toolbarItems, 'toolbarItems');
-			
 			this.$el.html(this.template());
+			_.each(this.toolbarItems, function(toolbarItem) {
+				var options = {
+					dispatcher: this.dispatcher,
+					toolbarItem: toolbarItem
+				};
+				var item = new OsciTkToolbarItemView(options);
+				this.toolbarItemViews.push(item);
+				this.addView(item, '#toolbar-handle');
+			}, this);
 		}
 	});
 });

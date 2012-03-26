@@ -22,6 +22,7 @@
 	<script src="js/backbone/views/OsciTkView.js"></script>
 	<script src="js/backbone/views/OsciTkAppView.js"></script>
 	<script src="js/backbone/views/OsciTkToolbarView.js"></script>
+	<script src="js/backbone/views/OsciTkToolbarItemView.js"></script>
 	<script src="js/backbone/views/OsciTkSectionView.js"></script>
 	<script src="js/backbone/views/OsciTkMultiColumnSectionView.js"></script>
 	<script src="js/backbone/views/OsciTkNavigationView.js"></script>
@@ -48,14 +49,10 @@
 <body>
 	<script id="template-app" type="text/template"></script>
 	<script id="template-toolbar" type="text/template">
-		<div id="toolbar-content">
-				
-		</div>
-		<div id="toolbar-handle">
-		
-		<div>
+		<div id="toolbar-content"></div>
+		<div id="toolbar-handle"></div>
 	</script>
-	<script id="template-toolbar-button" type="text/template">
+	<script id="template-toolbar-item" type="text/template">
 		<div class="toolbar-button"></div>
 	</script>
 	<script id="template-section" type="text/template"><%= body %></script>

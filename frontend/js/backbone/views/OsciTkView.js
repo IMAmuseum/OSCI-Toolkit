@@ -5,9 +5,16 @@ jQuery(function() {
 			if (this.dispatcher === null) this.dispatcher = this;
 			Backbone.View.prototype.constructor.call(this, options);
 		},
-		addView: function(view) {
+		addView: function(view, target) {
+			console.log(view, 'add view');
+			console.log(target, 'target');
 			view.parent = this;
-			this.$el.append(view.el);
+			if (typeof target === "undefined") {
+				this.$el.append(view.el);
+			}
+			else {
+				this.$el.find(target).append(view.el);
+			}
 		},
 		changeModel: function(model) {
 			this.model = model;
