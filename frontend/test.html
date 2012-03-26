@@ -13,12 +13,14 @@
 	<script src="js/backbone/models/OsciTkFootnote.js"></script>
 	<script src="js/backbone/models/OsciTkNavigation.js"></script>			
 	<script src="js/backbone/models/OsciTkNote.js"></script>
-	<script src="js/backbone/models/OsciTkSection.js"></script>	
+	<script src="js/backbone/models/OsciTkSection.js"></script>
+	<script src="js/backbone/models/OsciTkSearchResult.js"></script>
 	<script src="js/backbone/collections/OsciTkCollection.js"></script>	
 	<script src="js/backbone/collections/OsciTkFigures.js"></script>
 	<script src="js/backbone/collections/OsciTkFootnotes.js"></script>
 	<script src="js/backbone/collections/OsciTkNotes.js"></script>
 	<script src="js/backbone/collections/OsciTkSections.js"></script>
+	<script src="js/backbone/collections/OsciTkSearchResults.js"></script>
 	<script src="js/backbone/views/OsciTkView.js"></script>
 	<script src="js/backbone/views/OsciTkAppView.js"></script>
 	<script src="js/backbone/views/OsciTkToolbarView.js"></script>
@@ -26,6 +28,7 @@
 	<script src="js/backbone/views/OsciTkSectionView.js"></script>
 	<script src="js/backbone/views/OsciTkMultiColumnSectionView.js"></script>
 	<script src="js/backbone/views/OsciTkNavigationView.js"></script>
+	<script src="js/backbone/views/OsciTkSearchView.js"></script>
 	<script src="js/backbone/OsciTkRouter.js"></script>	
 	<script src="js/backbone/OsciTk.helper.js"></script>	
 	<script>jQuery(function() { 
@@ -34,11 +37,13 @@
 				endpoints: {
 					'endpoints': {
 						'OsciTkNotes': '/api/notes/',
-						'OsciTkNote': '/api/notes/'
+						'OsciTkNote': '/api/notes/',
+						'OsciTkSearch': '/api/search',
+						'OsciTkOpenSearch': '/api/opensearch'
 					}
 				},
 				toolbarItems: [
-					{view: null, text: 'Search'}
+					{view: OsciTkSearchView, text: 'Search'}
 				],
 				section_view: OsciTkMultiColumnSectionView
 			});
