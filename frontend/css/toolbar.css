@@ -1,16 +1,12 @@
-body {
-	margin: 0;
-}
-
 div#toolbar {
 	width: 100%;
 	height: 80%;
 	margin-top: -78%;
 	background-color: #ccc;
+	position: absolute;
+
 }
 div#toolbar-content {
-	height: 80%;
-	margin-top: -78%;
 	background-color: #ccc;
 }
 div#toolbar-handle {
