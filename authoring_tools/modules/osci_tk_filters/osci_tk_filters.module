@@ -179,7 +179,6 @@ function _filter_figure($text, $filter, $format)
     $regex = '/<p>(\[figure:fig-\d+-\d+\])<\/p>/i';
     $matches = array();
     preg_match_all($regex, $text, $matches);
-    dpm($matches);
     foreach ($matches[0] as $index => $match) 
     {
         $filtered = str_replace($match, $matches[1][$index], $filtered);
