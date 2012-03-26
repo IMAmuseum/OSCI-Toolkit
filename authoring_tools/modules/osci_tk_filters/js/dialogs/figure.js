@@ -22,7 +22,7 @@
 			id:             'figure',
 			label:          'Add figure',
 			elements:       elements
-		}]; 
+		}];
 		
 		return {
 			title:          'Add a figure',
@@ -32,7 +32,7 @@
 			resizable:      'none',
 			contents:       contents,
 			onOk:           figureOk
-		}
+		};
 	}
 
 	function figureOk(data) {
