@@ -92,12 +92,14 @@ function osci_tk_search_do_query() {
 	$query->page = pager_find_page();
 
 	// filter by search type
+	/*
 	if(isset($filters['type']) && $filters['type'] == 'notes') {
 		$query->addFilter('_query_', '"bundle:note"');
 	} else { 
 		// default to content search
 		$query->addFilter('_query_', '"is_book_bid:[1 TO *] AND -bundle:note"');
 	}
+	*/
 
 	// add content boost parameters to the query
 	apachesolr_search_add_boost_params($query);
@@ -198,6 +200,7 @@ function _osci_tk_search_create_paragraph_documents($entity, $entity_doc, $env_i
 		$document->content = trim($content);
 		$document->teaser = truncate_utf8($document->content, 300, TRUE);
 		$document->is_paragraph_id = $pid;
+		$document->bundle = 'paragraph';
 		$documents[] = $document;
 	}
 	// send to solr
@@ -246,6 +249,7 @@ function _osci_tk_search_create_footnote_documents($entity, $entity_doc, $env_id
 		$document->content = trim($item['value']);
 		$document->teaser = truncate_utf8($document->content, 300, TRUE);
 		$document->ss_footnote_id = _osci_tk_search_create_footnote_id($entity->nid, $delta);
+		$document->bundle = 'footnote';
 		$documents[] = $document;
 	}
 	// send to solr
@@ -272,6 +276,7 @@ function _osci_tk_search_create_figure_documents($entity, $entity_doc, $env_id) 
 		$document->content = trim($item['caption']);
 		$document->teaser = truncate_utf8($document->content, 300, TRUE);
 		$document->ss_figure_id = _osci_tk_figure_create_id($entity->nid, $delta);
+		$document->bundle = 'figure';
 		$documents[] = $document;
 	}
 	// send to solr
