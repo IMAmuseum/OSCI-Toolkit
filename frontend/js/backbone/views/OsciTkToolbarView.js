@@ -24,9 +24,15 @@ jQuery(function() {
 		},
 		contentOpen: function() {
 			var toolbarContent = this.$el.find('#toolbar-content');
-			toolbarContent.show();
+			var toolbarHandleHeight = this.$el.find('#toolbar-handle').outerHeight();
+			var toolbarHeight = toolbarContent.outerHeight() + toolbarHandleHeight;
+			var toolbarMaxHeightPercentage = parseInt(this.$el.css('max-height'), 10);
+			var toolbarMaxHeight = $(window).height() * (toolbarMaxHeightPercentage / 100);
+			if (toolbarHeight > toolbarMaxHeight) {
+				toolbarContent.height(toolbarMaxHeight - toolbarHandleHeight);
+			}
 			this.$el.animate({
-				'height': toolbarContent.outerHeight() + this.$el.find('#toolbar-handle').outerHeight() + 'px',
+				'height': toolbarHeight + 'px'
 			}, 'fast');
 			this.isContentOpen = true;
 		},
@@ -34,9 +40,7 @@ jQuery(function() {
 			this.$el.animate({
 				'height': this.$el.find('#toolbar-handle').outerHeight() + 'px', 
 				'width': '100%'
-			}, 'fast', function() {
-				$(this).find('#toolbar-content').hide();
-			});
+			}, 'fast');
 			this.isContentOpen = false;
 		}
 	});

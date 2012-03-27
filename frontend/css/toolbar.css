@@ -6,14 +6,17 @@ div#toolbar {
 	left: 0px;
 	max-height: 80%;
 	min-height: 40px;
+	overflow: hidden;
 
 }
 div#toolbar-content {
+	position: absolute;
+	bottom: 40px;
+	left: 0px;
 	background-color: #eee;
 	width: 100%;
-	padding: 20px 40px;
-	overflow-y: scroll;
-	display: none;
+	padding: 0px 40px;
+	overflow-y: auto;
 	background: url('../img/bg-toolbar.gif') repeat;
 }
 div#toolbar-handle {
@@ -26,8 +29,25 @@ div#toolbar-handle {
 div.toolbar-item {
 	height: 35px;
 	width: 50px;
+	float:left;
+}
+div.OsciTkNotesView-toolbar-item {
+	text-indent: 9999px;
+	background: url('../img/icon-bookmark.png') center center no-repeat ;
+}
+div.OsciTkTocView-toolbar-item {
+	text-indent: 9999px;
+	background: url('../img/icon-toc.png') center center no-repeat ;
+}
+div.OsciTkAccountView-toolbar-item {
+	text-indent: 9999px;
+	background: url('../img/icon-user.png') center center no-repeat ;
 }
 div.OsciTkSearchView-toolbar-item {
 	text-indent: 9999px;
 	background: url('../img/icon-search.png') center center no-repeat ;
+}
+div.OsciTkFontView-toolbar-item {
+	text-indent: 9999px;
+	background: url('../img/icon-text.png') center center no-repeat ;
 }
