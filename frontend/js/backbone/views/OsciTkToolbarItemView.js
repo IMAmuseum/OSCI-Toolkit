@@ -18,15 +18,29 @@ jQuery(function() {
 			}));
 		},
 		itemClicked: function() {
+			console.log(this);
 			if (this.contentView === null) {
 				this.contentView = new window[this.options.toolbarItem.view](this.options);
 			}
 			this.parent.replaceView(this.contentView, '#toolbar-content');
 			if (this.parent.isContentOpen == false) {
+				// content tab is closed.  assign active view and open
+				this.parent.activeContentView = this.options.toolbarItem.view;
 				this.parent.contentOpen();
 			}
 			else {
-				this.parent.contentClose();
+				// content tab is open already
+
+				// if active view is this one, close the panel
+				if (this.parent.activeContentView == this.options.toolbarItem.view) {
+					this.parent.activeContentView = null;
+					this.parent.contentClose();
+				}
+				// if this isn't the active view, assign active view and switch
+				else {
+					this.parent.activeContentView = this.options.toolbarItem.view;
+					this.parent.contentOpen();
+				}
 			}
 		}
 	});
