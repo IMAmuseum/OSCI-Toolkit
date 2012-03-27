@@ -14,6 +14,15 @@ jQuery(function() {
 				this.$el.find(target).append(view.el);
 			}
 		},
+		replaceView: function(view, target) {
+			view.parent = this;
+			if (typeof target === "undefined") {
+				this.$el.html(view.el);
+			}
+			else {
+				this.$el.find(target).html(view.el);
+			}
+		},
 		changeModel: function(model) {
 			this.model = model;
 		}

@@ -4,23 +4,30 @@ div#toolbar {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	height: 80%;
-	margin-top: -79%;
-	background-color: black;
+	max-height: 80%;
+	min-height: 40px;
+
 }
 div#toolbar-content {
-	background-color: #ccc;
-	height: 100%;
+	background-color: #eee;
 	width: 100%;
+	padding: 20px 40px;
+	overflow-y: scroll;
+	display: none;
+	background: url('../img/bg-toolbar.gif') repeat;
 }
 div#toolbar-handle {
 	height: 40px;
 	position: absolute;
-	bottom: -40px;
+	bottom: 0px;
 	right: 40px;
-	background-color: #ccc;
+	background: url('../img/bg-toolbar.gif') repeat;
 }
 div.toolbar-item {
 	height: 35px;
 	width: 50px;
+}
+div.OsciTkSearchView-toolbar-item {
+	text-indent: 9999px;
+	background: url('../img/icon-search.png') center center no-repeat ;
 }
