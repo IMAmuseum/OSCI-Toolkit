@@ -6,8 +6,6 @@ jQuery(function() {
 			Backbone.View.prototype.constructor.call(this, options);
 		},
 		addView: function(view, target) {
-			console.log(view, 'add view');
-			console.log(target, 'target');
 			view.parent = this;
 			if (typeof target === "undefined") {
 				this.$el.append(view.el);
