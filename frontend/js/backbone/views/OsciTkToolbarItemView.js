@@ -5,8 +5,14 @@ jQuery(function() {
 		initialize: function() {
 			this.render();
 		},
+		events: {
+			'click': 'itemClicked'
+		},
 		render: function() {
-			this.$el.html(this.template());
+			this.$el.html(this.template({text: this.options.toolbarItem.text}));
+		},
+		itemClicked: function() {
+			console.log(this, 'clicked');
 		}
 	});
 });
