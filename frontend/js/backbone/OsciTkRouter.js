@@ -3,9 +3,7 @@ jQuery(function() {
 	
 		routes: {
 			'' : 'root',
-			'section/:section_id' : 'section', // TODO: add params for paragraph, etc.
-			'search' : 'search',
-			'search/:query' : 'search'
+			'section/:section_id' : 'section' // TODO: add params for paragraph, etc.
 		},
 	
 		initialize: function(options) {

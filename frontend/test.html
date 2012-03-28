@@ -3,6 +3,7 @@
 	<link type="text/css" rel="stylesheet" href="css/common.css">
 	<link type="text/css" rel="stylesheet" href="css/toolbar.css">
 	<link type="text/css" rel="stylesheet" href="css/multi_column_test.css">
+	<link type="text/css" rel="stylesheet" href="css/search.css">
 	<script src="http://documentcloud.github.com/backbone/test/vendor/json2.js"></script>
 	<script src="http://documentcloud.github.com/backbone/test/vendor/jquery-1.7.1.js"></script>
 	<script src="http://documentcloud.github.com/backbone/test/vendor/underscore-1.3.1.js"></script>
@@ -29,6 +30,8 @@
 	<script src="js/backbone/views/OsciTkMultiColumnSectionView.js"></script>
 	<script src="js/backbone/views/OsciTkNavigationView.js"></script>
 	<script src="js/backbone/views/OsciTkSearchView.js"></script>
+	<script src="js/backbone/views/OsciTkSearchResultsView.js"></script>
+	<script src="js/backbone/views/OsciTkSearchResultView.js"></script>
 	<script src="js/backbone/views/OsciTkNotesView.js"></script>
 	<script src="js/backbone/views/OsciTkTocView.js"></script>
 	<script src="js/backbone/views/OsciTkAccountView.js"></script>
@@ -71,40 +74,26 @@
 	<script id="template-search" type="text/template">
 		<div id="search-header">
 			<div id="search-box">
-				<input type="text" name="keyword" id="search-keyword" placeholder="search" />
+				<form id="search-form" name="search-form" method="POST">
+					<input type="text" name="keyword" id="search-keyword" placeholder="search" />
+					<input type="hidden" name="page" id="search-page" />
+				</form>
 			</div>
-			<div id="search-filters">
-				|
-				<div id="search-filter-content" data-selected="0">
-					Content
-				</div>
-				<div id="search-filter-my-notes" data-selected="0">
-					My Notes
-				</div>
-				<div id="search-filter-footnotes" data-selected="0">
-					Footnotes
-				</div>
-				<div id="search-filter-figures" data-selected="0">
-					Figures
-				</div>
-			</div>
-		</div>
-		<div id="search-container">
-			<div id="search-summary"></div>
-			<div id="search-sort">
-				Sort By: 
-				<div id="search-sort-relevance" data-selected="0">Relevance</div>
-				<div id="search-sort-type" data-selected="0">Type</div>
-			</div>
-			<div id="search-results"></div>
 		</div>
 	</script>
-	<script id="template-search-result" type="text/template">
-		<div class="search-result">
-			<div class="search-result-title"><%= title %=></div>
-			<div class="search-result-type type-<%= type %>"><%= type %=></div>
-			<div class="search-result-content"><%= content %></div>
+	<script id="template-search-results" type="text/template">
+		<div id="search-summary">Result(s) for "<%= keyword %=>" (<%= result_count %=>)</div>
+		<div id="search-sort">
+			Sort By: 
+			<div id="search-sort-relevance" data-selected="0">Relevance</div>
+			<div id="search-sort-type" data-selected="0">Type</div>
 		</div>
+		<div id="search-results"><%= search_results %=></div>
+	</script>
+	<script id="template-search-result" type="text/template">
+		<div class="search-result-title"><%= title %=></div>
+		<div class="search-result-type type-<%= type %>"><%= type %=></div>
+		<div class="search-result-content"><%= content %></div>
 	</script>
 	<script id="template-navigation" type="text/template"></script>
 	<script id="template-reader" type="text/template"></script>

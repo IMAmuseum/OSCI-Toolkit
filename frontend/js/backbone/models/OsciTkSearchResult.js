@@ -1,8 +1,9 @@
 jQuery(function() {
-	window.OsciTKSearchResult = OsciTkModel.extend({
+	window.OsciTkSearchResult = OsciTkModel.extend({
 		defaults: function() {
 			return {
-				id: null,
+				entity_id: null,
+				bundle: null,
 				label: null,
 				url: null,
 				teaser: null,
@@ -11,9 +12,6 @@ jQuery(function() {
 				sm_path_hierarchy_depth: null,
 				score: null
 			};
-		},
-		loadContent: function() {
-			console.log(this, 'loaded search');
-		}	
+		}
 	});
 });

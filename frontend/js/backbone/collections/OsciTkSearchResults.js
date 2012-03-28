@@ -1,6 +1,6 @@
 jQuery(function() {
-	window.OsciTKSearchResults = OsciTkCollection.extend({
-		model: OsciTKSearchResult,
+	window.OsciTkSearchResults = OsciTkCollection.extend({
+		model: OsciTkSearchResult,
 		initialize: function() {
 			this.numFound = 0;
 			this.page = 0;

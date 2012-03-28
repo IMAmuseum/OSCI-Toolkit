@@ -21,9 +21,10 @@ jQuery(function() {
 			console.log(this);
 			if (this.contentView === null) {
 				this.contentView = new window[this.options.toolbarItem.view](this.options);
+				this.parent.addView(this.contentView, '#toolbar-content');
 			}
-			this.parent.replaceView(this.contentView, '#toolbar-content');
-			if (this.parent.isContentOpen == false) {
+			
+			if (this.parent.isContentOpen === false) {
 				// content tab is closed.  assign active view and open
 				this.parent.activeContentView = this.options.toolbarItem.view;
 				this.parent.contentOpen();

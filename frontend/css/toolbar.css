@@ -29,7 +29,8 @@ div#toolbar-handle {
 div.toolbar-item {
 	height: 35px;
 	width: 50px;
-	float:left;
+	float: left;
+	cursor: pointer;
 }
 div.OsciTkNotesView-toolbar-item {
 	text-indent: 9999px;
