@@ -19,27 +19,46 @@ jQuery(function() {
 		},
 		itemClicked: function() {
 			console.log(this);
+			// if content view hasn't been instantiated yet, do so and add it to the toolbar view
 			if (this.contentView === null) {
 				this.contentView = new window[this.options.toolbarItem.view](this.options);
 				this.parent.addView(this.contentView, '#toolbar-content');
 			}
-			
+			// content tab is closed.  assign active view and open
 			if (this.parent.isContentOpen === false) {
-				// content tab is closed.  assign active view and open
+				// the toolbar should know who the active view is
 				this.parent.activeContentView = this.options.toolbarItem.view;
+				// hide all the views besides this one
+					var children = this.parent.$el.find('#toolbar-content').children().not('#' + this.contentView.id);
+					_.each(children, function(otherView) {
+						console.log(otherView, 'otherView');
+						$(otherView).hide();
+					}, this);
+					this.contentView.$el.show();
+				// animate the opening of the toolbar
 				this.parent.contentOpen();
 			}
+			// content tab is open already
 			else {
-				// content tab is open already
-
 				// if active view is this one, close the panel
 				if (this.parent.activeContentView == this.options.toolbarItem.view) {
+					// closing the toolbar, so clear the active view
 					this.parent.activeContentView = null;
+					// animate the closing of the toolbar
 					this.parent.contentClose();
 				}
 				// if this isn't the active view, assign active view and switch
 				else {
+					// the toolbar should know this is now the active view
 					this.parent.activeContentView = this.options.toolbarItem.view;
+					// hide all the views besides this one
+					var children = this.parent.$el.find('#toolbar-content').children().not('#' + this.contentView.id);
+					_.each(children, function(otherView) {
+						console.log(otherView, 'otherView');
+						$(otherView).hide();
+					}, this);
+					this.contentView.$el.show();
+					// animate the switch
 					this.parent.contentOpen();
 				}
 			}
