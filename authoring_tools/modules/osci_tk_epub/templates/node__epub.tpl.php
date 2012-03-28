@@ -5,7 +5,7 @@
 	<title><?php print $title; ?></title>
 	<?php print drupal_get_css(); ?>
 </head>
-<body>
+<body class="<?php print $classes; ?>">
 	<?php print drupal_render($content); ?>
 </body>
 </html>
