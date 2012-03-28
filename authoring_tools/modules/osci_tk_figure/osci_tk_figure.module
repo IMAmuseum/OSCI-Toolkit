@@ -82,7 +82,7 @@ function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $ins
 			foreach($items as $delta => $item)
 			{
 				//if figure placed inline do not output it again
-				if (in_array($delta, $osci_tk_placed_figures))
+				if (is_array($osci_tk_placed_figures) && in_array($delta, $osci_tk_placed_figures))
 				{
 					continue;
 				}

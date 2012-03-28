@@ -97,7 +97,7 @@ function osci_tk_epub_publish_form_submit($form, &$form_state)
 	
 	
 	$batch = array(
-        'title'         => t('TourML Bundle Export'),
+        'title'         => t('ePub 3.0 Bundle Export'),
         'operations'    => $operations,
         'finished'      => 'osci_tk_epub_publish_finish',
         'file'          => drupal_get_path('module', 'osci_tk_epub') . '/osci_tk_epub.publish.inc',

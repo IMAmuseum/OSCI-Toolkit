@@ -141,7 +141,7 @@ function osci_tk_epub_field_formatter_view($entity_type, $entity, $field, $insta
 			$element[$delta] = array(
 				'#theme'	=> 'osci_tk_epub_section',
 				'#item'		=> $item,
-				);
+			);
 		}
 		break;
 	}
@@ -155,7 +155,7 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 		'node__epub' => array(
 			'template'	=> 'templates/node__epub',
 			'variables' => array()
-			),
+		),
 		'epub_package' => array(
 			'variables' => array(
 				'pub_id' 		=> null,
@@ -164,14 +164,14 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 				'properties' 	=> array(),
 				'manifest' 		=> array(),
 				'spine' 		=> array()
-				),
+			),
 			'template' => 'templates/epub_package',
 			'file' => 'osci_tk_epub.templates.inc',
-			),
+		),
 		'epub_figure_content_document' => array(
 			'template' 	=> 'templates/epub_figure_content_document',
 			'variables' => array()
-			),
+		),
 		'osci_tk_figure_link__epub' => array(
 			'template'	=> 'templates/epub_figure_link',
 			'variables' => array(
@@ -180,49 +180,60 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 				'fig_index' => NULL,
 				'fig_id'    => null,
 				'fig_text'  => null
-				)
-			),
+			)
+		),
 		'osci_tk_footnote_link__epub' => array(
 			'template'	=> 'templates/epub_footnote_link',
 			'variables' => array(
 				'footnote_id' => NULL,
 				'footnote_index' => null
-				)
-			),
+			)
+		),
 		'osci_tk_footnote_epub' => array(
 			'template' => 'templates/osci_tk_footnote_epub',
 			'variables' => array(
 				'items' => array()
-				),
 			),
+		),
 		'osci_tk_epub_section' => array(
 			'template' => 'templates/osci_tk_epub_section',
 			'variables' => array('item' => ''),
-			),
+			'file' => 'osci_tk_epub.templates.inc',
+		),
 		'osci_tk_epub_mimetype' => array(
 			'template' => 'templates/osci_tk_epub_mimetype',
 			'variables' => array(),
-			),
+		),
 		'osci_tk_epub_container_xml' => array(
 			'template' => 'templates/osci_tk_epub_container_xml',
 			'variables' => array(
 				'rootPath' => ''
-				),
 			),
+		),
 		'osci_tk_epub_navigation' => array(
 			'template' => 'templates/osci_tk_epub_navigation',
 			'variables' => array(
 				'content' => ''
-				)
-			),
+			)
+		),
 		'osci_tk_epub_ncx' => array(
 			'template' => 'templates/osci_tk_epub_ncx',
 			'variables' => array(
 				'navMap' => '',
 				'metadata' => array()
-				)
 			)
-		);
+		),
+		'field__osci_tk_epub_field' => array(
+			'template' => 'templates/osci_tk_epub_field',
+			'variables' => array()
+		)
+	);
+}
+
+//Override the default field theming
+function osci_tk_epub_preprocess_field(&$variables)
+{
+	array_unshift($variables['theme_hook_suggestions'], 'field__osci_tk_epub_field');
 }
 
 // register custom view mode 'epub'
@@ -296,8 +307,8 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_
 			{  
 				$view[$key][$delta]['#item']['export'] = $forExport;
 
-					//if figure placed inline do not output it again
-				if (in_array($delta, $osci_tk_placed_figures))
+				//if figure placed inline do not output it again
+				if (is_array($osci_tk_placed_figures) && in_array($delta, $osci_tk_placed_figures))
 				{
 					unset($view[$key][$delta]);
 				}
