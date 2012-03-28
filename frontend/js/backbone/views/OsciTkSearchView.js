@@ -4,7 +4,7 @@ jQuery(function() {
 		className: 'toolbar-item-view',
 		template: _.template($('#template-search').html()),
 		initialize: function() {
-			this.render();
+			// this.render();
 		},
 		events: {
 			'submit #search-form' : 'search'

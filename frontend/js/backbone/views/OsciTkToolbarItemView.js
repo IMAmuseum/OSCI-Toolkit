@@ -7,23 +7,32 @@ jQuery(function() {
 			this.$el.addClass(this.options.toolbarItem.view + '-toolbar-item');
 			// tracks the view to render in the content area when this view is clicked
 			this.contentView = null;
-			this.render();
+			this.contentViewRendered = false;			
 		},
 		events: {
 			'click': 'itemClicked'
 		},
 		render: function() {
+			var options = {dispatcher: this.dispatcher, parent: this};
+			this.contentView = new window[this.options.toolbarItem.view](options);
+			this.parent.addView(this.contentView, '#toolbar-content');
 			this.$el.html(this.template({
 				text: this.options.toolbarItem.text
 			}));
 		},
 		itemClicked: function() {
-			console.log(this);
-			// if content view hasn't been instantiated yet, do so and add it to the toolbar view
-			if (this.contentView === null) {
-				this.contentView = new window[this.options.toolbarItem.view](this.options);
-				this.parent.addView(this.contentView, '#toolbar-content');
+			if (!this.contentViewRendered) {
+				this.contentView.render();
+				this.contentViewRendered = true;
 			}
+			
+			// // if content view hasn't been instantiated yet, do so and add it to the toolbar view
+			// if (this.contentView === null) {
+			// 	var options = {dispatcher: this.dispatcher, parent: this};
+			// 	this.contentView = new window[this.options.toolbarItem.view](options);
+			// 	this.parent.addView(this.contentView, '#toolbar-content');
+			// }
+			
 			// content tab is closed.  assign active view and open
 			if (this.parent.isContentOpen === false) {
 				// the toolbar should know who the active view is
@@ -31,7 +40,6 @@ jQuery(function() {
 				// hide all the views besides this one
 					var children = this.parent.$el.find('#toolbar-content').children().not('#' + this.contentView.id);
 					_.each(children, function(otherView) {
-						console.log(otherView, 'otherView');
 						$(otherView).hide();
 					}, this);
 					this.contentView.$el.show();
@@ -54,7 +62,6 @@ jQuery(function() {
 					// hide all the views besides this one
 					var children = this.parent.$el.find('#toolbar-content').children().not('#' + this.contentView.id);
 					_.each(children, function(otherView) {
-						console.log(otherView, 'otherView');
 						$(otherView).hide();
 					}, this);
 					this.contentView.$el.show();

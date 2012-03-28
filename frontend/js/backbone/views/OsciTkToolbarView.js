@@ -20,6 +20,7 @@ jQuery(function() {
 				var item = new OsciTkToolbarItemView(options);
 				this.toolbarItemViews.push(item);
 				this.addView(item, '#toolbar-handle');
+				item.render();
 			}, this);
 		},
 		contentOpen: function() {
