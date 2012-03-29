@@ -82,17 +82,17 @@
 		</div>
 	</script>
 	<script id="template-search-results" type="text/template">
-		<div id="search-summary">Result(s) for "<%= keyword %=>" (<%= result_count %=>)</div>
+		<div id="search-summary">Result(s) for "<%= keyword %>" (<%= result_count %>)</div>
 		<div id="search-sort">
 			Sort By: 
 			<div id="search-sort-relevance" data-selected="0">Relevance</div>
 			<div id="search-sort-type" data-selected="0">Type</div>
 		</div>
-		<div id="search-results"><%= search_results %=></div>
+		<div id="search-results"><%= search_results %></div>
 	</script>
 	<script id="template-search-result" type="text/template">
-		<div class="search-result-title"><%= title %=></div>
-		<div class="search-result-type type-<%= type %>"><%= type %=></div>
+		<div class="search-result-title"><%= title %></div>
+		<div class="search-result-type type-<%= type %>"><%= type %></div>
 		<div class="search-result-content"><%= content %></div>
 	</script>
 	<script id="template-navigation" type="text/template"></script>
