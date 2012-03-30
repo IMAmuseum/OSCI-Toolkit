@@ -638,7 +638,7 @@ function _osci_tk_epub_navigation_build_toc($tree_node) {
 	}
 	// get the thumbnail
 	if (isset($node->field_section_image) && isset($node->field_section_image['und'][0]['uri'])) {
-		$thumbnail = image_style_url('osci_tk_default', $node->field_section_image['und'][0]['uri']);
+		$thumbnail = image_style_url('osci_tk_thumbnail_square', $node->field_section_image['und'][0]['uri']);
 	}
 	else {
 		$thumbnail = null;

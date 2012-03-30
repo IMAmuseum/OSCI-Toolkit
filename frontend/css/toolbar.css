@@ -68,6 +68,8 @@ div.toc-view h4, div.toc-view h5 {
 	margin: 0px;
 }
 div.toc-view div.toc-item-thumbnail {
+	height: 50px;
+	width: 50px;
 	float: left;
 }
 div.toc-view div.toc-item-text {

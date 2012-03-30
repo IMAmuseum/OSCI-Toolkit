@@ -27,6 +27,7 @@ jQuery(function() {
 			var toolbarContent = this.$el.find('#toolbar-content');
 			var toolbarHandleHeight = this.$el.find('#toolbar-handle').outerHeight();
 			var toolbarHeight = toolbarContent.outerHeight() + toolbarHandleHeight;
+			// console.log(toolbarHeight, 'toolbarHeight calculated');
 			var toolbarMaxHeightPercentage = parseInt(this.$el.css('max-height'), 10);
 			var toolbarMaxHeight = $(window).height() * (toolbarMaxHeightPercentage / 100);
 			if (toolbarHeight > toolbarMaxHeight) {
