@@ -8,10 +8,7 @@
  * Implements hook_ctools_plugin_api().
  */
 function osci_tk_features_ctools_plugin_api() {
-  list($module, $api) = func_get_args();
-  if ($module == "field_group" && $api == "field_group") {
-    return array("version" => "1");
-  }
+  return array("version" => "1");
 }
 
 /**
@@ -24,7 +21,7 @@ function osci_tk_features_image_default_styles() {
   $styles['osci_tk_default'] = array(
     'name' => 'osci_tk_default',
     'effects' => array(
-      8 => array(
+      1 => array(
         'label' => 'Scale',
         'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
         'effect callback' => 'image_scale_effect',
@@ -34,9 +31,9 @@ function osci_tk_features_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => '100',
+          'width' => '50',
           'height' => '',
-          'upscale' => 0,
+          'upscale' => 1,
         ),
         'weight' => '1',
       ),

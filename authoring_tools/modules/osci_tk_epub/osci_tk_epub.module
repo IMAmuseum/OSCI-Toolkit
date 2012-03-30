@@ -636,7 +636,16 @@ function _osci_tk_epub_navigation_build_toc($tree_node) {
 	} else {
 		$title = $tree_node['link']['title'];
 	}
-
+	// get the thumbnail
+	if (isset($node->field_section_image) && isset($node->field_section_image['und'][0]['uri'])) {
+		$thumbnail = image_style_url('osci_tk_default', $node->field_section_image['und'][0]['uri']);
+	}
+	else {
+		$thumbnail = null;
+	}
+	// and subtitle
+	$subtitle = isset($node->field_subtitle['und'][0]['value']) ? $node->field_subtitle['und'][0]['value'] : '';
+	// form result data
 	$result['data'] = array(  
 		'nid'      => $nid,
 		'mlid'     => $tree_node['link']['mlid'],
@@ -646,7 +655,9 @@ function _osci_tk_epub_navigation_build_toc($tree_node) {
 		'next'     => $nextPage,
 		'prev'     => $prevPage,
 		'parent'   => $parentPage,
-		'length'   => 0
+		'length'   => 0,
+		'thumbnail' => $thumbnail,
+		'subtitle' => $subtitle
 		);
 
 	if (isset($tree_node['link']['bid'])) {
@@ -745,7 +756,7 @@ function _osci_tk_epub_navigation_generate_book_toc($node, $forExport = false, $
 	     * the order of Content Documents in the Publication spine.
 	     */
 	    
-	    $attr_fields = array('nid', 'length', 'subtree_length', 'editor', 'timestamp');
+	    $attr_fields = array('nid', 'length', 'subtree_length', 'editor', 'timestamp', 'thumbnail', 'subtitle');
 
 	    foreach($toc['children'] as $child) {
 	    	$depth = 0;

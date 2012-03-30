@@ -116,9 +116,19 @@
 		<hr>
 		<ul>
 			<% _.each(items, function(item) { %>
-				<li>
+				<li class="toc-item">
 					<a data-section-id="<%= item.id %>">
-						<h4><%= item.get('title') || item.get('value') %></h4>
+						<div class="toc-item-thumbnail">
+							<% if (item.get('data-thumbnail')) { %>
+								<img src="<%= item.get('data-thumbnail') %>">
+							<% } %>
+						</div>
+						<div class="toc-item-text">
+							<h4><%= item.get('title') || item.get('value') %></h4>
+							<% if (item.get('data-subtitle')) { %>
+								<h5><%= item.get('data-subtitle') %></h5>
+							<% } %>
+						</div>
 					</a>
 				</li>
 			<% }); %>

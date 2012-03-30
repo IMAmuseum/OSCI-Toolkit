@@ -10,7 +10,7 @@
 function osci_tk_features_field_group_info() {
   $export = array();
 
-  $field_group = new stdClass;
+  $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_body|node|section|form';
@@ -37,7 +37,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_body|node|section|form'] = $field_group;
 
-  $field_group = new stdClass;
+  $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_content|node|section|form';
@@ -48,7 +48,7 @@ function osci_tk_features_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Content',
-    'weight' => '2',
+    'weight' => '4',
     'children' => array(
       0 => 'group_body',
     ),
@@ -62,7 +62,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_content|node|section|form'] = $field_group;
 
-  $field_group = new stdClass;
+  $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_figures|node|section|form';
@@ -89,7 +89,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_figures|node|section|form'] = $field_group;
 
-  $field_group = new stdClass;
+  $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_footnotes_figures|node|section|form';
@@ -100,10 +100,10 @@ function osci_tk_features_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Footnotes & Figures',
-    'weight' => '3',
+    'weight' => '5',
     'children' => array(
-      0 => 'group_footnotes',
-      1 => 'group_figures',
+      0 => 'group_figures',
+      1 => 'group_footnotes',
     ),
     'format_type' => 'tabs',
     'format_settings' => array(
@@ -115,7 +115,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_footnotes_figures|node|section|form'] = $field_group;
 
-  $field_group = new stdClass;
+  $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_footnotes|node|section|form';

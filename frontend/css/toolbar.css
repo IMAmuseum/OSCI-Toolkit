@@ -52,3 +52,24 @@ div.OsciTkFontView-toolbar-item {
 	text-indent: 9999px;
 	background: url('../img/icon-text.png') center center no-repeat ;
 }
+
+/* TOC VIEW */
+div.toc-view > ul {
+	padding-left: 0px;
+	list-style: none;
+}
+div.toc-view li {
+	margin-bottom: 20px;
+}
+div.toc-view > ul > li > a {
+	display: inline-block;
+}
+div.toc-view h4, div.toc-view h5 {
+	margin: 0px;
+}
+div.toc-view div.toc-item-thumbnail {
+	float: left;
+}
+div.toc-view div.toc-item-text {
+	padding-left: 60px;
+}
