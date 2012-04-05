@@ -13,7 +13,7 @@ jQuery(function() {
 		},
 	
 		sync: function(method, model, options) {
-			console.log('OsciTkSection.sync: ' + method);
+			// console.log('OsciTkSection.sync: ' + method);
 		},
 	
 		parse: function(response) {

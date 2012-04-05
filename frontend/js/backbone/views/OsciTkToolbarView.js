@@ -4,7 +4,7 @@ jQuery(function() {
 		template: _.template($('#template-toolbar').html()),
 		initialize: function() {
 			// if toolbar items were provided, store them in the view
-			this.toolbarItems = this.options.toolbarItems ? this.options.toolbarItems : null;
+			this.toolbarItems = window.appConfig.get('toolbarItems') ? window.appConfig.get('toolbarItems') : [];
 			this.toolbarItemViews = [];
 			// tracks the state of the content area drawer
 			this.isContentOpen = false;
@@ -18,6 +18,7 @@ jQuery(function() {
 					toolbarItem: toolbarItem
 				};
 				var item = new OsciTkToolbarItemView(options);
+				// console.log(item, 'toolbarItem');
 				this.toolbarItemViews.push(item);
 				this.addView(item, '#toolbar-handle');
 				item.render();

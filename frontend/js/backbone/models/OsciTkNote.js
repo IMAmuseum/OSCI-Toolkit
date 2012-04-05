@@ -17,7 +17,7 @@ jQuery(function() {
 		},
 	
 		sync: function(method, model, options) {
-			var endpoint = OsciTk.settings.endpoints.OsciTkNote;
+			var endpoint = appConfig.get('endpoints').OsciTkNote;
 			
 			console.log('Note.sync: ' + method);
 			console.log(model, 'model');

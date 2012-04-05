@@ -10,7 +10,8 @@ jQuery(function() {
 			this.contentViewRendered = false;			
 		},
 		events: {
-			'click': 'itemClicked'
+			'click': 'itemClicked',
+			'touch': 'itemClicked'
 		},
 		render: function() {
 			var options = {dispatcher: this.dispatcher, parent: this};
@@ -25,13 +26,6 @@ jQuery(function() {
 				this.contentView.render();
 				this.contentViewRendered = true;
 			}
-			
-			// // if content view hasn't been instantiated yet, do so and add it to the toolbar view
-			// if (this.contentView === null) {
-			// 	var options = {dispatcher: this.dispatcher, parent: this};
-			// 	this.contentView = new window[this.options.toolbarItem.view](options);
-			// 	this.parent.addView(this.contentView, '#toolbar-content');
-			// }
 			
 			// content tab is closed.  assign active view and open
 			if (this.parent.isContentOpen === false) {

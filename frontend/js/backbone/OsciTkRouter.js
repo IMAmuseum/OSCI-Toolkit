@@ -6,11 +6,10 @@ jQuery(function() {
 			'section/:section_id' : 'section' // TODO: add params for paragraph, etc.
 		},
 	
-		initialize: function(options) {
-			console.log(options.package_url, 'router url');
+		initialize: function() {
+			console.log(window.appConfig.get('package_url'), 'router url');
 			this.dispatcher = _.extend({}, Backbone.Events);
-			options.dispatcher = this.dispatcher;
-			window.appView = new OsciTkAppView(options);
+			window.appView = new OsciTkAppView({dispatcher: this.dispatcher});
 		},
 	
 		/**

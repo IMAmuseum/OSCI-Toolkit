@@ -5,7 +5,7 @@ jQuery(function() {
 		
 		initialize: function() {
 			$('body').append(this.el);
-			console.log(this.options.package_url, 'appview url');
+			console.log(window.appConfig.get('package_url'), 'appview url');
 			
 			// draw main interface
 			this.render();
@@ -14,7 +14,7 @@ jQuery(function() {
 			// init global collections
 			//
 			this.notes = new OsciTkNotes(null, {dispatcher: this.dispatcher});
-			this.notes.url = this.options.endpoints.OsciTkNotes;
+			this.notes.url = window.appConfig.get('endpoints').OsciTkNotes;
 			this.sections = new OsciTkSections(null, {dispatcher: this.dispatcher});
 			this.figures = new OsciTkFigures(null, {dispatcher: this.dispatcher});
 			this.footnotes = new OsciTkFootnotes(null, {dispatcher: this.dispatcher});
@@ -27,9 +27,9 @@ jQuery(function() {
 			var sectionViewClass = OsciTkSectionView;
 
 			//allow a custom section view to be used
-			if (this.options.section_view)
+			if (window.appConfig.get('section_view'))
 			{
-				sectionViewClass = this.options.section_view;
+				sectionViewClass = window.appConfig.get('section_view');
 			}
 			this.sectionView = new sectionViewClass(this.options);
 			this.addView(this.sectionView);
@@ -86,7 +86,7 @@ jQuery(function() {
 
 			
 			// load package document
-			this.docPackage = new OsciTkPackage({url: this.options.package_url}, {dispatcher: this.dispatcher});
+			this.docPackage = new OsciTkPackage({url: window.appConfig.get('package_url')}, {dispatcher: this.dispatcher});
 			
 		},
 		

@@ -21,7 +21,7 @@ function osci_tk_users_menu() {
 
 function osci_tk_users_request() {
 	global $user;
-	dpm($_REQUEST);
+	dpm($_REQUEST, 'incoming request');
 	if (isset($_REQUEST['action'])) {
 		// operate based on action
 		switch($_REQUEST['action']) {
@@ -83,6 +83,31 @@ function osci_tk_users_request() {
 				_osci_tk_users_json_success();
 				drupal_exit();
 				break;
+
+			case 'status':
+				// check current state of session
+				dpm($user->uid, 'current user');
+				if ($user->uid > 0) {
+					// only send some of the user details
+					$response = array(
+						'username' => $user->name,
+						'email' => $user->mail,
+						'id'	=> $user->uid
+					);
+					// send response
+					print json_encode(array(
+						'success' => TRUE,
+						'user' => $response
+					));
+					drupal_exit();
+				}
+				else {
+					// not currently logged in
+					print json_encode(array(
+						'success' => FALSE
+					));
+					drupal_exit();
+				}
 				
 			default:
 				_osci_tk_users_json_error('action not recognized');
