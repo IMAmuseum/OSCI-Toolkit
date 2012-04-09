@@ -1,19 +1,19 @@
 jQuery(function() {
 	window.OsciTkAccountView = OsciTkView.extend({
 		className: 'account-view',
-		template: _.template($('#template-account').html()),
+		template: null,
 		initialize: function() {
-			this.model = new OsciTkAccount(null, {dispatcher: this.dispatcher});
+			this.model = window.appAccount;
 		},
 		render: function() {
-			this.$el.html(this.template());
+			this.showLoginForm();
 		},
 		events: {
 			'click button.login': 'login',
-			'click a.register': 'showRegistrationForm'
+			'click a.register': 'showRegistrationForm',
+			'click a.login': 'showLoginForm'
 		},
 		login: function(event) {
-			console.log(event, 'login event');
 			// alias this for use in ajax callbacks
 			var accountView = this;
 			// get user/pass from form
@@ -21,7 +21,7 @@ jQuery(function() {
 			var password = this.$el.find('#password').val();
 			// send login request
 			$.ajax({
-				url: appView.options.endpoints.OsciTkAccount,
+				url: window.appConfig.get('endpoints').OsciTkAccount,
 				data: {action: 'login', username: username, password: password},
 				type: 'POST',
 				dataType: 'json',
@@ -38,8 +38,13 @@ jQuery(function() {
 				}
 			});
 		},
-		showRegistrationForm: function(event) {
-			
+		showRegistrationForm: function() {
+			this.template = _.template($('#template-account-register').html());
+			this.$el.html(this.template());
+		},
+		showLoginForm: function() {
+			this.template = _.template($('#template-account-login').html());
+			this.$el.html(this.template());
 		}
 	});
 });

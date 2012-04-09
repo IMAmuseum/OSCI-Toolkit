@@ -39,7 +39,11 @@ function osci_tk_users_request() {
 				if ($uid > 0) {
 					$user = user_load($uid);
 					user_login_finalize();
-					_osci_tk_users_json_success();
+					_osci_tk_users_json_success(array(
+						'username' => $user->name,
+						'email' => $user->mail,
+						'id'	=> $user->uid
+					));
 				}
 				else { 
 					_osci_tk_users_json_error('authentication failed for this user and pass');
@@ -89,17 +93,11 @@ function osci_tk_users_request() {
 				dpm($user->uid, 'current user');
 				if ($user->uid > 0) {
 					// only send some of the user details
-					$response = array(
+					_osci_tk_users_json_success(array(
 						'username' => $user->name,
 						'email' => $user->mail,
 						'id'	=> $user->uid
-					);
-					// send response
-					print json_encode(array(
-						'success' => TRUE,
-						'user' => $response
 					));
-					drupal_exit();
 				}
 				else {
 					// not currently logged in
@@ -188,9 +186,11 @@ function _osci_tk_users_json_error($error = '') {
 	drupal_exit();
 }
 
-function _osci_tk_users_json_success() {
-	print json_encode(array(
-		'success' => TRUE,
-	));
+function _osci_tk_users_json_success($user = null) {
+	$ret = array('success' => TRUE);
+	if ($user) {
+		$ret['user'] = $user;
+	}
+	print json_encode($ret);
 	drupal_exit();
 }

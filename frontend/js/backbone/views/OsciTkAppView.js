@@ -10,6 +10,9 @@ jQuery(function() {
 			// draw main interface
 			this.render();
 			
+			// init user and fetch session
+			// this.account = new OsciTkAccount(null, {dispatcher: this.dispatcher});
+
 			//
 			// init global collections
 			//
@@ -83,7 +86,6 @@ jQuery(function() {
 			this.dispatcher.on('routedToSection', function(id) {
 				this.navigation.goToSection(id);
 			}, this);
-
 			
 			// load package document
 			this.docPackage = new OsciTkPackage({url: window.appConfig.get('package_url')}, {dispatcher: this.dispatcher});

@@ -9,6 +9,7 @@ jQuery(function() {
 		initialize: function() {
 			console.log(window.appConfig.get('package_url'), 'router url');
 			this.dispatcher = _.extend({}, Backbone.Events);
+			window.appAccount = new OsciTkAccount(null, {dispatcher: this.dispatcher});
 			window.appView = new OsciTkAppView({dispatcher: this.dispatcher});
 		},
 	
