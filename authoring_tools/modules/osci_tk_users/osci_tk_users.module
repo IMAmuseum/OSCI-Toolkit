@@ -21,7 +21,6 @@ function osci_tk_users_menu() {
 
 function osci_tk_users_request() {
 	global $user;
-	dpm($_REQUEST, 'incoming request');
 	if (isset($_REQUEST['action'])) {
 		// operate based on action
 		switch($_REQUEST['action']) {
@@ -49,7 +48,15 @@ function osci_tk_users_request() {
 					_osci_tk_users_json_error('authentication failed for this user and pass');
 				}
 				break;
-				
+			
+			case 'logout':
+				// Destroy the current session, and reset $user to the anonymous user.
+				watchdog('user', 'Session closed for %name.', array('%name' => $user->name));
+				module_invoke_all('user_logout', $user);
+  				session_destroy();
+				_osci_tk_users_json_success(array('username' => 'anonymous', 'email' => '', 'uid' => 0));
+				break;
+
 			case 'register':
 				// check requirements are present
 				if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email'])) {
@@ -60,7 +67,7 @@ function osci_tk_users_request() {
 				if ($error) {
 					_osci_tk_users_json_error($error);
 				}
-				$error = user_validate_mail($_POST['email']);
+				$error = empty($_POST['password']) ? 'You must enter a password' : null;
 				if ($error) {
 					_osci_tk_users_json_error($error);
 				}
@@ -84,8 +91,11 @@ function osci_tk_users_request() {
 				$account->name = $_POST['username'];
 				$account->mail = $_POST['email'];
 				user_save($account, array('pass' => $_POST['password']));
-				_osci_tk_users_json_success();
-				drupal_exit();
+				_osci_tk_users_json_success(array(
+					'username' => $account->name,
+					'email' => $account->mail,
+					'id' => $account->uid
+				));
 				break;
 
 			case 'status':

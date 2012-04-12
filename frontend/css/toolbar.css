@@ -75,3 +75,8 @@ div.toc-view div.toc-item-thumbnail {
 div.toc-view div.toc-item-text {
 	padding-left: 60px;
 }
+
+div.form-error {
+	height: 1em;
+	color: red;
+}
