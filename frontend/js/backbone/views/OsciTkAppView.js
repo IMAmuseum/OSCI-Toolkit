@@ -77,16 +77,6 @@ jQuery(function() {
 				}
 			}, this);
 			
-			// bind routedToRoot
-			this.dispatcher.on('routedToRoot', function() {
-				this.navigation.goToBeginning();
-			}, this);
-			
-			// bind routedToSection
-			this.dispatcher.on('routedToSection', function(id) {
-				this.navigation.goToSection(id);
-			}, this);
-			
 			// load package document
 			this.docPackage = new OsciTkPackage({url: window.appConfig.get('package_url')}, {dispatcher: this.dispatcher});
 			

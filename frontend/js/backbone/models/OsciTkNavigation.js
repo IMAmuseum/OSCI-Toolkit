@@ -43,6 +43,16 @@ jQuery(function() {
 				}
 			}
 
+			// bind routedToRoot
+			this.dispatcher.on('routedToRoot', function() {
+				this.goToBeginning();
+			}, this);
+			
+			// bind routedToSection
+			this.dispatcher.on('routedToSection', function(id) {
+				this.goToSection(id);
+			}, this);
+
 			this.dispatcher.trigger('navigationLoaded', this);
 		},
 
