@@ -53,6 +53,10 @@ jQuery(function() {
 				this.goToSection(id);
 			}, this);
 
+			this.on('change:current_section', function() {
+				this.dispatcher.trigger('sectionChanged');
+			});
+
 			this.dispatcher.trigger('navigationLoaded', this);
 		},
 
@@ -90,11 +94,12 @@ jQuery(function() {
 		
 		goToSection: function(id) {
 			// TODO: traverse the TOC and find the actual section
-			section = this.getSection(id);
-			if (section !== null) {
-				this.set({current_section: section});
+			if (id !== this.get('current_section')) {
+				section = this.getSection(id);
+				if (section !== null) {
+					this.set({current_section: section});
+				}
 			}
-
 		},
 		
 		parseChildren: function(item, parent) {

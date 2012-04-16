@@ -70,10 +70,6 @@ jQuery(function() {
 					this.navigation = new OsciTkNavigation({
 						uri: nav.href
 					}, {dispatcher: this.dispatcher});
-						
-					this.navigation.on('change:current_section', function() {
-						this.dispatcher.trigger('sectionChanged');
-					});
 				}
 			}, this);
 			
