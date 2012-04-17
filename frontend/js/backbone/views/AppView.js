@@ -22,9 +22,9 @@ jQuery(function() {
 			var sectionViewClass = OsciTk.views.Section;
 
 			//allow a custom section view to be used
-			if (app.config.get('section_view'))
+			if (app.config.get('sectionView'))
 			{
-				sectionViewClass = app.config.get('section_view');
+				sectionViewClass = app.config.get('sectionView');
 			}
 			app.views.sectionView = new sectionViewClass(this.options);
 			this.addView(app.views.sectionView);

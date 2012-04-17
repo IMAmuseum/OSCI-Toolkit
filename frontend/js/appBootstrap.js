@@ -37,7 +37,7 @@ app = {
 		};
 
 		// load package document
-		this.models.docPackage = new OsciTk.models.Package({url: this.config.get('package_url')});
+		this.models.docPackage = new OsciTk.models.Package({url: this.config.get('packageUrl')});
 	},
 
 	run : function()
