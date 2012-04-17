@@ -32,7 +32,7 @@ jQuery(function() {
 			this.addView(this.toolbarView);
 
 			//set the default section view
-			var sectionViewClass = OsciTkSectionView;
+			var sectionViewClass = OsciTk.views.Section;
 
 			//allow a custom section view to be used
 			if (window.appConfig.get('section_view'))
@@ -43,7 +43,7 @@ jQuery(function() {
 			this.addView(this.sectionView);
 
 			// Add the navigation view to the AppView
-			this.navigationView = new OsciTkNavigationView(this.options);
+			this.navigationView = new OsciTk.views.Navigation(this.options);
 			this.addView(this.navigationView);
 			
 			//setup window resizing, to trigger an event

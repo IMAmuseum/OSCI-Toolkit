@@ -32,23 +32,23 @@ div.toolbar-item {
 	float: left;
 	cursor: pointer;
 }
-div.OsciTkNotesView-toolbar-item {
+div.Notes-toolbar-item {
 	text-indent: 9999px;
 	background: url('../img/icon-bookmark.png') center center no-repeat ;
 }
-div.OsciTkTocView-toolbar-item {
+div.Toc-toolbar-item {
 	text-indent: 9999px;
 	background: url('../img/icon-toc.png') center center no-repeat ;
 }
-div.OsciTkAccountView-toolbar-item {
+div.Account-toolbar-item {
 	text-indent: 9999px;
 	background: url('../img/icon-user.png') center center no-repeat ;
 }
-div.OsciTkSearchView-toolbar-item {
+div.Search-toolbar-item {
 	text-indent: 9999px;
 	background: url('../img/icon-search.png') center center no-repeat ;
 }
-div.OsciTkFontView-toolbar-item {
+div.Font-toolbar-item {
 	text-indent: 9999px;
 	background: url('../img/icon-text.png') center center no-repeat ;
 }

@@ -20,7 +20,7 @@ jQuery(function() {
 		},
 		render: function() {
 			var options = {dispatcher: this.dispatcher, parent: this};
-			this.contentView = new window[this.options.toolbarItem.view](options);
+			this.contentView = new OsciTk.views[this.options.toolbarItem.view](options);
 			this.parent.addView(this.contentView, '#toolbar-content');
 			this.$el.html(this.template({
 				text: this.options.toolbarItem.text
