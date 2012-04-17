@@ -9,7 +9,7 @@ jQuery(function() {
 		template: _.template($('#template-section').html()),
 		initialize: function() {
 			// bind navigationLoaded
-			this.dispatcher.on('navigationLoaded', function(navigation) {
+			app.dispatcher.on('navigationLoaded', function(navigation) {
 				console.log(navigation, 'loaded navigation');
 				// populate the sections collection
 				_.each(navigation.get('toc').children, function(section) {
@@ -19,12 +19,12 @@ jQuery(function() {
 			}, this);
 
 			// bind sectionChanged
-			this.dispatcher.on('sectionChanged', function() {
+			app.dispatcher.on('sectionChanged', function() {
 				console.log('section changed');
-				if (this.parent.navigation.get('current_section')) {
+				if (app.models.navigation.get('current_section')) {
 					// loading section content for first section
-					var section = this.parent.sections.get(
-						this.parent.navigation.get('current_section')['data-section_id']
+					var section = app.collections.sections.get(
+						app.models.navigation.get('current_section')['data-section_id']
 					);
 					section.loadContent();
 					this.changeModel(section);
@@ -36,7 +36,7 @@ jQuery(function() {
 			this.renderContent();
 
 			//TODO: add paging information to this event
-			this.dispatcher.trigger("layoutComplete");
+			app.dispatcher.trigger("layoutComplete");
 		},
 		renderContent: function()
 		{
@@ -52,7 +52,7 @@ jQuery(function() {
 			}
 			section.id = section['data-section_id'];
 			
-			this.parent.sections.create(section, {dispatcher: this.dispatcher});
+			app.collections.sections.create(section);
 
 			_.each(origSection.children, function(section) {
 				this.populateSections(section);

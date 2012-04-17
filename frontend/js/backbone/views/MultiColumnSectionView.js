@@ -18,7 +18,7 @@ jQuery(function() {
 		{
 			console.log(this.options, 'multi options');
 
-			this.dispatcher.on("windowResized", function() {
+			app.dispatcher.on("windowResized", function() {
 				console.log("resized");
 				this.renderContent();
 			}, this);

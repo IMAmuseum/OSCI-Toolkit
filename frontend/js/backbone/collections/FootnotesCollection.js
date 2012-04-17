@@ -8,7 +8,7 @@ jQuery(function() {
 		model: OsciTk.models.Footnote,
 		
 		initialize: function() {
-			this.dispatcher.bind('footnotesAvailable', function(footnotes) {
+			app.dispatcher.bind('footnotesAvailable', function(footnotes) {
 				console.log(footnotes, 'footnotesAvailable');
 				this.populateFromMarkup(footnotes);
 			}, this);
@@ -24,7 +24,7 @@ jQuery(function() {
 					section_id: idComponents[1],
 					delta:      idComponents[2]
 				};
-				this.create(footnote, {dispatcher: this.dispatcher});
+				this.create(footnote);
 			}, this);
 		}
 		

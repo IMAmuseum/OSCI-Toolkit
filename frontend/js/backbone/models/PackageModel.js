@@ -19,6 +19,7 @@ jQuery(function() {
 		},
 	
 		initialize: function() {
+			console.log('kittens');
 			// TODO: ERROR CHECK THE RETURN XML
 			var data = xmlToJson(loadXMLDoc(this.get('url')));
 	
@@ -30,7 +31,7 @@ jQuery(function() {
 			this.set('version', data['package'].version);
 			this.set('xmlns', data['package'].xmlns);
 			
-			this.dispatcher.trigger('packageLoaded', this);
+			app.dispatcher.trigger('packageLoaded', this);
 		},
 		
 		sync: function(method, model, options) {

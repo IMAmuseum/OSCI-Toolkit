@@ -14,7 +14,6 @@ jQuery(function() {
 			};
 		},
 	
-		
 		initialize: function() {
 			// TODO: ERROR CHECK THE RETURNED XML
 			var data = xmlToJson(loadXMLDoc(this.get('uri')));
@@ -49,20 +48,20 @@ jQuery(function() {
 			}
 
 			// bind routedToRoot
-			this.dispatcher.on('routedToRoot', function() {
+			app.dispatcher.on('routedToRoot', function() {
 				this.goToBeginning();
 			}, this);
 			
 			// bind routedToSection
-			this.dispatcher.on('routedToSection', function(id) {
+			app.dispatcher.on('routedToSection', function(id) {
 				this.goToSection(id);
 			}, this);
 
 			this.on('change:current_section', function() {
-				this.dispatcher.trigger('sectionChanged');
+				app.dispatcher.trigger('sectionChanged');
 			});
 
-			this.dispatcher.trigger('navigationLoaded', this);
+			app.dispatcher.trigger('navigationLoaded', this);
 		},
 
 		

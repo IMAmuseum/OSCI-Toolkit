@@ -9,7 +9,7 @@ jQuery(function() {
 		template: _.template($('#template-toolbar').html()),
 		initialize: function() {
 			// if toolbar items were provided, store them in the view
-			this.toolbarItems = window.appConfig.get('toolbarItems') ? window.appConfig.get('toolbarItems') : [];
+			this.toolbarItems = app.config.get('toolbarItems') ? app.config.get('toolbarItems') : [];
 			this.toolbarItemViews = [];
 			// tracks the state of the content area drawer
 			this.isContentOpen = false;
@@ -18,11 +18,7 @@ jQuery(function() {
 		render: function() {
 			this.$el.html(this.template());
 			_.each(this.toolbarItems, function(toolbarItem) {
-				var options = {
-					dispatcher: this.dispatcher,
-					toolbarItem: toolbarItem
-				};
-				var item = new OsciTk.views.ToolbarItem(options);
+				var item = new OsciTk.views.ToolbarItem({toolbarItem: toolbarItem});
 				// console.log(item, 'toolbarItem');
 				this.toolbarItemViews.push(item);
 				this.addView(item, '#toolbar-handle');

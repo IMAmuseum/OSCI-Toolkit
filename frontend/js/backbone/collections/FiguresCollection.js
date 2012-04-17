@@ -8,7 +8,7 @@ jQuery(function() {
 		model: OsciTk.models.Figure,
 		
 		initialize: function() {
-			this.dispatcher.bind('figuresAvailable', function(figures) {
+			app.dispatcher.bind('figuresAvailable', function(figures) {
 				console.log(figures, 'figuresAvailable');
 				this.populateFromMarkup(figures);
 			}, this);
@@ -29,7 +29,7 @@ jQuery(function() {
 					columns:    $(markup).attr('data-columns'),
 					options:    JSON.parse($(markup).attr('data-options'))
 				};
-				this.create(figure, {dispatcher: this.dispatcher});
+				this.create(figure);
 			}, this);
 		}
 	});

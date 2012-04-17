@@ -36,8 +36,8 @@ jQuery(function() {
 			// parse out footnotes and figures, make them available via event
 			var footnotes = $('section#footnotes', this.get('body'));
 			var figures   = $('section#figures', this.get('body'));
-			this.dispatcher.trigger('footnotesAvailable', footnotes);
-			this.dispatcher.trigger('figuresAvailable', figures);
+			app.dispatcher.trigger('footnotesAvailable', footnotes);
+			app.dispatcher.trigger('figuresAvailable', figures);
 			console.log(this, 'loaded section');
 		}
 	});

@@ -8,7 +8,7 @@ jQuery(function() {
 		className: 'account-view',
 		template: null,
 		initialize: function() {
-			this.model = window.appAccount;
+			this.model = app.models.account;
 		},
 		render: function() {
 			// determine if user is logged in.  Show login form or user details
@@ -35,7 +35,7 @@ jQuery(function() {
 			var password = this.$el.find('#password').val();
 			// send login request
 			$.ajax({
-				url: window.appConfig.get('endpoints').OsciTkAccount,
+				url: app.config.get('endpoints').OsciTkAccount,
 				data: {action: 'login', username: username, password: password},
 				type: 'POST',
 				dataType: 'json',
@@ -58,7 +58,7 @@ jQuery(function() {
 			// alias this for use in ajax callback
 			var accountView = this;
 			$.ajax({
-				url: window.appConfig.get('endpoints').OsciTkAccount,
+				url: app.config.get('endpoints').OsciTkAccount,
 				data: {action: 'logout'},
 				type: 'POST',
 				dataType: 'json',
@@ -78,7 +78,7 @@ jQuery(function() {
 			var email = this.$el.find('#email').val();
 			// send registration request
 			$.ajax({
-				url: window.appConfig.get('endpoints').OsciTkAccount,
+				url: app.config.get('endpoints').OsciTkAccount,
 				data: {action: 'register', username: username, password: password, email: email},
 				type: 'POST',
 				dataType: 'json',

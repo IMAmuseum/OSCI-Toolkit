@@ -10,14 +10,16 @@ jQuery(function() {
 			'section/:section_id' : 'section' // TODO: add params for paragraph, etc.
 		},
 	
-		initialize: function() {},
+		initialize: function() {
+			
+		},
 	
 		/**
 		 * Route to root location
 		 */
 		root: function() {
 			console.log('routing to root');
-			this.dispatcher.trigger('routedToRoot');
+			app.dispatcher.trigger('routedToRoot');
 		},
 	
 		/**
@@ -25,7 +27,7 @@ jQuery(function() {
 		 */
 		section: function(section_id) {
 			console.log('routing to section ' + section_id);
-			this.dispatcher.trigger('routedToSection', section_id);
+			app.dispatcher.trigger('routedToSection', section_id);
 		},
 	
 		/**
@@ -33,7 +35,7 @@ jQuery(function() {
 		 */
 		search: function(query) {
 			console.log('searching for ' + query);
-			this.dispatcher.trigger('routedToSearch', query);
+			app.dispatcher.trigger('routedToSearch', query);
 		}
 	});
 });
