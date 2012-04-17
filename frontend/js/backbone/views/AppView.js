@@ -33,21 +33,6 @@ jQuery(function() {
 			// Add the navigation view to the AppView
 			app.views.navigationView = new OsciTk.views.Navigation(this.options);
 			this.addView(app.views.navigationView);
-			
-			//setup window resizing, to trigger an event
-			window.onresize = (function(dispatcher){
-				return function() {
-					if (window.resizeTimer) {
-						clearTimeout(window.resizeTimer);
-					}
-
-					var onWindowResize = function(){
-						dispatcher.trigger("windowResized");
-					};
-
-					window.resizeTimer = setTimeout(onWindowResize, 100);
-				};
-			})(app.dispatcher);
 		},
 		
 		render: function() {
