@@ -43,7 +43,7 @@
 	<script src="js/AppBootstrap.js"></script>
 	<script>jQuery(function() { 
 			app.bootstrap({
-				package_url: 'sample/package.opf', 
+				packageUrl: 'sample/package.opf', 
 				endpoints: {
 					'OsciTkNotes': '/api/notes/',
 					'OsciTkNote': '/api/notes/',
@@ -58,7 +58,7 @@
 					{view: 'Search', text: 'Search'},
 					{view: 'Font', text: 'Font'},
 				],
-				section_view: OsciTkMultiColumnSectionView
+				sectionView: OsciTkMultiColumnSectionView
 			});
 			app.run();
 		});

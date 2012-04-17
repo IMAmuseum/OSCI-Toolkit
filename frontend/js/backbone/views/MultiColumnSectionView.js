@@ -9,9 +9,7 @@ jQuery(function() {
 			minColumnWidth : 200,
 			maxColumnWidth : 300,
 			gutterWidth : 40,
-			minLinesPerColumn : 5,
-			cacheId : null,
-			layoutCacheTime : 86400
+			minLinesPerColumn : 5
 		},
 
 		initialize: function()

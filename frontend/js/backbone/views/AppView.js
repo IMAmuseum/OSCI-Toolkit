@@ -10,7 +10,6 @@ jQuery(function() {
 		
 		initialize: function() {
 			$('body').append(this.el);
-			console.log(app.config.get('package_url'), 'appview url');
 			
 			// draw main interface
 			this.render();
@@ -23,9 +22,9 @@ jQuery(function() {
 			var sectionViewClass = OsciTk.views.Section;
 
 			//allow a custom section view to be used
-			if (app.config.get('section_view'))
+			if (app.config.get('sectionView'))
 			{
-				sectionViewClass = app.config.get('section_view');
+				sectionViewClass = app.config.get('sectionView');
 			}
 			app.views.sectionView = new sectionViewClass(this.options);
 			this.addView(app.views.sectionView);
@@ -33,21 +32,6 @@ jQuery(function() {
 			// Add the navigation view to the AppView
 			app.views.navigationView = new OsciTk.views.Navigation(this.options);
 			this.addView(app.views.navigationView);
-			
-			//setup window resizing, to trigger an event
-			window.onresize = (function(dispatcher){
-				return function() {
-					if (window.resizeTimer) {
-						clearTimeout(window.resizeTimer);
-					}
-
-					var onWindowResize = function(){
-						dispatcher.trigger("windowResized");
-					};
-
-					window.resizeTimer = setTimeout(onWindowResize, 100);
-				};
-			})(app.dispatcher);
 		},
 		
 		render: function() {

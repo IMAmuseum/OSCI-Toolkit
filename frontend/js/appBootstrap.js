@@ -22,8 +22,22 @@ app = {
 		this.collections.figures = new OsciTk.collections.Figures();
 		this.collections.footnotes = new OsciTk.collections.Footnotes();
 		
+		//setup window resizing, to trigger an event
+		window.onresize = function()
+		{
+			if (window.resizeTimer) {
+				clearTimeout(window.resizeTimer);
+			}
+
+			var onWindowResize = function(){
+				app.dispatcher.trigger("windowResized");
+			};
+
+			window.resizeTimer = setTimeout(onWindowResize, 100);
+		};
+
 		// load package document
-		this.models.docPackage = new OsciTk.models.Package({url: this.config.get('package_url')});
+		this.models.docPackage = new OsciTk.models.Package({url: this.config.get('packageUrl')});
 	},
 
 	run : function()

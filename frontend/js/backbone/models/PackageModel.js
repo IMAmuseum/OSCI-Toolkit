@@ -19,7 +19,6 @@ jQuery(function() {
 		},
 	
 		initialize: function() {
-			console.log('kittens');
 			// TODO: ERROR CHECK THE RETURN XML
 			var data = xmlToJson(loadXMLDoc(this.get('url')));
 	
