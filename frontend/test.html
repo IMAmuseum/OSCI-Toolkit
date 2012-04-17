@@ -40,6 +40,7 @@
 	<script src="js/backbone/views/Font.js"></script>
 	<script src="js/backbone/Router.js"></script>	
 	<script src="js/backbone/helper.js"></script>	
+	<script src="js/AppBootstrap.js"></script>
 	<script>jQuery(function() { 
 			app.bootstrap({
 				package_url: 'sample/package.opf', 
@@ -59,9 +60,7 @@
 				],
 				section_view: OsciTkMultiColumnSectionView
 			});
-			
-			// window.appRouter = new OsciTkRouter();
-			// Backbone.history.start();	
+			app.run();
 		});
 	</script>
 </head>

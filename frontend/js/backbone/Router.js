@@ -10,12 +10,7 @@ jQuery(function() {
 			'section/:section_id' : 'section' // TODO: add params for paragraph, etc.
 		},
 	
-		initialize: function() {
-			console.log(window.appConfig.get('package_url'), 'router url');
-			this.dispatcher = _.extend({}, Backbone.Events);
-			window.appAccount = new OsciTk.models.Account(null, {dispatcher: this.dispatcher});
-			window.app = new OsciTk.views.App({dispatcher: this.dispatcher});
-		},
+		initialize: function() {},
 	
 		/**
 		 * Route to root location

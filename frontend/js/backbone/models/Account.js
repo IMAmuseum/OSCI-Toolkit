@@ -21,7 +21,7 @@ jQuery(function() {
 			var account = this;
 			// ask server for session state
 			$.ajax({
-				url: window.appConfig.get('endpoints').OsciTkAccount,
+				url: app.config.get('endpoints').OsciTkAccount,
 				data: {action: 'status'},
 				type: 'POST',
 				dataType: 'json',
