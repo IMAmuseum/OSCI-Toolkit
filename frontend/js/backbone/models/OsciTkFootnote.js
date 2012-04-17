@@ -1,5 +1,10 @@
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.models === 'undefined'){OsciTk.models = {};}
+// OsciTk Namespace Initializaiotn //
+
 jQuery(function() {
-	window.OsciTkFootnote = OsciTkModel.extend({
+	OsciTk.models.Footnote = OsciTk.models.BaseModel.extend({
 		defaults: function() {
 			return {
 				body: '',

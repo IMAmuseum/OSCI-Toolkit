@@ -1,5 +1,10 @@
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
+// OsciTk Namespace Initializaiotn //
+
 jQuery(function() {
-	window.OsciTkMultiColumnSectionView = OsciTkSectionView.extend({
+	window.OsciTkMultiColumnSectionView = OsciTk.views.Section.extend({
 		defaults: {
 			minColumnWidth : 200,
 			maxColumnWidth : 300,

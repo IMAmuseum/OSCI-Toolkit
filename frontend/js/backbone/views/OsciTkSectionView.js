@@ -1,5 +1,10 @@
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
+// OsciTk Namespace Initializaiotn //
+
 jQuery(function() {
-	window.OsciTkSectionView = OsciTkView.extend({
+	OsciTk.views.Section = OsciTk.views.BaseView.extend({
 		id: 'section',
 		template: _.template($('#template-section').html()),
 		initialize: function() {

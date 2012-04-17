@@ -1,6 +1,11 @@
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.collections === 'undefined'){OsciTk.collections = {};}
+// OsciTk Namespace Initializaiotn //
+
 jQuery(function() {
-	window.OsciTkFigures = OsciTkCollection.extend({
-		model: OsciTkFigure,
+	OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
+		model: OsciTk.models.Figure,
 		
 		initialize: function() {
 			this.dispatcher.bind('figuresAvailable', function(figures) {

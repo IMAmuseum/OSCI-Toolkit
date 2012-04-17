@@ -1,5 +1,10 @@
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.models === 'undefined'){OsciTk.models = {};}
+// OsciTk Namespace Initializaiotn //
+
 jQuery(function() {
-	window.OsciTkAccount = OsciTkModel.extend({
+	OsciTk.models.Account = OsciTk.models.BaseModel.extend({
 		defaults: {
 			username: 'anonymous',
 			id: 0

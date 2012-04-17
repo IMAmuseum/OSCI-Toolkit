@@ -1,5 +1,10 @@
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
+// OsciTk Namespace Initializaiotn //
+
 jQuery(function() {
-	window.OsciTkSearchView = OsciTkView.extend({
+	OsciTk.views.Search = OsciTk.views.BaseView.extend({
 		id: 'search-view',
 		className: 'toolbar-item-view',
 		template: _.template($('#template-search').html()),

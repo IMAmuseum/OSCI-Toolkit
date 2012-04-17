@@ -1,5 +1,10 @@
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.models === 'undefined'){OsciTk.models = {};}
+// OsciTk Namespace Initializaiotn //
+
 jQuery(function() {
-	window.OsciTkNote = Backbone.Model.extend({
+	OsciTk.models.Note = OsciTk.models.BaseModel.extend({
 		defaults: function() {
 			return {
 				id: null,

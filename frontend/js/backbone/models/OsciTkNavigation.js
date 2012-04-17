@@ -1,5 +1,10 @@
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.models === 'undefined'){OsciTk.models = {};}
+// OsciTk Namespace Initializaiotn //
+
 jQuery(function() {
-	window.OsciTkNavigation = OsciTkModel.extend({
+	OsciTk.models.Navigation = OsciTk.models.BaseModel.extend({
 		
 		defaults: function() {
 			return {

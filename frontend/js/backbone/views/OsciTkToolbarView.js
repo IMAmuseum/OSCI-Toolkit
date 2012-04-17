@@ -1,5 +1,10 @@
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
+// OsciTk Namespace Initializaiotn //
+
 jQuery(function() {
-	window.OsciTkToolbarView = OsciTkView.extend({
+	OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 		id: 'toolbar',
 		template: _.template($('#template-toolbar').html()),
 		initialize: function() {
@@ -17,7 +22,7 @@ jQuery(function() {
 					dispatcher: this.dispatcher,
 					toolbarItem: toolbarItem
 				};
-				var item = new OsciTkToolbarItemView(options);
+				var item = new OsciTk.views.ToolbarItem(options);
 				// console.log(item, 'toolbarItem');
 				this.toolbarItemViews.push(item);
 				this.addView(item, '#toolbar-handle');

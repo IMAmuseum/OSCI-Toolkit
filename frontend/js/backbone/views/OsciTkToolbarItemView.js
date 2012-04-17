@@ -1,5 +1,10 @@
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
+// OsciTk Namespace Initializaiotn //
+
 jQuery(function() {
-	window.OsciTkToolbarItemView = OsciTkView.extend({
+	OsciTk.views.ToolbarItem = OsciTk.views.BaseView.extend({
 		className: 'toolbar-item',
 		template: _.template($('#template-toolbar-item').html()),
 		initialize: function() {
