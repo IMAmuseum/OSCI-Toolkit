@@ -41,7 +41,7 @@
 	<script src="js/backbone/Router.js"></script>	
 	<script src="js/backbone/helper.js"></script>	
 	<script>jQuery(function() { 
-			window.appConfig = new OsciTk.models.Config({
+			app.bootstrap({
 				package_url: 'sample/package.opf', 
 				endpoints: {
 					'OsciTkNotes': '/api/notes/',
@@ -59,8 +59,9 @@
 				],
 				section_view: OsciTkMultiColumnSectionView
 			});
-			window.appRouter = new OsciTkRouter();
-			Backbone.history.start();	
+			
+			// window.appRouter = new OsciTkRouter();
+			// Backbone.history.start();	
 		});
 	</script>
 </head>
