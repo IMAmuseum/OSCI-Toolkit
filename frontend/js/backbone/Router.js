@@ -1,5 +1,9 @@
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+// OsciTk Namespace Initializaiotn //
+
 jQuery(function() {
-	window.OsciTkRouter = Backbone.Router.extend({
+	OsciTk.router = Backbone.Router.extend({
 	
 		routes: {
 			'' : 'root',
