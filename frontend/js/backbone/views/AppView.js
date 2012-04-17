@@ -10,7 +10,6 @@ jQuery(function() {
 		
 		initialize: function() {
 			$('body').append(this.el);
-			console.log(app.config.get('package_url'), 'appview url');
 			
 			// draw main interface
 			this.render();
