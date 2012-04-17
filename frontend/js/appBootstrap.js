@@ -11,7 +11,7 @@ app = {
 		this.config = new OsciTk.models.Config(config);
 		this.dispatcher = _.extend({}, Backbone.Events);
 		this.router = new OsciTk.router();
-		this.models.account = new OsciTk.models.Account(null);
+		this.account = new OsciTk.models.Account(null);
 		this.views.app = new OsciTk.views.App();
 		
 		//

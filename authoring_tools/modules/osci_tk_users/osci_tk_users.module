@@ -100,7 +100,6 @@ function osci_tk_users_request() {
 
 			case 'status':
 				// check current state of session
-				dpm($user->uid, 'current user');
 				if ($user->uid > 0) {
 					// only send some of the user details
 					_osci_tk_users_json_success(array(

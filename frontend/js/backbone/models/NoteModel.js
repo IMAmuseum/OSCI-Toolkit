@@ -22,7 +22,7 @@ jQuery(function() {
 		},
 	
 		sync: function(method, model, options) {
-			var endpoint = appConfig.get('endpoints').OsciTkNote;
+			var endpoint = app.config.get('endpoints').OsciTkNote;
 			
 			console.log('Note.sync: ' + method);
 			console.log(model, 'model');

@@ -8,7 +8,7 @@ jQuery(function() {
 		className: 'account-view',
 		template: null,
 		initialize: function() {
-			this.model = app.models.account;
+			this.model = app.account;
 		},
 		render: function() {
 			// determine if user is logged in.  Show login form or user details
