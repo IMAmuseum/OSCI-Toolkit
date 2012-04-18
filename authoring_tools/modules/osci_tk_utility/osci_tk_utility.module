@@ -32,6 +32,21 @@ function osci_tk_utility_osci_tk_figure_content($args) {
   }  
 }
 
+function osci_tk_utility_osci_tk_figure_aspect($figure)
+{
+	$asset = node_load($figure['asset_reference']);
+	$aspect = 1;
+
+	switch($asset->type)
+	{
+		case 'image_asset':
+			$aspect = $asset->field_image['und'][0]['width'] / $asset->field_image['und'][0]['height'];
+			break;
+	}
+
+	return $aspect;
+}
+
 
 /**
  * Return resources associated with the figure

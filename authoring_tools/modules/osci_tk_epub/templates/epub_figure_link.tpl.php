@@ -1,1 +1,1 @@
-<a href="#<?php print $fig_id; ?>"><?php print $fig_text; ?></a>
+<a href="#<?php print $fig_id; ?>" class="figure_reference"><?php print $fig_text; ?></a>

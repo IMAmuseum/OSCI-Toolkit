@@ -272,7 +272,9 @@ function osci_tk_epub_render($nid)
 
 function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_cache = false)
 {
-	global $osci_tk_placed_figures;
+	global $osci_tk_placed_figures, $osci_tk_epub_for_export;
+
+	$osci_tk_epub_for_export = $forExport;
 
 	/***** Check the cache *****/
 	if (!$no_cache) {
@@ -292,29 +294,29 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $no_
 		switch($key)
 		{
 			case 'field_footnote':
-			$view[$key]['#theme'] = 'osci_tk_footnote_epub';
-			$i = 0;
-			foreach($view[$key]['#items'] as $k => $v)
-			{
-				$view[$key]['#items'][$k]['fn_id'] = 'fn-' . $node->nid . '-' . $i;
-				$i++;
-			}
-			break;
+				$view[$key]['#theme'] = 'osci_tk_footnote_epub';
+				$i = 0;
+				foreach($view[$key]['#items'] as $k => $v)
+				{
+					$view[$key]['#items'][$k]['fn_id'] = 'fn-' . $node->nid . '-' . $i;
+					$i++;
+				}
+				break;
 
 			case 'field_figure':
-			$items = element_children($element);
-			foreach($items as $delta)
-			{  
-				$view[$key][$delta]['#item']['export'] = $forExport;
+				$items = element_children($element);
+				foreach($items as $delta)
+				{  
+					$view[$key][$delta]['#item']['export'] = $forExport;
 
-				//if figure placed inline do not output it again
-				if (is_array($osci_tk_placed_figures) && in_array($delta, $osci_tk_placed_figures))
-				{
-					unset($view[$key][$delta]);
+					//if figure placed inline do not output it again
+					if (is_array($osci_tk_placed_figures) && in_array($delta, $osci_tk_placed_figures))
+					{
+						//unset($view[$key][$delta]);
+					}
 				}
-			}
 
-			break;
+				break;
 		}
 	}
 
