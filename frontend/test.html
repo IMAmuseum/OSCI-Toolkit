@@ -37,6 +37,7 @@
 	<script src="js/backbone/views/SearchResultsView.js"></script>
 	<script src="js/backbone/views/SearchResultView.js"></script>
 	<script src="js/backbone/views/NotesView.js"></script>
+	<script src="js/backbone/views/FiguresView.js"></script>	
 	<script src="js/backbone/views/TocView.js"></script>
 	<script src="js/backbone/views/AccountView.js"></script>
 	<script src="js/backbone/views/FontView.js"></script>
@@ -56,6 +57,7 @@
 				toolbarItems: [
 					{view: 'Toc', text: 'ToC'},
 					{view: 'Notes', text: 'Notes'},
+					{view: 'Figures', text:' Figures'},
 					{view: 'Search', text: 'Search'},
 					{view: 'Font', text: 'Font'},
 					{view: 'Account', text: 'Account'}
@@ -129,6 +131,17 @@
 						<small>tags: <% _.each(note.tags, function(tag) { %><%= tag %> <% }); %></small>
 					<% } %>
 					</p>
+				</li>
+			<% }); %>
+		</ul>
+	</script>
+	<script id="template-figures" type="text/template">
+		<h2>Figures</h2>
+		<hr>
+		<ul>
+			<% _.each(figures, function(figure) { %>
+				<li>
+					Fig X
 				</li>
 			<% }); %>
 		</ul>
