@@ -61,7 +61,7 @@ function osci_tk_notes_request() {
 										'paragraph_id' 	=> $note->field_paragraph_id['und'][0]['value'],
 										'note' 			=> $note->body['und'][0]['value'],
 										'tags' 			=> $_POST['tags']
-								)
+									)
 								));
 								// dpm($note, 'note');
 								drupal_exit();
@@ -159,6 +159,10 @@ function osci_tk_notes_request() {
 			print json_encode(array('success' => TRUE, 'notes' => $notes));
 			return;
 		}
+	}
+	else {
+		print json_encode(array('success' => false, 'error' => 'You must be logged in to retrieve notes'));
+		return;
 	}
 }
 

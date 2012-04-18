@@ -38,6 +38,7 @@ jQuery(function() {
 			var figures   = $('section#figures', this.get('body'));
 			app.dispatcher.trigger('footnotesAvailable', footnotes);
 			app.dispatcher.trigger('figuresAvailable', figures);
+			app.dispatcher.trigger('sectionLoaded', this);
 			console.log(this, 'loaded section');
 		}
 	});

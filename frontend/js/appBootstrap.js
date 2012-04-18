@@ -8,15 +8,10 @@ app = {
 
 	bootstrap : function(config)
 	{
-		this.config = new OsciTk.models.Config(config);
 		this.dispatcher = _.extend({}, Backbone.Events);
+		this.config = new OsciTk.models.Config(config);
 		this.router = new OsciTk.router();
-		this.account = new OsciTk.models.Account(null);
-		this.views.app = new OsciTk.views.App();
-		
-		//
-		// init global collections
-		//
+		this.account = new OsciTk.models.Account();
 		this.collections.notes = new OsciTk.collections.Notes();
 		this.collections.sections = new OsciTk.collections.Sections();
 		this.collections.figures = new OsciTk.collections.Figures();
@@ -35,7 +30,9 @@ app = {
 
 			window.resizeTimer = setTimeout(onWindowResize, 100);
 		};
-
+		
+		// init main view
+		this.views.app = new OsciTk.views.App();
 		// load package document
 		this.models.docPackage = new OsciTk.models.Package({url: this.config.get('packageUrl')});
 	},
