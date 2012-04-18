@@ -18,7 +18,12 @@ jQuery(function() {
 		},
 		
 		sync: function(method, model, options) {
-			console.log('Figure.sync: ' + method);
-		}
+			//console.log('Figure.sync: ' + method);
+			var data = this.get('body');
+			console.log(data);
+			this.set('columns', data['data-columns']);
+			this.set('caption', jQuery('figcaption', data).html());
+		},
+
 	});
 });

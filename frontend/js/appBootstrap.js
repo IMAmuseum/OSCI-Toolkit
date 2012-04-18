@@ -17,6 +17,15 @@ app = {
 		this.collections.figures = new OsciTk.collections.Figures();
 		this.collections.footnotes = new OsciTk.collections.Footnotes();
 		
+		// Create figures when the data becomes available
+		this.dispatcher.on('figuresAvailable', function(figure_data) {
+			console.log('adding figures');
+			_.each(figure_data, function(figure_body) { 
+				app.collections.figures.create({body: figure_body})
+			});
+
+		});
+
 		//setup window resizing, to trigger an event
 		window.onresize = function()
 		{
