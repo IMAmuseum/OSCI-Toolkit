@@ -99,7 +99,7 @@ div.font-view div.font-control span.small {
 
 /** MEDIA QUERIES **/
 
-// When less than 600px...
+/* When less than 600px... */
 @media (max-width:600px) {
 
 	div.Notes-toolbar-item {
