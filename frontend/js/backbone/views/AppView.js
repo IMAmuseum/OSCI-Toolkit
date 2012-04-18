@@ -15,22 +15,27 @@ jQuery(function() {
 			this.render();
 			
 			// Add the toolbar to the appView
-			app.views.toolbarView = new OsciTk.views.Toolbar(this.options);
+			app.views.toolbarView = new OsciTk.views.Toolbar();
 			this.addView(app.views.toolbarView);
 
 			//set the default section view
 			var sectionViewClass = OsciTk.views.Section;
 
 			//allow a custom section view to be used
-			if (app.config.get('sectionView'))
+			if (app.config.get('sectionView') && OsciTk.views[app.config.get('sectionView')])
 			{
-				sectionViewClass = app.config.get('sectionView');
+				sectionViewClass = OsciTk.views[app.config.get('sectionView')];
 			}
-			app.views.sectionView = new sectionViewClass(this.options);
+			var sectionViewOptions = {};
+			if (app.config.get('sectionViewOptions'))
+			{
+				sectionViewOptions = app.config.get('sectionViewOptions');
+			}
+			app.views.sectionView = new sectionViewClass(sectionViewOptions);
 			this.addView(app.views.sectionView);
 
 			// Add the navigation view to the AppView
-			app.views.navigationView = new OsciTk.views.Navigation(this.options);
+			app.views.navigationView = new OsciTk.views.Navigation();
 			this.addView(app.views.navigationView);
 		},
 		

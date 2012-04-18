@@ -4,13 +4,7 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 // OsciTk Namespace Initializaiotn //
 
 jQuery(function() {
-	window.OsciTkMultiColumnSectionView = OsciTk.views.Section.extend({
-		defaults: {
-			minColumnWidth : 200,
-			maxColumnWidth : 300,
-			gutterWidth : 40,
-			minLinesPerColumn : 5
-		},
+	OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 		initialize: function()
 		{
@@ -23,12 +17,17 @@ jQuery(function() {
 
 			this.$el.addClass("oscitk_multi_column");
 
-			OsciTkMultiColumnSectionView.__super__.initialize.call(this);
+			this.options.minColumnWidth = (this.options.minColumnWidth) ? this.options.minColumnWidth : 200;
+			this.options.maxColumnWidth = (this.options.maxColumnWidth) ? this.options.maxColumnWidth : 300;
+			this.options.gutterWidth = (this.options.gutterWidth) ? this.options.gutterWidth : 40;
+			this.options.minLinesPerColumn = (this.options.minLinesPerColumn) ? this.options.minLinesPerColumn : 5;
+
+			OsciTk.views.MultiColumnSection.__super__.initialize.call(this);
 		},
 
 		renderContent: function()
 		{
-			console.log("multi-column");
+			console.log(this.model, "multi-column");
 
 			this.calculateDimensions();
 
@@ -38,6 +37,9 @@ jQuery(function() {
 		calculateDimensions: function()
 		{
 			var dimensions = {};
+
+			//copy gutter width out of the options for easy access
+			dimensions.gutterWidth = this.options.gutterWidth;
 
 			//get the margins of the section container
 			dimensions.pageMargin = {
@@ -63,23 +65,32 @@ jQuery(function() {
 			dimensions.outerPageWidth = this.$el.width();
 			dimensions.innerPageWidth = dimensions.outerPageWidth - dimensions.pagePadding.left - dimensions.pagePadding.right;
 
-			//column count
-
 			//column width
-			// if (dimensions.innerPageWidth < this.get('maxColumnWidth')) {
-			// 	dimensions.columnWidth = dimensions.innerPageWidth;
-			// } else {
-			// 	dimensions.columnWidth = this.get('maxColumnWidth');
-			// }
+			if (dimensions.innerPageWidth < this.options.maxColumnWidth)
+			{
+				dimensions.columnWidth = dimensions.innerPageWidth;
+			} else {
+				dimensions.columnWidth = this.options.maxColumnWidth;
+			}
 
-			//page count
+			//Determine the number of columns per page
+			dimensions.columnsPerPage = Math.floor(dimensions.innerPageWidth / dimensions.columnWidth);
+			if (dimensions.innerPageWidth < (dimensions.columnsPerPage * dimensions.columnWidth) + ((dimensions.columnsPerPage - 1) * this.options.gutterWidth))
+			{
+				dimensions.columnsPerPage = dimensions.columnsPerPage - 1;
+			}
 
+			//Large gutters look ugly... reset column width if gutters get too big
+			var gutterCheck = (dimensions.innerPageWidth - (dimensions.columnsPerPage * dimensions.columnWidth)) / (dimensions.columnsPerPage - 1);
+			if (gutterCheck > this.options.gutterWidth) {
+				dimensions.columnWidth = (dimensions.innerPageWidth - (this.options.gutterWidth * (dimensions.columnsPerPage - 1))) / dimensions.columnsPerPage;
+			}
 
-
-			console.log(dimensions, 'dimensions');
-
+			this.dimensions = dimensions;
+			console.log(dimensions, "dimensions");
 			//set the height of the container
-			this.$el.height(dimensions.pageHeight);
+			//dont need this if styled correctly
+			//this.$el.height(dimensions.pageHeight);
 		}
 	});
 });

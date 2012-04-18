@@ -28,6 +28,7 @@ jQuery(function() {
 		loadContent: function() {
 			if (this.get('contentLoaded') === false) {
 				var data = (loadXMLDoc(this.get('href')));
+				console.log(data);
 				this.set('title', $('section.title', data.body).html());
 				this.set('body', $('section.body', data.body).html());
 				this.set('contentLoaded', true);
