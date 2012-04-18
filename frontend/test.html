@@ -2,7 +2,8 @@
 <head>
 	<link type="text/css" rel="stylesheet" href="css/common.css">
 	<link type="text/css" rel="stylesheet" href="css/toolbar.css">
-	<link type="text/css" rel="stylesheet" href="css/multi_column_test.css">
+	<link type="text/css" rel="stylesheet" href="css/section.css">
+	<link type="text/css" rel="stylesheet" href="css/multiColumnSection.css">
 	<link type="text/css" rel="stylesheet" href="css/search.css">
 	<script src="http://documentcloud.github.com/backbone/test/vendor/json2.js"></script>
 	<script src="http://documentcloud.github.com/backbone/test/vendor/jquery-1.7.1.js"></script>
@@ -58,7 +59,13 @@
 					{view: 'Search', text: 'Search'},
 					{view: 'Font', text: 'Font'},
 				],
-				sectionView: OsciTkMultiColumnSectionView
+				sectionView: 'MultiColumnSection',
+				sectionViewOptions: {
+					minColumnWidth : 200,
+					maxColumnWidth : 300,
+					gutterWidth : 40,
+					minLinesPerColumn : 5
+				}
 			});
 			app.run();
 		});

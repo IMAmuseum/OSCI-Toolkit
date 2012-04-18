@@ -52,7 +52,7 @@ jQuery(function() {
 			}
 			section.id = section['data-section_id'];
 			
-			app.collections.sections.create(section);
+			app.collections.sections.add(section);
 
 			_.each(origSection.children, function(section) {
 				this.populateSections(section);
