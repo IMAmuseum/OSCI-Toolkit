@@ -80,3 +80,20 @@ div.form-error {
 	height: 1em;
 	color: red;
 }
+
+/* FONT VIEW */
+div.font-view div.font-control {
+	border: 1px solid #000;
+	margin: 20px 10px;
+	display: inline-block;
+}
+div.font-view div.font-control span {
+	padding: 5px;
+}
+div.font-view div.font-control span.large {
+	font-size: 3em;
+}
+div.font-view div.font-control span.small {
+	font-size: 1em;
+}
+}

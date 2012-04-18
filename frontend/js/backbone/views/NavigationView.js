@@ -24,6 +24,11 @@ jQuery(function() {
 					});
 				}
 			}, this);
+			
+			// when section is loaded, render the navigation control
+			app.dispatcher.on('sectionLoaded', function(section) {
+				this.render();
+			}, this);
 		},
 		render: function() {
 			this.$el.html(this.template());
