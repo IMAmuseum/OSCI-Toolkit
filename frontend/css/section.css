@@ -10,3 +10,7 @@
 	display: block;
 	overflow: scroll;
 }
+
+#section img {
+	max-width: 600px;
+}

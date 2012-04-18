@@ -36,10 +36,12 @@ jQuery(function() {
 			this.renderContent();
 
 			//TODO: add paging information to this event
-			app.dispatcher.trigger("layoutComplete");
+			app.dispatcher.trigger("layoutComplete", {numPages : this.model.get('numPages')});
 		},
 		renderContent: function()
 		{
+			this.model.set('numPages', 1);
+
 			this.$el.html(this.template(this.model.toJSON()));
 		},
 		populateSections: function(origSection) {

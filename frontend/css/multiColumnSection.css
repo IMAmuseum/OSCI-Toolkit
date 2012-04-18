@@ -11,3 +11,6 @@
 	display: block;
 }
 
+#section.oscitk_multi_column img {
+	max-width: none;
+}

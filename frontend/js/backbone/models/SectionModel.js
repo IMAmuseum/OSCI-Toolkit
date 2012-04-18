@@ -13,7 +13,8 @@ jQuery(function() {
 				body: null,
 				uri: null,
 				media_type: 'application/xhtml+xml',
-				contentLoaded: false
+				contentLoaded: false,
+				numPages: 0
 			};
 		},
 	
@@ -26,17 +27,24 @@ jQuery(function() {
 		},
 		
 		loadContent: function() {
+			var body = null;
 			if (this.get('contentLoaded') === false) {
 				var data = (loadXMLDoc(this.get('href')));
-				console.log(data);
-				this.set('title', $('section.title', data.body).html());
-				this.set('body', $('section.body', data.body).html());
+
+				body = $(data.body);
+				this.set('title', data.title);
+				this.set('body', body.html());
 				this.set('contentLoaded', true);
+			}
+
+			if (body === null)
+			{
+				body = $(this.get('body'));
 			}
 			
 			// parse out footnotes and figures, make them available via event
-			var footnotes = $('section#footnotes', this.get('body'));
-			var figures   = $('section#figures', this.get('body'));
+			var footnotes = body.find('section#footnotes');
+			var figures   = body.find('figure');
 			app.dispatcher.trigger('footnotesAvailable', footnotes);
 			app.dispatcher.trigger('figuresAvailable', figures);
 			app.dispatcher.trigger('sectionLoaded', this);
