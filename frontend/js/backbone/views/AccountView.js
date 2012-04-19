@@ -13,7 +13,6 @@ jQuery(function() {
 		render: function() {
 			// determine if user is logged in.  Show login form or user details
 			if (this.model.get('id') > 0) {
-				console.log('user logged in already');
 				this.showProfile();
 			}
 			else {
@@ -40,11 +39,9 @@ jQuery(function() {
 				type: 'POST',
 				dataType: 'json',
 				success: function(data) {
-					console.log(data, 'data');
 					if (data.success === true) {
 						// user was logged in, set the returned user data
 						accountView.model.set(data.user);
-						console.log(accountView, 'accountView');
 						accountView.showProfile();
 					}
 					else {
@@ -63,7 +60,6 @@ jQuery(function() {
 				type: 'POST',
 				dataType: 'json',
 				success: function(data) {
-					console.log(data, 'logout');
 					accountView.model.set(data.user);
 					accountView.showLoginForm();
 				}
@@ -83,11 +79,9 @@ jQuery(function() {
 				type: 'POST',
 				dataType: 'json',
 				success: function(data) {
-					console.log(data, 'data');
 					if (data.success === true) {
 						// user was logged in, set the returned user data
 						accountView.model.set(data.user);
-						console.log(accountView, 'accountView');
 						accountView.showProfile();
 					}
 					else {
