@@ -17,9 +17,17 @@ jQuery(function() {
 			var fig_data = app.collections.figures.toJSON();
 			this.$el.html(this.template({figures: fig_data}));
 
-			$('#toolbar figure').click(function() {
-				$('#toolbar figure').removeClass('active');
-				$(this).addClass('active');
+			$('#toolbar figure.thumbnail').click(function() {
+				$('#toolbar .figure-browser').hide();
+				var content = $("#toolbar figure.preview[data-figure-id='" + $(this).attr('data-figure-id') + "']");
+				content.show();
+				$('#toolbar').animate({height: content.height() + $('#toolbar-handle').height()}, 500);
+			});
+
+			$('.back-to-grid').click(function() {
+				$('#toolbar figure.preview').hide();
+				$('#toolbar .figure-browser').show();
+				$('#toolbar').animate({height: $('#toolbar-content').height() + $('#toolbar-handle').height()}, 500);
 			});
 
 			return this;

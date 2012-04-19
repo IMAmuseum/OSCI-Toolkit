@@ -136,12 +136,30 @@
 		</ul>
 	</script>
 	<script id="template-figures" type="text/template">
-		<h2>Figures</h2>
-		<hr>
+		<div class='figure-browser'>
+			<h2>Figures</h2>
+			<hr>
+			<div class='figure-grid'>		
+				<% _.each(figures, function(figure) { %>
+					<figure class='thumbnail' data-figure-id="<%= figure.id %>">
+						<div class='figure-placeholder'><%= figure.delta %></div>
+						<figcaption><%= figure.title %></figcaption>
+					</figure>
+				<% }); %>
+			</div>
+		</div>
 		<% _.each(figures, function(figure) { %>
-			<figure class='thumbnail'>
+			<figure class='preview' data-figure-id="<%= figure.id %>">				
+				<h2><span class='back-to-grid'>&laquo; Figures</span> | <%= figure.title %>  - Figure title text?</h2>
+				<hr/>
 				<div class='figure-placeholder'><%= figure.delta %></div>
-				<figcaption><%= figure.title %></figcaption>
+				<div class='figure-info'>
+					<h3 class='title'>Figure Title Here</h3>
+					<p class='meta-info'>meta info | more meta info</p>
+					<p class='description'>
+					First, I believe that this nation should commit itself to achieving the goal, before this decade is out, of landing a man on the moon and returning him safely to the earth. No single space project in this period will be more impressive to mankind, or more important for the long-range exploration of space; and none will be so difficult or expensive to accomplish.
+					</p>
+				</div>
 			</figure>
 		<% }); %>
 	</script>
