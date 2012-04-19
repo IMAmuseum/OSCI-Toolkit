@@ -8,7 +8,8 @@ jQuery(function() {
 
 		defaults: function() {
 			return {
-				rawContent : null
+				rawContent : null,
+				renderedContent : null
 			};
 		}
 	});

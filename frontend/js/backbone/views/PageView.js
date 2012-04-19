@@ -15,7 +15,9 @@ jQuery(function() {
 		},
 		render: function() {
 			this.$el.html(this.template(this.model.toJSON()));
-			this.model.set('renderedHtml', this.$el.html);
+			this.model.set('renderedContent', this.$el.html);
+
+			return this;
 		}
 	});
 });

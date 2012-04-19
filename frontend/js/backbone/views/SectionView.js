@@ -30,6 +30,8 @@ jQuery(function() {
 			this.renderContent();
 
 			app.dispatcher.trigger("layoutComplete", {numPages : this.model.get('pages').length});
+
+			return this;
 		},
 		renderContent: function() {
 			var pages = this.model.get('pages');

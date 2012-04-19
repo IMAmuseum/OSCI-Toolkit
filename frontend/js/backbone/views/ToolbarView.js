@@ -15,8 +15,8 @@ jQuery(function() {
 			this.isContentOpen = false;
 			this.render();
 			$('#toolbar-close').live('click', function() {
-				app.views.toolbarView.contentClose();				
-			});						
+				app.views.toolbarView.contentClose();
+			});
 		},
 		render: function() {
 			this.$el.html(this.template());
@@ -49,7 +49,7 @@ jQuery(function() {
 		contentClose: function() {
 			$('#toolbar-close').hide();
 			this.$el.animate({
-				'height': this.$el.find('#toolbar-handle').outerHeight() + 'px', 
+				'height': this.$el.find('#toolbar-handle').outerHeight() + 'px',
 				'width': '100%'
 			}, 'fast');
 			this.isContentOpen = false;

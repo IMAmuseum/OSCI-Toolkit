@@ -6,8 +6,7 @@ app = {
 	models : {},
 	collections : {},
 
-	bootstrap : function(config)
-	{
+	bootstrap : function(config) {
 		this.dispatcher = _.extend({}, Backbone.Events);
 		this.config = new OsciTk.models.Config(config);
 		this.router = new OsciTk.router();
@@ -18,8 +17,7 @@ app = {
 		this.collections.navigationItems = new OsciTk.collections.NavigationItems();
 		
 		//setup window resizing, to trigger an event
-		window.onresize = function()
-		{
+		window.onresize = function() {
 			if (window.resizeTimer) {
 				clearTimeout(window.resizeTimer);
 			}
@@ -37,8 +35,7 @@ app = {
 		this.models.docPackage = new OsciTk.models.Package({url: this.config.get('packageUrl')});
 	},
 
-	run : function()
-	{
+	run : function() {
 		Backbone.history.start();
 	}
 };
