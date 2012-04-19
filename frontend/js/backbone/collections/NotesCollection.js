@@ -7,14 +7,14 @@ jQuery(function() {
 	OsciTk.collections.Notes = OsciTk.collections.BaseCollection.extend({
 		model: OsciTk.models.Note,
 		initialize: function() {
-			this.bind('change', function() {
+			this.on('change', function() {
 				app.dispatcher.trigger('notesChanged');
 			});
-			app.dispatcher.bind('currentNavigationItemChanged', function(section) {
+			app.dispatcher.on('currentNavigationItemChanged', function(section) {
 				var navItem = app.collections.navigationItems.getCurrentNavigationItem();
 				//TODO: Refactor once Gray cleans up the NavigationItemModel
-				if (navItem.get('data-section_id')) {
-					app.collections.notes.getNotesForSection(navItem.get('data-section_id'));
+				if (navItem.id) {
+					app.collections.notes.getNotesForSection(navItem.id);
 				}
 			}, this);
 		},

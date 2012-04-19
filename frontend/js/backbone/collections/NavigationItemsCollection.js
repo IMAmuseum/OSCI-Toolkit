@@ -58,16 +58,17 @@ jQuery(function() {
 		},
 		parseChildren: function(item, parent, depth) {
 			var parsedItem = {
-				id: item.a['data-section-id'],
-				parent: parent, 
+				id: item.a['data-section_id'],
+				parent: parent,
 				depth: depth,
 				previous: this.at(this.length - 1),
 				next: undefined,
 				length: item.a['data-length'],
-				title: item.a.value,
+				title: item.a['value'],
 				subtitle: item.a['data-subtitle'],
 				thumbnail: item.a['data-thumbnail'],
-				timestamp: item.a['data-timestamp']
+				timestamp: item.a['data-timestamp'],
+				uri: item.a['href']
 			};
 			this.add(parsedItem);
 			

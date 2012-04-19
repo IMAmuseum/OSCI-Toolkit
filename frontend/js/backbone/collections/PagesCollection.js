@@ -13,7 +13,7 @@ jQuery(function() {
 			// bind sectionChanged
 			app.dispatcher.on('currentNavigationItemChanged', function() {
 				var navItem = app.collections.navigationItems.getCurrentNavigationItem();
-				this.contentUrl = navItem.get('href');
+				this.contentUrl = navItem.get('uri');
 				this.rawContent = undefined;
 				this.loadContent();
 			}, this);
