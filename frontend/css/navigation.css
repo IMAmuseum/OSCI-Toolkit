@@ -1,0 +1,7 @@
+div#navigation {
+	position: absolute;
+	bottom: 10px;
+	left: 40px;
+	right: 40px;
+	height: 30px;
+}
