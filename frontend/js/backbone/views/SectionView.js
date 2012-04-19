@@ -19,8 +19,8 @@ jQuery(function() {
 			}, this);
 
 			// bind sectionChanged
-			app.dispatcher.on('sectionChanged', function() {
-				console.log('section changed');
+			app.dispatcher.on('currentNavigationItemChanged', function() {
+				console.log('currentNavigationItemChanged');
 				if (app.models.navigation.get('current_section')) {
 					// loading section content for first section
 					var section = app.collections.sections.get(
