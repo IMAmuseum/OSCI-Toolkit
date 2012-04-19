@@ -7,6 +7,7 @@ div#toolbar {
 	max-height: 80%;
 	min-height: 40px;
 	overflow: hidden;
+	font-family: sans-serif;
 
 }
 div#toolbar-content {
@@ -97,6 +98,34 @@ div.font-view div.font-control span.small {
 	font-size: 1em;
 }
 
+/* FIGURE VIEW */
+
+
+#toolbar figure {
+	float: left;
+}
+
+#toolbar figure {
+	margin-left: 0px;
+	-webkit-margin-before: 0px;
+	-webkit-margin-start: 0px;
+}
+
+#toolbar .figure-placeholder {
+	width: 140px;
+	height: 140px;
+	border: 1px solid black;
+	cursor: pointer;
+}
+
+#toolbar figcaption {
+	padding-top: 0.2em;
+	font-size: 0.9em;
+	font-weight: bold;
+	color: #52818C;
+}
+
+
 /** MEDIA QUERIES **/
 
 /* When less than 600px... */
@@ -111,5 +140,12 @@ div.font-view div.font-control span.small {
 		width: 100%;
 		right: 0px;
 	}
+
+	#toolbar .figure-placeholder {
+		width: 100px;
+		height: 100px;
+	}
+
+
 }
 

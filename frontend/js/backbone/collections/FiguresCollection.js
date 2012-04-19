@@ -13,6 +13,10 @@ jQuery(function() {
 				this.populateFromMarkup(figures);
 			}, this);
 		},
+
+		comparator: function(figure) {
+			return figure.get('delta');
+		},
 		
 		/**
 		 * Populates the collection from an array of figure markup

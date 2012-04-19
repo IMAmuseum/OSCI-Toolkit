@@ -139,13 +139,12 @@
 	<script id="template-figures" type="text/template">
 		<h2>Figures</h2>
 		<hr>
-		<ul>
-			<% _.each(figures, function(figure) { %>
-				<li>
-					<%= figure.caption %>
-				</li>
-			<% }); %>
-		</ul>
+		<% _.each(figures, function(figure) { %>
+			<figure class='thumbnail'>
+				<div class='figure-placeholder'><%= figure.delta %></div>
+				<figcaption><%= figure.title %></figcaption>
+			</figure>
+		<% }); %>
 	</script>
 	<script id="template-toc" type="text/template">
 		<h2>Table of Contents</h2>
