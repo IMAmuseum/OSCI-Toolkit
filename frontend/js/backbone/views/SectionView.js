@@ -33,9 +33,10 @@ jQuery(function() {
 			}, this);
 		},
 		render: function() {
+			app.dispatcher.trigger("layoutStart");
+
 			this.renderContent();
 
-			//TODO: add paging information to this event
 			app.dispatcher.trigger("layoutComplete", {numPages : this.model.get('numPages')});
 		},
 		renderContent: function()

@@ -17,10 +17,16 @@ jQuery(function() {
 
 			this.$el.addClass("oscitk_multi_column");
 
-			this.options.minColumnWidth = (this.options.minColumnWidth) ? this.options.minColumnWidth : 200;
-			this.options.maxColumnWidth = (this.options.maxColumnWidth) ? this.options.maxColumnWidth : 300;
-			this.options.gutterWidth = (this.options.gutterWidth) ? this.options.gutterWidth : 40;
-			this.options.minLinesPerColumn = (this.options.minLinesPerColumn) ? this.options.minLinesPerColumn : 5;
+			//set the default options
+			_.defaults(this.options, {
+				minColumnWidth : 200,
+				maxColumnWidth : 300,
+				gutterWidth : 40,
+				minLinesPerColumn : 5
+			});
+
+			//initialize dimensions object
+			this.dimensions = {};
 
 			OsciTk.views.MultiColumnSection.__super__.initialize.call(this);
 		},
@@ -30,13 +36,31 @@ jQuery(function() {
 			console.log(this.model, "multi-column");
 
 			this.calculateDimensions();
+			console.log(this.dimensions, "dimensions");
+
+			//add number of pages to model
+			//this.model.set('numPages', 'blah');
 
 			this.$el.html(this.template(this.model.toJSON()));
 		},
 
 		calculateDimensions: function()
 		{
-			var dimensions = {};
+			var dimensions = this.dimensions;
+
+			//get window height / width
+			var windowWidth = $(window).width(),
+				windowHeight = $(window).height();
+
+			//if the window size did not change, no need to recalculate dimensions
+			if (dimensions.windowWidth && dimensions.windowWidth === windowWidth && dimensions.windowHeight && dimensions.windowHeight === windowHeight)
+			{
+				return;
+			}
+
+			//cache the window height/width
+			dimensions.windowHeight = windowHeight;
+			dimensions.windowWidth = windowWidth;
 
 			//copy gutter width out of the options for easy access
 			dimensions.gutterWidth = this.options.gutterWidth;
@@ -58,7 +82,7 @@ jQuery(function() {
 			};
 
 			//determine the correct height for the section container to eliminate scrolling
-			dimensions.outerPageHeight = $(window).height() - dimensions.pageMargin.top - dimensions.pageMargin.bottom;
+			dimensions.outerPageHeight = windowHeight - dimensions.pageMargin.top - dimensions.pageMargin.bottom;
 			dimensions.innerPageHeight = dimensions.outerPageHeight - dimensions.pagePadding.top - dimensions.pagePadding.bottom;
 
 			//determine the correct width for the section container
@@ -87,9 +111,8 @@ jQuery(function() {
 			}
 
 			this.dimensions = dimensions;
-			console.log(dimensions, "dimensions");
 			//set the height of the container
-			//dont need this if styled correctly
+			//dont need this if styled correctly I think
 			//this.$el.height(dimensions.pageHeight);
 		}
 	});
