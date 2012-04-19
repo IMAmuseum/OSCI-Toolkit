@@ -10,10 +10,11 @@ jQuery(function() {
 			this.bind('change', function() {
 				app.dispatcher.trigger('notesChanged');
 			});
-			app.dispatcher.bind('sectionLoaded', function(section) {
-				var sectionId = app.models.navigation.get('current_section')['data-section_id'];
-				if (sectionId) {
-					app.collections.notes.getNotesForSection(sectionId);
+			app.dispatcher.bind('currentNavigationItemChanged', function(section) {
+				var navItem = app.collections.navigationItems.getCurrentNavigationItem();
+				//TODO: Refactor once Gray cleans up the NavigationItemModel
+				if (navItem.get('data-section_id')) {
+					app.collections.notes.getNotesForSection(navItem.get('data-section_id'));
 				}
 			}, this);
 		},
