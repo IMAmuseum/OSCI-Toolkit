@@ -42,7 +42,6 @@ jQuery(function() {
 			app.dispatcher.on('routedToSection', function(id) {
 				this.setCurrentNavigationItem(this.get(id));
 			}, this);
-
 		},
 		getCurrentNavigationItem: function(){
 			return this.currentNavigationItem;
