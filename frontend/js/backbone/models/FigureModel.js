@@ -16,9 +16,6 @@ jQuery(function() {
 				options: {}
 			};
 		},
-		
-		sync: function(method, model, options) {
-			console.log('Figure.sync: ' + method);
-		}
+
 	});
 });
