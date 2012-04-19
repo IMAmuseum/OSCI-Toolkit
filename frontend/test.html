@@ -15,13 +15,14 @@
 	<script src="js/backbone/models/PackageModel.js"></script>
 	<script src="js/backbone/models/FigureModel.js"></script>
 	<script src="js/backbone/models/FootnoteModel.js"></script>
-	<script src="js/backbone/models/NavigationModel.js"></script>			
+	<script src="js/backbone/models/NavigationItemModel.js"></script>			
 	<script src="js/backbone/models/NoteModel.js"></script>
 	<script src="js/backbone/models/SectionModel.js"></script>
 	<script src="js/backbone/models/SearchResultModel.js"></script>
 	<script src="js/backbone/models/AccountModel.js"></script>
 	<script src="js/backbone/collections/BaseCollection.js"></script>	
 	<script src="js/backbone/collections/FiguresCollection.js"></script>
+	<script src="js/backbone/collections/NavigationItemsCollection.js"></script>
 	<script src="js/backbone/collections/FootnotesCollection.js"></script>
 	<script src="js/backbone/collections/NotesCollection.js"></script>
 	<script src="js/backbone/collections/SectionsCollection.js"></script>
@@ -60,7 +61,7 @@
 					{view: 'Font', text: 'Font'},
 					{view: 'Account', text: 'Account'}
 				],
-				sectionView: 'MultiColumnSection',
+				// sectionView: 'MultiColumnSection',
 				sectionViewOptions: {
 					minColumnWidth : 200,
 					maxColumnWidth : 300,
@@ -113,7 +114,7 @@
 		<%= body %>
 	</script>
 	<script id="template-navigation" type="text/template">
-		<p>navigation goes here<p>
+		<p>navigation goes here <%= numPages %><p>
 	</script>
 	<script id="template-reader" type="text/template">
 		<p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.</p>
