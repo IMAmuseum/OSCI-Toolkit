@@ -14,8 +14,11 @@ jQuery(function() {
 			}, this);
 		},
 		
+		/**
+		 * Populates the collection from an array of figure markup
+		 */
 		populateFromMarkup: function(data) {
-			_.each($('figure', data), function(markup) {
+			_.each(data, function(markup) {
 				var idComponents = markup.id.match(/\w+-(\d+)-(\d+)/);
 				var figure = {
 					id:         markup.id,
@@ -29,7 +32,7 @@ jQuery(function() {
 					columns:    $(markup).attr('data-columns'),
 					options:    JSON.parse($(markup).attr('data-options'))
 				};
-				this.create(figure);
+				this.add(figure);
 			}, this);
 		}
 	});
