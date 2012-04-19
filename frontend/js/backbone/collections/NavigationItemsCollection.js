@@ -58,16 +58,19 @@ jQuery(function() {
 		},
 		parseChildren: function(item, parent, depth) {
 			var parsedItem = {
+				id: item.a['data-section-id'],
 				parent: parent, 
 				depth: depth,
 				previous: this.at(this.length - 1),
-				next: undefined
+				next: undefined,
+				length: item.a['data-length'],
+				title: item.a.value,
+				subtitle: item.a['data-subtitle'],
+				thumbnail: item.a['data-thumbnail'],
+				timestamp: item.a['data-timestamp']
 			};
-			// include the 'a' tag items as properties
-			for (var i in item.a) {
-				parsedItem[i] = item.a[i];
-			}
 			this.add(parsedItem);
+			
 			var navItem = this.at(this.length - 1);
 			if (navItem.get('previous') !== undefined) {
 				navItem.get('previous').set('next', navItem);
