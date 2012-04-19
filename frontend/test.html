@@ -122,7 +122,6 @@
 	</script>
 	<script id="template-notes" type="text/template">
 		<h2>Notes</h2>
-		<hr>
 		<ul>
 			<% _.each(notes, function(note) { %>
 				<li>
@@ -138,7 +137,6 @@
 	<script id="template-figures" type="text/template">
 		<div class='figure-browser'>
 			<h2>Figures</h2>
-			<hr>
 			<div class='figure-grid'>		
 				<% _.each(figures, function(figure) { %>
 					<figure class='thumbnail' data-figure-id="<%= figure.id %>">
@@ -151,7 +149,6 @@
 		<% _.each(figures, function(figure) { %>
 			<figure class='preview' data-figure-id="<%= figure.id %>">				
 				<h2><span class='back-to-grid'>&laquo; Figures</span> | <%= figure.title %>  - Figure title text?</h2>
-				<hr/>
 				<div class='figure-placeholder'><%= figure.delta %></div>
 				<div class='figure-info'>
 					<h3 class='title'>Figure Title Here</h3>
@@ -165,7 +162,6 @@
 	</script>
 	<script id="template-toc" type="text/template">
 		<h2>Table of Contents</h2>
-		<hr>
 		<ul>
 			<% _.each(items, function(item) { %>
 				<li class="toc-item">
@@ -188,7 +184,6 @@
 	</script>
 	<script id="template-account-login" type="text/template">
 		<h2>Login</h2>
-		<hr>
 		<div class="form-error"></div>
 		<form id="account-form">
 			<label for="username">Username:</label>
@@ -201,7 +196,6 @@
 	</script>
 	<script id="template-account-register" type="text/template">
 		<h2>Register</h2>
-		<hr>
 		<div class="form-error"></div>
 		<form id="account-form">
 			<label for="username">Username:</label>
@@ -216,7 +210,6 @@
 	</script>
 	<script id="template-account-profile" type="text/template">
 		<h2>Profile</h2>
-		<hr>
 		<h3><%= username %></h3>
 		<h4><%= email %></h4>
 		<div><a href="#" class="logout">Log out</a></div>

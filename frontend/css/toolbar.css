@@ -36,6 +36,10 @@ div#toolbar-content {
 	padding: 0px 40px;
 	cursor: pointer;
 }
+#toolbar h2 {
+	padding-bottom: 0.5em;
+	border-bottom: 5px solid #8C8C8C;
+}
 div.toolbar-item {
 	height: 35px;
 	width: 50px;
