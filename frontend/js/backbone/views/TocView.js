@@ -12,17 +12,11 @@ jQuery(function() {
 		},
 		initialize: function() {
 			this.parent = this.options.parent;
-			app.dispatcher.on('navigationLoaded', function(navigation) {
-				this.navigation = navigation;
-			}, this);
 		},
 		render: function() {
-			var toc = [];
-			_.each(this.navigation.get('toc').children, function(child) {
-				toc.push(app.collections.sections.get(child['data-section_id']));
-			}, this);
-			console.log(toc, 'toc');
-			this.$el.html(this.template({items: toc}));
+			this.$el.html(this.template({
+				items: app.collections.navigationItems.where({depth: 0})
+			}));
 		},
 		itemClick: function(event) {
 			var sectionId = $(event.currentTarget).attr('data-section-id');
