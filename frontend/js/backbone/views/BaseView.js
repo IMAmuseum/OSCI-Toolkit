@@ -14,7 +14,8 @@ jQuery(function() {
 			else {
 				this.$el.find(target).append(view.el);
 			}
-			childViews.push(view);
+
+			this.addViewToLocalArray(view);
 
 			return this;
 		},
@@ -45,6 +46,8 @@ jQuery(function() {
 				this.$el.find(target).html(view.el);
 			}
 
+			this.addViewToLocalArray(view);
+
 			return this;
 		},
 		changeModel: function(model) {
@@ -59,6 +62,19 @@ jQuery(function() {
 			this.undelegateEvents();
 			if (this.onClose){
 				this.onClose();
+			}
+		},
+		addViewToLocalArray: function(view) {
+			var alreadyAdded = false;
+			for (var i, len = this.childViews.length; i < len; i++) {
+				if (view.cid === this.childViews[i].cid) {
+					alreadyAdded = true;
+					break;
+				}
+			}
+
+			if (!alreadyAdded) {
+				this.childViews.push(view);
 			}
 		}
 	});
