@@ -51,7 +51,6 @@ jQuery(function() {
 			app.dispatcher.trigger('currentNavigationItemChanged');
 		},
 		goToBeginning: function() {
-			console.log('going to begnning');
 			if (this.at(0)) {
 				this.setCurrentNavigationItem(this.at(0));
 			}

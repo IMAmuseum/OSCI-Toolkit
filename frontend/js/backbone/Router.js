@@ -18,7 +18,6 @@ jQuery(function() {
 		 * Route to root location
 		 */
 		root: function() {
-			console.log('routing to root');
 			app.dispatcher.trigger('routedToRoot');
 		},
 	
@@ -26,7 +25,6 @@ jQuery(function() {
 		 * Route to the given section
 		 */
 		section: function(section_id) {
-			console.log('routing to section ' + section_id);
 			app.dispatcher.trigger('routedToSection', section_id);
 		},
 	
@@ -34,7 +32,6 @@ jQuery(function() {
 		 * Route to search
 		 */
 		search: function(query) {
-			console.log('searching for ' + query);
 			app.dispatcher.trigger('routedToSearch', query);
 		}
 	});

@@ -9,7 +9,6 @@ jQuery(function() {
 		
 		initialize: function() {
 			app.dispatcher.bind('figuresAvailable', function(figures) {
-				console.log(figures, 'figuresAvailable');
 				this.populateFromMarkup(figures);
 			}, this);
 		},

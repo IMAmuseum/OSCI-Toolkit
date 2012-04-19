@@ -20,6 +20,7 @@
 	<script src="js/backbone/models/SearchResultModel.js"></script>
 	<script src="js/backbone/models/AccountModel.js"></script>
 	<script src="js/backbone/models/PageModel.js"></script>
+	<script src="js/backbone/models/SectionModel.js"></script>
 	<script src="js/backbone/collections/BaseCollection.js"></script>	
 	<script src="js/backbone/collections/FiguresCollection.js"></script>
 	<script src="js/backbone/collections/NavigationItemsCollection.js"></script>
@@ -29,6 +30,9 @@
 	<script src="js/backbone/collections/SearchResultsCollection.js"></script>
 	<script src="js/backbone/views/BaseView.js"></script>
 	<script src="js/backbone/views/AppView.js"></script>
+	<script src="js/backbone/views/SectionView.js"></script>
+	<script src="js/backbone/views/PageView.js"></script>
+	<script src="js/backbone/views/MultiColumnSectionView.js"></script>
 	<script src="js/backbone/views/ToolbarView.js"></script>
 	<script src="js/backbone/views/ToolbarItemView.js"></script>
 	<script src="js/backbone/views/NavigationView.js"></script>
@@ -61,7 +65,7 @@
 					{view: 'Font', text: 'Font'},
 					{view: 'Account', text: 'Account'}
 				],
-				// sectionView: 'MultiColumnSection',
+				//sectionView: 'MultiColumnSection',
 				sectionViewOptions: {
 					minColumnWidth : 200,
 					maxColumnWidth : 300,
@@ -82,7 +86,8 @@
 		<div id="toolbar-handle"></div>
 	</script>
 	<script id="template-toolbar-item" type="text/template"><%= text %></script>
-	<script id="template-pages" type="text/template"><%= body %></script>
+	<script id="template-section" type="text/template"></script>
+	<script id="template-page" type="text/template"><%= rawContent %></script>
 	<script id="template-search" type="text/template">
 		<div id="search-header">
 			<div id="search-box">

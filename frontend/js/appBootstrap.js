@@ -13,7 +13,6 @@ app = {
 		this.router = new OsciTk.router();
 		this.account = new OsciTk.models.Account();
 		this.collections.notes = new OsciTk.collections.Notes();
-		this.collections.pages = new OsciTk.collections.Pages();
 		this.collections.figures = new OsciTk.collections.Figures();
 		this.collections.footnotes = new OsciTk.collections.Footnotes();
 		this.collections.navigationItems = new OsciTk.collections.NavigationItems();

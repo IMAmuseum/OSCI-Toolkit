@@ -10,11 +10,11 @@ jQuery(function() {
 		defaults: function() {
 			return {
 				title: null,
-				body: null,
+				content: null,
 				uri: null,
 				media_type: 'application/xhtml+xml',
 				contentLoaded: false,
-				numPages: 0
+				pages: new OsciTk.collections.Pages()
 			};
 		},
 	
@@ -27,28 +27,26 @@ jQuery(function() {
 		},
 		
 		loadContent: function() {
-			var body = null;
+			var content = null;
 			if (this.get('contentLoaded') === false) {
-				var data = (loadXMLDoc(this.get('href')));
+				var data = (loadXMLDoc(this.get('uri')));
 
-				body = $(data.body);
+				content = $(data.body);
 				this.set('title', data.title);
-				this.set('body', body.html());
+				this.set('content', content.html());
 				this.set('contentLoaded', true);
 			}
 
-			if (body === null)
-			{
-				body = $(this.get('body'));
+			if (content === null) {
+				content = $(this.get('content'));
 			}
 			
 			// parse out footnotes and figures, make them available via event
-			var footnotes = body.find('section#footnotes');
-			var figures   = body.find('figure');
+			var footnotes = content.find('section#footnotes');
+			var figures   = content.find('figure');
 			app.dispatcher.trigger('footnotesAvailable', footnotes);
 			app.dispatcher.trigger('figuresAvailable', figures);
 			app.dispatcher.trigger('sectionLoaded', this);
-			console.log(this, 'loaded section');
 		}
 	});
 });

@@ -6,10 +6,7 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 jQuery(function() {
 	OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
-		initialize: function()
-		{
-			console.log(this.options, 'multi options');
-
+		initialize: function() {
 			app.dispatcher.on("windowResized", function() {
 				console.log("resized");
 				this.renderContent();
@@ -31,8 +28,7 @@ jQuery(function() {
 			OsciTk.views.MultiColumnSection.__super__.initialize.call(this);
 		},
 
-		renderContent: function()
-		{
+		renderContent: function() {
 			console.log(this.model, "multi-column");
 
 			this.calculateDimensions();
@@ -41,11 +37,12 @@ jQuery(function() {
 			//add number of pages to model
 			//this.model.set('numPages', 'blah');
 
-			this.$el.html(this.template(this.model.toJSON()));
+			this.layoutComplete = true;
+
+			// this.$el.html(this.template(this.model.toJSON()));
 		},
 
-		calculateDimensions: function()
-		{
+		calculateDimensions: function() {
 			var dimensions = this.dimensions;
 
 			//get window height / width
@@ -53,8 +50,7 @@ jQuery(function() {
 				windowHeight = $(window).height();
 
 			//if the window size did not change, no need to recalculate dimensions
-			if (dimensions.windowWidth && dimensions.windowWidth === windowWidth && dimensions.windowHeight && dimensions.windowHeight === windowHeight)
-			{
+			if (dimensions.windowWidth && dimensions.windowWidth === windowWidth && dimensions.windowHeight && dimensions.windowHeight === windowHeight) {
 				return;
 			}
 
@@ -90,8 +86,7 @@ jQuery(function() {
 			dimensions.innerPageWidth = dimensions.outerPageWidth - dimensions.pagePadding.left - dimensions.pagePadding.right;
 
 			//column width
-			if (dimensions.innerPageWidth < this.options.maxColumnWidth)
-			{
+			if (dimensions.innerPageWidth < this.options.maxColumnWidth) {
 				dimensions.columnWidth = dimensions.innerPageWidth;
 			} else {
 				dimensions.columnWidth = this.options.maxColumnWidth;

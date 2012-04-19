@@ -8,20 +8,8 @@ jQuery(function() {
 
 		defaults: function() {
 			return {
-				
+				rawContent : null
 			};
-		},
-	
-		sync: function(method, model, options) {
-			// console.log('OsciTkSection.sync: ' + method);
-		},
-	
-		parse: function(response) {
-			console.log('parse section');
-		},
-		
-		loadContent: function() {
-			
 		}
 	});
 });

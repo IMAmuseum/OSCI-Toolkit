@@ -9,7 +9,6 @@ jQuery(function() {
 		
 		initialize: function() {
 			app.dispatcher.bind('footnotesAvailable', function(footnotes) {
-				console.log(footnotes, 'footnotesAvailable');
 				this.populateFromMarkup(footnotes);
 			}, this);
 		},
@@ -27,6 +26,5 @@ jQuery(function() {
 				this.add(footnote);
 			}, this);
 		}
-		
 	});
 });

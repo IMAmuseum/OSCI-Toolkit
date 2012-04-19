@@ -8,26 +8,18 @@ jQuery(function() {
 		id: 'section',
 		template: _.template($('#template-section').html()),
 		initialize: function() {
-			// bind navigationLoaded
-			app.dispatcher.on('navigationLoaded', function(navigation) {
-				console.log(navigation, 'loaded navigation');
-				// populate the sections collection
-				_.each(navigation.get('toc').children, function(section) {
-					this.populateSections(section);
-				}, this);
-				// initialization complete, router takes back over
-			}, this);
-
 			// bind sectionChanged
 			app.dispatcher.on('currentNavigationItemChanged', function() {
-				console.log('currentNavigationItemChanged');
-				if (app.models.navigation.get('current_section')) {
-					// loading section content for first section
-					var section = app.collections.sections.get(
-						app.models.navigation.get('current_section')['data-section_id']
-					);
-					section.loadContent();
-					this.changeModel(section);
+				if (app.collections.navigationItems.getCurrentNavigationItem()) {
+					// loading section content
+					var navItem = app.collections.navigationItems.getCurrentNavigationItem();
+
+					app.models.section = new OsciTk.models.Section({
+						uri : navItem.get('uri')
+					});
+
+					app.models.section.loadContent();
+					this.changeModel(app.models.section);
 					this.render();
 				}
 			}, this);
@@ -37,30 +29,17 @@ jQuery(function() {
 
 			this.renderContent();
 
-			app.dispatcher.trigger("layoutComplete", {numPages : this.model.get('numPages')});
+			app.dispatcher.trigger("layoutComplete", {numPages : this.model.get('pages').length});
 		},
-		renderContent: function()
-		{
-			this.model.set('numPages', 1);
+		renderContent: function() {
+			var pages = this.model.get('pages');
+			pages.add({
+				rawContent : this.model.get('content')
+			});
 
-			this.$el.html(this.template(this.model.toJSON()));
-		},
-		populateSections: function(origSection) {
-			var section = {};
-			for (var i in origSection) {
-				// don't include arrays or objects, only values
-				if (typeof(origSection[i]) != 'object') {
-					section[i] = origSection[i];
-				}
-			}
-			section.id = section['data-section_id'];
-			
-			app.collections.sections.add(section);
-
-			_.each(origSection.children, function(section) {
-				this.populateSections(section);
-			}, this);
-
+			this.addView(new OsciTk.views.Page({
+				model : pages.at(pages.length - 1)
+			}));
 		}
 	});
 });
