@@ -4,7 +4,7 @@ if (typeof OsciTk.collections === 'undefined'){OsciTk.collections = {};}
 // OsciTk Namespace Initializaiotn //
 
 jQuery(function() {
-	OsciTk.collections.Sections = OsciTk.collections.BaseCollection.extend({
-		model: OsciTk.models.Section
+	OsciTk.collections.Pages = OsciTk.collections.BaseCollection.extend({
+		model: OsciTk.models.Page
 	});
 });
