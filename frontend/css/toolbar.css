@@ -196,10 +196,12 @@ div.font-view div.font-control span.small {
 /* When less than 600px... */
 @media (max-width:600px) {
 
+	/*
 	div.Figures-toolbar-item,
 	div.Notes-toolbar-item {
 		display: none;
 	}
+	*/
 
 	#toolbar-handle {
 		width: 100%;
