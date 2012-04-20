@@ -118,6 +118,7 @@ div.font-view div.font-control span.small {
 /* FIGURE VIEW */
 
 #toolbar .figure-tray {
+	position: static;
 	overflow-x: auto;
 	overflow-y: hidden;
 	height: 180px;
