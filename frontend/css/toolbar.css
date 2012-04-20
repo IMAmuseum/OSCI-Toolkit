@@ -121,6 +121,7 @@ div.font-view div.font-control span.small {
 	overflow-x: auto;
 	overflow-y: hidden;
 	height: 180px;
+	-webkit-overflow-scrolling: touch;
 }
 
 #toolbar .figure-reel {
