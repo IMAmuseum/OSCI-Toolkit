@@ -5,7 +5,6 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 
 jQuery(function() {
 	OsciTk.views.BaseView = Backbone.View.extend({
-		childViews: [],
 		addView: function(view, target) {
 			view.parent = this;
 			if (typeof target === "undefined") {
@@ -15,23 +14,27 @@ jQuery(function() {
 				this.$el.find(target).append(view.el);
 			}
 
-			this.addViewToLocalArray(view);
+			this._addViewReference(view);
 
 			return this;
 		},
 		removeAllChildViews : function() {
-			for (var i, len = this.childViews.length; i < len; i++) {
-				this.childViews[i].close();
+			if (this.childViews) {
+				for (var i = 0, len = this.childViews.length; i < len; i++) {
+					this.childViews[i].close();
+				}
 			}
 
 			return this;
 		},
 		removeView: function(view) {
-			for (var i, len = this.childViews.length; i < len; i++) {
-				if (view.cid === this.childViews[i].cid) {
-					this.childViews.splice(i, 1);
-					view.close();
-					break;
+			if (this.childViews) {
+				for (var i = 0, len = this.childViews.length; i < len; i++) {
+					if (view.cid === this.childViews[i].cid) {
+						this.childViews.splice(i, 1);
+						view.close();
+						break;
+					}
 				}
 			}
 
@@ -46,7 +49,7 @@ jQuery(function() {
 				this.$el.find(target).html(view.el);
 			}
 
-			this.addViewToLocalArray(view);
+			this._addViewReference(view);
 
 			return this;
 		},
@@ -64,9 +67,11 @@ jQuery(function() {
 				this.onClose();
 			}
 		},
-		addViewToLocalArray: function(view) {
+		_addViewReference: function(view) {
+			if (!this.childViews) { this.childViews = []; }
+
 			var alreadyAdded = false;
-			for (var i, len = this.childViews.length; i < len; i++) {
+			for (var i = 0, len = this.childViews.length; i < len; i++) {
 				if (view.cid === this.childViews[i].cid) {
 					alreadyAdded = true;
 					break;

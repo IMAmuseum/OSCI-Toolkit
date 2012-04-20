@@ -20,6 +20,7 @@ jQuery(function() {
 
 					app.models.section.loadContent();
 					this.changeModel(app.models.section);
+					this.removeAllChildViews();
 					this.render();
 				}
 			}, this);
