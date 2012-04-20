@@ -22,8 +22,6 @@ jQuery(function() {
 			this.$el.html(this.template());
 			_.each(this.toolbarItems, function(toolbarItem) {
 				var item = new OsciTk.views.ToolbarItem({toolbarItem: toolbarItem});
-				// console.log(item, 'toolbarItem');
-				this.toolbarItemViews.push(item);
 				this.addView(item, '#toolbar-handle');
 				item.render();
 			}, this);

@@ -35,6 +35,7 @@ jQuery(function() {
 			return this;
 		},
 		renderContent: function() {
+			//basic layout just loads the content into a single page
 			var pages = this.model.get('pages');
 			pages.add({
 				rawContent : this.model.get('content')
