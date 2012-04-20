@@ -31,9 +31,9 @@ jQuery(function() {
 			if (this.get('contentLoaded') === false) {
 				var data = (loadXMLDoc(this.get('uri')));
 
-				content = $(data.body);
+				content = $(data);
 				this.set('title', data.title);
-				this.set('content', content.html());
+				this.set('content', content);
 				this.set('contentLoaded', true);
 			}
 

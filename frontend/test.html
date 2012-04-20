@@ -88,7 +88,10 @@
 	</script>
 	<script id="template-toolbar-item" type="text/template"><%= text %></script>
 	<script id="template-section" type="text/template"></script>
-	<script id="template-page" type="text/template"><%= rawContent %></script>
+	<script id="template-page" type="text/template"><%= content %></script>
+	<script id="template-figure-reference" type="text/template">
+		<a href="#<%= id %>" class="figure_reference"><%= title %></a>
+	</script>
 	<script id="template-search" type="text/template">
 		<div id="search-header">
 			<div id="search-box">
