@@ -7,10 +7,10 @@
 	<Contact><?php print $contact; ?></Contact>
 	<Url type="text/html" 
 		xmlns:apachesolr="http://drupal.org/project/apachesolr/7.x-1.0"
-		template="<?php print $base_url; ?>/api/search/{searchTerms}?page={startPage?}&amp;filters={apachesolr:filters?}"/>
+		template="<?php print $base_url; ?>/api/search/?key={searchTerms}&amp;page={startPage?}&amp;filters={apachesolr:filters?}"/>
 	<Url type="application/rss+xml"
 		xmlns:apachesolr="http://drupal.org/project/apachesolr/7.x-1.0"
-		template="<?php print $base_url; ?>/api/opensearch/{searchTerms}?page={startPage?}&amp;filters={apachesolr:filters?}"/>
+		template="<?php print $base_url; ?>/api/opensearch/?key={searchTerms}&amp;page={startPage?}&amp;filters={apachesolr:filters?}"/>
 	<Url type="application/opensearchdescription+xml" rel="self" template="<?php print $base_url; ?>/opensearch/document" />
 	<SyndicationRight>open</SyndicationRight>
 	<AdultContent><?php print $adult_content; ?></AdultContent>

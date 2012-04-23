@@ -100,7 +100,7 @@
 		<div id="search-header">
 			<div id="search-box">
 				<form id="search-form" name="search-form" method="POST">
-					<input type="text" name="keyword" id="search-keyword" placeholder="search" />
+					<input type="text" name="keyword" id="search-keyword" placeholder="search" value="<%= query %>"/>
 					<input type="hidden" name="page" id="search-page" />
 				</form>
 			</div>
@@ -115,14 +115,15 @@
 			<div id="search-results">
 				<ul>
 					<% _.each(searchResults.models, function(result) { %>
-						<% if (result.bundle === 'note') { %>
+<% console.log(result); %>
+						<% if (result.get('bundle') === 'note') { %>
 							<li>
-								<%= result.bundle_name %> 
-								(sec.<%= result.im_field_section[0] %> p. - 
-								<%= result.content %>
+								<%= result.get('bundle_name') %> 
+								sec.<%= result.get('im_field_section')[0] %> p.<%= result.get('is_paragraph_id') %> - 
+								<%= result.get('ss_body') %>
 							</li>
 						<% } else { %>
-							<li><%= result.bundle_name %> - <%= result.content %></li>
+							<li><%= result.get('bundle_name') %> - <%= result.get('ss_body') %></li>
 						<% } %>
 					<% }); %>
 				</ul>

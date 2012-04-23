@@ -7,10 +7,9 @@ jQuery(function() {
 	OsciTk.views.SearchResults = OsciTk.views.BaseView.extend({
 		id: 'search-results-container',
 		template: _.template($('#template-search-results').html()),
-		initialize: function(results) {
-			console.log(results);
-			this.collection = new OsciTk.collections.SearchResults();
-			//this.collection.reset(results);
+		initialize: function(response) {
+			console.log(response);
+			this.searchResults = new OsciTk.collections.SearchResults({docs: response.docs});
 			this.render();
 		},
 		render: function() {

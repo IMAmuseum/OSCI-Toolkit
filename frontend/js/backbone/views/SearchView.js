@@ -8,31 +8,47 @@ jQuery(function() {
 		id: 'search-view',
 		className: 'toolbar-item-view',
 		template: _.template($('#template-search').html()),
+		searchResults: new OsciTk.collections.SearchResults(),
+		page: 0,
+		query: '',
+		filters: null,
+		sort: null,
+				
 		initialize: function() {
-			// this.render();
+			// add our search results collection to the global namespace for convenience
+			if (app && app.collections) app.collections.searchResults = this.searchResults;
 		},
+		
 		events: {
 			'submit #search-form' : 'search'
 		},
+		
 		render: function() {
-			this.$el.html(this.template());
+			this.$el.html(this.template(this));
+			this.parent.contentOpen();
 		},
+		
 		search: function(event) {
+			// prevent the form from submitting
 			event.preventDefault();
-			var endpoint = 'http://osci-tk.lcl/api/search',
-				keyword = '',
-				page = 0,
-				filters = '',
-				sort = '',
-				request = null;
-			
-			request = $.ajax({
-				url: endpoint + '/' + keyword,
-				type: 'POST'
-			});
-			request.done(function(data, textStatus, jqXHR) {
-				var response = JSON.parse(data);
-				var item = new OsciTkSearchResultsView(response);
+			var keyword = this.query = this.$el.find('#search-keyword').val();
+
+			// send search query
+			var searchView = this;
+			$.ajax({
+				url: app.config.get('endpoints')['OsciTkSearch'] + '?key=' + keyword + '&filters=type:note',
+				type: 'POST',
+				success: function(data) {
+					var response = JSON.parse(data);
+					// add the incoming docs to the searchResults collection
+					_.each(response.docs, function(doc) {
+						searchView.searchResults.add(doc);
+					});
+					// set the keyword to the collection
+					searchView.searchResults.keyword = keyword;
+					// re-render the search view
+					searchView.render();
+				}
 			});
 		}
 	});

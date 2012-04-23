@@ -5,10 +5,6 @@ if (typeof OsciTk.collections === 'undefined'){OsciTk.collections = {};}
 
 jQuery(function() {
 	OsciTk.collections.SearchResults = OsciTk.collections.BaseCollection.extend({
-		model: OsciTk.models.SearchResult,
-		initialize: function() {
-			this.numFound = 0;
-			this.page = 0;
-		}
+		model: OsciTk.models.SearchResult
 	});
 });

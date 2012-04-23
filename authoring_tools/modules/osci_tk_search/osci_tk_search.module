@@ -74,8 +74,9 @@ function osci_tk_search_opensearch_query() {
  * @return Object
  */
 function osci_tk_search_do_query() {
+	global $user;
 	// setup query parameters
-	$params['q']	= arg(2);
+	$params['q']	= $_GET['key'];
 	$params['fl']	= '*';
 	$solrsort		= '';
 
@@ -92,15 +93,13 @@ function osci_tk_search_do_query() {
 	$query->page = pager_find_page();
 
 	// filter by search type
-	/*
-	if(isset($filters['type']) && $filters['type'] == 'notes') {
-		$query->addFilter('_query_', '"bundle:note"');
+	if(isset($filters['type']) && $filters['type'] == 'note') {
+		$query->addFilter('_query_', '"(bundle:note AND (is_uid:'.$user->uid.'))"');
 	} else { 
 		// default to content search
 		$query->addFilter('_query_', '"is_book_bid:[1 TO *] AND -bundle:note"');
 	}
-	*/
-
+	
 	// add content boost parameters to the query
 	apachesolr_search_add_boost_params($query);
 	// execute query
@@ -120,13 +119,17 @@ function osci_tk_search_display_opensearch_document() {
  */
 function osci_tk_search_apachesolr_index_document_build(ApacheSolrDocument $document, $entity, $entity_type, $env_id) {
 	// only add items that are viewable by the reader
+	if($entity->type === 'note') {
+		$document->addField('is_paragraph_id', $entity->field_paragraph_id['und'][0]['value']);
+		$document->addField('ss_body', $entity->body['und'][0]['value']);
+	}
 	if(isset($entity->book)) {
 		_osci_tk_search_get_path_hierarchy($entity->book, $document);
 		_osci_tk_search_create_paragraph_documents($entity, $document, $env_id);
-		if(isset($entity->field_footnote)) {
+		if(!empty($entity->field_footnote)) {
 			_osci_tk_search_create_footnote_documents($entity, $document, $env_id);
 		}
-		if(isset($entity->field_figure)) {
+		if(!empty($entity->field_figure)) {
 			_osci_tk_search_create_figure_documents($entity, $document, $env_id);
 		}
 	}
@@ -139,9 +142,11 @@ function osci_tk_search_apachesolr_index_document_build(ApacheSolrDocument $docu
  */
 function _osci_tk_search_get_path_hierarchy($book, ApacheSolrDocument $document) {
 	// retrieve the books menu tree
-	$subtree_data = array_pop(book_menu_subtree_data($book));
+	$tree_data = book_menu_subtree_data($book);
+	$subtree_data = array_pop($tree_data);
 	// generate the content path tree
-	$tree_hierarchy = array_reverse(_osci_tk_search_generate_content_path_tree($subtree_data['link']));
+	$path_tree = _osci_tk_search_generate_content_path_tree($subtree_data['link']);
+	$tree_hierarchy = array_reverse($path_tree);
 	
 	$current_path = '';
 	foreach($tree_hierarchy as $key => $path) {
@@ -266,7 +271,8 @@ function _osci_tk_search_create_figure_documents($entity, $entity_doc, $env_id) 
 	$documents = array();
 
 	// setup documents for each figure
-	foreach($entity->field_figure[$entity->language] as $delta => $item) {
+	// error_log(print_r($entity->field_figure, true));
+	foreach($entity->field_figure['und'] as $delta => $item) {
 		$fid = 'figure-' . $delta;
 
 		$document = clone $entity_doc;
