@@ -115,7 +115,6 @@
 			<div id="search-results">
 				<ul>
 					<% _.each(searchResults.models, function(result) { %>
-<% console.log(result); %>
 						<% if (result.get('bundle') === 'note') { %>
 							<li>
 								<%= result.get('bundle_name') %> 
