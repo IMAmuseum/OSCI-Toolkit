@@ -25,7 +25,7 @@ jQuery(function() {
 		
 		render: function() {
 			this.$el.html(this.template(this));
-			this.parent.contentOpen();
+			// this.parent.contentOpen();
 		},
 		
 		search: function(event) {
@@ -48,6 +48,7 @@ jQuery(function() {
 					searchView.searchResults.keyword = keyword;
 					// re-render the search view
 					searchView.render();
+					searchView.parent.contentOpen();
 				}
 			});
 		}
