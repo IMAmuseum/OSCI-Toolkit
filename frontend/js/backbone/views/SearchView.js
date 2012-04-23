@@ -25,7 +25,6 @@ jQuery(function() {
 		
 		render: function() {
 			this.$el.html(this.template(this));
-			// this.parent.contentOpen();
 		},
 		
 		search: function(event) {
