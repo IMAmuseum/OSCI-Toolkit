@@ -17,6 +17,12 @@ jQuery(function() {
 			var fig_data = app.collections.figures.toJSON();
 			this.$el.html(this.template({figures: fig_data}));
 
+			// Set the width of the figure reel if there is more than one thumbnail
+			if (fig_data.length > 1) {
+				var thumbs = $('#toolbar figure.thumbnail');
+				$('#toolbar .figure-reel').width(thumbs.length * (thumbs.outerWidth(true)));
+			}
+
 			// When the reader clicks on a figure thumbnail, show the preview for that figure...
 			$('#toolbar figure.thumbnail').click(function() {
 				$('#toolbar .figure-browser').hide();

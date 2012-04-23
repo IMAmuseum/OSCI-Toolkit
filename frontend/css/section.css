@@ -8,9 +8,22 @@
 	right: 0;
 	bottom: 0;
 	display: block;
-	overflow: scroll;
+	overflow-y: auto;
+	overflow-x: hidden;
+	-webkit-overflow-scrolling: touch;
 }
 
 #section img {
 	max-width: 600px;
+}
+
+/* When less than 600px... */
+@media (max-width:600px) {
+
+	#section {
+		padding: 6px;
+		margin: 60px 10px 10px 10px;
+	}
+
+
 }

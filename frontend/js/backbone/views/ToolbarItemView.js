@@ -12,7 +12,7 @@ jQuery(function() {
 			this.$el.addClass(this.options.toolbarItem.view + '-toolbar-item');
 			// tracks the view to render in the content area when this view is clicked
 			this.contentView = null;
-			this.contentViewRendered = false;			
+			this.contentViewRendered = false;
 		},
 		events: {
 			'click': 'itemClicked',

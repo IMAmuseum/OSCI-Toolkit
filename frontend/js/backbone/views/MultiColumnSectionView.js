@@ -34,10 +34,15 @@ jQuery(function() {
 			this.calculateDimensions();
 			console.log(this.dimensions, "dimensions");
 
-			//add number of pages to model
-			//this.model.set('numPages', 'blah');
+			//setup location to store layout housekeeping information
+			this.layoutData = {
+				data : this.model.get('content')
+			};
 
-			this.layoutComplete = true;
+			//remove unwanted sections
+			this.cleanData();
+
+			console.log(this.layoutData.data, 'layoutData');
 
 			// this.$el.html(this.template(this.model.toJSON()));
 		},
@@ -109,6 +114,30 @@ jQuery(function() {
 			//set the height of the container
 			//dont need this if styled correctly I think
 			//this.$el.height(dimensions.pageHeight);
+		},
+
+		cleanData: function() {
+			//remove the figure section
+			this.layoutData.data.find("#figures").remove();
+
+			//remove the footnotes section
+			this.layoutData.data.find("#footnotes").remove();
+
+			//remove any inline figures and replace with references
+			var inlineFigures = this.layoutData.data.find("figure");
+			if (inlineFigures.length) {
+				var figureRefTemplate = _.template($('#template-figure-reference').html());
+
+				for(var i = 0, len = inlineFigures.length; i < len; i++) {
+					var figure = $(inlineFigures[i]);
+					var figureData = {
+						id : figure.attr("id"),
+						title : figure.attr("title")
+					};
+
+					figure.replaceWith(figureRefTemplate(figureData));
+				}
+			}
 		}
 	});
 });

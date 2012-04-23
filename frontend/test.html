@@ -1,5 +1,9 @@
 <html>
 <head>
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<link rel='apple-touch-icon' href='img/icon-app-57.png' />
 	<link type="text/css" rel="stylesheet" href="css/common.css">
 	<link type="text/css" rel="stylesheet" href="css/toolbar.css">
 	<link type="text/css" rel="stylesheet" href="css/section.css">
@@ -47,7 +51,7 @@
 	<script src="js/backbone/views/FontView.js"></script>
 	<script src="js/backbone/Router.js"></script>	
 	<script src="js/backbone/helper.js"></script>	
-	<script src="js/AppBootstrap.js"></script>
+	<script src="js/appBootstrap.js"></script>
 	<script>jQuery(function() { 
 			app.bootstrap({
 				packageUrl: 'sample/package.opf', 
@@ -88,7 +92,10 @@
 	</script>
 	<script id="template-toolbar-item" type="text/template"><%= text %></script>
 	<script id="template-section" type="text/template"></script>
-	<script id="template-page" type="text/template"><%= rawContent %></script>
+	<script id="template-page" type="text/template"><%= content %></script>
+	<script id="template-figure-reference" type="text/template">
+		<a href="#<%= id %>" class="figure_reference"><%= title %></a>
+	</script>
 	<script id="template-search" type="text/template">
 		<div id="search-header">
 			<div id="search-box">
@@ -167,13 +174,15 @@
 		<div class="figure-nav"><div class='prev' title='Previous figure'>&lt;</div>&nbsp;<div class='next' title='Next Figure'>&gt;</div></div>
 		<div class='figure-browser'>
 			<h2>Figures</h2>
-			<div class='figure-grid'>		
-				<% _.each(figures, function(figure) { %>
-					<figure class='thumbnail' data-figure-id="<%= figure.id %>">
-						<div class='figure-placeholder'><%= figure.delta %></div>
-						<figcaption><%= figure.title %></figcaption>
-					</figure>
-				<% }); %>
+			<div class='figure-tray'>
+				<div class='figure-reel'>
+					<% _.each(figures, function(figure) { %>
+						<figure class='thumbnail' data-figure-id="<%= figure.id %>">
+							<div class='figure-placeholder'><%= figure.delta %></div>
+							<figcaption><%= figure.title %></figcaption>
+						</figure>
+					<% }); %>
+				</div>
 			</div>
 		</div>
 		<% _.each(figures, function(figure) { %>

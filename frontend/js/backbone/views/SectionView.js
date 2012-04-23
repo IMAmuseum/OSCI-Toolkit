@@ -35,10 +35,10 @@ jQuery(function() {
 			return this;
 		},
 		renderContent: function() {
-			//basic layout just loads the content into a single page
+			//basic layout just loads the content into a single page with scrolling
 			var pages = this.model.get('pages');
 			pages.add({
-				rawContent : this.model.get('content')
+				content : this.model.get('content').find('body').html()
 			});
 
 			this.addView(new OsciTk.views.Page({

@@ -117,6 +117,17 @@ div.font-view div.font-control span.small {
 
 /* FIGURE VIEW */
 
+#toolbar .figure-tray {
+	position: static;
+	overflow-x: auto;
+	overflow-y: hidden;
+	height: 180px;
+	-webkit-overflow-scrolling: touch;
+}
+
+#toolbar .figure-reel {
+	height: 150px;
+}
 
 #toolbar .figure-nav {
 	display: none;
@@ -170,11 +181,6 @@ div.font-view div.font-control span.small {
 	color: #52818C;
 }
 
-#toolbar .figure-wrapper {
-	max-height: 200px;
-	overflow-y: auto;
-}
-
 #toolbar figure.preview {
 	display: none;
 	-webkit-margin-before: 0px;
@@ -192,10 +198,12 @@ div.font-view div.font-control span.small {
 /* When less than 600px... */
 @media (max-width:600px) {
 
+	/*
 	div.Figures-toolbar-item,
 	div.Notes-toolbar-item {
 		display: none;
 	}
+	*/
 
 	#toolbar-handle {
 		width: 100%;

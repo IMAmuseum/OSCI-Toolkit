@@ -69,7 +69,6 @@ jQuery(function() {
 		},
 		_addViewReference: function(view) {
 			if (!this.childViews) { this.childViews = []; }
-
 			var alreadyAdded = false;
 			for (var i = 0, len = this.childViews.length; i < len; i++) {
 				if (view.cid === this.childViews[i].cid) {
