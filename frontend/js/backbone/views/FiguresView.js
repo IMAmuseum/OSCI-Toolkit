@@ -26,11 +26,10 @@ jQuery(function() {
 			// When the reader clicks on a figure thumbnail, show the preview for that figure...
 			$('#toolbar figure.thumbnail').click(function() {
 				$('#toolbar .figure-browser').hide();
-				$('#toolbar-close').hide();
 				var content = $("#toolbar figure.preview[data-figure-id='" + $(this).attr('data-figure-id') + "']");
 				content.show().addClass('active');
-				$('#toolbar .figure-nav').show();
-				$('#toolbar').animate({height: content.height() + $('#toolbar-handle').height()}, 'fast');
+				$('#toolbar .figure-previews').show();
+				$('#toolbar').animate({height: $('#toolbar-content').height() + $('#toolbar-handle').height()}, 'fast');
 			});
 
 			// When going back to the grid, hide the current preview and replace the close button
@@ -40,15 +39,13 @@ jQuery(function() {
 				}, 
 				'fast', 
 				function() {
-					$('#toolbar figure.preview').hide().removeClass('active');
-					$('#toolbar .figure-nav').hide();					
+					$('#toolbar .figure-previews').hide();
 					$('#toolbar .figure-browser').show();				
-					$('#toolbar-close').show();
 				}	
 				);
 			});
 
-			$('#toolbar .figure-nav .next').click(function() {
+			$('#toolbar .figure-nav.next').click(function() {
 				var new_fig = $('#toolbar figure.preview.active').hide().removeClass('active').next('figure.preview');
 				if (new_fig.length == 0) {
 					new_fig = $('#toolbar figure.preview').first();
@@ -56,7 +53,7 @@ jQuery(function() {
 				new_fig.show().addClass('active');
 			});
 
-			$('#toolbar .figure-nav .prev').click(function() {
+			$('#toolbar .figure-nav.prev').click(function() {
 				var new_fig = $('#toolbar figure.preview.active').hide().removeClass('active').prev('figure.preview');
 				if (new_fig.length == 0) {
 					new_fig = $('#toolbar figure.preview').last();
