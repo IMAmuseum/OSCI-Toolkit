@@ -31,7 +31,7 @@ jQuery(function() {
 			// make an api call to get the notes for the current user and section
 			$.ajax({
 				url: app.config.get('endpoints').OsciTkNotes,
-				data: {section_id: 18},
+				data: {section_id: sectionId},
 				type: 'GET',
 				dataType: 'json',
 				success: function(data) {
