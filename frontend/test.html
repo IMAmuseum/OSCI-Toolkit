@@ -98,6 +98,29 @@
 				</form>
 			</div>
 		</div>
+		<% if (searchResults.length > 0) { %>
+			<div id="search-summary">Result(s) for "<%= searchResults.keyword %>" (<%= searchResults.length %>)</div>
+			<div id="search-sort">
+				Sort By: 
+				<div id="search-sort-relevance" data-selected="0">Relevance</div>
+				<div id="search-sort-type" data-selected="0">Type</div>
+			</div>
+			<div id="search-results">
+				<ul>
+					<% _.each(searchResults.models, function(result) { %>
+						<% if (result.bundle === 'note') { %>
+							<li>
+								<%= result.bundle_name %> 
+								(sec.<%= result.im_field_section[0] %> p. - 
+								<%= result.content %>
+							</li>
+						<% } else { %>
+							<li><%= result.bundle_name %> - <%= result.content %></li>
+						<% } %>
+					<% }); %>
+				</ul>
+			</div>
+		<% } %>
 	</script>
 	<script id="template-search-results" type="text/template">
 		<div id="search-summary">Result(s) for "<%= keyword %>" (<%= result_count %>)</div>
