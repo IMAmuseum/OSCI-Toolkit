@@ -26,47 +26,53 @@ jQuery(function() {
 			// When the reader clicks on a figure thumbnail, show the preview for that figure...
 			$('#toolbar figure.thumbnail').click(function() {
 				$('#toolbar .figure-browser').hide();
-				$('#toolbar-close').hide();
+				$('#toolbar .figure-previews figure.active').hide().removeClass('active');
 				var content = $("#toolbar figure.preview[data-figure-id='" + $(this).attr('data-figure-id') + "']");
 				content.show().addClass('active');
-				$('#toolbar .figure-nav').show();
-				$('#toolbar').animate({height: content.height() + $('#toolbar-handle').height()}, 'fast');
+				OsciTk.views.Figures.prototype.displayTitle();
+				$('#toolbar .figure-previews').show();
+				$('#toolbar').animate({height: $('#toolbar-content').height() + $('#toolbar-handle').height()}, 'fast');
 			});
 
 			// When going back to the grid, hide the current preview and replace the close button
 			$('.back-to-grid').click(function() {
 				$('#toolbar').animate({
 					height: $('.figure-browser').height() + $('#toolbar-handle').height()
-				}, 
-				'fast', 
+				},
+				'fast',
 				function() {
-					$('#toolbar figure.preview').hide().removeClass('active');
-					$('#toolbar .figure-nav').hide();					
-					$('#toolbar .figure-browser').show();				
-					$('#toolbar-close').show();
-				}	
+					$('#toolbar .figure-previews').hide();
+					$('#toolbar .figure-browser').show();
+				}
 				);
 			});
 
-			$('#toolbar .figure-nav .next').click(function() {
+			$('#toolbar .figure-nav.next').click(function() {
 				var new_fig = $('#toolbar figure.preview.active').hide().removeClass('active').next('figure.preview');
 				if (new_fig.length == 0) {
 					new_fig = $('#toolbar figure.preview').first();
 				}
 				new_fig.show().addClass('active');
+				OsciTk.views.Figures.prototype.displayTitle();
 			});
 
-			$('#toolbar .figure-nav .prev').click(function() {
+			$('#toolbar .figure-nav.prev').click(function() {
 				var new_fig = $('#toolbar figure.preview.active').hide().removeClass('active').prev('figure.preview');
 				if (new_fig.length == 0) {
 					new_fig = $('#toolbar figure.preview').last();
 				}
-				new_fig.show().addClass('active');				
+				new_fig.show().addClass('active');
+				OsciTk.views.Figures.prototype.displayTitle();
 			});
 
 
 
 			return this;
+		},
+		displayTitle: function() {
+			var id = $('#toolbar figure.preview.active').attr('data-figure-id');
+			var figure = app.collections.figures.get(id);
+			$('#toolbar h2 span.title').html(figure.get('title'));
 		}
 	});
 });

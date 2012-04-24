@@ -39,7 +39,7 @@ div#toolbar-content {
 	cursor: pointer;
 	height:30px;width:30px;overflow:hidden;
 	
-	oveflow:hidden;text-indent:100%;white-space:nowrap;
+	overflow:hidden;text-indent:100%;white-space:nowrap;
 	background: url('../img/bg-btn-close.png') no-repeat left top;
 	opacity:.3;
 }
@@ -169,31 +169,48 @@ div.font-view div.font-control span.small {
 	position: static;
 	overflow-x: auto;
 	overflow-y: hidden;
-	height: 180px;
-	-webkit-overflow-scrolling: touch;
 }
 
-#toolbar .figure-reel {
+#toolbar .figure-previews {
+	display: none;
+}
+
+#toolbar .figure-browser .figure-tray {
+	height: 180px;
+	-webkit-overflow-scrolling: touch;	
+}
+
+#toolbar .figure-previews .figure-tray {
+	height: 280px;
+	-webkit-overflow-scrolling: touch;	
+}
+
+
+#toolbar .figure-browser .figure-reel {
 	height: 150px;
 }
 
+#toolbar .figure-previews .figure-reel {
+	height: 250px;
+}
+
+
 #toolbar .figure-nav {
-	display: none;
 	position: absolute;
-	top: 10px;
-	right: 0px;
-	padding: 0px 40px;
+	padding: 10px;
 	cursor: pointer;	
 	color: #52818C;
 	font-size: 2em;
 }
 
-#toolbar .figure-nav .prev {
-	float: left;
+#toolbar .figure-nav.prev {
+	top: 160px;
+	left: 0px;
 }
 
-#toolbar .figure-nav .next {
-	float: right;
+#toolbar .figure-nav.next {
+	top: 160px;
+	right: 0px;
 }
 
 #toolbar figure {
