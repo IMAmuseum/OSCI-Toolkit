@@ -2,6 +2,10 @@ body {
 	margin: 0;
 }
 
+a {
+	color:#52818C;	
+}
+
 /* apply a natural box layout model to all elements */
 * { 
 	-moz-box-sizing: border-box; 
