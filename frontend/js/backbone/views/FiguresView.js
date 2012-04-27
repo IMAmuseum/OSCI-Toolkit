@@ -20,7 +20,7 @@ jQuery(function() {
 			// Set the width of the figure reel if there is more than one thumbnail
 			if (fig_data.length > 1) {
 				var thumbs = $('#toolbar figure.thumbnail');
-				$('#toolbar .figure-reel').width(thumbs.length * (thumbs.outerWidth(true)));
+				$('#toolbar .figure-browser .figure-reel').width(thumbs.length * (thumbs.outerWidth(true)));
 			}
 
 			// When the reader clicks on a figure thumbnail, show the preview for that figure...
