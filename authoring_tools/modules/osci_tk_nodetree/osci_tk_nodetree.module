@@ -1,0 +1,284 @@
+<?php 
+
+function osci_tk_nodetree_menu()
+{
+	$items = array();
+
+	$items['ajax/nodetree/%/%'] = array(
+			'title'             => 'Nodetree Autocomplete',
+			'page callback'     => 'osci_tk_nodetree_autocomplete',
+			'page arguments'	=> array(2,3),
+			'access arguments'  => array('access content'),
+			'type'              => MENU_CALLBACK
+	);
+
+	return $items;
+}
+
+function osci_tk_nodetree_theme() {
+	$themes = array();
+	$themes['osci_tk_nodetree_table_form'] = array(
+		'arguments' => array('form' => NULL),
+		'render element' => 'form'	
+	);
+	return $themes;
+}
+
+function osci_tk_nodetree_field_info() {
+	$fields = array();
+	$fields['osci_tk_nodetree'] = array(
+		'label' => 'Node Tree',
+		'description' => 'Stores a hierarchial tree of references to other nodes',
+		'default_widget' => 'nodetree_nodetree_form',
+		'default_formatter' => 'nodetree_default'	
+	);
+	return $fields;
+}
+
+function osci_tk_nodetree_field_formatter_info() {
+	$info = array();
+	$info['nodetree_default'] = array(
+		'label' => 'Default',
+		'field types' => array('osci_tk_nodetree')
+	);
+	return $info;
+}
+
+function osci_tk_nodetree_field_is_empty($item, $field) {
+	if ($field['type'] === 'osci_tk_nodetree') {
+		if (empty($item['target_nid'])) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+function osci_tk_nodetree_field_widget_info() {
+	$info = array();
+	$info['nodetree_nodetree_form'] = array(
+		'label' => 'Node Tree',
+		'field types' => array('osci_tk_nodetree'),
+		'behaviors' => array(
+			'multiple values' => FIELD_BEHAVIOR_CUSTOM,
+			'default value' => FIELD_BEHAVIOR_DEFAULT		
+		)	
+	);
+	return $info;
+}
+
+function osci_tk_nodetree_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
+	if ($field['type'] === 'osci_tk_nodetree') {
+ 		// convert empty strings to null
+ 		// foreach ($items as $item);
+	}
+	
+}
+
+function osci_tk_nodetree_node_submit($node, $form, &$form_state) {
+	dpm($node, 'node presave');
+	dpm($form_state, 'form state presave');
+	
+}
+
+function osci_tk_nodetree_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+	if ($instance['widget']['type'] === 'nodetree_nodetree_form') {
+		$max = $form_state['field'][$field['field_name']][LANGUAGE_NONE]['items_count'] + 1;
+		
+		$items = osci_tk_nodetree_sort_nodetree($items);
+		for ($i = 0; $i < $max; $i++) {
+			$element[$i]['target_nid'] = array(
+					'#type' => 'textfield',
+					'#title' => 'Section',
+					'#autocomplete_path' => 'ajax/nodetree/' . $field['field_name'],
+					'#attributes' => array('class' => array('target-field')),
+					'#default_value' => isset($items[$i]['target_nid']) ? $items[$i]['target_nid'] : NULL
+			);
+			$element[$i]['parent_nid'] = array(
+					'#type' => 'textfield',
+					'#title' => 'Parent Node',
+					'#size' => 5,
+					'#attributes' => array('class' => array('parent-field')),
+					'#default_value' => isset($items[$i]['parent_nid']) ? $items[$i]['parent_nid'] : NULL
+			);
+			$element[$i]['weight'] = array(
+					'#type' => 'textfield',
+					'#title' => 'Weight',
+					'#size' => 5,
+					'#attributes' => array('class' => array('weight-field')),
+					'#default_value' => isset($items[$i]['weight']) ? $items[$i]['weight'] : 0
+			);
+			$element[$i]['depth'] = array(
+					'#type' => 'textfield',
+					'#title' => 'Depth',
+					'#size' => 5,
+					'#attributes' => array('class' => array('depth-field')),
+					'#default_value' => isset($items[$i]['depth']) ? $items[$i]['depth'] : 0
+			);
+		}
+		$element['add_more'] = array(
+				'#type' => 'submit',
+				'#name' => 'nodetree_add_more',
+				'#value' => t('Add another section'),
+				'#attributes' => array('class' => array('field-add-more-submit')),
+				'#limit_validation_errors' => array(),
+				'#submit' => array('osci_tk_nodetree_add_more_submit'),
+				'#ajax' => array(
+						'callback' 	=> 'osci_tk_nodetree_add_more_js',
+						'wrapper' 	=> 'nodetree-wrapper',
+						'effect' 	=> 'fade',
+						'method' 	=> 'replace'
+				),
+				'#weight' => 100
+		);
+		// $element['#theme'] = 'osci_tk_nodetree_table_form';
+	}
+	dpm($element, 'form');
+	return $element;
+}
+
+function theme_osci_tk_nodetree_table_form($variables) {
+	$form = $variables['form'];
+	$rows = array();
+	foreach (element_children($form) as $key) {
+		if (is_int($key)) {
+			// increase indentation unless first depth level
+			$firstRow = "";
+			if ($form[$key]['depth']['#value'] > 0) {
+				$firstRow = theme('indentation', array('size' => $form[$key]['depth']['#value']));
+			}
+			// render the fields into a table row
+			dpm($form[$key], 'form key');
+			$row = array(
+				'data' => array($firstRow,
+					drupal_render($form[$key]['weight']),
+					drupal_render($form[$key]['depth']),
+					drupal_render($form[$key]['parent_nid']),
+					drupal_render($form[$key]['target_nid']),
+				),
+				'class' => array('draggable')
+			);
+			$rows[] = $row;
+		}
+	}
+	
+	// add tabledrag functionality
+	drupal_add_tabledrag('nodetree_table', 'match', 'parent', 'parent-field', 'parent-field', 'target-field', TRUE);
+	drupal_add_tabledrag('nodetree_table', 'order', 'self', 'weight-field');
+	drupal_add_tabledrag('nodetree_table', 'depth', 'group', 'depth-field');
+	$header = array('', 'Weight', 'Depth', 'Parent Node', 'Sections');
+	$output = '<div id="nodetree-wrapper">';
+	$output .= theme('table', array(
+		'header' => $header,
+		'rows' => $rows,
+		'attributes' => array('id' => 'nodetree_table')
+	));
+	
+	$output .= drupal_render($form['add_more']);
+	$output .= '</div>';
+	return $output;
+}
+
+function osci_tk_nodetree_add_more_submit($form, &$form_state) {
+	$form_state['field']['field_nodetree'][LANGUAGE_NONE]['items_count']++;
+	$form_state['rebuild'] = true;
+}
+
+function osci_tk_nodetree_add_more_js($form, $form_state) {
+	return $form['field_nodetree'];
+}
+
+function osci_tk_nodetree_sort_nodetree($items) {
+	// sorted will end up a flat representation of the hierarchy
+	$sorted = array();
+
+	// find the maximum depth
+	$maxDepth = 0;
+	foreach ($items as $item) {
+		if ($item['depth'] > $maxDepth) $maxDepth = $item['depth'];
+	}
+	// for each depth:
+	for ($depth = 0; $depth <= $maxDepth; $depth++) {
+		// find all members at this depth
+		$members = array();
+		foreach ($items as $item) {
+			if ((int)$item['depth'] === $depth) {
+				$members[] = $item;
+			}
+		}
+		// if depth is zero (top level):
+		if ($depth === 0) {
+			// sort members by weight
+			usort($members, 'osci_tk_nodetree_weight_sort');
+			// add to sorted array
+			foreach ($members as $member) {
+				$sorted[] = $member;
+			}
+		}
+		// else:
+		else {
+			// sort members by weight reversed
+			usort($members, 'osci_tk_nodetree_weight_rsort');
+			// for each member:
+			foreach ($members as $member) {
+				// find parent in sorted
+				for ($i = 0; $i < count($sorted); $i++) {
+					$sItem = $sorted[$i];
+					if ($sItem['target_nid'] === $member['parent_nid']) {
+						// insert into sorted array immediately after parent
+						array_splice($sorted, ($i + 1), 0, array($member));
+						break;
+					}
+				}
+			}
+		}
+	}
+	return $sorted;
+}
+
+function osci_tk_nodetree_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+	$element = array();
+	
+	if ($display['type'] === 'nodetree_default') {
+		foreach ($items as $delta => $item) {
+			$element[$delta]['#markup'] = '<div>'.$item['target_nid'].'</div>'; //theme('nodetree_formatter_default', $item);
+		}
+	}
+	
+	return $element;
+}
+
+function osci_tk_nodetree_weight_sort($a, $b) {
+	return $a['weight'] - $b['weight'];
+}
+
+function osci_tk_nodetree_weight_rsort($a, $b) {
+	return $b['weight'] - $a['weight'];
+}
+
+function osci_tk_nodetree_autocomplete($fieldName, $query) {
+	dpm($fieldName, 'fieldName');
+	dpm($query, 'query');
+}
+
+// TODO: 
+// function osci_tk_figure_field_widget_settings_form($field, $instance)
+// {
+// 	$widget = $instance['widget'];
+// 	$settings = $widget['settings'];
+// 	$form = array();
+
+// 	if ($widget['type'] === 'osci_tk_figure_widget')
+// 	{
+// 		$form['osci_tk_figure_types'] = array(
+// 				'#type' => 'checkboxes',
+// 				'#title' => t('Content types that can be referenced'),
+// 				'#description' => t('The available content types for use as a figure.'),
+// 				'#default_value' => $settings['osci_tk_figure_types'],
+// 				'#required' => TRUE,
+// 				'#mulitple' => true,
+// 				'#options' => array_map('check_plain', node_type_get_names())
+// 		);
+// 	}
+
+// 	return $form;
+// }
