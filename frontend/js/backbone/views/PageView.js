@@ -8,16 +8,32 @@ jQuery(function() {
 		template: _.template($('#template-page').html()),
 		className: "page",
 		initialize: function() {
+			this.processingData = {
+				complete : false
+			};
+
 			this.$el.addClass("page-num-" + this.model.collection.length)
 					.attr("data-page_num", this.model.collection.length);
-
-			this.render();
 		},
 		render: function() {
 			this.$el.html(this.template(this.model.toJSON()));
-			this.model.set('renderedContent', this.$el.html);
 
 			return this;
+		},
+		processingComplete : function() {
+			this.processingData.complete = true;
+			return this;
+		},
+		addContent : function(newContent) {
+			this.model.addContent(newContent);
+
+			return this;
+		},
+		hasContent : function(hasContent) {
+			return this.model.get('content').length ? true : false;
+		},
+		isPageComplete : function() {
+			return this.processingData.complete;
 		}
 	});
 });

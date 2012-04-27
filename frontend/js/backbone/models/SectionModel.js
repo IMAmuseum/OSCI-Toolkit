@@ -47,6 +47,10 @@ jQuery(function() {
 			app.dispatcher.trigger('footnotesAvailable', footnotes);
 			app.dispatcher.trigger('figuresAvailable', figures);
 			app.dispatcher.trigger('sectionLoaded', this);
+		},
+
+		removeAllPages : function() {
+			this.set('pages', new OsciTk.collections.Pages());
 		}
 	});
 });

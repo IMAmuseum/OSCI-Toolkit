@@ -38,6 +38,7 @@
 	<script src="js/backbone/views/SectionView.js"></script>
 	<script src="js/backbone/views/PageView.js"></script>
 	<script src="js/backbone/views/MultiColumnSectionView.js"></script>
+	<script src="js/backbone/views/MultiColumnPageView.js"></script>
 	<script src="js/backbone/views/ToolbarView.js"></script>
 	<script src="js/backbone/views/ToolbarItemView.js"></script>
 	<script src="js/backbone/views/NavigationView.js"></script>
@@ -70,7 +71,7 @@
 					{view: 'Font', text: 'Font'},
 					{view: 'Account', text: 'Account'}
 				],
-				//sectionView: 'MultiColumnSection',
+				sectionView: 'MultiColumnSection',
 				sectionViewOptions: {
 					minColumnWidth : 200,
 					maxColumnWidth : 300,
@@ -93,6 +94,10 @@
 	<script id="template-toolbar-item" type="text/template"><%= text %></script>
 	<script id="template-section" type="text/template"></script>
 	<script id="template-page" type="text/template"><%= content %></script>
+	<script id="template-multi-column-page" type="text/template"></script>
+	<script id="template-multi-column-column" type="text/template">
+		<div class="column"></div>
+	</script>
 	<script id="template-figure-reference" type="text/template">
 		<a href="#<%= id %>" class="figure_reference"><%= title %></a>
 	</script>

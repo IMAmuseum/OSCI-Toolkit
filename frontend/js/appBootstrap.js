@@ -26,7 +26,7 @@ app = {
 				app.dispatcher.trigger("windowResized");
 			};
 
-			window.resizeTimer = setTimeout(onWindowResize, 100);
+			window.resizeTimer = setTimeout(onWindowResize, 200);
 		};
 		
 		// init main view
