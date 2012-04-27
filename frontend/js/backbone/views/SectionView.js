@@ -8,6 +8,11 @@ jQuery(function() {
 		id: 'section',
 		template: _.template($('#template-section').html()),
 		initialize: function() {
+
+			_.defaults(this.options, {
+				pageView : 'Page'
+			});
+
 			// bind sectionChanged
 			app.dispatcher.on('currentNavigationItemChanged', function() {
 				if (app.collections.navigationItems.getCurrentNavigationItem()) {
@@ -34,16 +39,48 @@ jQuery(function() {
 
 			return this;
 		},
-		renderContent: function() {
-			//basic layout just loads the content into a single page with scrolling
-			var pages = this.model.get('pages');
-			pages.add({
-				content : this.model.get('content').find('body').html()
-			});
+		onClose: function() {
+			this.model.removeAllPages();
+		},
+		getPageForProcessing : function(id) {
+			var page;
 
-			this.addView(new OsciTk.views.Page({
-				model : pages.at(pages.length - 1)
-			}));
+			if (id !== undefined) {
+				page = this.getChildViewById(id);
+			} else {
+				page = _.filter(this.getChildViews(), function(page){
+					return page.isPageComplete() === false;
+				});
+
+				if (page.length === 0) {
+					this.model.get('pages').add({});
+
+					page = new OsciTk.views[this.options.pageView]({
+						model : this.model.get('pages').at(this.model.get('pages').length - 1)
+					});
+					this.addView(page);
+				} else {
+					page = page.pop();
+				}
+			}
+
+			return page;
+		},
+		renderContent: function() {
+			//add the template to the page
+			this.$el.html(this.template());
+
+			//basic layout just loads the content into a single page with scrolling
+			var pageView = this.getPageForProcessing();
+
+			//add the content to the view/model
+			pageView.addContent(this.model.get('content').find('body').html());
+
+			//render the view
+			pageView.render();
+
+			//mark processing complete (not necessary, but here for example)
+			pageView.processingComplete();
 		}
 	});
 });

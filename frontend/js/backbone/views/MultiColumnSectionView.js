@@ -7,9 +7,12 @@ jQuery(function() {
 	OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 		initialize: function() {
+			this.options.pageView = 'MultiColumnPage';
+
 			app.dispatcher.on("windowResized", function() {
-				console.log("resized");
-				this.renderContent();
+				this.removeAllChildViews();
+				this.model.removeAllPages();
+				this.render();
 			}, this);
 
 			this.$el.addClass("oscitk_multi_column");
@@ -29,22 +32,37 @@ jQuery(function() {
 		},
 
 		renderContent: function() {
-			console.log(this.model, "multi-column");
+			//add the template to the page
+			this.$el.html(this.template());
 
 			this.calculateDimensions();
-			console.log(this.dimensions, "dimensions");
 
 			//setup location to store layout housekeeping information
 			this.layoutData = {
-				data : this.model.get('content')
+				data : this.model.get('content'),
+				items : null
 			};
 
-			//remove unwanted sections
+			//remove unwanted sections & parse sections
 			this.cleanData();
 
-			console.log(this.layoutData.data, 'layoutData');
+			this.layoutData.items = this.layoutData.data.length;
 
-			// this.$el.html(this.template(this.model.toJSON()));
+			var i = 0;
+			while(this.layoutData.items > 0) {
+				var pageView = this.getPageForProcessing();
+
+				if (!pageView.processingData.rendered) {
+					pageView.render();
+				}
+
+				var overflow = pageView.addContent($(this.layoutData.data[i]).clone()).layoutContent();
+
+				if (!overflow) {
+					i++;
+					this.layoutData.items--;
+				}
+			}
 		},
 
 		calculateDimensions: function() {
@@ -87,7 +105,7 @@ jQuery(function() {
 			dimensions.innerPageHeight = dimensions.outerPageHeight - dimensions.pagePadding.top - dimensions.pagePadding.bottom;
 
 			//determine the correct width for the section container
-			dimensions.outerPageWidth = this.$el.width();
+			dimensions.outerPageWidth = this.$el.outerWidth();
 			dimensions.innerPageWidth = dimensions.outerPageWidth - dimensions.pagePadding.left - dimensions.pagePadding.right;
 
 			//column width
@@ -138,6 +156,9 @@ jQuery(function() {
 					figure.replaceWith(figureRefTemplate(figureData));
 				}
 			}
+
+			//chunk the data into managable parts
+			this.layoutData.data = this.layoutData.data.find('section').children();
 		}
 	});
 });

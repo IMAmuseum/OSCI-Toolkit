@@ -8,9 +8,15 @@ jQuery(function() {
 
 		defaults: function() {
 			return {
-				rawContent : null,
-				renderedContent : null
+				content : []
 			};
+		},
+
+		addContent : function(newContent) {
+			var content = this.get('content');
+			content.push(newContent);
+
+			return this;
 		}
 	});
 });
