@@ -268,7 +268,7 @@ function osci_tk_nodetree_autocomplete($fieldName, $query) {
 
 function osci_tk_nodetree_autocomplete_default($nid) {
 	$node = node_load($nid);
-	if (!node) return $nid;
+	if (!$node) return $nid;
 	return "[nid:{$nid}] {$node->title}";
 }
 
