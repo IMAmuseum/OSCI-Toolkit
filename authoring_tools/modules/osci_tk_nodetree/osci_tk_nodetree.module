@@ -4,10 +4,10 @@ function osci_tk_nodetree_menu()
 {
 	$items = array();
 
-	$items['ajax/nodetree/%/%'] = array(
+	$items['ajax/nodetree/%'] = array(
 			'title'             => 'Nodetree Autocomplete',
 			'page callback'     => 'osci_tk_nodetree_autocomplete',
-			'page arguments'	=> array(2,3),
+			'page arguments'	=> array(2),
 			'access arguments'  => array('access content'),
 			'type'              => MENU_CALLBACK
 	);
@@ -74,12 +74,6 @@ function osci_tk_nodetree_field_presave($entity_type, $entity, $field, $instance
 	
 }
 
-function osci_tk_nodetree_node_submit($node, $form, &$form_state) {
-	dpm($node, 'node presave');
-	dpm($form_state, 'form state presave');
-	
-}
-
 function osci_tk_nodetree_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
 	if ($instance['widget']['type'] === 'nodetree_nodetree_form') {
 		$max = $form_state['field'][$field['field_name']][LANGUAGE_NONE]['items_count'] + 1;
@@ -90,15 +84,17 @@ function osci_tk_nodetree_field_widget_form(&$form, &$form_state, $field, $insta
 					'#type' => 'textfield',
 					'#title' => 'Section',
 					'#autocomplete_path' => 'ajax/nodetree/' . $field['field_name'],
+					'#value_callback' => 'osci_tk_nodetree_autocomplete_value',
 					'#attributes' => array('class' => array('target-field')),
-					'#default_value' => isset($items[$i]['target_nid']) ? $items[$i]['target_nid'] : NULL
+					'#default_value' => isset($items[$i]['target_nid']) ? 
+						osci_tk_nodetree_autocomplete_default($items[$i]['target_nid']) : ''
 			);
 			$element[$i]['parent_nid'] = array(
 					'#type' => 'textfield',
 					'#title' => 'Parent Node',
 					'#size' => 5,
 					'#attributes' => array('class' => array('parent-field')),
-					'#default_value' => isset($items[$i]['parent_nid']) ? $items[$i]['parent_nid'] : NULL
+					'#default_value' => isset($items[$i]['parent_nid']) ? $items[$i]['parent_nid'] : ''
 			);
 			$element[$i]['weight'] = array(
 					'#type' => 'textfield',
@@ -115,6 +111,7 @@ function osci_tk_nodetree_field_widget_form(&$form, &$form_state, $field, $insta
 					'#default_value' => isset($items[$i]['depth']) ? $items[$i]['depth'] : 0
 			);
 		}
+		
 		$element['add_more'] = array(
 				'#type' => 'submit',
 				'#name' => 'nodetree_add_more',
@@ -130,9 +127,8 @@ function osci_tk_nodetree_field_widget_form(&$form, &$form_state, $field, $insta
 				),
 				'#weight' => 100
 		);
-		// $element['#theme'] = 'osci_tk_nodetree_table_form';
+		$element['#theme'] = 'osci_tk_nodetree_table_form';
 	}
-	dpm($element, 'form');
 	return $element;
 }
 
@@ -147,7 +143,6 @@ function theme_osci_tk_nodetree_table_form($variables) {
 				$firstRow = theme('indentation', array('size' => $form[$key]['depth']['#value']));
 			}
 			// render the fields into a table row
-			dpm($form[$key], 'form key');
 			$row = array(
 				'data' => array($firstRow,
 					drupal_render($form[$key]['weight']),
@@ -256,8 +251,36 @@ function osci_tk_nodetree_weight_rsort($a, $b) {
 }
 
 function osci_tk_nodetree_autocomplete($fieldName, $query) {
-	dpm($fieldName, 'fieldName');
-	dpm($query, 'query');
+	// query on node title
+	$query = trim(check_plain($query));
+	$results = db_query("SELECT nid, title 
+			FROM {node} n 
+			WHERE n.type = 'section' 
+			AND n.status = 1 
+			AND n.title LIKE '%{$query}%' 
+			ORDER BY n.created DESC");
+	$response = array();
+	foreach($results as $result) {
+		$response["[nid:{$result->nid}] {$result->title}"] = $result->title;
+	}
+	drupal_json_output($response);
+}
+
+function osci_tk_nodetree_autocomplete_default($nid) {
+	$node = node_load($nid);
+	if (!node) return $nid;
+	return "[nid:{$nid}] {$node->title}";
+}
+
+function osci_tk_nodetree_autocomplete_value($element, $input = FALSE, $form_state = array()) {
+	if ($input === FALSE) {
+		return isset($element['#default_value']) ? $element['#default_value'] : '';
+	}
+	// extract nid
+	preg_match('/\[nid:(\d+)\]/', $input, $matches);
+	if (is_array($matches)) {
+		return $matches[1];
+	}
 }
 
 // TODO: 

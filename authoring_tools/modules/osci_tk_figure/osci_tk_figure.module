@@ -280,7 +280,6 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 		),
 		'#weight' => -100
 	);
-
 	return $element + $figureElement;
 }
 
