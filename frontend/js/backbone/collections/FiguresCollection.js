@@ -8,6 +8,7 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 	
 	initialize: function() {
 		app.dispatcher.bind('figuresAvailable', function(figures) {
+			console.log('figuresAvailable', figures);
 			this.populateFromMarkup(figures);
 		}, this);
 	},
@@ -32,8 +33,16 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 				caption:    $('figcaption', markup).html(),
 				position:   $(markup).attr('data-position'),
 				columns:    $(markup).attr('data-columns'),
-				options:    JSON.parse($(markup).attr('data-options'))
+				options:    JSON.parse($(markup).attr('data-options')),
+				thumbnail_url: null, // TODO: set to a default?
+				preview_url: null
 			};
+			var image = $('.figure_content img', markup);
+			if (image.length) {
+				figure.thumbnail_url = image.attr('src');
+				figure.preview_url = image.attr('src');
+			}
+
 			this.add(figure);
 		}, this);
 	}

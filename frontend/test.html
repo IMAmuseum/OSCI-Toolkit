@@ -183,7 +183,7 @@
 				<div class='figure-reel'>
 					<% _.each(figures, function(figure) { %>
 						<figure class='thumbnail' data-figure-id="<%= figure.id %>">
-							<div class='figure-placeholder'><%= figure.delta %></div>
+							<div class='figure-thumbnail' style="background-image: url('<%= figure.thumbnail_url %>');" >&nbsp;</div>
 							<figcaption><%= figure.title %></figcaption>
 						</figure>
 					<% }); %>
@@ -199,7 +199,7 @@
 				<div class='figure-reel'>
 					<% _.each(figures, function(figure) { %>
 						<figure class='preview' data-figure-id="<%= figure.id %>">
-							<div class='figure-placeholder'><%= figure.delta %></div>
+							<div class='figure-preview' style="background-image: url('<%= figure.preview_url %>');" >&nbsp;</div>
 							<div class='figure-info'>
 								<h3 class='title'>Figure Title Here</h3>
 								<p class='meta-info'>meta info | more meta info</p>

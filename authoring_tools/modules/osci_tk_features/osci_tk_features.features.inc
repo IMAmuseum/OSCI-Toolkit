@@ -8,7 +8,10 @@
  * Implements hook_ctools_plugin_api().
  */
 function osci_tk_features_ctools_plugin_api() {
-  return array("version" => "1");
+  list($module, $api) = func_get_args();
+  if ($module == "field_group" && $api == "field_group") {
+    return array("version" => "1");
+  }
 }
 
 /**
@@ -78,14 +81,6 @@ function osci_tk_features_node_info() {
       'title_label' => t('Title'),
       'help' => '',
     ),
-    'cover_section' => array(
-      'name' => t('Cover Section'),
-      'base' => 'node_content',
-      'description' => t('A book cover section provides fields to store metadata about the book.'),
-      'has_title' => '1',
-      'title_label' => t('Title'),
-      'help' => '',
-    ),
     'iip_asset' => array(
       'name' => t('IIP Asset'),
       'base' => 'node_content',
@@ -104,6 +99,14 @@ function osci_tk_features_node_info() {
     ),
     'note' => array(
       'name' => t('Note'),
+      'base' => 'node_content',
+      'description' => '',
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
+    'publication' => array(
+      'name' => t('Publication'),
       'base' => 'node_content',
       'description' => '',
       'has_title' => '1',

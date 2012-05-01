@@ -223,20 +223,24 @@ div.font-view div.font-control span.small {
 	-webkit-margin-start: 0px;
 }
 
-#toolbar .thumbnail .figure-placeholder {
+#toolbar .figure-thumbnail {
 	width: 140px;
 	height: 140px;
-	border: 1px solid black;
 	cursor: pointer;
+	-webkit-margin-end: 20px;
+	background-position: center;
+	background-size: cover;
 }
 
-#toolbar .preview .figure-placeholder {
+#toolbar .preview .figure-placeholder,
+#toolbar .figure-preview {
 	width: 320px;
 	height: 240px;
 	float: left;
 	margin-right: 20px;
-	border: 1px solid black;
 	cursor: pointer;
+	background-position: center;
+	background-size: cover;
 }
 
 #toolbar figcaption {

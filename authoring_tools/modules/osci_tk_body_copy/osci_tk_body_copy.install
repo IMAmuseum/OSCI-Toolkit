@@ -40,5 +40,3 @@ function osci_tk_body_copy_field_schema($field)
     return array('columns' => $columns);
 }
 
-
-?>
