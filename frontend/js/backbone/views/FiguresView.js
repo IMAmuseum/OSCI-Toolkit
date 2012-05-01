@@ -1,7 +1,7 @@
 // OsciTk Namespace Initialization //
 if (typeof OsciTk === 'undefined'){OsciTk = {};}
 if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initializaiotn //
+// OsciTk Namespace Initialization //
 
 jQuery(function() {
 	OsciTk.views.Figures = OsciTk.views.BaseView.extend({
@@ -49,7 +49,7 @@ jQuery(function() {
 
 			$('#toolbar .figure-nav.next').click(function() {
 				var new_fig = $('#toolbar figure.preview.active').hide().removeClass('active').next('figure.preview');
-				if (new_fig.length == 0) {
+				if (new_fig.length === 0) {
 					new_fig = $('#toolbar figure.preview').first();
 				}
 				new_fig.show().addClass('active');
@@ -58,14 +58,12 @@ jQuery(function() {
 
 			$('#toolbar .figure-nav.prev').click(function() {
 				var new_fig = $('#toolbar figure.preview.active').hide().removeClass('active').prev('figure.preview');
-				if (new_fig.length == 0) {
+				if (new_fig.length === 0) {
 					new_fig = $('#toolbar figure.preview').last();
 				}
 				new_fig.show().addClass('active');
 				OsciTk.views.Figures.prototype.displayTitle();
 			});
-
-
 
 			return this;
 		},

@@ -1,10 +1,8 @@
 // OsciTk Namespace Initialization //
 if (typeof OsciTk === 'undefined'){OsciTk = {};}
 if (typeof OsciTk.collections === 'undefined'){OsciTk.collections = {};}
-// OsciTk Namespace Initializaiotn //
+// OsciTk Namespace Initialization //
 
-jQuery(function() {
-	OsciTk.collections.Pages = OsciTk.collections.BaseCollection.extend({
-		model: OsciTk.models.Page
-	});
+OsciTk.collections.Pages = OsciTk.collections.BaseCollection.extend({
+	model: OsciTk.models.Page
 });

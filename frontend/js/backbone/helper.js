@@ -53,7 +53,7 @@ function objectToArray(obj) {
  */
 function xmlToJson(xml, namespace) {
 	var obj = true,
-	    i = 0;
+		i = 0;
 	// retrieve namespaces
 	if(!namespace) {
 		namespace = ['xml:'];

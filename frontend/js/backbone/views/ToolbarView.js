@@ -1,7 +1,7 @@
 // OsciTk Namespace Initialization //
 if (typeof OsciTk === 'undefined'){OsciTk = {};}
 if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initializaiotn //
+// OsciTk Namespace Initialization //
 
 jQuery(function() {
 	OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({

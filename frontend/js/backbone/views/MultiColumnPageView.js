@@ -1,7 +1,7 @@
 // OsciTk Namespace Initialization //
 if (typeof OsciTk === 'undefined'){OsciTk = {};}
 if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initializaiotn //
+// OsciTk Namespace Initialization //
 
 jQuery(function() {
 	OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
@@ -52,9 +52,7 @@ jQuery(function() {
 			if ((column.height - content.position().top) < lineHeight) {
 				content.remove();
 				column.heightRemain = 0;
-				//TODO: what should this return?
-				//return true;
-				console.log("removing content");
+				return true;
 			}
 
 			var contentHeight = content.outerHeight(true);
@@ -69,6 +67,13 @@ jQuery(function() {
 
 				//remove the offset so that all items are not shifted up
 				column.offset = 0;
+			}
+
+			//find figure references and process the figure
+			var figureLinks = content.find("a.figure_reference:not(.processed)");
+			//console.log(figureLinks, 'figureLinks');
+			if (figureLinks.length) {
+				
 			}
 
 			var contentMargin = {

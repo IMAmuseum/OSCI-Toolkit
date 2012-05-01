@@ -1,22 +1,27 @@
 // OsciTk Namespace Initialization //
 if (typeof OsciTk === 'undefined'){OsciTk = {};}
 if (typeof OsciTk.models === 'undefined'){OsciTk.models = {};}
-// OsciTk Namespace Initializaiotn //
+// OsciTk Namespace Initialization //
 
-jQuery(function() {
-	OsciTk.models.Page = OsciTk.models.BaseModel.extend({
+OsciTk.models.Page = OsciTk.models.BaseModel.extend({
 
-		defaults: function() {
-			return {
-				content : []
-			};
-		},
+	defaults: function() {
+		return {
+			content : []
+		};
+	},
 
-		addContent : function(newContent) {
-			var content = this.get('content');
-			content.push(newContent);
+	addContent : function(newContent) {
+		var content = this.get('content');
+		content.push(newContent);
 
-			return this;
-		}
-	});
+		return this;
+	},
+
+	removeContentAt : function(index) {
+		var content = this.get('content');
+		content.splice(index, 1);
+
+		return this;
+	}
 });
