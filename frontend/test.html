@@ -10,12 +10,12 @@
 	<link type="text/css" rel="stylesheet" href="css/multiColumnSection.css">
 	<link type="text/css" rel="stylesheet" href="css/search.css">
 	<link type="text/css" rel="stylesheet" href="css/navigation.css">
-	<script src="js/appBootstrap.js"></script>
 	<script src="js/external/json2.js"></script>
 	<script src="js/external/jquery-1.7.1.js"></script>
 	<script src="js/external/underscore-1.3.1.js"></script>
 	<script src="js/external/backbone.js"></script>
 	<script src="js/backbone/devel.js"></script>
+	<script src="js/backbone/TemplateManager.js"></script>
 	<script src="js/backbone/models/BaseModel.js"></script>
 	<script src="js/backbone/models/ConfigModel.js"></script>
 	<script src="js/backbone/models/PackageModel.js"></script>
@@ -53,6 +53,7 @@
 	<script src="js/backbone/views/FontView.js"></script>
 	<script src="js/backbone/Router.js"></script>	
 	<script src="js/backbone/helper.js"></script>	
+	<script src="js/appBootstrap.js"></script>
 	
 	<script>jQuery(function() { 
 			app.bootstrap({
@@ -85,8 +86,7 @@
 	</script>
 </head>
 <body>
-	<script id="template-app" type="text/template">
-	</script>
+	<script id="template-app" type="text/template"></script>
 	<script id="template-toolbar" type="text/template">
 		<div id="toolbar-close">Close</div>
 		<div id="toolbar-content"></div>

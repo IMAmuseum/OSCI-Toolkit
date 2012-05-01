@@ -21,6 +21,7 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 	
 	initialize: function() {
 		app.dispatcher.bind('figuresAvailable', function(figures) {
+			console.log('figuresAvailable', figures);
 			this.populateFromMarkup(figures);
 		}, this);
 	},
@@ -45,8 +46,16 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 				caption:    $('figcaption', markup).html(),
 				position:   $(markup).attr('data-position'),
 				columns:    $(markup).attr('data-columns'),
-				options:    JSON.parse($(markup).attr('data-options'))
+				options:    JSON.parse($(markup).attr('data-options')),
+				thumbnail_url: null, // TODO: set to a default?
+				preview_url: null
 			};
+			var image = $('.figure_content img', markup);
+			if (image.length) {
+				figure.thumbnail_url = image.attr('src');
+				figure.preview_url = image.attr('src');
+			}
+
 			this.add(figure);
 		}, this);
 	}
@@ -989,7 +998,7 @@ jQuery(function() {
 			// Set the width of the figure reel if there is more than one thumbnail
 			if (fig_data.length > 1) {
 				var thumbs = $('#toolbar figure.thumbnail');
-				$('#toolbar .figure-reel').width(thumbs.length * (thumbs.outerWidth(true)));
+				$('#toolbar .figure-browser .figure-reel').width(thumbs.length * (thumbs.outerWidth(true)));
 			}
 
 			// When the reader clicks on a figure thumbnail, show the preview for that figure...
