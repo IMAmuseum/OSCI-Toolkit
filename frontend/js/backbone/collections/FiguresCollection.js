@@ -22,6 +22,7 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 	 */
 	populateFromMarkup: function(data) {
 		_.each(data, function(markup) {
+			
 			var idComponents = markup.id.match(/\w+-(\d+)-(\d+)/);
 			var figure = {
 				id:         markup.id,
@@ -37,13 +38,25 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 				thumbnail_url: null, // TODO: set to a default?
 				preview_url: null
 			};
-			var image = $('.figure_content img', markup);
-			if (image.length) {
-				figure.thumbnail_url = image.attr('src');
-				figure.preview_url = image.attr('src');
+
+			// First, check for an explicit thumbnail
+			var thumbnail = $(markup).children('img.thumbnail');
+			if (thumbnail.length) {				
+				figure.thumbnail_url = thumbnail.attr('src');
+				figure.preview_url = thumbnail.attr('src');				
+			} else {
+				// No explicit thumbnail, default to the first image in the figure content
+				var image = $('.figure_content img', markup);
+				if (image.length) {
+					figure.thumbnail_url = image.attr('src');
+					figure.preview_url = image.attr('src');
+				}
+				// TODO: Default to the figure type default?
+				// TODO: If figure type default does not exist, use generic default 
 			}
 
 			this.add(figure);
+
 		}, this);
 	}
 });
