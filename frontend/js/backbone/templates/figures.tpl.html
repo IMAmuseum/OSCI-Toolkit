@@ -15,18 +15,18 @@
 	<div class='figure-nav prev' title='Previous figure'>&lt;</div>
 	<div class='figure-nav next' title='Next Figure'>&gt;</div>
 
-	<h2><span class='back-to-grid'>&laquo; Figures</span> | <span class='title'>Fig x.y - Figure title text?</span></h2>
+	<h2><span class='back-to-grid'>&laquo; Figures</span> | <span class='title'>TITLE</span></h2>
 	<div class='figure-tray'>
 		<div class='figure-reel'>
 			<% _.each(figures, function(figure) { %>
 				<figure class='preview' data-figure-id="<%= figure.id %>">
 					<div class='figure-preview' style="background-image: url('<%= figure.thumbnail_url %>');" >&nbsp;</div>
 					<div class='figure-info'>
-						<h3 class='title'>Figure Title Here</h3>
-						<p class='meta-info'>meta info | more meta info</p>
-						<p class='description'>
-						First, I believe that this nation should commit itself to achieving the goal, before this decade is out, of landing a man on the moon and returning him safely to the earth. No single space project in this period will be more impressive to mankind, or more important for the long-range exploration of space; and none will be so difficult or expensive to accomplish.
-						</p>
+						<!--<h3 class='title'>Figure Title?</h3>-->
+						<!--<p class='meta-info'>meta info | more meta</p>-->
+						<div class='caption'>
+							<%= figure.caption %>
+						</div>
 					</div>
 				</figure>
 			<% }); %>
