@@ -3,84 +3,78 @@ if (typeof OsciTk === 'undefined'){OsciTk = {};}
 if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 // OsciTk Namespace Initialization //
 
-jQuery(function() {
-	OsciTk.views.Section = OsciTk.views.BaseView.extend({
-		id: 'section',
-		template: _.template($('#template-section').html()),
-		initialize: function() {
+OsciTk.views.Section = OsciTk.views.BaseView.extend({
+	id: 'section',
+	initialize: function() {
 
-			_.defaults(this.options, {
-				pageView : 'Page'
-			});
+		_.defaults(this.options, {
+			pageView : 'Page'
+		});
 
-			// bind sectionChanged
-			app.dispatcher.on('currentNavigationItemChanged', function() {
-				if (app.collections.navigationItems.getCurrentNavigationItem()) {
-					// loading section content
-					var navItem = app.collections.navigationItems.getCurrentNavigationItem();
+		// bind sectionChanged
+		app.dispatcher.on('currentNavigationItemChanged', function() {
+			if (app.collections.navigationItems.getCurrentNavigationItem()) {
+				// loading section content
+				var navItem = app.collections.navigationItems.getCurrentNavigationItem();
 
-					app.models.section = new OsciTk.models.Section({
-						uri : navItem.get('uri')
-					});
-
-					app.models.section.loadContent();
-					this.changeModel(app.models.section);
-					this.removeAllChildViews();
-					this.render();
-				}
-			}, this);
-		},
-		render: function() {
-			app.dispatcher.trigger("layoutStart");
-
-			this.renderContent();
-
-			app.dispatcher.trigger("layoutComplete", {numPages : this.model.get('pages').length});
-
-			return this;
-		},
-		onClose: function() {
-			this.model.removeAllPages();
-		},
-		getPageForProcessing : function(id) {
-			var page;
-
-			if (id !== undefined) {
-				page = this.getChildViewById(id);
-			} else {
-				page = _.filter(this.getChildViews(), function(page){
-					return page.isPageComplete() === false;
+				app.models.section = new OsciTk.models.Section({
+					uri : navItem.get('uri')
 				});
 
-				if (page.length === 0) {
-					this.model.get('pages').add({});
-
-					page = new OsciTk.views[this.options.pageView]({
-						model : this.model.get('pages').at(this.model.get('pages').length - 1)
-					});
-					this.addView(page);
-				} else {
-					page = page.pop();
-				}
+				app.models.section.loadContent();
+				this.changeModel(app.models.section);
+				this.removeAllChildViews();
+				this.render();
 			}
+		}, this);
+	},
+	render: function() {
+		app.dispatcher.trigger("layoutStart");
 
-			return page;
-		},
-		renderContent: function() {
-			//add the template to the page
-			this.$el.html(this.template());
+		this.renderContent();
 
-			//basic layout just loads the content into a single page with scrolling
-			var pageView = this.getPageForProcessing();
+		app.dispatcher.trigger("layoutComplete", {numPages : this.model.get('pages').length});
 
-			//add the content to the view/model
-			pageView.addContent(this.model.get('content').find('body').html());
+		return this;
+	},
+	onClose: function() {
+		this.model.removeAllPages();
+	},
+	getPageForProcessing : function(id) {
+		var page;
 
-			//render the view
-			pageView.render();
+		if (id !== undefined) {
+			page = this.getChildViewById(id);
+		} else {
+			page = _.filter(this.getChildViews(), function(page){
+				return page.isPageComplete() === false;
+			});
 
-			//mark processing complete (not necessary, but here for example)
-			pageView.processingComplete();
+			if (page.length === 0) {
+				this.model.get('pages').add({});
+
+				page = new OsciTk.views[this.options.pageView]({
+					model : this.model.get('pages').at(this.model.get('pages').length - 1)
+				});
+				this.addView(page);
+			} else {
+				page = page.pop();
+			}
 		}
-	});
+
+		return page;
+	},
+	renderContent: function() {
+		//basic layout just loads the content into a single page with scrolling
+		var pageView = this.getPageForProcessing();
+
+		//add the content to the view/model
+		pageView.addContent(this.model.get('content').find('body').html());
+
+		//render the view
+		pageView.render();
+
+		//mark processing complete (not necessary, but here for example)
+		pageView.processingComplete();
+	}
 });

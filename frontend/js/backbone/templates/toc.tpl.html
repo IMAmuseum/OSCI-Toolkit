@@ -1,0 +1,20 @@
+<h2>Table of Contents</h2>
+<ul>
+	<% _.each(items, function(item) { %>
+		<li class="toc-item">
+			<a data-section-id="<%= item.id %>">
+				<div class="toc-item-thumbnail">
+					<% if (item.get('thumbnail')) { %>
+						<img src="<%= item.get('thumbnail') %>">
+					<% } %>
+				</div>
+				<div class="toc-item-text">
+					<h4><%= item.get('title') %></h4>
+					<% if (item.get('subtitle')) { %>
+						<h5><%= item.get('subtitle') %></h5>
+					<% } %>
+				</div>
+			</a>
+		</li>
+	<% }); %>
+</ul>

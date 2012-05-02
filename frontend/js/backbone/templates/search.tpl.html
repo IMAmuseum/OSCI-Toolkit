@@ -1,0 +1,31 @@
+<div id="search-header">
+	<div id="search-box">
+		<form id="search-form" name="search-form" method="POST">
+			<input type="text" name="keyword" id="search-keyword" placeholder="search" value="<%= query %>"/>
+			<input type="hidden" name="page" id="search-page" />
+		</form>
+	</div>
+</div>
+<% if (searchResults.length > 0) { %>
+	<div id="search-summary">Result(s) for "<%= searchResults.keyword %>" (<%= searchResults.length %>)</div>
+	<div id="search-sort">
+		Sort By: 
+		<div id="search-sort-relevance" data-selected="0">Relevance</div>
+		<div id="search-sort-type" data-selected="0">Type</div>
+	</div>
+	<div id="search-results">
+		<ul>
+			<% _.each(searchResults.models, function(result) { %>
+				<% if (result.get('bundle') === 'note') { %>
+					<li>
+						<%= result.get('bundle_name') %> 
+						sec.<%= result.get('im_field_section')[0] %> p.<%= result.get('is_paragraph_id') %> - 
+						<%= result.get('ss_body') %>
+					</li>
+				<% } else { %>
+					<li><%= result.get('bundle_name') %> - <%= result.get('ss_body') %></li>
+				<% } %>
+			<% }); %>
+		</ul>
+	</div>
+<% } %>

@@ -91,15 +91,15 @@ OsciTk.views.Account = OsciTk.views.BaseView.extend({
 		});
 	},
 	showRegistrationForm: function() {
-		this.template = _.template($('#template-account-register').html());
+		this.template = OsciTk.templateManager.get('account-register');
 		this.$el.html(this.template());
 	},
 	showLoginForm: function() {
-		this.template = _.template($('#template-account-login').html());
+		this.template = OsciTk.templateManager.get('account-login');
 		this.$el.html(this.template());
 	},
 	showProfile: function() {
-		this.template = _.template($('#template-account-profile').html());
+		this.template = OsciTk.templateManager.get('account-profile');
 		this.$el.html(this.template(this.model.toJSON()));
 	}
 });
