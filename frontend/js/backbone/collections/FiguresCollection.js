@@ -22,7 +22,7 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 	 */
 	populateFromMarkup: function(data) {
 		_.each(data, function(markup) {
-			
+
 			var idComponents = markup.id.match(/\w+-(\d+)-(\d+)/);
 			var figure = {
 				id:         markup.id,
@@ -36,7 +36,6 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 				columns:    $(markup).attr('data-columns'),
 				options:    JSON.parse($(markup).attr('data-options')),
 				thumbnail_url: null, // TODO: set to a default?
-				preview_url: null
 			};
 
 			// First, check for an explicit thumbnail
@@ -52,7 +51,6 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 					figure.preview_url = image.attr('src');
 				}
 				// TODO: Default to the figure type default?
-				// TODO: If figure type default does not exist, use generic default 
 			}
 
 			this.add(figure);
