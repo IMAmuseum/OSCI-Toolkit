@@ -1,0 +1,45 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<link rel='apple-touch-icon' href='img/icon-app-57.png' />
+	<link type="text/css" rel="stylesheet" href="dist/OSCI-Toolkit-0.1.0.min.css">
+	<script src="dist/OSCI-Toolkit-0.1.0-dependencies.min.js"></script>
+	<script src="dist/OSCI-Toolkit-0.1.0.min.js"></script>
+	
+	<script>
+		jQuery(function() { 
+			app.bootstrap({
+				packageUrl: 'sample/package.opf', 
+				endpoints: {
+					'OsciTkNotes': '/api/notes/',
+					'OsciTkNote': '/api/notes/',
+					'OsciTkSearch': '/api/search/',
+					'OsciTkOpenSearch': '/api/opensearch/',
+					'OsciTkAccount': '/api/users/'					
+				},
+				toolbarItems: [
+					{view: 'Toc', text: 'ToC'},
+					{view: 'Notes', text: 'Notes'},
+					{view: 'Figures', text:' Figures'},
+					{view: 'Search', text: 'Search'},
+					{view: 'Font', text: 'Font'},
+					{view: 'Account', text: 'Account'}
+				],
+				sectionView: 'MultiColumnSection',
+				sectionViewOptions: {
+					minColumnWidth : 200,
+					maxColumnWidth : 300,
+					gutterWidth : 40,
+					minLinesPerColumn : 5
+				}
+			});
+			app.run();
+		});
+	</script>
+</head>
+<body>
+
+</body>
+</html>
