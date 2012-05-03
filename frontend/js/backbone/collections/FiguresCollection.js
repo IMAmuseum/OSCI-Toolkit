@@ -35,14 +35,14 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 				position:   $(markup).attr('data-position'),
 				columns:    $(markup).attr('data-columns'),
 				options:    JSON.parse($(markup).attr('data-options')),
-				thumbnail_url: null, // TODO: set to a default?
+				thumbnail_url: null // TODO: set to a default?
 			};
 
 			// First, check for an explicit thumbnail
 			var thumbnail = $(markup).children('img.thumbnail');
-			if (thumbnail.length) {				
+			if (thumbnail.length) {
 				figure.thumbnail_url = thumbnail.attr('src');
-				figure.preview_url = thumbnail.attr('src');				
+				figure.preview_url = thumbnail.attr('src');
 			} else {
 				// No explicit thumbnail, default to the first image in the figure content
 				var image = $('.figure_content img', markup);
