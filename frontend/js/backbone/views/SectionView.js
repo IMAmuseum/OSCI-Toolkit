@@ -1,49 +1,80 @@
 // OsciTk Namespace Initialization //
 if (typeof OsciTk === 'undefined'){OsciTk = {};}
 if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initializaiotn //
+// OsciTk Namespace Initialization //
 
-jQuery(function() {
-	OsciTk.views.Section = OsciTk.views.BaseView.extend({
-		id: 'section',
-		template: _.template($('#template-section').html()),
-		initialize: function() {
-			// bind sectionChanged
-			app.dispatcher.on('currentNavigationItemChanged', function() {
-				if (app.collections.navigationItems.getCurrentNavigationItem()) {
-					// loading section content
-					var navItem = app.collections.navigationItems.getCurrentNavigationItem();
+OsciTk.views.Section = OsciTk.views.BaseView.extend({
+	id: 'section',
+	initialize: function() {
 
-					app.models.section = new OsciTk.models.Section({
-						uri : navItem.get('uri')
-					});
+		_.defaults(this.options, {
+			pageView : 'Page'
+		});
 
-					app.models.section.loadContent();
-					this.changeModel(app.models.section);
-					this.removeAllChildViews();
-					this.render();
-				}
-			}, this);
-		},
-		render: function() {
-			app.dispatcher.trigger("layoutStart");
+		// bind sectionChanged
+		app.dispatcher.on('currentNavigationItemChanged', function() {
+			if (app.collections.navigationItems.getCurrentNavigationItem()) {
+				// loading section content
+				var navItem = app.collections.navigationItems.getCurrentNavigationItem();
 
-			this.renderContent();
+				app.models.section = new OsciTk.models.Section({
+					uri : navItem.get('uri')
+				});
 
-			app.dispatcher.trigger("layoutComplete", {numPages : this.model.get('pages').length});
+				app.models.section.loadContent();
+				this.changeModel(app.models.section);
+				this.removeAllChildViews();
+				this.render();
+			}
+		}, this);
+	},
+	render: function() {
+		app.dispatcher.trigger("layoutStart");
 
-			return this;
-		},
-		renderContent: function() {
-			//basic layout just loads the content into a single page with scrolling
-			var pages = this.model.get('pages');
-			pages.add({
-				content : this.model.get('content').find('body').html()
+		this.renderContent();
+
+		app.dispatcher.trigger("layoutComplete", {numPages : this.model.get('pages').length});
+
+		return this;
+	},
+	onClose: function() {
+		this.model.removeAllPages();
+	},
+	getPageForProcessing : function(id) {
+		var page;
+
+		if (id !== undefined) {
+			page = this.getChildViewById(id);
+		} else {
+			page = _.filter(this.getChildViews(), function(page){
+				return page.isPageComplete() === false;
 			});
 
-			this.addView(new OsciTk.views.Page({
-				model : pages.at(pages.length - 1)
-			}));
+			if (page.length === 0) {
+				this.model.get('pages').add({});
+
+				page = new OsciTk.views[this.options.pageView]({
+					model : this.model.get('pages').at(this.model.get('pages').length - 1)
+				});
+				this.addView(page);
+			} else {
+				page = page.pop();
+			}
 		}
-	});
+
+		return page;
+	},
+	renderContent: function() {
+		//basic layout just loads the content into a single page with scrolling
+		var pageView = this.getPageForProcessing();
+
+		//add the content to the view/model
+		pageView.addContent(this.model.get('content').find('body').html());
+
+		//render the view
+		pageView.render();
+
+		//mark processing complete (not necessary, but here for example)
+		pageView.processingComplete();
+	}
 });

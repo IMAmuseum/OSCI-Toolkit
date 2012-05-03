@@ -1,10 +1,8 @@
 // OsciTk Namespace Initialization //
 if (typeof OsciTk === 'undefined'){OsciTk = {};}
 if (typeof OsciTk.models === 'undefined'){OsciTk.models = {};}
-// OsciTk Namespace Initializaiotn //
+// OsciTk Namespace Initialization //
 
-jQuery(function() {
-	OsciTk.models.SearchResult = OsciTk.models.BaseModel.extend({
-		
-	});
+OsciTk.models.SearchResult = OsciTk.models.BaseModel.extend({
+	
 });

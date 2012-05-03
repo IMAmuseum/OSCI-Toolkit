@@ -1,0 +1,35 @@
+<div class='figure-browser'>
+	<h2>Figures</h2>
+	<div class='figure-tray'>
+		<div class='figure-reel'>
+			<% _.each(figures, function(figure) { %>
+				<figure class='thumbnail' data-figure-id="<%= figure.id %>">
+					<div class='figure-thumbnail' style="background-image: url('<%= figure.thumbnail_url %>');" >&nbsp;</div>
+					<figcaption><%= figure.title %></figcaption>
+				</figure>
+			<% }); %>
+		</div>
+	</div>
+</div>
+<div class='figure-previews'>
+	<div class='figure-nav prev' title='Previous figure'>&lt;</div>
+	<div class='figure-nav next' title='Next Figure'>&gt;</div>
+
+	<h2><span class='back-to-grid'>&laquo; Figures</span> | <span class='title'>TITLE</span></h2>
+	<div class='figure-tray'>
+		<div class='figure-reel'>
+			<% _.each(figures, function(figure) { %>
+				<figure class='preview' data-figure-id="<%= figure.id %>">
+					<div class='figure-preview' style="background-image: url('<%= figure.thumbnail_url %>');" >&nbsp;</div>
+					<div class='figure-info'>
+						<!--<h3 class='title'>Figure Title?</h3>-->
+						<!--<p class='meta-info'>meta info | more meta</p>-->
+						<div class='caption'>
+							<%= figure.caption %>
+						</div>
+					</div>
+				</figure>
+			<% }); %>
+		</div>
+	</div>
+</div>

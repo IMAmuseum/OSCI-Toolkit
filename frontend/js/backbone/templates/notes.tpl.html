@@ -1,0 +1,12 @@
+<h2>Notes</h2>
+<ul>
+	<% _.each(notes, function(note) { %>
+		<li>
+			<p>P#<%= note.paragraph_id %> - <%= note.note %><br>
+			<% if (note.tags.length > 0) { %>
+				<small>tags: <% _.each(note.tags, function(tag) { %><%= tag %> <% }); %></small>
+			<% } %>
+			</p>
+		</li>
+	<% }); %>
+</ul>

@@ -32,6 +32,31 @@ function osci_tk_utility_osci_tk_figure_content($args) {
   }  
 }
 
+
+/**
+ * Determine the appropriate thumbnail to use for a figure
+ */
+function osci_tk_utility_osci_tk_figure_thumbnail($args) {
+
+	// TODO: Determine if a thumbnail was set on the figure first
+
+	$asset = node_load($args['item']['asset_reference']); 
+
+	if (!isset($args['item']['export'])) {
+		$args['item']['export'] = false;
+	}
+
+	if (property_exists($asset, 'field_asset_thumbnail') && isset($asset->field_asset_thumbnail['und'][0]['uri'])) {
+		$src = _osci_tk_epub_asset_process_uri(
+			$asset->field_asset_thumbnail['und'][0]['uri'],
+			$args['item']['export']
+		);
+		return "<img class='thumbnail' src='$src' />"; 
+	}  
+
+}
+
+
 function osci_tk_utility_osci_tk_figure_aspect($figure)
 {
 	$asset = node_load($figure['asset_reference']);
@@ -46,7 +71,6 @@ function osci_tk_utility_osci_tk_figure_aspect($figure)
 
 	return $aspect;
 }
-
 
 /**
  * Return resources associated with the figure

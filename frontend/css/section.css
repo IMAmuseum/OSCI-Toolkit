@@ -27,3 +27,7 @@
 
 
 }
+
+section figure img.thumbnail {
+	display: none;
+}

@@ -1,0 +1,91 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<link rel='apple-touch-icon' href='img/icon-app-57.png' />
+	<link type="text/css" rel="stylesheet" href="css/common.css">
+	<link type="text/css" rel="stylesheet" href="css/toolbar.css">
+	<link type="text/css" rel="stylesheet" href="css/section.css">
+	<link type="text/css" rel="stylesheet" href="css/multiColumnSection.css">
+	<link type="text/css" rel="stylesheet" href="css/search.css">
+	<link type="text/css" rel="stylesheet" href="css/navigation.css">
+	<script src="js/external/json2.js"></script>
+	<script src="js/external/jquery-1.7.1.js"></script>
+	<script src="js/external/underscore-1.3.3.js"></script>
+	<script src="js/external/backbone.js"></script>
+	<script src="js/backbone/devel.js"></script>
+	<script src="js/backbone/TemplateManager.js"></script>
+	<script src="js/backbone/models/BaseModel.js"></script>
+	<script src="js/backbone/models/ConfigModel.js"></script>
+	<script src="js/backbone/models/PackageModel.js"></script>
+	<script src="js/backbone/models/FigureModel.js"></script>
+	<script src="js/backbone/models/FootnoteModel.js"></script>
+	<script src="js/backbone/models/NavigationItemModel.js"></script>			
+	<script src="js/backbone/models/NoteModel.js"></script>
+	<script src="js/backbone/models/SearchResultModel.js"></script>
+	<script src="js/backbone/models/AccountModel.js"></script>
+	<script src="js/backbone/models/PageModel.js"></script>
+	<script src="js/backbone/models/SectionModel.js"></script>
+	<script src="js/backbone/collections/BaseCollection.js"></script>	
+	<script src="js/backbone/collections/FiguresCollection.js"></script>
+	<script src="js/backbone/collections/NavigationItemsCollection.js"></script>
+	<script src="js/backbone/collections/FootnotesCollection.js"></script>
+	<script src="js/backbone/collections/NotesCollection.js"></script>
+	<script src="js/backbone/collections/PagesCollection.js"></script>
+	<script src="js/backbone/collections/SearchResultsCollection.js"></script>
+	<script src="js/backbone/views/BaseView.js"></script>
+	<script src="js/backbone/views/AppView.js"></script>
+	<script src="js/backbone/views/SectionView.js"></script>
+	<script src="js/backbone/views/PageView.js"></script>
+	<script src="js/backbone/views/MultiColumnSectionView.js"></script>
+	<script src="js/backbone/views/MultiColumnPageView.js"></script>
+	<script src="js/backbone/views/ToolbarView.js"></script>
+	<script src="js/backbone/views/ToolbarItemView.js"></script>
+	<script src="js/backbone/views/NavigationView.js"></script>
+	<script src="js/backbone/views/SearchView.js"></script>
+	<script src="js/backbone/views/SearchResultsView.js"></script>
+	<script src="js/backbone/views/SearchResultView.js"></script>
+	<script src="js/backbone/views/NotesView.js"></script>
+	<script src="js/backbone/views/FiguresView.js"></script>	
+	<script src="js/backbone/views/TocView.js"></script>
+	<script src="js/backbone/views/AccountView.js"></script>
+	<script src="js/backbone/views/FontView.js"></script>
+	<script src="js/backbone/Router.js"></script>	
+	<script src="js/backbone/helper.js"></script>	
+	<script src="js/appBootstrap.js"></script>
+	
+	<script>jQuery(function() { 
+			app.bootstrap({
+				packageUrl: 'sample/package.opf', 
+				endpoints: {
+					'OsciTkNotes': '/api/notes/',
+					'OsciTkNote': '/api/notes/',
+					'OsciTkSearch': '/api/search/',
+					'OsciTkOpenSearch': '/api/opensearch/',
+					'OsciTkAccount': '/api/users/'					
+				},
+				toolbarItems: [
+					{view: 'Toc', text: 'ToC'},
+					{view: 'Notes', text: 'Notes'},
+					{view: 'Figures', text:' Figures'},
+					{view: 'Search', text: 'Search'},
+					{view: 'Font', text: 'Font'},
+					{view: 'Account', text: 'Account'}
+				],
+				sectionView: 'MultiColumnSection',
+				sectionViewOptions: {
+					minColumnWidth : 200,
+					maxColumnWidth : 300,
+					gutterWidth : 40,
+					minLinesPerColumn : 5
+				}
+			});
+			app.run();
+		});
+	</script>
+</head>
+<body>
+
+</body>
+</html>
