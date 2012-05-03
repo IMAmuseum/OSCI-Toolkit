@@ -67,9 +67,25 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 
 		//find figure references and process the figure
 		var figureLinks = content.find("a.figure_reference:not(.processed)");
-		//console.log(figureLinks, 'figureLinks');
 		if (figureLinks.length) {
-			
+			console.log(figureLinks, 'figureLinks');
+			_.first(figureLinks, function(figureLink){
+				figureLink = $(figureLink);
+				var figureId = figureLink.attr("href").substring(1),
+					figure = app.collections.figures.get(figureId);
+
+				console.log(figure);
+				if (figure.get('processed')) {
+					return false;
+				}
+
+				//make sure the figure link is in the viewable area of the current column
+				var linkLocation = figureLink.position().top;
+				if (linkLocation >= 0 && linkLocation <= column.height) {
+					
+				}
+				
+			});
 		}
 
 		var contentMargin = {
