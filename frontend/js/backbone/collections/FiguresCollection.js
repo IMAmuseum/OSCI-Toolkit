@@ -31,11 +31,12 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 				delta:      idComponents[2],
 				title:      $(markup).attr('title'),
 				caption:    $('figcaption', markup).html(),
-				position:   $(markup).attr('data-position'),
-				columns:    $(markup).attr('data-columns'),
-				options:    JSON.parse($(markup).attr('data-options')),
+				position:   $(markup).data('position'),
+				columns:    $(markup).data('data'),
+				options:    $(markup).data('options'),
 				thumbnail_url: undefined, // Defaults to image defined in css
-				type:       $(markup).attr('data-figure_type')
+				type:       $(markup).data('figure_type'),
+				aspect:     $(markup).data('aspect')
 			};
 
 			// First, check for an explicit thumbnail

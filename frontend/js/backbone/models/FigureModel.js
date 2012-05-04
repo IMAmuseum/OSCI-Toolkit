@@ -11,6 +11,7 @@ OsciTk.models.Figure = OsciTk.models.BaseModel.extend({
 			caption: null,
 			position: null,
 			columns: null,
+			aspect: 1,
 			body: null,
 			options: {}
 		};
