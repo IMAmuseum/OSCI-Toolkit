@@ -35,7 +35,7 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 				position:   $(markup).attr('data-position'),
 				columns:    $(markup).attr('data-columns'),
 				options:    JSON.parse($(markup).attr('data-options')),
-				thumbnail_url: null // TODO: set to a default?
+				thumbnail_url: undefined // Defaults to image defined in css
 			};
 
 			// First, check for an explicit thumbnail
@@ -50,7 +50,7 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 					figure.thumbnail_url = image.attr('src');
 					figure.preview_url = image.attr('src');
 				}
-				// TODO: Default to the figure type default?
+				// TODO: Default to the figure type default? Also via css?
 			}
 
 			this.add(figure);
