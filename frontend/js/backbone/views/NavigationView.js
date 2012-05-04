@@ -16,5 +16,11 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 	},
 	render: function() {
 		this.$el.html(this.template({numPages: this.numPages}));
+		if (this.numPages == 1) {
+			$('.pager').hide();
+		} else {
+			$('.pager').show();
+		}
+		$('.pager .head', this.$el).css('width', (100/this.numPages)+'%');
 	}
 });
