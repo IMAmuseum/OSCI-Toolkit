@@ -38,8 +38,8 @@
 
 #navigation .pager .head {
 	position:absolute;
-	left: 400px;
-	width: 100px;
+	left: 33%;
+	width: 33%;
 	height: 12px;
 	top: -1px;
 	background-color: #555;
