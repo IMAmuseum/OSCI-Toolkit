@@ -1,7 +1,59 @@
-div#navigation {
+#navigation {
+	font-family: sans-serif;
+	font-size: 0.8em;
 	position: absolute;
 	bottom: 10px;
 	left: 40px;
 	right: 40px;
 	height: 30px;
+}
+
+#navigation .header {
+	width: 100%;
+	text-align: center;
+}
+
+#navigation .prev-section {
+	position: absolute;
+	top: 50%;
+	left: 0px;
+}
+
+#navigation .next-section {
+	position: absolute;
+	top: 50%;
+	right: 0px;
+}
+
+#navigation .pager {
+	position: absolute;
+	bottom: -10px;
+	right: 100px;
+	left: 100px;
+	height: 10px;
+	background-color: #ddd;
+	border-radius: 5px;	
+	margin: 0px 20px;
+}
+
+#navigation .pager .head {
+	position:absolute;
+	left: 400px;
+	width: 100px;
+	height: 12px;
+	top: -1px;
+	background-color: #555;
+	border: 1px solid black;
+}
+
+#navigation .label {
+	text-align: center;
+}
+
+#navigation .button {
+	height: 10px;
+	width: 100px;
+	background-color: #A8C0C5;
+	border-radius: 5px;
+	cursor: pointer;
 }
