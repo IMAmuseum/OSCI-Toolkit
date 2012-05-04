@@ -1,5 +1,5 @@
 /*
- * OSCI Toolkit - v0.1.0 - 2012-05-02
+ * OSCI Toolkit - v0.1.0 - 2012-05-04
  * http://oscitoolkit.org/
  * Copyright (c) 2010-2012 The Art Institute of Chicago and the Indianapolis Museum of Art
  * GNU General Public License
@@ -124,7 +124,11 @@ jQuery(function() {
 		},
 	
 		initialize: function() {
-			
+			app.dispatcher.on('layoutComplete', function(section) {
+
+				//TODO: router should decide if going to a selector or the first page
+				app.dispatcher.trigger("navigate", {page: 1});
+			}, this);
 		},
 	
 		/**
@@ -338,19 +342,29 @@ __p+='<div class=\'figure-browser\'>\n\t<h2>Figures</h2>\n\t<div class=\'figure-
  _.each(figures, function(figure) { 
 ;__p+='\n\t\t\t\t<figure class=\'thumbnail\' data-figure-id="'+
 ( figure.id )+
-'">\n\t\t\t\t\t<div class=\'figure-thumbnail\' style="background-image: url(\''+
+'">\n\t\t\t\t\t<div class=\'figure-thumbnail\' ';
+ if (figure.thumbnail_url != undefined) { 
+;__p+='style="background-image: url(\''+
 ( figure.thumbnail_url )+
-'\');" >&nbsp;</div>\n\t\t\t\t\t<figcaption>'+
+'\');" ';
+ } 
+;__p+=' >&nbsp;</div>\n\t\t\t\t\t<figcaption>'+
 ( figure.title )+
 '</figcaption>\n\t\t\t\t</figure>\n\t\t\t';
  }); 
-;__p+='\n\t\t</div>\n\t</div>\n</div>\n<div class=\'figure-previews\'>\n\t<div class=\'figure-nav prev\' title=\'Previous figure\'>&lt;</div>\n\t<div class=\'figure-nav next\' title=\'Next Figure\'>&gt;</div>\n\n\t<h2><span class=\'back-to-grid\'>&laquo; Figures</span> | <span class=\'title\'>Fig x.y - Figure title text?</span></h2>\n\t<div class=\'figure-tray\'>\n\t\t<div class=\'figure-reel\'>\n\t\t\t';
+;__p+='\n\t\t</div>\n\t</div>\n</div>\n<div class=\'figure-previews\'>\n\t<div class=\'figure-nav prev\' title=\'Previous figure\'>&lt;</div>\n\t<div class=\'figure-nav next\' title=\'Next Figure\'>&gt;</div>\n\n\t<h2><span class=\'back-to-grid\'>&laquo; Figures</span> | <span class=\'title\'>TITLE</span></h2>\n\t<div class=\'figure-tray\'>\n\t\t<div class=\'figure-reel\'>\n\t\t\t';
  _.each(figures, function(figure) { 
 ;__p+='\n\t\t\t\t<figure class=\'preview\' data-figure-id="'+
 ( figure.id )+
-'">\n\t\t\t\t\t<div class=\'figure-preview\' style="background-image: url(\''+
-( figure.preview_url )+
-'\');" >&nbsp;</div>\n\t\t\t\t\t<div class=\'figure-info\'>\n\t\t\t\t\t\t<h3 class=\'title\'>Figure Title Here</h3>\n\t\t\t\t\t\t<p class=\'meta-info\'>meta info | more meta info</p>\n\t\t\t\t\t\t<p class=\'description\'>\n\t\t\t\t\t\tFirst, I believe that this nation should commit itself to achieving the goal, before this decade is out, of landing a man on the moon and returning him safely to the earth. No single space project in this period will be more impressive to mankind, or more important for the long-range exploration of space; and none will be so difficult or expensive to accomplish.\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</figure>\n\t\t\t';
+'">\n\t\t\t\t\t<div class=\'figure-preview\' ';
+ if (figure.thumbnail_url != undefined) { 
+;__p+='style="background-image: url(\''+
+( figure.thumbnail_url )+
+'\');"';
+ } 
+;__p+=' >&nbsp;</div>\n\t\t\t\t\t<div class=\'figure-info\'>\n\t\t\t\t\t\t<!--<h3 class=\'title\'>Figure Title?</h3>-->\n\t\t\t\t\t\t<!--<p class=\'meta-info\'>meta info | more meta</p>-->\n\t\t\t\t\t\t<div class=\'caption\'>\n\t\t\t\t\t\t\t'+
+( figure.caption )+
+'\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</figure>\n\t\t\t';
  }); 
 ;__p+='\n\t\t</div>\n\t</div>\n</div>';
 }
@@ -367,6 +381,13 @@ OsciTk.templates['multi-column-column'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<div class="column"></div>';
+}
+return __p;
+}
+OsciTk.templates['multi-column-section'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div id="pages"></div>';
 }
 return __p;
 }
@@ -846,7 +867,6 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 	
 	initialize: function() {
 		app.dispatcher.bind('figuresAvailable', function(figures) {
-			console.log('figuresAvailable', figures);
 			this.populateFromMarkup(figures);
 		}, this);
 	},
@@ -860,7 +880,7 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 	 */
 	populateFromMarkup: function(data) {
 		_.each(data, function(markup) {
-			
+
 			var idComponents = markup.id.match(/\w+-(\d+)-(\d+)/);
 			var figure = {
 				id:         markup.id,
@@ -873,15 +893,15 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 				position:   $(markup).attr('data-position'),
 				columns:    $(markup).attr('data-columns'),
 				options:    JSON.parse($(markup).attr('data-options')),
-				thumbnail_url: null, // TODO: set to a default?
-				preview_url: null
+				thumbnail_url: undefined, // Defaults to image defined in css
+				type:       $(markup).attr('data-figure_type')
 			};
 
 			// First, check for an explicit thumbnail
 			var thumbnail = $(markup).children('img.thumbnail');
-			if (thumbnail.length) {				
+			if (thumbnail.length) {
 				figure.thumbnail_url = thumbnail.attr('src');
-				figure.preview_url = thumbnail.attr('src');				
+				figure.preview_url = thumbnail.attr('src');
 			} else {
 				// No explicit thumbnail, default to the first image in the figure content
 				var image = $('.figure_content img', markup);
@@ -889,8 +909,7 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 					figure.thumbnail_url = image.attr('src');
 					figure.preview_url = image.attr('src');
 				}
-				// TODO: Default to the figure type default?
-				// TODO: If figure type default does not exist, use generic default 
+				// TODO: Default to the figure type default? Also via css?
 			}
 
 			this.add(figure);
@@ -1168,7 +1187,7 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 	onClose: function() {
 		this.model.removeAllPages();
 	},
-	getPageForProcessing : function(id) {
+	getPageForProcessing : function(id, newTarget) {
 		var page;
 
 		if (id !== undefined) {
@@ -1182,9 +1201,10 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 				this.model.get('pages').add({});
 
 				page = new OsciTk.views[this.options.pageView]({
-					model : this.model.get('pages').at(this.model.get('pages').length - 1)
+					model : this.model.get('pages').at(this.model.get('pages').length - 1),
+					pageNumber : this.model.get('pages').length
 				});
-				this.addView(page);
+				this.addView(page, newTarget);
 			} else {
 				page = page.pop();
 			}
@@ -1439,27 +1459,69 @@ if (typeof OsciTk === 'undefined'){OsciTk = {};}
 if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 // OsciTk Namespace Initialization //
 
+
+OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
+
+	tagName: 'figure',
+	processed: false,
+
+	initialize: function() {
+		this.preRender();
+	},
+
+	render: function() {
+		console.log("rendering");
+	},
+
+	preRender: function() {
+		var modelData = this.model.toJSON();
+		//console.log(this.options.sectionDimensions, 'dimensions');
+
+		if (modelData.position === "n") {
+			this.$el.hide();
+		}
+	}
+});
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
+// OsciTk Namespace Initialization //
+
 OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 	columnTemplate : OsciTk.templateManager.get('multi-column-column'),
+	visible: true,
 	onClose: function() {
 		this.model = undefined;
 	},
+
+	hide: function() {
+		this.$el.css("visibility", "hidden");
+		this.visible = false;
+	},
+
+	show: function() {
+		this.$el.css("visibility", "visible");
+		this.visible = true;
+	},
+
 	render : function() {
 		if (this.processingData.rendered) {
 			return this;
 		}
 
+		this.hide();
+
 		//size the page to fit the view window
 		this.$el.css({
-			width: this.parent.dimensions.innerPageWidth,
-			height: this.parent.dimensions.innerPageHeight
+			width: this.parent.dimensions.innerSectionWidth,
+			height: this.parent.dimensions.innerSectionHeight
 		});
 
 		this.processingData.columns = [];
 		for (var i = 0; i < this.parent.dimensions.columnsPerPage; i++) {
 			this.processingData.columns[i] = {
-				height : this.parent.dimensions.innerPageHeight,
-				heightRemain : this.parent.dimensions.innerPageHeight,
+				height : this.parent.dimensions.innerSectionHeight,
+				heightRemain : this.parent.dimensions.innerSectionHeight,
 				'$el' : null,
 				offset : 0
 			};
@@ -1502,10 +1564,36 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		}
 
 		//find figure references and process the figure
-		var figureLinks = content.find("a.figure_reference:not(.processed)");
-		//console.log(figureLinks, 'figureLinks');
-		if (figureLinks.length) {
-			
+		var figureLinks = content.find("a.figure_reference:not(.processed)"),
+			numFigureLinks = figureLinks.length;
+
+		if (numFigureLinks) {
+			for (var i = 0; i < numFigureLinks; i++) {
+				var figureLink = $(figureLinks[i]),
+					figureId = figureLink.attr("href").substring(1),
+					figure = app.collections.figures.get(figureId);
+
+				if (figure.get('processed')) {
+					continue;
+				}
+
+				//make sure the figure link is in the viewable area of the current column
+				var linkLocation = figureLink.position().top;
+				if (linkLocation <= 0 || linkLocation >= column.height) {
+					break;
+				}
+				
+				var figureType = figure.get('type'),
+					typeMap = app.config.get('figureViewTypeMap'),
+					figureView = typeMap[figureType] ? typeMap[figureType] : typeMap['default'];
+
+				var figureViewInstance = new OsciTk.views[figureView]({
+					model : figure,
+					sectionDimensions : this.parent.dimensions
+				});
+				this.addView(figureViewInstance);
+				//console.log(figureViewInstance, "place the figure");
+			}
 		}
 
 		var contentMargin = {
@@ -1602,6 +1690,8 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 
 OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
+	template: OsciTk.templateManager.get('multi-column-section'),
+
 	initialize: function() {
 		this.options.pageView = 'MultiColumnPage';
 
@@ -1609,6 +1699,12 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 			this.removeAllChildViews();
 			this.model.removeAllPages();
 			this.render();
+		}, this);
+
+		app.dispatcher.on("navigate", function(data) {
+			this.getChildViewByIndex(data.page - 1).show();
+			var offset = (data.page - 1) * (this.dimensions.innerSectionHeight)* -1;
+			this.$el.find("#pages").css("-webkit-transform", "translateY(" + offset + "px)");
 		}, this);
 
 		this.$el.addClass("oscitk_multi_column");
@@ -1628,6 +1724,8 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 	},
 
 	renderContent: function() {
+		this.$el.html(this.template());
+
 		this.calculateDimensions();
 
 		//setup location to store layout housekeeping information
@@ -1643,7 +1741,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 		var i = 0;
 		while(this.layoutData.items > 0) {
-			var pageView = this.getPageForProcessing();
+			var pageView = this.getPageForProcessing(undefined, "#pages");
 
 			if (!pageView.processingData.rendered) {
 				pageView.render();
@@ -1678,7 +1776,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		dimensions.gutterWidth = this.options.gutterWidth;
 
 		//get the margins of the section container
-		dimensions.pageMargin = {
+		dimensions.sectionMargin = {
 			left : parseInt(this.$el.css("margin-left"), 10),
 			top : parseInt(this.$el.css("margin-top"), 10),
 			right : parseInt(this.$el.css("margin-right"), 10),
@@ -1686,7 +1784,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		};
 
 		//get the padding of the section container
-		dimensions.pagePadding = {
+		dimensions.sectionPadding = {
 			left : parseInt(this.$el.css("padding-left"), 10),
 			top : parseInt(this.$el.css("padding-top"), 10),
 			right : parseInt(this.$el.css("padding-right"), 10),
@@ -1694,31 +1792,31 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		};
 
 		//determine the correct height for the section container to eliminate scrolling
-		dimensions.outerPageHeight = windowHeight - dimensions.pageMargin.top - dimensions.pageMargin.bottom;
-		dimensions.innerPageHeight = dimensions.outerPageHeight - dimensions.pagePadding.top - dimensions.pagePadding.bottom;
+		dimensions.outerSectionHeight = windowHeight - dimensions.sectionMargin.top - dimensions.sectionMargin.bottom;
+		dimensions.innerSectionHeight = dimensions.outerSectionHeight - dimensions.sectionPadding.top - dimensions.sectionPadding.bottom;
 
 		//determine the correct width for the section container
-		dimensions.outerPageWidth = this.$el.outerWidth();
-		dimensions.innerPageWidth = dimensions.outerPageWidth - dimensions.pagePadding.left - dimensions.pagePadding.right;
+		dimensions.outerSectionWidth = this.$el.outerWidth();
+		dimensions.innerSectionWidth = dimensions.outerSectionWidth - dimensions.sectionPadding.left - dimensions.sectionPadding.right;
 
 		//column width
-		if (dimensions.innerPageWidth < this.options.maxColumnWidth) {
-			dimensions.columnWidth = dimensions.innerPageWidth;
+		if (dimensions.innerSectionWidth < this.options.maxColumnWidth) {
+			dimensions.columnWidth = dimensions.innerSectionWidth;
 		} else {
 			dimensions.columnWidth = this.options.maxColumnWidth;
 		}
 
 		//Determine the number of columns per page
-		dimensions.columnsPerPage = Math.floor(dimensions.innerPageWidth / dimensions.columnWidth);
-		if (dimensions.innerPageWidth < (dimensions.columnsPerPage * dimensions.columnWidth) + ((dimensions.columnsPerPage - 1) * this.options.gutterWidth))
+		dimensions.columnsPerPage = Math.floor(dimensions.innerSectionWidth / dimensions.columnWidth);
+		if (dimensions.innerSectionWidth < (dimensions.columnsPerPage * dimensions.columnWidth) + ((dimensions.columnsPerPage - 1) * this.options.gutterWidth))
 		{
 			dimensions.columnsPerPage = dimensions.columnsPerPage - 1;
 		}
 
 		//Large gutters look ugly... reset column width if gutters get too big
-		var gutterCheck = (dimensions.innerPageWidth - (dimensions.columnsPerPage * dimensions.columnWidth)) / (dimensions.columnsPerPage - 1);
+		var gutterCheck = (dimensions.innerSectionWidth - (dimensions.columnsPerPage * dimensions.columnWidth)) / (dimensions.columnsPerPage - 1);
 		if (gutterCheck > this.options.gutterWidth) {
-			dimensions.columnWidth = (dimensions.innerPageWidth - (this.options.gutterWidth * (dimensions.columnsPerPage - 1))) / dimensions.columnsPerPage;
+			dimensions.columnWidth = (dimensions.innerSectionWidth - (this.options.gutterWidth * (dimensions.columnsPerPage - 1))) / dimensions.columnsPerPage;
 		}
 
 		this.dimensions = dimensions;

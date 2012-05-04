@@ -8,7 +8,6 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 	
 	initialize: function() {
 		app.dispatcher.bind('figuresAvailable', function(figures) {
-			console.log('figuresAvailable', figures);
 			this.populateFromMarkup(figures);
 		}, this);
 	},

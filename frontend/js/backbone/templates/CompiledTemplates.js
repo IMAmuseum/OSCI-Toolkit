@@ -45,19 +45,29 @@ __p+='<div class=\'figure-browser\'>\n\t<h2>Figures</h2>\n\t<div class=\'figure-
  _.each(figures, function(figure) { 
 ;__p+='\n\t\t\t\t<figure class=\'thumbnail\' data-figure-id="'+
 ( figure.id )+
-'">\n\t\t\t\t\t<div class=\'figure-thumbnail\' style="background-image: url(\''+
+'">\n\t\t\t\t\t<div class=\'figure-thumbnail\' ';
+ if (figure.thumbnail_url != undefined) { 
+;__p+='style="background-image: url(\''+
 ( figure.thumbnail_url )+
-'\');" >&nbsp;</div>\n\t\t\t\t\t<figcaption>'+
+'\');" ';
+ } 
+;__p+=' >&nbsp;</div>\n\t\t\t\t\t<figcaption>'+
 ( figure.title )+
 '</figcaption>\n\t\t\t\t</figure>\n\t\t\t';
  }); 
-;__p+='\n\t\t</div>\n\t</div>\n</div>\n<div class=\'figure-previews\'>\n\t<div class=\'figure-nav prev\' title=\'Previous figure\'>&lt;</div>\n\t<div class=\'figure-nav next\' title=\'Next Figure\'>&gt;</div>\n\n\t<h2><span class=\'back-to-grid\'>&laquo; Figures</span> | <span class=\'title\'>Fig x.y - Figure title text?</span></h2>\n\t<div class=\'figure-tray\'>\n\t\t<div class=\'figure-reel\'>\n\t\t\t';
+;__p+='\n\t\t</div>\n\t</div>\n</div>\n<div class=\'figure-previews\'>\n\t<div class=\'figure-nav prev\' title=\'Previous figure\'>&lt;</div>\n\t<div class=\'figure-nav next\' title=\'Next Figure\'>&gt;</div>\n\n\t<h2><span class=\'back-to-grid\'>&laquo; Figures</span> | <span class=\'title\'>TITLE</span></h2>\n\t<div class=\'figure-tray\'>\n\t\t<div class=\'figure-reel\'>\n\t\t\t';
  _.each(figures, function(figure) { 
 ;__p+='\n\t\t\t\t<figure class=\'preview\' data-figure-id="'+
 ( figure.id )+
-'">\n\t\t\t\t\t<div class=\'figure-preview\' style="background-image: url(\''+
-( figure.preview_url )+
-'\');" >&nbsp;</div>\n\t\t\t\t\t<div class=\'figure-info\'>\n\t\t\t\t\t\t<h3 class=\'title\'>Figure Title Here</h3>\n\t\t\t\t\t\t<p class=\'meta-info\'>meta info | more meta info</p>\n\t\t\t\t\t\t<p class=\'description\'>\n\t\t\t\t\t\tFirst, I believe that this nation should commit itself to achieving the goal, before this decade is out, of landing a man on the moon and returning him safely to the earth. No single space project in this period will be more impressive to mankind, or more important for the long-range exploration of space; and none will be so difficult or expensive to accomplish.\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</figure>\n\t\t\t';
+'">\n\t\t\t\t\t<div class=\'figure-preview\' ';
+ if (figure.thumbnail_url != undefined) { 
+;__p+='style="background-image: url(\''+
+( figure.thumbnail_url )+
+'\');"';
+ } 
+;__p+=' >&nbsp;</div>\n\t\t\t\t\t<div class=\'figure-info\'>\n\t\t\t\t\t\t<!--<h3 class=\'title\'>Figure Title?</h3>-->\n\t\t\t\t\t\t<!--<p class=\'meta-info\'>meta info | more meta</p>-->\n\t\t\t\t\t\t<div class=\'caption\'>\n\t\t\t\t\t\t\t'+
+( figure.caption )+
+'\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</figure>\n\t\t\t';
  }); 
 ;__p+='\n\t\t</div>\n\t</div>\n</div>';
 }
@@ -74,6 +84,13 @@ OsciTk.templates['multi-column-column'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<div class="column"></div>';
+}
+return __p;
+}
+OsciTk.templates['multi-column-section'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div id="pages"></div>';
 }
 return __p;
 }
