@@ -40,6 +40,7 @@
 	<script src="js/backbone/views/PageView.js"></script>
 	<script src="js/backbone/views/MultiColumnSectionView.js"></script>
 	<script src="js/backbone/views/MultiColumnPageView.js"></script>
+	<script src="js/backbone/views/MultiColumnFigureView.js"></script>
 	<script src="js/backbone/views/ToolbarView.js"></script>
 	<script src="js/backbone/views/ToolbarItemView.js"></script>
 	<script src="js/backbone/views/NavigationView.js"></script>
@@ -79,6 +80,9 @@
 					maxColumnWidth : 300,
 					gutterWidth : 40,
 					minLinesPerColumn : 5
+				},
+				figureViewTypeMap: {
+					'default': 'MultiColumnFigure' 
 				}
 			});
 			app.run();

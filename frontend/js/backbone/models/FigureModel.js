@@ -12,8 +12,7 @@ OsciTk.models.Figure = OsciTk.models.BaseModel.extend({
 			position: null,
 			columns: null,
 			body: null,
-			options: {},
-			processed: false
+			options: {}
 		};
 	}
 });

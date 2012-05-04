@@ -40,7 +40,7 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 	onClose: function() {
 		this.model.removeAllPages();
 	},
-	getPageForProcessing : function(id) {
+	getPageForProcessing : function(id, newTarget) {
 		var page;
 
 		if (id !== undefined) {
@@ -54,9 +54,10 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 				this.model.get('pages').add({});
 
 				page = new OsciTk.views[this.options.pageView]({
-					model : this.model.get('pages').at(this.model.get('pages').length - 1)
+					model : this.model.get('pages').at(this.model.get('pages').length - 1),
+					pageNumber : this.model.get('pages').length
 				});
-				this.addView(page);
+				this.addView(page, newTarget);
 			} else {
 				page = page.pop();
 			}

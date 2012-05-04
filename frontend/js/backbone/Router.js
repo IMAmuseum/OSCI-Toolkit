@@ -11,7 +11,11 @@ jQuery(function() {
 		},
 	
 		initialize: function() {
-			
+			app.dispatcher.on('layoutComplete', function(section) {
+
+				//TODO: router should decide if going to a selector or the first page
+				app.dispatcher.trigger("navigate", {page: 1});
+			}, this);
 		},
 	
 		/**

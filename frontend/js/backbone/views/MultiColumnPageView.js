@@ -5,25 +5,39 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 
 OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 	columnTemplate : OsciTk.templateManager.get('multi-column-column'),
+	visible: true,
 	onClose: function() {
 		this.model = undefined;
 	},
+
+	hide: function() {
+		this.$el.css("visibility", "hidden");
+		this.visible = false;
+	},
+
+	show: function() {
+		this.$el.css("visibility", "visible");
+		this.visible = true;
+	},
+
 	render : function() {
 		if (this.processingData.rendered) {
 			return this;
 		}
 
+		this.hide();
+
 		//size the page to fit the view window
 		this.$el.css({
-			width: this.parent.dimensions.innerPageWidth,
-			height: this.parent.dimensions.innerPageHeight
+			width: this.parent.dimensions.innerSectionWidth,
+			height: this.parent.dimensions.innerSectionHeight
 		});
 
 		this.processingData.columns = [];
 		for (var i = 0; i < this.parent.dimensions.columnsPerPage; i++) {
 			this.processingData.columns[i] = {
-				height : this.parent.dimensions.innerPageHeight,
-				heightRemain : this.parent.dimensions.innerPageHeight,
+				height : this.parent.dimensions.innerSectionHeight,
+				heightRemain : this.parent.dimensions.innerSectionHeight,
 				'$el' : null,
 				offset : 0
 			};
@@ -66,26 +80,36 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		}
 
 		//find figure references and process the figure
-		var figureLinks = content.find("a.figure_reference:not(.processed)");
-		if (figureLinks.length) {
-			console.log(figureLinks, 'figureLinks');
-			_.first(figureLinks, function(figureLink){
-				figureLink = $(figureLink);
-				var figureId = figureLink.attr("href").substring(1),
+		var figureLinks = content.find("a.figure_reference:not(.processed)"),
+			numFigureLinks = figureLinks.length;
+
+		if (numFigureLinks) {
+			for (var i = 0; i < numFigureLinks; i++) {
+				var figureLink = $(figureLinks[i]),
+					figureId = figureLink.attr("href").substring(1),
 					figure = app.collections.figures.get(figureId);
 
-				console.log(figure);
 				if (figure.get('processed')) {
-					return false;
+					continue;
 				}
 
 				//make sure the figure link is in the viewable area of the current column
 				var linkLocation = figureLink.position().top;
-				if (linkLocation >= 0 && linkLocation <= column.height) {
-					
+				if (linkLocation <= 0 || linkLocation >= column.height) {
+					break;
 				}
 				
-			});
+				var figureType = figure.get('type'),
+					typeMap = app.config.get('figureViewTypeMap'),
+					figureView = typeMap[figureType] ? typeMap[figureType] : typeMap['default'];
+
+				var figureViewInstance = new OsciTk.views[figureView]({
+					model : figure,
+					sectionDimensions : this.parent.dimensions
+				});
+				this.addView(figureViewInstance);
+				//console.log(figureViewInstance, "place the figure");
+			}
 		}
 
 		var contentMargin = {

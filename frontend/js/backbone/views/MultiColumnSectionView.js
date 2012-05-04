@@ -6,6 +6,8 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 
 OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
+	template: OsciTk.templateManager.get('multi-column-section'),
+
 	initialize: function() {
 		this.options.pageView = 'MultiColumnPage';
 
@@ -13,6 +15,12 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 			this.removeAllChildViews();
 			this.model.removeAllPages();
 			this.render();
+		}, this);
+
+		app.dispatcher.on("navigate", function(data) {
+			this.getChildViewByIndex(data.page - 1).show();
+			var offset = (data.page - 1) * (this.dimensions.innerSectionHeight)* -1;
+			this.$el.find("#pages").css("-webkit-transform", "translateY(" + offset + "px)");
 		}, this);
 
 		this.$el.addClass("oscitk_multi_column");
@@ -32,6 +40,8 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 	},
 
 	renderContent: function() {
+		this.$el.html(this.template());
+
 		this.calculateDimensions();
 
 		//setup location to store layout housekeeping information
@@ -47,7 +57,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 		var i = 0;
 		while(this.layoutData.items > 0) {
-			var pageView = this.getPageForProcessing();
+			var pageView = this.getPageForProcessing(undefined, "#pages");
 
 			if (!pageView.processingData.rendered) {
 				pageView.render();
@@ -82,7 +92,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		dimensions.gutterWidth = this.options.gutterWidth;
 
 		//get the margins of the section container
-		dimensions.pageMargin = {
+		dimensions.sectionMargin = {
 			left : parseInt(this.$el.css("margin-left"), 10),
 			top : parseInt(this.$el.css("margin-top"), 10),
 			right : parseInt(this.$el.css("margin-right"), 10),
@@ -90,7 +100,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		};
 
 		//get the padding of the section container
-		dimensions.pagePadding = {
+		dimensions.sectionPadding = {
 			left : parseInt(this.$el.css("padding-left"), 10),
 			top : parseInt(this.$el.css("padding-top"), 10),
 			right : parseInt(this.$el.css("padding-right"), 10),
@@ -98,31 +108,31 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		};
 
 		//determine the correct height for the section container to eliminate scrolling
-		dimensions.outerPageHeight = windowHeight - dimensions.pageMargin.top - dimensions.pageMargin.bottom;
-		dimensions.innerPageHeight = dimensions.outerPageHeight - dimensions.pagePadding.top - dimensions.pagePadding.bottom;
+		dimensions.outerSectionHeight = windowHeight - dimensions.sectionMargin.top - dimensions.sectionMargin.bottom;
+		dimensions.innerSectionHeight = dimensions.outerSectionHeight - dimensions.sectionPadding.top - dimensions.sectionPadding.bottom;
 
 		//determine the correct width for the section container
-		dimensions.outerPageWidth = this.$el.outerWidth();
-		dimensions.innerPageWidth = dimensions.outerPageWidth - dimensions.pagePadding.left - dimensions.pagePadding.right;
+		dimensions.outerSectionWidth = this.$el.outerWidth();
+		dimensions.innerSectionWidth = dimensions.outerSectionWidth - dimensions.sectionPadding.left - dimensions.sectionPadding.right;
 
 		//column width
-		if (dimensions.innerPageWidth < this.options.maxColumnWidth) {
-			dimensions.columnWidth = dimensions.innerPageWidth;
+		if (dimensions.innerSectionWidth < this.options.maxColumnWidth) {
+			dimensions.columnWidth = dimensions.innerSectionWidth;
 		} else {
 			dimensions.columnWidth = this.options.maxColumnWidth;
 		}
 
 		//Determine the number of columns per page
-		dimensions.columnsPerPage = Math.floor(dimensions.innerPageWidth / dimensions.columnWidth);
-		if (dimensions.innerPageWidth < (dimensions.columnsPerPage * dimensions.columnWidth) + ((dimensions.columnsPerPage - 1) * this.options.gutterWidth))
+		dimensions.columnsPerPage = Math.floor(dimensions.innerSectionWidth / dimensions.columnWidth);
+		if (dimensions.innerSectionWidth < (dimensions.columnsPerPage * dimensions.columnWidth) + ((dimensions.columnsPerPage - 1) * this.options.gutterWidth))
 		{
 			dimensions.columnsPerPage = dimensions.columnsPerPage - 1;
 		}
 
 		//Large gutters look ugly... reset column width if gutters get too big
-		var gutterCheck = (dimensions.innerPageWidth - (dimensions.columnsPerPage * dimensions.columnWidth)) / (dimensions.columnsPerPage - 1);
+		var gutterCheck = (dimensions.innerSectionWidth - (dimensions.columnsPerPage * dimensions.columnWidth)) / (dimensions.columnsPerPage - 1);
 		if (gutterCheck > this.options.gutterWidth) {
-			dimensions.columnWidth = (dimensions.innerPageWidth - (this.options.gutterWidth * (dimensions.columnsPerPage - 1))) / dimensions.columnsPerPage;
+			dimensions.columnWidth = (dimensions.innerSectionWidth - (this.options.gutterWidth * (dimensions.columnsPerPage - 1))) / dimensions.columnsPerPage;
 		}
 
 		this.dimensions = dimensions;
