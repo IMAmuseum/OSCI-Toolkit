@@ -13,6 +13,10 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 			this.numPages = section.numPages;
 			this.render();
 		}, this);
+		app.dispatcher.on('pageChanged', function(info) {
+			this.page = info.page;
+			this.update(info.page);
+		}, this);
 	},
 	render: function() {
 		this.$el.html(this.template({numPages: this.numPages}));
@@ -24,23 +28,34 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 		var width = (100/this.numPages);
 		$('.pager .head', this.$el).css('width', width + '%');
 
-		// TODO: determine which page is being viewed (from router?)
-		var page = 1;
+		this.update(this.page);
+
+	},
+	update: function(page) {
+
+		var width = (100/this.numPages);
 		$('.pager .head', this.$el).css('left', width * (page-1) + '%');
 
-		console.log('Page indicator placed at ' + page + ' of ' + this.numPages);
+		//console.log('Page indicator placed at ' + page + ' of ' + this.numPages);
 
-		$('.next-page', this.$el).click(function () {
-			if (page < this.numPages) {
-				app.dispatcher.trigger('navigate', { page: page+1 });
-			}
-		});
-
-		$('.prev-page', this.$el).click(function () {
-			if (page > 1) {
+		// Set previous button state
+		if (page == 1) {
+			$('.prev-page', this.$el).addClass('inactive').unbind('click');
+		} else if (this.numPages > 1) {
+			$('.prev-page', this.$el).removeClass('inactive').click(function () {
 				app.dispatcher.trigger('navigate', { page: page-1 });
-			}
-		});
+			});
+		}
+
+		// Set next button state
+		if (page == this.numPages) {
+			$('.next-page', this.$el).addClass('inactive').unbind('click');
+		} else if (this.numPages > 1) {
+			$('.next-page', this.$el).removeClass('inactive').click(function () {
+				app.dispatcher.trigger('navigate', { page: page+1 });
+			});
+		}
 
 	}
+
 });

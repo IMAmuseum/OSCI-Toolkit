@@ -28,10 +28,6 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 			}
 		}, this);
 
-		app.dispatcher.on('navigate', function(info) {
-			console.log('navigating', info);
-		});
-
 	},
 	render: function() {
 		app.dispatcher.trigger("layoutStart");

@@ -21,6 +21,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 			this.getChildViewByIndex(data.page - 1).show();
 			var offset = (data.page - 1) * (this.dimensions.innerSectionHeight)* -1;
 			this.$el.find("#pages").css("-webkit-transform", "translateY(" + offset + "px)");
+			app.dispatcher.trigger("pageChanged", {page: data.page});
 		}, this);
 
 		this.$el.addClass("oscitk_multi_column");

@@ -13,17 +13,74 @@
 	text-align: center;
 }
 
-#navigation .prev-page {
+#navigation .prev-page.side {
+	position: fixed;
+	left: 0px;
+	top: 50%;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	cursor: pointer;
+}
+
+#navigation .next-page.side {
+	position: fixed;
+	right: 0px;
+	top: 50%;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	cursor: pointer;
+}
+
+#navigation .side {
+	color: #ccc;
+}
+
+#navigation .side:hover {
+	color: #888;
+}
+
+#navigation .side.inactive {
+	display: none;
+}
+
+#navigation .prev-page.corner {
 	position: absolute;
 	top: 50%;
 	left: 0px;
 }
 
-#navigation .next-page {
+#navigation .next-page.corner {
 	position: absolute;
 	top: 50%;
 	right: 0px;
 }
+
+#navigation .corner {
+	cursor: pointer;
+}
+
+#navigation .label {
+	text-align: center;
+}
+
+#navigation .button {
+	height: 10px;
+	width: 100px;
+	background-color: #A8C0C5;
+	border-radius: 5px;
+}
+
+#navigation .corner.inactive {
+	color: #ccc;
+	cursor: auto;
+}
+
+#navigation .corner.inactive .button {
+	background-color: #ccc;
+}
+
 
 #navigation .pager {
 	position: absolute;
@@ -46,14 +103,3 @@
 	border: 1px solid black;
 }
 
-#navigation .label {
-	text-align: center;
-}
-
-#navigation .button {
-	height: 10px;
-	width: 100px;
-	background-color: #A8C0C5;
-	border-radius: 5px;
-	cursor: pointer;
-}
