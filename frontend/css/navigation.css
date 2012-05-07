@@ -14,27 +14,27 @@
 }
 
 #navigation .prev-page.side {
-	position: fixed;
 	left: 0px;
-	top: 50%;
-	width: 40px;
-	height: 40px;
-	text-align: center;
-	cursor: pointer;
 }
 
 #navigation .next-page.side {
-	position: fixed;
 	right: 0px;
+}
+
+#navigation .side .indicator {
+	position: absolute;
+	width: 40px;	
 	top: 50%;
-	width: 40px;
-	height: 40px;
-	text-align: center;
-	cursor: pointer;
+	text-align: center;	
 }
 
 #navigation .side {
+	position: fixed;
+	top: 0px;
+	height: 100%;
 	color: #ccc;
+	cursor: pointer;	
+	width: 40px;
 }
 
 #navigation .side:hover {
