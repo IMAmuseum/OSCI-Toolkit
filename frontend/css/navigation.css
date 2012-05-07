@@ -2,7 +2,7 @@
 	font-family: sans-serif;
 	font-size: 0.8em;
 	position: absolute;
-	bottom: 10px;
+	bottom: 20px;
 	left: 40px;
 	right: 40px;
 	height: 30px;
@@ -13,13 +13,13 @@
 	text-align: center;
 }
 
-#navigation .prev-section {
+#navigation .prev-page {
 	position: absolute;
 	top: 50%;
 	left: 0px;
 }
 
-#navigation .next-section {
+#navigation .next-page {
 	position: absolute;
 	top: 50%;
 	right: 0px;

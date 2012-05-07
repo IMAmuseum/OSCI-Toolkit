@@ -21,6 +21,26 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 		} else {
 			$('.pager').show();
 		}
-		$('.pager .head', this.$el).css('width', (100/this.numPages)+'%');
+		var width = (100/this.numPages);
+		$('.pager .head', this.$el).css('width', width + '%');
+
+		// TODO: determine which page is being viewed (from router?)
+		var page = 1;
+		$('.pager .head', this.$el).css('left', width * (page-1) + '%');
+
+		console.log('Page indicator placed at ' + page + ' of ' + this.numPages);
+
+		$('.next-page', this.$el).click(function () {
+			if (page < this.numPages) {
+				app.dispatcher.trigger('navigate', { page: page+1 });
+			}
+		});
+
+		$('.prev-page', this.$el).click(function () {
+			if (page > 1) {
+				app.dispatcher.trigger('navigate', { page: page-1 });
+			}
+		});
+
 	}
 });
