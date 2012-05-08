@@ -68,8 +68,15 @@ function osci_tk_nodetree_field_widget_info() {
 
 function osci_tk_nodetree_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
 	if ($field['type'] === 'osci_tk_nodetree') {
- 		// convert empty strings to null
- 		// foreach ($items as $item);
+ 		foreach($items as &$item) {
+ 			// detect nids in parent_nid field
+ 			preg_match('/\[nid:(\d+)\]/', $item['parent_nid'], $matches);
+ 			if (is_array($matches) && isset($matches[1])) {
+ 				$item['parent_nid'] = $matches[1];
+ 			}
+ 		}
+ 		$items = osci_tk_nodetree_sort_nodetree($items);
+ 		dpm($items, 'items');
 	}
 	
 }
@@ -78,7 +85,6 @@ function osci_tk_nodetree_field_widget_form(&$form, &$form_state, $field, $insta
 	if ($instance['widget']['type'] === 'nodetree_nodetree_form') {
 		$max = $form_state['field'][$field['field_name']][LANGUAGE_NONE]['items_count'] + 1;
 		
-		$items = osci_tk_nodetree_sort_nodetree($items);
 		for ($i = 0; $i < $max; $i++) {
 			$element[$i]['target_nid'] = array(
 					'#type' => 'textfield',
@@ -278,9 +284,10 @@ function osci_tk_nodetree_autocomplete_value($element, $input = FALSE, $form_sta
 	}
 	// extract nid
 	preg_match('/\[nid:(\d+)\]/', $input, $matches);
-	if (is_array($matches)) {
+	if (is_array($matches) && isset($matches[1])) {
 		return $matches[1];
 	}
+	return $input;
 }
 
 // TODO: 
