@@ -77,8 +77,8 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		var dimensions = this.dimensions;
 
 		//get window height / width
-		var windowWidth = $(window).width(),
-			windowHeight = $(window).height();
+		var windowWidth = $(window).width();
+		var windowHeight = $(window).height();
 
 		//if the window size did not change, no need to recalculate dimensions
 		if (dimensions.windowWidth && dimensions.windowWidth === windowWidth && dimensions.windowHeight && dimensions.windowHeight === windowHeight) {
