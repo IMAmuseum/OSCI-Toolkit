@@ -3,13 +3,18 @@
 function osci_tk_epub_publish_form($form, &$form_state, $nid)
 {
 	$form = array();
-
-    $form_state['nid'] = $nid;
-
-    $form['publish_epub'] = array(
-        '#type'     => 'submit',
-        '#value'    => t('Publish ePub'),
-    );
+	$node = node_load($nid);
+	if ($node->type === 'publication') {
+		$form_state['nid'] = $nid;
+		
+		$form['publish_epub'] = array(
+				'#type'     => 'submit',
+				'#value'    => t('Publish ePub'),
+		);
+	}
+    else {
+    	drupal_set_message('You can only publish a publication node', 'error');
+    }
 
     return $form;
 }
