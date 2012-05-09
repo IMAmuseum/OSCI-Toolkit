@@ -108,6 +108,7 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 					sectionDimensions : this.parent.dimensions
 				});
 				this.addView(figureViewInstance);
+				figureViewInstance.render();
 				//console.log(figureViewInstance, "place the figure");
 			}
 		}

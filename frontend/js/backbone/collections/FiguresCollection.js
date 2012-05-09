@@ -23,20 +23,22 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 		_.each(data, function(markup) {
 
 			var idComponents = markup.id.match(/\w+-(\d+)-(\d+)/);
+			var $markup = $(markup);
 			var figure = {
 				id:         markup.id,
 				rawData:    markup,
 				body:       markup.innerHTML,
 				section_id: idComponents[1],
 				delta:      idComponents[2],
-				title:      $(markup).attr('title'),
-				caption:    $('figcaption', markup).html(),
-				position:   $(markup).data('position'),
-				columns:    $(markup).data('data'),
-				options:    $(markup).data('options'),
+				title:      $markup.attr('title'),
+				caption:    $markup.find('figcaption').html(),
+				content:    $markup.find('.figure_content').html(),
+				position:   $markup.data('position'),
+				columns:    $markup.data('columns'),
+				options:    $markup.data('options'),
 				thumbnail_url: undefined, // Defaults to image defined in css
-				type:       $(markup).data('figure_type'),
-				aspect:     $(markup).data('aspect')
+				type:       $markup.data('figure_type'),
+				aspect:     $markup.data('aspect')
 			};
 
 			// First, check for an explicit thumbnail
