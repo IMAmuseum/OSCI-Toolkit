@@ -19,7 +19,10 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 		}, this);
 	},
 	render: function() {
-		this.$el.html(this.template({numPages: this.numPages}));
+		this.$el.html(this.template({
+			numPages: this.numPages,
+			chapter: app.models.section.get('title')
+		}));
 		if (this.numPages == 1) {
 			$('.pager').hide();
 		} else {
