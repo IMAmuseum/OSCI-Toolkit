@@ -21,7 +21,7 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 	render: function() {
 		this.$el.html(this.template({
 			numPages: this.numPages,
-			chapter: app.models.section.get('title')
+			chapter: app.collections.navigationItems.currentNavigationItem.get('title')
 		}));
 		if (this.numPages == 1) {
 			$('.pager').hide();
@@ -39,22 +39,48 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 		var width = (100/this.numPages);
 		$('.pager .head', this.$el).css('left', width * (page-1) + '%');
 
-		//console.log('Page indicator placed at ' + page + ' of ' + this.numPages);
-
+		// unbind both controls to start
+		this.$el.find('.prev-page').unbind('click');
+		this.$el.find('.next-page').unbind('click');
+		
 		// Set previous button state
 		if (page == 1) {
-			$('.prev-page', this.$el).addClass('inactive').unbind('click');
+			// check if we can go to the previous section
+			var previous = app.collections.navigationItems.currentNavigationItem.get('previous');
+			if (previous) {
+				this.$el.find('.prev-page .label').html('Previous Section');
+				this.$el.find('.prev-page').removeClass('inactive').click(function () {
+					app.router.navigate("section/" + previous.id, {trigger: true});
+				});
+			}
+			// on first page and no previous section, disable interaction
+			else {
+				$('.prev-page', this.$el).addClass('inactive').unbind('click');
+			}
 		} else if (this.numPages > 1) {
-			$('.prev-page', this.$el).removeClass('inactive').click(function () {
+			this.$el.find('.prev-page .label').html('Previous');
+			this.$el.find('.prev-page').removeClass('inactive').click(function () {
 				app.dispatcher.trigger('navigate', { page: page-1 });
 			});
 		}
 
 		// Set next button state
 		if (page == this.numPages) {
-			$('.next-page', this.$el).addClass('inactive').unbind('click');
+			// check if we can go to the next section
+			var next = app.collections.navigationItems.currentNavigationItem.get('next');
+			if (next) {
+				this.$el.find('.next-page .label').html('Next Section');
+				this.$el.find('.next-page').removeClass('inactive').click(function () {
+					app.router.navigate("section/" + next.id, {trigger: true});
+				});
+			}
+			// on last page and no next section, disable interaction
+			else {
+				this.$el.find('.next-page').addClass('inactive').unbind('click');
+			}
 		} else if (this.numPages > 1) {
-			$('.next-page', this.$el).removeClass('inactive').click(function () {
+			this.$el.find('.next-page .label').html('Next');
+			this.$el.find('.next-page').removeClass('inactive').click(function () {
 				app.dispatcher.trigger('navigate', { page: page+1 });
 			});
 		}
