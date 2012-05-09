@@ -1037,33 +1037,46 @@ function osci_tk_epub_block_info()
 function osci_tk_epub_block_view($delta = '')
 {
 	$block = array();
-
 	switch($delta)
 	{
 		case 'epub_links':
 		module_load_include('inc', 'osci_tk_epub', 'osci_tk_epub.publish');
-
+		
+		// show on node pages
 		if (arg(0) == 'node') 
 		{
 			$nid = arg(1);
+			if (is_numeric($nid)) {
+				// It's node or nothing
+				$node = node_load($nid);
+				if (!$node) return $block;
+				
+				$links = array();
+				
+				// add the content document link for sections
+				if ($node->type === 'section') {
+					$links[] = l("Content Document", "api/epub/{$nid}/content.xhtml");
+				}
+				
+				// add nav, toc, and package links for publications
+				if ($node->type === 'publication') {
+					$form = drupal_get_form('osci_tk_epub_publish_form', $nid);
+					$links[] = l("Nav Document", "api/epub/{$nid}/nav.xhtml");
+					$links[] = l("NCX Document", "api/epub/{$nid}/toc.ncx");
+					$links[] = l("Package Document", "api/epub/{$nid}/package.opf");
+					$links[] = drupal_render($form);
+				}
+				
+				// block party
+				$block['subject'] = t('ePub Links');
+				$block['content'] = array(
+					'#theme' => 'item_list',
+					'#items' => $links
+				);
+			}
 		}
-		$form = drupal_get_form('osci_tk_epub_publish_form', $nid);
-		$links = array(
-			l("Content Document", "api/epub/{$nid}/content.xhtml"),
-			l("Nav Document", "api/epub/{$nid}/nav.xhtml"),
-			l("NCX Document", "api/epub/{$nid}/toc.ncx"),
-			l("Package Document", "api/epub/{$nid}/package.opf"),
-			drupal_render($form)
-		);
-
-		$block['subject'] = t('ePub Links');
-		$block['content'] = array(
-			'#theme' => 'item_list',
-			'#items' => $links
-			);
 		break;
 	}
-
 	return $block;
 }
 
