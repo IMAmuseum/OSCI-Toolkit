@@ -12,9 +12,6 @@ function osci_tk_epub_publish_form($form, &$form_state, $nid)
 				'#value'    => t('Publish ePub'),
 		);
 	}
-    else {
-    	drupal_set_message('You can only publish a publication node', 'error');
-    }
 
     return $form;
 }
@@ -27,9 +24,8 @@ function osci_tk_epub_publish_form_submit($form, &$form_state)
         return;
     }
 	
-	$currentNode = node_load($form_state['nid']);
-	
-	if (!isset($currentNode->book)) 
+	$node = node_load($form_state['nid']);
+	if ($node->type !== 'publication') 
 	{
 		return null;
 	}
@@ -39,9 +35,7 @@ function osci_tk_epub_publish_form_submit($form, &$form_state)
 		drupal_mkdir('public://epub');
 	}
 	
-	$bookNode = node_load($currentNode->book['bid']);
-	
-	$epubTitle = _osci_tk_clean_filename_string($bookNode->title);
+	$epubTitle = _osci_tk_clean_filename_string($node->title);
 	$epubFilePath = 'public://epub/' . $epubTitle . '.epub';
 	
 	// If we have a stale tmp file delete it
@@ -72,11 +66,11 @@ function osci_tk_epub_publish_form_submit($form, &$form_state)
 		),
 		array(
 			'osci_tk_epub_publish_book_resources',
-			array($epubFilePath, $bookNode->nid)
+			array($epubFilePath, $node)
 		)
 	);
 	
-	$data = _osci_tk_epub_get_book_resources(node_load($currentNode->book['bid']));
+	$data = _osci_tk_epub_get_book_resources($node);
 
 	if (count($data['content_nids']))
 	{
@@ -209,7 +203,7 @@ function osci_tk_epub_publish_content_document($epubFile, $content, &$context)
 		$osci_tk_view_mode = 'epub';
 
 	    $node = node_load($content['nid']);
-		$fileName = 'OEBPS/' . _osci_tk_epub_node_content_filename($node);
+		$fileName = 'OEBPS/' . _osci_tk_epub_node_content_filename($node->nid);
 		$epub->addFromString($fileName, _osci_tk_epub_generate_content_document($node, true, true));
 		$epub->close();
 		
@@ -226,7 +220,7 @@ function osci_tk_epub_publish_figure_document($epubFile, $figure, &$context)
 		
 		if (isset($figure['content-doc'])) 
 		{
-			$fileName = 'OEBPS/' . _osci_tk_epub_node_figure_filename($node, $figure['index']);
+			$fileName = 'OEBPS/' . _osci_tk_epub_node_figure_filename($node->nid, $figure['index']);
 			$epub->addFromString($fileName, _osci_tk_epub_generate_figure_document($node, $figure['index'], true));
 			$context['results']['files'][] = $fileName;
 		}
@@ -242,12 +236,11 @@ function osci_tk_epub_publish_figure_document($epubFile, $figure, &$context)
 	}
 }
 
-function osci_tk_epub_publish_book_resources($epubFile, $bid, &$context)
+function osci_tk_epub_publish_book_resources($epubFile, $node, &$context)
 {
 	$epub = _osci_tk_epub_zip_init($epubFile);
 	if ($epub)
 	{
-		$node = node_load($bid);
 
 		//Cover Image
 		if (isset($node->field_osci_tk_cover_image) && $node->field_osci_tk_cover_image['und'][0])
