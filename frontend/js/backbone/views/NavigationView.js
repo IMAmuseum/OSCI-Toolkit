@@ -91,8 +91,10 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 				$('.prev-page', this.$el).addClass('inactive').unbind('click');
 			}
 		} else if (this.numPages > 1) {
+			var $this = this;
 			this.$el.find('.prev-page .label').html('Previous');
 			this.$el.find('.prev-page').removeClass('inactive').click(function () {
+				app.router.navigate("section/" + $this.currentNavigationItem.id);
 				app.dispatcher.trigger('navigate', { page: page-1 });
 			});
 		}
