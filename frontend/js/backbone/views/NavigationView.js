@@ -24,12 +24,14 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 			this.numPages = section.numPages;
 			this.render();
 		}, this);
+		
 		app.dispatcher.on('pageChanged', function(info) {
 			// clear old identifier in url
 			// app.router.navigate("section/" + previous.id + "/end");
 			this.page = info.page;
 			this.update(info.page);
 		}, this);
+		
 		// bind routedTo
 		app.dispatcher.on('routedToSection', function(params) {
 			this.identifier = params.identifier;
@@ -41,9 +43,9 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 				// go to section_id
 				this.setCurrentNavigationItem(params.section_id);
 			}
-			
 		}, this);
 	},
+	
 	render: function() {
 		this.$el.html(this.template({
 			numPages: this.numPages,
@@ -60,13 +62,16 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 		this.update(this.page);
 
 	},
+	
 	getCurrentNavigationItem: function(){
 		return this.currentNavigationItem;
 	},
+	
 	setCurrentNavigationItem: function(section_id) {
 		this.currentNavigationItem = app.collections.navigationItems.get(section_id);
 		app.dispatcher.trigger('currentNavigationItemChanged', this.currentNavigationItem);
 	},
+	
 	update: function(page) {
 
 		var width = (100/this.numPages);
@@ -95,7 +100,7 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 			this.$el.find('.prev-page .label').html('Previous');
 			this.$el.find('.prev-page').removeClass('inactive').click(function () {
 				app.router.navigate("section/" + $this.currentNavigationItem.id);
-				app.dispatcher.trigger('navigate', { page: page-1 });
+				app.dispatcher.trigger('navigate', {page:(page-1)});
 			});
 		}
 
@@ -119,7 +124,5 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 				app.dispatcher.trigger('navigate', { page: page+1 });
 			});
 		}
-
 	}
-
 });
