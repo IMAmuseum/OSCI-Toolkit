@@ -31,28 +31,6 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 				app.dispatcher.trigger('navigationLoaded', this);
 			}
 		}, this);
-		
-		// bind routedToRoot
-		app.dispatcher.on('routedToRoot', function() {
-			this.goToBeginning();
-		}, this);
-		
-		// bind routedToSection
-		app.dispatcher.on('routedToSection', function(id) {
-			this.setCurrentNavigationItem(this.get(id));
-		}, this);
-	},
-	getCurrentNavigationItem: function(){
-		return this.currentNavigationItem;
-	},
-	setCurrentNavigationItem: function(navItem) {
-		this.currentNavigationItem = navItem;
-		app.dispatcher.trigger('currentNavigationItemChanged');
-	},
-	goToBeginning: function() {
-		if (this.at(0)) {
-			this.setCurrentNavigationItem(this.at(0));
-		}
 	},
 	parseChildren: function(item, parent, depth) {
 		var parsedItem = {

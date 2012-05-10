@@ -18,10 +18,24 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		}, this);
 
 		app.dispatcher.on("navigate", function(data) {
-			this.getChildViewByIndex(data.page - 1).show();
-			var offset = (data.page - 1) * (this.dimensions.innerSectionHeight)* -1;
-			this.$el.find("#pages").css("-webkit-transform", "translateY(" + offset + "px)");
-			app.dispatcher.trigger("pageChanged", {page: data.page});
+			if (data.page) {
+				this.getChildViewByIndex(data.page - 1).show();
+				var offset = (data.page - 1) * (this.dimensions.innerSectionHeight)* -1;
+				this.$el.find("#pages").css("-webkit-transform", "translateY(" + offset + "px)");
+				app.dispatcher.trigger("pageChanged", {page: data.page});
+			}
+			else if (data.identifier) {
+				if (data.identifier == 'end') {
+					// navigate to last page
+					var children = this.getChildViews();
+					var pageIndex = children.length - 1;
+					var pageView = children[pageIndex];
+					pageView.show();
+					var offset = (pageIndex) * (this.dimensions.innerSectionHeight)* -1;
+					this.$el.find("#pages").css("-webkit-transform", "translateY(" + offset + "px)");
+					app.dispatcher.trigger("pageChanged", {page: pageIndex + 1});
+				}
+			}
 		}, this);
 
 		this.$el.addClass("oscitk_multi_column");

@@ -12,11 +12,9 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 		});
 
 		// bind sectionChanged
-		app.dispatcher.on('currentNavigationItemChanged', function() {
-			if (app.collections.navigationItems.getCurrentNavigationItem()) {
+		app.dispatcher.on('currentNavigationItemChanged', function(navItem) {
+			if (navItem) {
 				// loading section content
-				var navItem = app.collections.navigationItems.getCurrentNavigationItem();
-
 				app.models.section = new OsciTk.models.Section({
 					uri : navItem.get('uri')
 				});
