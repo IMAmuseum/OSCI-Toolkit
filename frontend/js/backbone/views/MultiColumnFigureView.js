@@ -203,7 +203,7 @@ console.log(offsetTop, "offsetTop");
 
 			//set new width and the new column coverage number
 			width = (height - captionHeight) * modelData.aspect;
-			figure.css("width", width + "px");
+			this.$el.css("width", width + "px");
 
 			//update caption height at new width
 			captionHeight = this.$el.find("figcaption").outerHeight(true);
