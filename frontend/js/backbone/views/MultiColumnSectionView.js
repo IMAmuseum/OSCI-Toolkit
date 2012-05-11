@@ -18,24 +18,34 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		}, this);
 
 		app.dispatcher.on("navigate", function(data) {
+			var gotoPage = 1;
 			if (data.page) {
-				this.getChildViewByIndex(data.page - 1).show();
-				var offset = (data.page - 1) * (this.dimensions.innerSectionHeight)* -1;
-				this.$el.find("#pages").css("-webkit-transform", "translateY(" + offset + "px)");
-				app.dispatcher.trigger("pageChanged", {page: data.page});
+				gotoPage = data.page;
 			}
 			else if (data.identifier) {
-				if (data.identifier == 'end') {
-					// navigate to last page
-					var children = this.getChildViews();
-					var pageIndex = children.length - 1;
-					var pageView = children[pageIndex];
-					pageView.show();
-					var offset = (pageIndex) * (this.dimensions.innerSectionHeight)* -1;
-					this.$el.find("#pages").css("-webkit-transform", "translateY(" + offset + "px)");
-					app.dispatcher.trigger("pageChanged", {page: pageIndex + 1});
+				switch (data.identifier) {
+					case 'end':
+						gotoPage = this.model.get('pages').length;
+						break;
+					default:
+						//TODO: make this work for an identifier
+						gotoPage = 1;
+						break;
 				}
 			}
+
+			//make the view visible
+			this.getChildViewByIndex(gotoPage - 1).show();
+
+			//calculate the page offset to move the page into view
+			var offset = (gotoPage - 1) * (this.dimensions.innerSectionHeight) * -1;
+
+			//move all the pages to the proper offset
+			this.$el.find("#pages").css("-webkit-transform", "translateY(" + offset + "px)");
+
+			//trigger event so other elements can update with current page
+			app.dispatcher.trigger("pageChanged", {page: gotoPage});
+
 		}, this);
 
 		this.$el.addClass("oscitk_multi_column");

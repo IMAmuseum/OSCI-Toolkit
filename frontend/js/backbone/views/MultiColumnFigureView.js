@@ -26,6 +26,8 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 
 		//position the element on the page
 		this.positionElement();
+
+		this.$el.css("visibility", "visible");
 	},
 
 	renderContent: function() {
@@ -34,18 +36,133 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 
 	positionElement: function() {
 		var modelData = this.model.toJSON();
-		// console.log(this.options.sectionDimensions, 'dimensions');
-		// console.log(modelData, "figure data");
-		// console.log(modelData.position, "position");
+		var dimensions = this.options.sectionDimensions;
+		console.log(this.options.sectionDimensions, 'dimensions');
+		console.log(modelData, "figure data");
+		console.log(modelData.position, "position");
+
 		//if element shouold not be visible on the page, hide it and return
-		if (modelData.position === "n") {
+		if (modelData.position.vertical === "n") {
 			this.$el.hide();
 			return this;
 		}
 
-		
-		
-		
+		var column;
+		//Detemine the start column based on the layout hint
+		switch (modelData.position.horizontal) {
+			//right
+			case 'r':
+				column = dimensions.columnsPerPage - 1;
+				break;
+			//left & fullpage
+			case 'l':
+			case 'p':
+				column = 0;
+				break;
+			//In the current column
+			default:
+				column = this.parent.processingData.currentColumn;
+		}
+
+		console.log(column, "column");
+
+		var placed = false;
+		var numColumns = this.model.get('columns');
+		var offsetLeft = 0;
+		var offsetTop = 0;
+
+		while (!placed) {
+			
+			//Detemine the left offset start column and width of the figure
+			if ((column + numColumns) > dimensions.columnsPerPage) {
+				column -= (column + numColumns) - dimensions.columnsPerPage;
+			}
+
+			offsetLeft = (column * dimensions.columnWidth) + (column * dimensions.gutterWidth);
+			this.$el.css("left", offsetLeft + "px");
+console.log(offsetLeft, "offsetLeft");
+			//Determine the top offset based on the layout hint
+			switch (modelData.position.vertical) {
+				//top & fullpage
+				case 't':
+				case 'p':
+					offsetTop = 0;
+					break;
+				//bottom
+				case 'b':
+					offsetTop = dimensions.innerSectionHeight - this.calculatedHeight;
+					break;
+			}
+			this.$el.css("top", offsetTop + "px");
+console.log(offsetTop, "offsetTop");
+			// //Determine which columns this figure will occupy and add it to the figure data
+			// for (i = 0; i < base.options.columnsPerPage; i++) {
+			// colStart = (base.options.columnWidth * i) + (base.options.gutterWidth * i) + base.options.innerPageGutter[3];
+			// colEnd = (base.options.columnWidth * (i + 1)) + (base.options.gutterWidth * i) + base.options.innerPageGutter[3];
+
+			// if (offsetLeft <= colEnd && (offsetLeft + width) >= colStart) {
+			// columnCoverage[i] = true;
+			// } else {
+			// columnCoverage[i] = false;
+			// }
+			// }
+			// figure.data("column_coverage", columnCoverage).addClass("processed");
+
+			// figureX = [offsetLeft, offsetLeft + width];
+			// figureY = [offsetTop, offsetTop + height];
+
+			// placed = true;
+
+			// //base.options.pageWidth;
+			// if (offsetLeft < 0 || (offsetLeft + width) > base.options.pageWidth) {
+			// placed = false;
+			// }
+
+			// //check if current placement overlaps any other figures
+			// if (placed && pageFigures.length) {
+			// for (i = 0; i < pageFigures.length; i++) {
+			// var $elem = $(pageFigures[i]),
+			// calcPosition = $elem.position(),
+			// elemX = [calcPosition.left, calcPosition.left + $elem.outerWidth()],
+			// elemY = [calcPosition.top, calcPosition.top + $elem.outerHeight()];
+
+			// if (figureX[0] < elemX[1] && figureX[1] > elemX[0] &&
+			// figureY[0] < elemY[1] && figureY[1] > elemY[0]
+			// ) {
+			// placed = false;
+			// break;
+			// }
+			// }
+			// }
+
+			// if (!placed) {
+			// //adjust the start column to see if the figure can be placed on the page
+			// switch (horizontalPosition) {
+			// //right
+			// case 'r':
+			// column--;
+			// if (column < 0) {
+			// placementAttempts = base.options.columnsPerPage;
+			// }
+			// break;
+			// //left & fullpage
+			// case 'l':
+			// case 'p':
+			// column++;
+			// if (column >= base.options.columnsPerPage) {
+			// placementAttempts = base.options.columnsPerPage;
+			// }
+			// break;
+			// //no horizontal position
+			// default:
+			// column++;
+			// if ((column + columns) > base.options.columnsPerPage) {
+			// column = 0;
+			// }
+			// }
+			// }
+			placed = true;
+		}
 	},
 
 	sizeElement: function() {

@@ -80,14 +80,14 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		}
 
 		//find figure references and process the figure
-		var figureLinks = content.find("a.figure_reference:not(.processed)"),
-			numFigureLinks = figureLinks.length;
+		var figureLinks = content.find("a.figure_reference:not(.processed)");
+		var numFigureLinks = figureLinks.length;
 
 		if (numFigureLinks) {
 			for (var i = 0; i < numFigureLinks; i++) {
-				var figureLink = $(figureLinks[i]),
-					figureId = figureLink.attr("href").substring(1),
-					figure = app.collections.figures.get(figureId);
+				var figureLink = $(figureLinks[i]);
+				var figureId = figureLink.attr("href").substring(1);
+				var figure = app.collections.figures.get(figureId);
 
 				if (figure.get('processed')) {
 					continue;
@@ -99,9 +99,9 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 					break;
 				}
 				
-				var figureType = figure.get('type'),
-					typeMap = app.config.get('figureViewTypeMap'),
-					figureView = typeMap[figureType] ? typeMap[figureType] : typeMap['default'];
+				var figureType = figure.get('type');
+				var typeMap = app.config.get('figureViewTypeMap');
+				var figureView = typeMap[figureType] ? typeMap[figureType] : typeMap['default'];
 
 				var figureViewInstance = new OsciTk.views[figureView]({
 					model : figure,
@@ -129,9 +129,9 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		//If we have negative height remaining, the content must be repeated in the next column
 		var overflow = false;
         if (heightRemain < 0) {
-            var overflowHeight = heightRemain ,
-				hiddenLines = Math.ceil(overflowHeight / lineHeight),
-				newHeight = content.position().top + content.outerHeight() + (hiddenLines * lineHeight);
+            var overflowHeight = heightRemain;
+			var hiddenLines = Math.ceil(overflowHeight / lineHeight);
+			var newHeight = content.position().top + content.outerHeight() + (hiddenLines * lineHeight);
 
 			//assign the new height to remove any partial lines of text
 			column.height = newHeight;
