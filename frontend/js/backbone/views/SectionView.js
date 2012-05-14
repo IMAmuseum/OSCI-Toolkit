@@ -16,7 +16,8 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 			if (navItem) {
 				// loading section content
 				app.models.section = new OsciTk.models.Section({
-					uri : navItem.get('uri')
+					uri : navItem.get('uri'),
+					id : navItem.get('id')
 				});
 
 				app.models.section.loadContent();
@@ -29,11 +30,8 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 	},
 	render: function() {
 		app.dispatcher.trigger("layoutStart");
-
 		this.renderContent();
-
 		app.dispatcher.trigger("layoutComplete", {numPages : this.model.get('pages').length});
-
 		return this;
 	},
 	onClose: function() {

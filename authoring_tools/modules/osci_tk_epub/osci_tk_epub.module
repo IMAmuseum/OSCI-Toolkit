@@ -708,7 +708,7 @@ function _osci_tk_epub_package_build_data($pubNode, &$data) {
 					'nid' => $node->nid,
 					'index' => $index,
 					'resources' => isset($resources['items']) ? $resources['items'] : null,
-					);                
+				);
 
 				// If the figure has a media type for the content document, add it as a resource
 				// Otherwise, a content document is assumed not to be required for the figure

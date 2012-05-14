@@ -4,8 +4,6 @@ if (typeof OsciTk.models === 'undefined'){OsciTk.models = {};}
 // OsciTk Namespace Initialization //
 
 OsciTk.models.Section = OsciTk.models.BaseModel.extend({
-	idAttribute: "data-section_id",
-
 	defaults: function() {
 		return {
 			title: null,
