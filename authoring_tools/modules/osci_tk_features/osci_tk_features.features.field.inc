@@ -142,6 +142,7 @@ function osci_tk_features_field_default_fields() {
       'required' => 0,
       'settings' => array(
         'alt_field' => 0,
+        'default_image' => 0,
         'file_directory' => 'thumbnails',
         'file_extensions' => 'png gif jpg jpeg',
         'max_filesize' => '',
@@ -389,6 +390,7 @@ function osci_tk_features_field_default_fields() {
       'required' => 0,
       'settings' => array(
         'alt_field' => 0,
+        'default_image' => 0,
         'file_directory' => 'conservation_static_images',
         'file_extensions' => 'png gif jpg jpeg',
         'max_filesize' => '',
@@ -469,6 +471,7 @@ function osci_tk_features_field_default_fields() {
       'required' => 0,
       'settings' => array(
         'alt_field' => 0,
+        'default_image' => 0,
         'file_directory' => 'thumbnails',
         'file_extensions' => 'png gif jpg jpeg',
         'max_filesize' => '',
@@ -549,6 +552,7 @@ function osci_tk_features_field_default_fields() {
       'required' => 0,
       'settings' => array(
         'alt_field' => 0,
+        'default_image' => 0,
         'file_directory' => 'thumbnails',
         'file_extensions' => 'png gif jpg jpeg',
         'max_filesize' => '',
@@ -698,6 +702,7 @@ function osci_tk_features_field_default_fields() {
       'required' => 0,
       'settings' => array(
         'alt_field' => 0,
+        'default_image' => 0,
         'file_directory' => 'iip_images',
         'file_extensions' => 'png gif jpg jpeg',
         'max_filesize' => '',
@@ -923,6 +928,7 @@ function osci_tk_features_field_default_fields() {
       'required' => 0,
       'settings' => array(
         'alt_field' => 0,
+        'default_image' => 0,
         'file_directory' => 'thumbnails',
         'file_extensions' => 'png gif jpg jpeg',
         'max_filesize' => '',
@@ -1013,6 +1019,7 @@ function osci_tk_features_field_default_fields() {
       'required' => 0,
       'settings' => array(
         'alt_field' => 0,
+        'default_image' => 0,
         'file_directory' => 'image_assets',
         'file_extensions' => 'png gif jpg jpeg',
         'max_filesize' => '',
@@ -1605,6 +1612,7 @@ function osci_tk_features_field_default_fields() {
       'required' => 0,
       'settings' => array(
         'alt_field' => 0,
+        'default_image' => 0,
         'file_directory' => '',
         'file_extensions' => 'png gif jpg jpeg',
         'max_filesize' => '',
@@ -2424,6 +2432,7 @@ function osci_tk_features_field_default_fields() {
       'required' => 0,
       'settings' => array(
         'alt_field' => 0,
+        'default_image' => 0,
         'file_directory' => '',
         'file_extensions' => 'png gif jpg jpeg',
         'max_filesize' => '',
@@ -2579,6 +2588,7 @@ function osci_tk_features_field_default_fields() {
       'required' => 0,
       'settings' => array(
         'alt_field' => 0,
+        'default_image' => 0,
         'file_directory' => 'thumbnails',
         'file_extensions' => 'png gif jpg jpeg',
         'max_filesize' => '',
