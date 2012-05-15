@@ -154,12 +154,13 @@ function osci_tk_epub_publish_create_container_file($epubFile, &$context)
 
 function osci_tk_epub_publish_get_package($epubFile, $nid, &$context)
 {
+	$time = $_GET['time'] ? $_GET['time'] : time();
 	$epub = _osci_tk_epub_zip_init($epubFile);
 	if ($epub)
 	{
 		$node = node_load($nid);
 		$fileName = 'OEBPS/package.opf';
-		$epub->addFromString($fileName, _osci_tk_epub_generate_package_document($node, true, true));
+		$epub->addFromString($fileName, _osci_tk_epub_generate_package_document($node, $time, true, true));
 		$epub->close();
 		
 		$context['results']['files'][] = $fileName;

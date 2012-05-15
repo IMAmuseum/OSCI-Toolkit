@@ -381,12 +381,13 @@ function osci_tk_add_more_footnote_ajax($form, $form_state)
  */
 function _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time = null)
 {
-	if ($time === null)
-	{
+	// if no timestamp provided, use current time
+	if ($time === null) {
 		$time = time();
 	}
 	$vid = null;
-
+	
+	// determine if this node was even created at time requested
 	$valid = db_select('node', 'n')
 		->fields('n', array('nid', 'created'))
 		->condition('nid', $nid, '=')
@@ -395,13 +396,14 @@ function _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time = null)
         ->execute()
         ->fetchAssoc();
 
-    if (!$valid)
-    {
-    	return $vid;
+	// if not return null
+    if (!$valid) {
+    	return null;
     }
 
-	if (module_exists('workbench_moderation'))
-	{
+    // if using workbench moderation, and moderation is enabled for this content type, then revisioning
+    // works a little differently
+	if (module_exists('workbench_moderation')) {
 		$where = 'n.nid = :nid AND n.stamp <= :stamp AND (n.from_state = "published" OR n.state = "published")';
 
 		$results = db_select('workbench_moderation_node_history', 'n')
@@ -415,12 +417,12 @@ function _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time = null)
 	        ->execute()
 	        ->fetchAssoc();
 
-	    if ($results)
-	    {
+	    if ($results) {
 			$vid = $results['vid'];
 	    }
-	} else 
-	{
+	}
+	// otherwise use standard Drupal revisioning
+	else {
 		$results = db_select('node_revision', 'n')
 	        ->fields('n', array('nid', 'vid', 'status'))
 	        ->condition('nid', $nid)
@@ -430,11 +432,11 @@ function _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time = null)
 	        ->execute()
 	        ->fetchAssoc();
 
-	    if ($results)
-	    {
+	    if ($results) {
 	    	$vid = $results['vid'];
 	    }
 	}
-
+	
+	// return revision id
 	return $vid;
 }
