@@ -930,35 +930,6 @@ function _osci_tk_epub_navigation_generate_index($node, $forExport = False, $noC
 	}
 
 	return $output;
-
-
-// 	$book = node_load($node->book['bid']);
-// 	$data = array();
-// 	$subtree = book_menu_subtree_data($book->book);
-
-// 	_osci_tk_epub_index_build_data(array_pop($subtree), $data);
-// 	ksort($data);
-
-// 	if (!empty($data)) {
-
-// 		// Not using templates for performance. Might consider an XML library.
-// 		$output = "<nav epub:type='index' id='book-{$node->book['bid']}-index'>";
-// 		$output .= "<h1>Index</h1>"; // Optional header
-// 		$output .= "<ol>"; // The only other element allowed as a child of <nav>
-
-// 		foreach($data as $item) {
-// 			$url = $forExport ? $item['filename'] : $item['url'];
-// 			$output .= "<li><a href='$url'>{$item['title']}</a></li>";
-// 		}
-
-// 		$output .= "</ol></nav>";
-
-// 		if (!$noCache) {
-// 			cache_set($cache_key, $output, 'cache');
-// 		}
-// 	}
-
-// 	return $output;
 }
 
 function _osci_tk_epub_index_build_data($tree_node, &$data) {
