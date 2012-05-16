@@ -63,6 +63,11 @@ OsciTk.views.BaseView = Backbone.View.extend({
 		}
 		return view;
 	},
+	getChildViewsByType: function(type) {
+		return _.filter(this.childViews, function(childView) {
+			return childView.$el.is(type);
+		});
+	},
 	replaceView: function(view, target) {
 		view.parent = this;
 		if (typeof target === "undefined") {

@@ -20,6 +20,14 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		this.visible = true;
 	},
 
+	resetPage: function() {
+		this.removeAllContent();
+
+		this.$el.children(':not(figure)').remove();
+
+		this.initializeColumns();
+	},
+
 	render : function() {
 		if (this.processingData.rendered) {
 			return this;
@@ -33,24 +41,23 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 			height: this.parent.dimensions.innerSectionHeight
 		});
 
-		this.processingData.columns = [];
-		for (var i = 0; i < this.parent.dimensions.columnsPerPage; i++) {
-			this.processingData.columns[i] = {
-				height : this.parent.dimensions.innerSectionHeight,
-				heightRemain : this.parent.dimensions.innerSectionHeight,
-				'$el' : null,
-				offset : 0
-			};
-		}
-		this.processingData.currentColumn = 0;
+		this.initializeColumns();
 
 		//set rendered flag so that render does not get called more than once while iterating over content
 		this.processingData.rendered = true;
 
 		return this;
 	},
+
 	layoutContent : function() {
+		var overflow = 'none';
 		var column = this.getCurrentColumn();
+
+		if (column === null) {
+			this.processingComplete();
+			overflow = 'contentOverflow';
+			return overflow;
+		}
 
 		var content = $(this.model.get('content')[(this.model.get('content').length - 1)]);
 
@@ -62,7 +69,8 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		if ((column.height - content.position().top) < lineHeight) {
 			content.remove();
 			column.heightRemain = 0;
-			return true;
+			overflow = 'contentOverflow';
+			return overflow;
 		}
 
 		var contentHeight = content.outerHeight(true);
@@ -89,9 +97,6 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 				var figureId = figureLink.attr("href").substring(1);
 				var figure = app.collections.figures.get(figureId);
 
-				if (figure.get('processed')) {
-					continue;
-				}
 
 				//make sure the figure link is in the viewable area of the current column
 				var linkLocation = figureLink.position().top;
@@ -101,15 +106,29 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 				
 				var figureType = figure.get('type');
 				var typeMap = app.config.get('figureViewTypeMap');
-				var figureView = typeMap[figureType] ? typeMap[figureType] : typeMap['default'];
+				var figureViewType = typeMap[figureType] ? typeMap[figureType] : typeMap['default'];
+				var figureViewInstance = this.parent.getFigureView(figure.get('id'));
 
-				var figureViewInstance = new OsciTk.views[figureView]({
-					model : figure,
-					sectionDimensions : this.parent.dimensions
-				});
-				this.addView(figureViewInstance);
-				figureViewInstance.render();
-				//console.log(figureViewInstance, "place the figure");
+				if (!figureViewInstance) {
+					figureViewInstance = new OsciTk.views[figureViewType]({
+						model : figure,
+						sectionDimensions : this.parent.dimensions
+					});
+
+					this.addView(figureViewInstance);
+				}
+				
+				if (!figureViewInstance.layoutComplete) {
+					figureViewInstance.render();
+
+					if (figureViewInstance.layoutComplete) {
+						//figure was added to the page... restart page processing
+						overflow = 'figurePlaced';
+						return overflow;
+					} else {
+						//figure was not placed... carryover to next page
+					}
+				}
 			}
 		}
 
@@ -127,7 +146,6 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		}
 
 		//If we have negative height remaining, the content must be repeated in the next column
-		var overflow = false;
         if (heightRemain < 0) {
             var overflowHeight = heightRemain;
 			var hiddenLines = Math.ceil(overflowHeight / lineHeight);
@@ -139,10 +157,10 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 
 			if (hiddenLines === 0) {
 				heightRemain = 0;
-				overflow = false;
+				overflow = 'none';
 			} else {
 				heightRemain = (hiddenLines * lineHeight) - contentMargin.bottom;
-				overflow = true;
+				overflow = 'contentOverflow';
 			}
 
             if (this.processingData.currentColumn === (this.parent.dimensions.columnsPerPage - 1)) {
@@ -161,12 +179,16 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 
 	getCurrentColumn : function() {
 		var currentColumn = null;
+		var minColHeight = parseInt(this.$el.css("line-height"), 10) * this.parent.dimensions.minLinesPerColumn;
 
-		if (this.processingData.columns[this.processingData.currentColumn] && this.processingData.columns[this.processingData.currentColumn].heightRemain > 0) {
+		if (this.processingData.columns[this.processingData.currentColumn] &&
+			this.processingData.columns[this.processingData.currentColumn].height >= minColHeight &&
+			this.processingData.columns[this.processingData.currentColumn].heightRemain > 0) {
 			currentColumn = this.processingData.columns[this.processingData.currentColumn];
 		} else {
 			for(var i = 0; i < this.parent.dimensions.columnsPerPage; i++) {
-				if (this.processingData.columns[i].heightRemain > 0) {
+				if (this.processingData.columns[i].height >= minColHeight &&
+					this.processingData.columns[i].heightRemain > 0) {
 					currentColumn = this.processingData.columns[i];
 					this.processingData.currentColumn = i;
 					break;
@@ -187,7 +209,8 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 			var columnCss = {
 				width : this.parent.dimensions.columnWidth + "px",
 				height : currentColumn.height + "px",
-				left : (this.processingData.currentColumn * this.parent.dimensions.columnWidth) + (this.parent.dimensions.gutterWidth * this.processingData.currentColumn)
+				left : this.processingData.columns[this.processingData.currentColumn].position.left,
+				top : this.processingData.columns[this.processingData.currentColumn].position.top
 			};
 
 			currentColumn.$el = $(this.columnTemplate())
@@ -197,5 +220,66 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		}
 
 		return currentColumn;
+	},
+
+	initializeColumns: function() {
+		this.processingData.columns = [];
+
+		var pageFigures = this.getChildViewsByType('figure');
+		var numPageFigures = pageFigures.length;
+
+		for (var i = 0; i < this.parent.dimensions.columnsPerPage; i++) {
+			var leftPosition = (i * this.parent.dimensions.columnWidth) + (this.parent.dimensions.gutterWidth * i);
+			var height = this.parent.dimensions.innerSectionHeight;
+			var topPosition = 0;
+
+			var columnPosition = {
+				x : [leftPosition, leftPosition + this.parent.dimensions.columnWidth],
+				y : [topPosition, topPosition + height]
+			};
+
+			if (numPageFigures) {
+				for (var j = 0; j < numPageFigures; j++) {
+
+					var elemX = pageFigures[j].position.x;
+					var elemY = pageFigures[j].position.y;
+
+					if (columnPosition.x[0] < elemX[1] && columnPosition.x[1] > elemX[0] &&
+						columnPosition.y[0] < elemY[1] && columnPosition.y[1] > elemY[0]
+					) {
+						height = height - pageFigures[j].calculatedHeight - this.parent.dimensions.gutterWidth;
+
+						//Adjust column top offset based on vertical location of the figure
+						switch (pageFigures[j].model.get("position").vertical) {
+							//top
+							case 't':
+							//fullpage
+							case 'p':
+								topPosition = topPosition + pageFigures[j].calculatedHeight + this.parent.dimensions.gutterWidth;
+								break;
+							//bottom
+							case 'b':
+								topPosition = topPosition;
+								break;
+						}
+
+						columnPosition.y = [topPosition, topPosition + height];
+					}
+				}
+			}
+
+			this.processingData.columns[i] = {
+				height : height,
+				heightRemain : height > 0 ? height : 0,
+				'$el' : null,
+				offset : 0,
+				position : {
+					left : columnPosition.x[0],
+					top : columnPosition.y[0]
+				}
+			};
+		}
+
+		this.processingData.currentColumn = 0;
 	}
 });

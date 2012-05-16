@@ -40,6 +40,8 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 			//calculate the page offset to move the page into view
 			var offset = (gotoPage - 1) * (this.dimensions.innerSectionHeight) * -1;
 
+			//TODO: add step to hide all other pages
+
 			//move all the pages to the proper offset
 			this.$el.find("#pages").css("-webkit-transform", "translateY(" + offset + "px)");
 
@@ -81,18 +83,38 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		this.layoutData.items = this.layoutData.data.length;
 
 		var i = 0;
+		var firstOccurence = true;
+		var itemsOnPage = 0;
 		while(this.layoutData.items > 0) {
 			var pageView = this.getPageForProcessing(undefined, "#pages");
 
 			if (!pageView.processingData.rendered) {
+				itemsOnPage = 0;
 				pageView.render();
 			}
 
-			var overflow = pageView.addContent($(this.layoutData.data[i]).clone()).layoutContent();
+			var content = $(this.layoutData.data[i]).clone();
+			if (firstOccurence) {
+				content.attr('id', 'osci-content-' + i);
+			}
 
-			if (!overflow) {
-				i++;
-				this.layoutData.items--;
+			var layoutResults = pageView.addContent(content).layoutContent();
+
+			switch (layoutResults) {
+				case 'contentOverflow':
+					firstOccurence = false;
+					break;
+				case 'figurePlaced':
+					pageView.resetPage();
+					this.layoutData.items += itemsOnPage;
+					i -= itemsOnPage;
+					itemsOnPage = 0;
+					break;
+				default:
+					i++;
+					this.layoutData.items--;
+					itemsOnPage++;
+					firstOccurence = true;
 			}
 		}
 	},
@@ -115,6 +137,9 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 		//copy gutter width out of the options for easy access
 		dimensions.gutterWidth = this.options.gutterWidth;
+
+		//copy minLinesPerColumn out of options for eacy access
+		dimensions.minLinesPerColumn = this.options.minLinesPerColumn;
 
 		//get the margins of the section container
 		dimensions.sectionMargin = {
@@ -173,23 +198,42 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		//remove the footnotes section
 		this.layoutData.data.find("#footnotes").remove();
 
+		var figureRefTemplate = OsciTk.templateManager.get('figure-reference');
 		//remove any inline figures and replace with references
-		var inlineFigures = this.layoutData.data.find("figure");
-		if (inlineFigures.length) {
-			var figureRefTemplate = OsciTk.templateManager.get('figure-reference');
+		var inlineFigures = this.layoutData.data.find("figure").replaceWith(function(){
+			var $this = $(this);
+			var figureData = {
+				id : $this.attr("id"),
+				title : $this.attr("title")
+			};
 
-			for(var i = 0, len = inlineFigures.length; i < len; i++) {
-				var figure = $(inlineFigures[i]);
-				var figureData = {
-					id : figure.attr("id"),
-					title : figure.attr("title")
-				};
-
-				figure.replaceWith(figureRefTemplate(figureData));
-			}
-		}
+			return $(figureRefTemplate(figureData));
+		});
 
 		//chunk the data into managable parts
 		this.layoutData.data = this.layoutData.data.find('section').children();
+	},
+
+	getFigureView: function(figureId) {
+		var childViews = this.getChildViews();
+		var figureView;
+
+		var numPageViews = childViews.length;
+		for (var i = 0; i < numPageViews; i++) {
+			var pageChildViews = childViews[i].getChildViewsByType('figure');
+			var numPageChildViews = pageChildViews.length;
+			for (var j = 0; j < numPageChildViews; j++) {
+				if (figureId === pageChildViews[j].$el.attr('id')) {
+					figureView = pageChildViews[j];
+					break;
+				}
+			}
+
+			if (figureView) {
+				break;
+			}
+		}
+
+		return figureView;
 	}
 });

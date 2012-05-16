@@ -23,5 +23,13 @@ OsciTk.models.Page = OsciTk.models.BaseModel.extend({
 		content.splice(index, 1);
 
 		return this;
+	},
+
+	removeAllContent : function() {
+		this.set('content', []);
+	},
+
+	contentLength : function() {
+		return this.get('content').length;
 	}
 });

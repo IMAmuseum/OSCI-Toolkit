@@ -38,7 +38,7 @@
 }
 
 /* a line height must be set for proper calculations */
-.column * {
+.page, .column, .column * {
 	line-height: 1.2;
 
 }
@@ -53,6 +53,7 @@ h1, h2, h3, h4, h5 {
 }
 
 #section.oscitk_multi_column figure {
-	background-color: #444;
+	border: 1px solid #444;
+	background-color: transparent;
 	position: absolute;
 }

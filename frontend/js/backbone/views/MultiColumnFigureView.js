@@ -12,9 +12,10 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 	sizeCalculated: false,
 	calculatedHeight: 0,
 	calculatedWidth: 0,
+	position: {x:[0,0], y:[0,0]},
 
 	initialize: function() {
-		this.$el.css("visibility", "hidden");
+		this.$el.css("visibility", "hidden").attr("id", this.model.get("id"));
 	},
 
 	render: function() {
@@ -25,9 +26,15 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 		this.sizeElement();
 
 		//position the element on the page
-		this.positionElement();
+		var isPositioned = this.positionElement();
+
+		if (isPositioned) {
+			this.layoutComplete = true;
+		}
 
 		this.$el.css("visibility", "visible");
+
+		return this;
 	},
 
 	renderContent: function() {
@@ -37,14 +44,11 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 	positionElement: function() {
 		var modelData = this.model.toJSON();
 		var dimensions = this.options.sectionDimensions;
-		console.log(this.options.sectionDimensions, 'dimensions');
-		console.log(modelData, "figure data");
-		console.log(modelData.position, "position");
 
 		//if element shouold not be visible on the page, hide it and return
 		if (modelData.position.vertical === "n") {
 			this.$el.hide();
-			return this;
+			return true;
 		}
 
 		var column;
@@ -64,23 +68,28 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 				column = this.parent.processingData.currentColumn;
 		}
 
-		console.log(column, "column");
-
-		var placed = false;
+		var positioned = false;
 		var numColumns = this.model.get('columns');
 		var offsetLeft = 0;
 		var offsetTop = 0;
 
-		while (!placed) {
-			
+		whilePositioned:
+		while (!positioned) {
 			//Detemine the left offset start column and width of the figure
 			if ((column + numColumns) > dimensions.columnsPerPage) {
 				column -= (column + numColumns) - dimensions.columnsPerPage;
 			}
 
-			offsetLeft = (column * dimensions.columnWidth) + (column * dimensions.gutterWidth);
+			//If the figure is not as wide as the available space, center it
+			var availableWidth = (dimensions.columnWidth * numColumns) + ((numColumns - 1) * dimensions.gutterWidth);
+			var addLeftPadding = 0;
+			if (this.calculatedWidth < availableWidth) {
+				addLeftPadding = Math.floor((availableWidth - this.calculatedWidth) / 2);
+			}
+
+			offsetLeft = (column * dimensions.columnWidth) + (column * dimensions.gutterWidth) + addLeftPadding;
 			this.$el.css("left", offsetLeft + "px");
-console.log(offsetLeft, "offsetLeft");
+
 			//Determine the top offset based on the layout hint
 			switch (modelData.position.vertical) {
 				//top & fullpage
@@ -94,75 +103,70 @@ console.log(offsetLeft, "offsetLeft");
 					break;
 			}
 			this.$el.css("top", offsetTop + "px");
-console.log(offsetTop, "offsetTop");
-			// //Determine which columns this figure will occupy and add it to the figure data
-			// for (i = 0; i < base.options.columnsPerPage; i++) {
-			// colStart = (base.options.columnWidth * i) + (base.options.gutterWidth * i) + base.options.innerPageGutter[3];
-			// colEnd = (base.options.columnWidth * (i + 1)) + (base.options.gutterWidth * i) + base.options.innerPageGutter[3];
 
-			// if (offsetLeft <= colEnd && (offsetLeft + width) >= colStart) {
-			// columnCoverage[i] = true;
-			// } else {
-			// columnCoverage[i] = false;
-			// }
-			// }
-			// figure.data("column_coverage", columnCoverage).addClass("processed");
+			var figureX = [offsetLeft, offsetLeft + this.calculatedWidth];
+			var figureY = [offsetTop, offsetTop + this.calculatedHeight];
+			this.position = {
+				x : figureX,
+				y : figureY
+			};
 
-			// figureX = [offsetLeft, offsetLeft + width];
-			// figureY = [offsetTop, offsetTop + height];
+			positioned = true;
 
-			// placed = true;
+			if (offsetLeft < 0 || figureX[1] > dimensions.innerSectionWidth) {
+				positioned = false;
+			}
 
-			// //base.options.pageWidth;
-			// if (offsetLeft < 0 || (offsetLeft + width) > base.options.pageWidth) {
-			// placed = false;
-			// }
+			//check if current placement overlaps any other figures
+			var pageFigures = this.parent.getChildViewsByType('figure');
+			var numPageFigures = pageFigures.length;
+			if (positioned && numPageFigures && numPageFigures > 1) {
+				for (i = 0; i < numPageFigures; i++) {
+					if (pageFigures[i].cid === this.cid) {
+						continue;
+					}
 
-			// //check if current placement overlaps any other figures
-			// if (placed && pageFigures.length) {
-			// for (i = 0; i < pageFigures.length; i++) {
-			// var $elem = $(pageFigures[i]),
-			// calcPosition = $elem.position(),
-			// elemX = [calcPosition.left, calcPosition.left + $elem.outerWidth()],
-			// elemY = [calcPosition.top, calcPosition.top + $elem.outerHeight()];
+					var elemX = pageFigures[i].position.x;
+					var elemY = pageFigures[i].position.y;
 
-			// if (figureX[0] < elemX[1] && figureX[1] > elemX[0] &&
-			// figureY[0] < elemY[1] && figureY[1] > elemY[0]
-			// ) {
-			// placed = false;
-			// break;
-			// }
-			// }
-			// }
+					if (figureX[0] < elemX[1] && figureX[1] > elemX[0] &&
+						figureY[0] < elemY[1] && figureY[1] > elemY[0]
+					) {
+						positioned = false;
+						break;
+					}
+				}
+			}
 
-			// if (!placed) {
-			// //adjust the start column to see if the figure can be placed on the page
-			// switch (horizontalPosition) {
-			// //right
-			// case 'r':
-			// column--;
-			// if (column < 0) {
-			// placementAttempts = base.options.columnsPerPage;
-			// }
-			// break;
-			// //left & fullpage
-			// case 'l':
-			// case 'p':
-			// column++;
-			// if (column >= base.options.columnsPerPage) {
-			// placementAttempts = base.options.columnsPerPage;
-			// }
-			// break;
-			// //no horizontal position
-			// default:
-			// column++;
-			// if ((column + columns) > base.options.columnsPerPage) {
-			// column = 0;
-			// }
-			// }
-			// }
-			placed = true;
+			if (!positioned) {
+				//adjust the start column to see if the figure can be positioned on the page
+				switch (modelData.position.horizontal) {
+					//right
+					case 'r':
+						column--;
+						if (column < 0) {
+							break whilePositioned;
+						}
+						break;
+					//left & fullpage
+					case 'l':
+					case 'p':
+						column++;
+						if (column >= dimensions.columnsPerPage) {
+							break whilePositioned;
+						}
+						break;
+					//no horizontal position
+					default:
+						column++;
+						if ((column + columns) > dimensions.columnsPerPage) {
+							column = 0;
+						}
+				}
+			}
 		}
+
+		return positioned;
 	},
 
 	sizeElement: function() {

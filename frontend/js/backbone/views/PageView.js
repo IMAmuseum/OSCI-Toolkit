@@ -33,5 +33,9 @@ OsciTk.views.Page = OsciTk.views.BaseView.extend({
 	},
 	isPageComplete : function() {
 		return this.processingData.complete;
+	},
+	removeAllContent : function() {
+		this.model.removeAllContent();
+		return this;
 	}
 });
