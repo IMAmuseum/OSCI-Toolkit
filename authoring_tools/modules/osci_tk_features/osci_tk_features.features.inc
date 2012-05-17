@@ -81,14 +81,6 @@ function osci_tk_features_node_info() {
       'title_label' => t('Title'),
       'help' => '',
     ),
-    'file_asset' => array(
-      'name' => t('File Asset'),
-      'base' => 'node_content',
-      'description' => '',
-      'has_title' => '1',
-      'title_label' => t('Title'),
-      'help' => '',
-    ),
     'iip_asset' => array(
       'name' => t('IIP Asset'),
       'base' => 'node_content',
