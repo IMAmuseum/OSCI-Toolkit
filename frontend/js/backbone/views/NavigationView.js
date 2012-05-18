@@ -47,18 +47,30 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 	},
 	
 	render: function() {
+
 		this.$el.html(this.template({
 			numPages: this.numPages,
 			chapter: this.currentNavigationItem.get('title')
 		}));
+
+		// Hide the pager if there's only one page, show otherwise
 		if (this.numPages == 1) {
 			$('.pager').hide();
 		} else {
 			$('.pager').show();
 		}
+
+		// Calculate the width for the pager head
 		var width = (100/this.numPages);
 		$('.pager .head', this.$el).css('width', width + '%');
 
+		// Navigate to the appropriate page when mousedown happens in the pager
+		$('.pager').mousedown(function(data) {
+			var p = parseInt(app.views.navigationView.numPages * data.offsetX / $(this).width());
+			app.dispatcher.trigger('navigate', { page: p+1 });
+		});
+
+		// Do other things that can happen whenever the page changes
 		this.update(this.page);
 
 	},
@@ -74,6 +86,7 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 	
 	update: function(page) {
 
+		// Calculate the position of the pager head
 		var width = (100/this.numPages);
 		$('.pager .head', this.$el).css('left', width * (page-1) + '%');
 
