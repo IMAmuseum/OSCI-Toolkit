@@ -165,6 +165,10 @@ div.font-view div.font-control span.small {
 
 /* FIGURE VIEW */
 
+#toolbar .figures-view .view-in-context {
+	cursor: pointer;
+}
+
 #toolbar .figure-tray {
 	position: static;
 	overflow-x: auto;

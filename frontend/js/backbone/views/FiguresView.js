@@ -64,6 +64,12 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 			OsciTk.views.Figures.prototype.displayTitle();
 		});
 
+		$('#toolbar .figures-view .view-in-context').click(function() {
+			app.dispatcher.trigger('navigate', { figure: $(this).parent('figure').attr('data-figure-id') });
+			app.views.toolbarView.contentClose();
+			return false;
+		});
+
 		return this;
 	},
 	displayTitle: function() {

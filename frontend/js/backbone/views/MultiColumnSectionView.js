@@ -22,6 +22,10 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 			if (data.page) {
 				gotoPage = data.page;
 			}
+			else if (data.figure) {
+				// TODO: handle navigation to a figure
+				console.log('navigate to figure', data.figure);
+			}
 			else if (data.identifier) {
 				switch (data.identifier) {
 					case 'end':
