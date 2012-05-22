@@ -39,7 +39,7 @@ module.exports = function(grunt) {
 				dest: 'dist/OSCI-Toolkit-<%= meta.version %>.js'
 			},
 			dependencies: {
-				src: ['js/external/json2.js', 'js/external/jquery-1.7.1.js', 'js/external/underscore-1.3.3.js', 'js/external/backbone.js'],
+				src: ['js/external/json2.js', 'js/external/jquery-1.7.1.js', 'js/external/underscore-1.3.3.js', 'js/external/backbone.js', 'js/external/jquery.qtip.min.js'],
 				dest: 'dist/OSCI-Toolkit-<%= meta.version %>-dependencies.js'
 			},
 			css: {
