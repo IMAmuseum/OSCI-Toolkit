@@ -41,9 +41,16 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 			var offset = (gotoPage - 1) * (this.dimensions.innerSectionHeight) * -1;
 
 			//TODO: add step to hide all other pages
+			var pages = this.getChildViews();
+			var numPages = pages.length;
+			for(var i = 0; i < numPages; i++) {
+				if (i !== (gotoPage - 1)) {
+					pages[i].hide();
+				}
+			}
 
 			//move all the pages to the proper offset
-			this.$el.find("#pages").css("-webkit-transform", "translateY(" + offset + "px)");
+			this.$el.find("#pages").css("-webkit-transform", "translate3d(0, " + offset + "px, 0)");
 
 			//trigger event so other elements can update with current page
 			app.dispatcher.trigger("pageChanged", {page: gotoPage});
@@ -79,6 +86,9 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 		//remove unwanted sections & parse sections
 		this.cleanData();
+
+		//create a placeholder for figures that do not fit on a page
+		this.unplacedFigures = [];
 
 		this.layoutData.items = this.layoutData.data.length;
 

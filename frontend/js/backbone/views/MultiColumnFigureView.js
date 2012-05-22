@@ -9,6 +9,7 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 	tagName: 'figure',
 	template: OsciTk.templateManager.get('multi-column-figure'),
 	layoutComplete: false,
+	contentRendered: false,
 	sizeCalculated: false,
 	calculatedHeight: 0,
 	calculatedWidth: 0,
@@ -16,6 +17,18 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 
 	initialize: function() {
 		this.$el.css("visibility", "hidden").attr("id", this.model.get("id"));
+
+		app.dispatcher.on("pageChanged", function(data) {
+			if (this.parent.options.pageNumber === data.page) {
+				if (!this.contentRendered) {
+					this.renderContent();
+				}
+
+				this.$el.css("visibility", "visible");
+			} else {
+				this.$el.css("visibility", "hidden");
+			}
+		}, this);
 	},
 
 	render: function() {
@@ -32,13 +45,13 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 			this.layoutComplete = true;
 		}
 
-		this.$el.css("visibility", "visible");
-
 		return this;
 	},
 
 	renderContent: function() {
 		this.$el.find(".figure_content").html(this.model.get('content'));
+
+		this.contentRendered = true;
 	},
 
 	positionElement: function() {
@@ -72,9 +85,13 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 		var numColumns = this.model.get('columns');
 		var offsetLeft = 0;
 		var offsetTop = 0;
+		var maxPositionAttemps = numColumns;
+		var positionAttempt = 0;
 
 		whilePositioned:
-		while (!positioned) {
+		while (!positioned && positionAttempt <= maxPositionAttemps) {
+			positionAttempt++;
+
 			//Detemine the left offset start column and width of the figure
 			if ((column + numColumns) > dimensions.columnsPerPage) {
 				column -= (column + numColumns) - dimensions.columnsPerPage;
@@ -159,7 +176,7 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 					//no horizontal position
 					default:
 						column++;
-						if ((column + columns) > dimensions.columnsPerPage) {
+						if (column > dimensions.columnsPerPage) {
 							column = 0;
 						}
 				}
@@ -174,8 +191,8 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 		var dimensions = this.options.sectionDimensions;
 		var modelData = this.model.toJSON();
 
-		//Only process size data on first attempt to place this figure
-		if (this.sizeCalculated || modelData.position === "n") {
+		//Only process size data if figure will be displayed
+		if (modelData.position === "n") {
 			this.calculatedHeight = this.$el.height();
 			this.calculatedWidth = this.$el.width();
 			return this;

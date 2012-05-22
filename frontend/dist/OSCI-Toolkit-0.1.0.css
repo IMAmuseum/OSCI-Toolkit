@@ -1,5 +1,5 @@
 /*
- * OSCI Toolkit - v0.1.0 - 2012-05-04
+ * OSCI Toolkit - v0.1.0 - 2012-05-22
  * http://oscitoolkit.org/
  * Copyright (c) 2010-2012 The Art Institute of Chicago and the Indianapolis Museum of Art
  * GNU General Public License
@@ -27,13 +27,112 @@ reader {
 	height: 100%;
 	width: 100%;
 }
-div#navigation {
+#navigation {
+	font-family: sans-serif;
+	font-size: 0.8em;
 	position: absolute;
-	bottom: 10px;
+	bottom: 20px;
 	left: 40px;
 	right: 40px;
 	height: 30px;
 }
+
+#navigation .header {
+	width: 100%;
+	text-align: center;
+}
+
+#navigation .prev-page.side {
+	left: 0px;
+}
+
+#navigation .next-page.side {
+	right: 0px;
+}
+
+#navigation .side .indicator {
+	position: absolute;
+	width: 40px;	
+	top: 50%;
+	text-align: center;	
+}
+
+#navigation .side {
+	position: fixed;
+	top: 0px;
+	height: 100%;
+	color: #ccc;
+	cursor: pointer;	
+	width: 40px;
+}
+
+#navigation .side:hover {
+	color: #888;
+}
+
+#navigation .side.inactive {
+	display: none;
+}
+
+#navigation .prev-page.corner {
+	position: absolute;
+	top: 50%;
+	left: 0px;
+}
+
+#navigation .next-page.corner {
+	position: absolute;
+	top: 50%;
+	right: 0px;
+}
+
+#navigation .corner {
+	cursor: pointer;
+}
+
+#navigation .label {
+	text-align: center;
+}
+
+#navigation .button {
+	height: 10px;
+	width: 100px;
+	background-color: #A8C0C5;
+	border-radius: 5px;
+}
+
+#navigation .corner.inactive {
+	color: #ccc;
+	cursor: auto;
+}
+
+#navigation .corner.inactive .button {
+	background-color: #ccc;
+}
+
+
+#navigation .pager {
+	position: absolute;
+	bottom: -10px;
+	right: 100px;
+	left: 100px;
+	height: 10px;
+	background-color: #ddd;
+	border-radius: 5px;	
+	margin: 0px 20px;
+}
+
+#navigation .pager .head {
+	position:absolute;
+	left: 33%;
+	width: 33%;
+	height: 12px;
+	top: -1px;
+	background-color: #555;
+	border: 1px solid black;
+}
+
+
 #search-header {
 	padding-top: 10px;
 }
@@ -458,7 +557,6 @@ background-image: -webkit-gradient(
 
 
 #section {
-	background: #eee;
 	margin: 60px 40px;
 	padding: 20px;
 	position: absolute;
@@ -483,8 +581,6 @@ background-image: -webkit-gradient(
 		padding: 6px;
 		margin: 60px 10px 10px 10px;
 	}
-
-
 }
 
 section figure img.thumbnail {
@@ -496,7 +592,6 @@ section figure img.thumbnail {
 }
 
 #section.oscitk_multi_column {
-	background: #eee;
 	margin: 60px 40px;
 	overflow: hidden;
 	padding: 0;
@@ -519,7 +614,6 @@ section figure img.thumbnail {
 }
 
 .column {
-	background: #ccc;
 	margin: 0;
 	padding: 0;
 	position: absolute;
@@ -530,7 +624,7 @@ section figure img.thumbnail {
 }
 
 /* a line height must be set for proper calculations */
-.column * {
+.page, .column, .column * {
 	line-height: 1.2;
 
 }
@@ -542,4 +636,12 @@ section figure img.thumbnail {
 
 h1, h2, h3, h4, h5 {
 	margin-bottom: 1em;
+}
+
+#section.oscitk_multi_column figure {
+	position: absolute;
+}
+
+#section.oscitk_multi_column figure .figure_content {
+	overflow: hidden;
 }

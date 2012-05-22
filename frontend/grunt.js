@@ -32,6 +32,7 @@ module.exports = function(grunt) {
 					'js/backbone/collections/**/*.js',
 					'js/backbone/views/PageView.js',
 					'js/backbone/views/SectionView.js',
+					'js/backbone/views/MultiColumnFigureView.js',
 					'js/backbone/views/**/*.js',
 					'js/appBootstrap.js'
 				],

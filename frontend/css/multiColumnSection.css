@@ -4,7 +4,6 @@
 }
 
 #section.oscitk_multi_column {
-	background: #eee;
 	margin: 60px 40px;
 	overflow: hidden;
 	padding: 0;
@@ -27,7 +26,6 @@
 }
 
 .column {
-	background: #ccc;
 	margin: 0;
 	padding: 0;
 	position: absolute;
@@ -53,7 +51,9 @@ h1, h2, h3, h4, h5 {
 }
 
 #section.oscitk_multi_column figure {
-	border: 1px solid #444;
-	background-color: transparent;
 	position: absolute;
+}
+
+#section.oscitk_multi_column figure .figure_content {
+	overflow: hidden;
 }

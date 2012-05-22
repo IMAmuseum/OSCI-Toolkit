@@ -87,6 +87,15 @@ __p+='<div class="column"></div>';
 }
 return __p;
 }
+OsciTk.templates['multi-column-figure'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class="figure_content"></div>\n<figcaption>'+
+( caption )+
+'</figcaption>';
+}
+return __p;
+}
 OsciTk.templates['multi-column-section'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -97,9 +106,9 @@ return __p;
 OsciTk.templates['navigation'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<p>navigation goes here '+
-( numPages )+
-'<p>';
+__p+='<div class=\'header\'>'+
+( chapter )+
+'</div>\n<div class=\'prev-page side\'><div class=\'indicator\'>&lt;</div></div>\n<div class=\'next-page side\'><div class=\'indicator\'>&gt;</div></div>\n<div class=\'prev-page corner\'>\n\t<div class=\'label\'>Previous</div>\n\t<div class=\'button\'>&nbsp;</div>\n</div>\n<div class=\'pager\'><div class=\'head\'>&nbsp;</div></div>\n<div class=\'next-page corner\'>\n\t<div class=\'label\'>Next</div>\n\t<div class=\'button\'>&nbsp;</div>\n</div>';
 }
 return __p;
 }

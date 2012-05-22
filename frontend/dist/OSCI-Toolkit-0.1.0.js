@@ -1,5 +1,5 @@
 /*
- * OSCI Toolkit - v0.1.0 - 2012-05-04
+ * OSCI Toolkit - v0.1.0 - 2012-05-22
  * http://oscitoolkit.org/
  * Copyright (c) 2010-2012 The Art Institute of Chicago and the Indianapolis Museum of Art
  * GNU General Public License
@@ -111,6 +111,10 @@ function xmlToJson(xml, namespace) {
 	}
 	return(obj);
 }
+
+function roundNumber(num, dec) {
+	return Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
+}
 // OsciTk Namespace Initialization //
 if (typeof OsciTk === 'undefined'){OsciTk = {};}
 // OsciTk Namespace Initialization //
@@ -119,37 +123,13 @@ jQuery(function() {
 	OsciTk.router = Backbone.Router.extend({
 	
 		routes: {
-			'' : 'root',
-			'section/:section_id' : 'section' // TODO: add params for paragraph, etc.
+			'' : 'routeToSection',
+			'section/:section_id' : 'routeToSection',
+			'section/:section_id/:identifier' : 'routeToSection'
 		},
 	
-		initialize: function() {
-			app.dispatcher.on('layoutComplete', function(section) {
-
-				//TODO: router should decide if going to a selector or the first page
-				app.dispatcher.trigger("navigate", {page: 1});
-			}, this);
-		},
-	
-		/**
-		 * Route to root location
-		 */
-		root: function() {
-			app.dispatcher.trigger('routedToRoot');
-		},
-	
-		/**
-		 * Route to the given section
-		 */
-		section: function(section_id) {
-			app.dispatcher.trigger('routedToSection', section_id);
-		},
-	
-		/**
-		 * Route to search
-		 */
-		search: function(query) {
-			app.dispatcher.trigger('routedToSearch', query);
+		routeToSection: function(section_id, identifier) {
+			app.dispatcher.trigger('routedToSection', {section_id: section_id, identifier: identifier});
 		}
 	});
 });
@@ -221,12 +201,14 @@ OsciTk.views.BaseView = Backbone.View.extend({
 
 		return this;
 	},
-	removeView: function(view) {
+	removeView: function(view, close) {
 		if (this.childViews) {
 			for (var i = 0, len = this.childViews.length; i < len; i++) {
 				if (view.cid === this.childViews[i].cid) {
 					this.childViews.splice(i, 1);
-					view.close();
+					if (close || close === undefined) {
+						view.close();
+					}
 					break;
 				}
 			}
@@ -252,6 +234,11 @@ OsciTk.views.BaseView = Backbone.View.extend({
 			view = this.childViews[index];
 		}
 		return view;
+	},
+	getChildViewsByType: function(type) {
+		return _.filter(this.childViews, function(childView) {
+			return childView.$el.is(type);
+		});
 	},
 	replaceView: function(view, target) {
 		view.parent = this;
@@ -384,6 +371,15 @@ __p+='<div class="column"></div>';
 }
 return __p;
 }
+OsciTk.templates['multi-column-figure'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class="figure_content"></div>\n<figcaption>'+
+( caption )+
+'</figcaption>';
+}
+return __p;
+}
 OsciTk.templates['multi-column-section'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -394,9 +390,9 @@ return __p;
 OsciTk.templates['navigation'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<p>navigation goes here '+
-( numPages )+
-'<p>';
+__p+='<div class=\'header\'>'+
+( chapter )+
+'</div>\n<div class=\'prev-page side\'><div class=\'indicator\'>&lt;</div></div>\n<div class=\'next-page side\'><div class=\'indicator\'>&gt;</div></div>\n<div class=\'prev-page corner\'>\n\t<div class=\'label\'>Previous</div>\n\t<div class=\'button\'>&nbsp;</div>\n</div>\n<div class=\'pager\'><div class=\'head\'>&nbsp;</div></div>\n<div class=\'next-page corner\'>\n\t<div class=\'label\'>Next</div>\n\t<div class=\'button\'>&nbsp;</div>\n</div>';
 }
 return __p;
 }
@@ -597,9 +593,40 @@ OsciTk.models.Figure = OsciTk.models.BaseModel.extend({
 			caption: null,
 			position: null,
 			columns: null,
+			aspect: 1,
 			body: null,
 			options: {}
 		};
+	},
+
+	initialize: function() {
+		this.parsePositionData();
+	},
+
+	parsePositionData: function() {
+		var position = this.get('position');
+		var parsedPosition;
+
+		if (position.length > 1) {
+			parsedPosition = {
+				vertical: position[0],
+				horizontal: position[1]
+			};
+		} else if (position === "n" || position === "p") {
+			parsedPosition = {
+				vertical: position,
+				horizontal: position
+			};
+		} else {
+			parsedPosition = {
+				vertical: position,
+				horizontal: 'na'
+			};
+		}
+
+		this.set('position', parsedPosition);
+
+		return this;
 	}
 });
 // OsciTk Namespace Initialization //
@@ -793,6 +820,14 @@ OsciTk.models.Page = OsciTk.models.BaseModel.extend({
 		content.splice(index, 1);
 
 		return this;
+	},
+
+	removeAllContent : function() {
+		this.set('content', []);
+	},
+
+	contentLength : function() {
+		return this.get('content').length;
 	}
 });
 // OsciTk Namespace Initialization //
@@ -809,8 +844,6 @@ if (typeof OsciTk.models === 'undefined'){OsciTk.models = {};}
 // OsciTk Namespace Initialization //
 
 OsciTk.models.Section = OsciTk.models.BaseModel.extend({
-	idAttribute: "data-section_id",
-
 	defaults: function() {
 		return {
 			title: null,
@@ -882,19 +915,22 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 		_.each(data, function(markup) {
 
 			var idComponents = markup.id.match(/\w+-(\d+)-(\d+)/);
+			var $markup = $(markup);
 			var figure = {
 				id:         markup.id,
 				rawData:    markup,
 				body:       markup.innerHTML,
 				section_id: idComponents[1],
 				delta:      idComponents[2],
-				title:      $(markup).attr('title'),
-				caption:    $('figcaption', markup).html(),
-				position:   $(markup).attr('data-position'),
-				columns:    $(markup).attr('data-columns'),
-				options:    JSON.parse($(markup).attr('data-options')),
+				title:      $markup.attr('title'),
+				caption:    $markup.find('figcaption').html(),
+				content:    $markup.find('.figure_content').html(),
+				position:   $markup.data('position'),
+				columns:    $markup.data('columns'),
+				options:    $markup.data('options'),
 				thumbnail_url: undefined, // Defaults to image defined in css
-				type:       $(markup).attr('data-figure_type')
+				type:       $markup.data('figure_type'),
+				aspect:     $markup.data('aspect')
 			};
 
 			// First, check for an explicit thumbnail
@@ -978,28 +1014,6 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 				app.dispatcher.trigger('navigationLoaded', this);
 			}
 		}, this);
-		
-		// bind routedToRoot
-		app.dispatcher.on('routedToRoot', function() {
-			this.goToBeginning();
-		}, this);
-		
-		// bind routedToSection
-		app.dispatcher.on('routedToSection', function(id) {
-			this.setCurrentNavigationItem(this.get(id));
-		}, this);
-	},
-	getCurrentNavigationItem: function(){
-		return this.currentNavigationItem;
-	},
-	setCurrentNavigationItem: function(navItem) {
-		this.currentNavigationItem = navItem;
-		app.dispatcher.trigger('currentNavigationItemChanged');
-	},
-	goToBeginning: function() {
-		if (this.at(0)) {
-			this.setCurrentNavigationItem(this.at(0));
-		}
 	},
 	parseChildren: function(item, parent, depth) {
 		var parsedItem = {
@@ -1048,8 +1062,7 @@ OsciTk.collections.Notes = OsciTk.collections.BaseCollection.extend({
 		this.on('change', function() {
 			app.dispatcher.trigger('notesChanged');
 		});
-		app.dispatcher.on('currentNavigationItemChanged', function(section) {
-			var navItem = app.collections.navigationItems.getCurrentNavigationItem();
+		app.dispatcher.on('currentNavigationItemChanged', function(navItem) {
 			//TODO: Refactor once Gray cleans up the NavigationItemModel
 			if (navItem.id) {
 				app.collections.notes.getNotesForSection(navItem.id);
@@ -1143,6 +1156,10 @@ OsciTk.views.Page = OsciTk.views.BaseView.extend({
 	},
 	isPageComplete : function() {
 		return this.processingData.complete;
+	},
+	removeAllContent : function() {
+		this.model.removeAllContent();
+		return this;
 	}
 });
 // OsciTk Namespace Initialization //
@@ -1159,13 +1176,12 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 		});
 
 		// bind sectionChanged
-		app.dispatcher.on('currentNavigationItemChanged', function() {
-			if (app.collections.navigationItems.getCurrentNavigationItem()) {
+		app.dispatcher.on('currentNavigationItemChanged', function(navItem) {
+			if (navItem) {
 				// loading section content
-				var navItem = app.collections.navigationItems.getCurrentNavigationItem();
-
 				app.models.section = new OsciTk.models.Section({
-					uri : navItem.get('uri')
+					uri : navItem.get('uri'),
+					id : navItem.get('id')
 				});
 
 				app.models.section.loadContent();
@@ -1174,14 +1190,12 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 				this.render();
 			}
 		}, this);
+
 	},
 	render: function() {
 		app.dispatcher.trigger("layoutStart");
-
 		this.renderContent();
-
 		app.dispatcher.trigger("layoutComplete", {numPages : this.model.get('pages').length});
-
 		return this;
 	},
 	onClose: function() {
@@ -1224,6 +1238,259 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 
 		//mark processing complete (not necessary, but here for example)
 		pageView.processingComplete();
+	}
+});
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
+// OsciTk Namespace Initialization //
+
+
+OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
+
+	tagName: 'figure',
+	template: OsciTk.templateManager.get('multi-column-figure'),
+	layoutComplete: false,
+	contentRendered: false,
+	sizeCalculated: false,
+	calculatedHeight: 0,
+	calculatedWidth: 0,
+	position: {x:[0,0], y:[0,0]},
+
+	initialize: function() {
+		this.$el.css("visibility", "hidden").attr("id", this.model.get("id"));
+
+		app.dispatcher.on("pageChanged", function(data) {
+			if (this.parent.options.pageNumber === data.page) {
+				if (!this.contentRendered) {
+					this.renderContent();
+				}
+
+				this.$el.css("visibility", "visible");
+			} else {
+				this.$el.css("visibility", "hidden");
+			}
+		}, this);
+	},
+
+	render: function() {
+		//template the element
+		this.$el.html(this.template(this.model.toJSON()));
+
+		//calculate the size based on layout hints
+		this.sizeElement();
+
+		//position the element on the page
+		var isPositioned = this.positionElement();
+
+		if (isPositioned) {
+			this.layoutComplete = true;
+		}
+
+		return this;
+	},
+
+	renderContent: function() {
+		this.$el.find(".figure_content").html(this.model.get('content'));
+
+		this.contentRendered = true;
+	},
+
+	positionElement: function() {
+		var modelData = this.model.toJSON();
+		var dimensions = this.options.sectionDimensions;
+
+		//if element shouold not be visible on the page, hide it and return
+		if (modelData.position.vertical === "n") {
+			this.$el.hide();
+			return true;
+		}
+
+		var column;
+		//Detemine the start column based on the layout hint
+		switch (modelData.position.horizontal) {
+			//right
+			case 'r':
+				column = dimensions.columnsPerPage - 1;
+				break;
+			//left & fullpage
+			case 'l':
+			case 'p':
+				column = 0;
+				break;
+			//In the current column
+			default:
+				column = this.parent.processingData.currentColumn;
+		}
+
+		var positioned = false;
+		var numColumns = this.model.get('columns');
+		var offsetLeft = 0;
+		var offsetTop = 0;
+
+		whilePositioned:
+		while (!positioned) {
+			//Detemine the left offset start column and width of the figure
+			if ((column + numColumns) > dimensions.columnsPerPage) {
+				column -= (column + numColumns) - dimensions.columnsPerPage;
+			}
+
+			//If the figure is not as wide as the available space, center it
+			var availableWidth = (dimensions.columnWidth * numColumns) + ((numColumns - 1) * dimensions.gutterWidth);
+			var addLeftPadding = 0;
+			if (this.calculatedWidth < availableWidth) {
+				addLeftPadding = Math.floor((availableWidth - this.calculatedWidth) / 2);
+			}
+
+			offsetLeft = (column * dimensions.columnWidth) + (column * dimensions.gutterWidth) + addLeftPadding;
+			this.$el.css("left", offsetLeft + "px");
+
+			//Determine the top offset based on the layout hint
+			switch (modelData.position.vertical) {
+				//top & fullpage
+				case 't':
+				case 'p':
+					offsetTop = 0;
+					break;
+				//bottom
+				case 'b':
+					offsetTop = dimensions.innerSectionHeight - this.calculatedHeight;
+					break;
+			}
+			this.$el.css("top", offsetTop + "px");
+
+			var figureX = [offsetLeft, offsetLeft + this.calculatedWidth];
+			var figureY = [offsetTop, offsetTop + this.calculatedHeight];
+			this.position = {
+				x : figureX,
+				y : figureY
+			};
+
+			positioned = true;
+
+			if (offsetLeft < 0 || figureX[1] > dimensions.innerSectionWidth) {
+				positioned = false;
+			}
+
+			//check if current placement overlaps any other figures
+			var pageFigures = this.parent.getChildViewsByType('figure');
+			var numPageFigures = pageFigures.length;
+			if (positioned && numPageFigures && numPageFigures > 1) {
+				for (i = 0; i < numPageFigures; i++) {
+					if (pageFigures[i].cid === this.cid) {
+						continue;
+					}
+
+					var elemX = pageFigures[i].position.x;
+					var elemY = pageFigures[i].position.y;
+
+					if (figureX[0] < elemX[1] && figureX[1] > elemX[0] &&
+						figureY[0] < elemY[1] && figureY[1] > elemY[0]
+					) {
+						positioned = false;
+						break;
+					}
+				}
+			}
+
+			if (!positioned) {
+				//adjust the start column to see if the figure can be positioned on the page
+				switch (modelData.position.horizontal) {
+					//right
+					case 'r':
+						column--;
+						if (column < 0) {
+							break whilePositioned;
+						}
+						break;
+					//left & fullpage
+					case 'l':
+					case 'p':
+						column++;
+						if (column >= dimensions.columnsPerPage) {
+							break whilePositioned;
+						}
+						break;
+					//no horizontal position
+					default:
+						column++;
+						if ((column + columns) > dimensions.columnsPerPage) {
+							column = 0;
+						}
+				}
+			}
+		}
+
+		return positioned;
+	},
+
+	sizeElement: function() {
+		var width, height;
+		var dimensions = this.options.sectionDimensions;
+		var modelData = this.model.toJSON();
+
+		//Only process size data if figure will be displayed
+		if (modelData.position === "n") {
+			this.calculatedHeight = this.$el.height();
+			this.calculatedWidth = this.$el.width();
+			return this;
+		}
+
+		//If a percentage based width hint is specified, convert to number of columns to cover
+		if (typeof(modelData.columns) === 'string' && modelData.columns.indexOf("%") > 0) {
+			modelData.columns = Math.ceil((parseInt(modelData.columns, 10) / 100) * dimensions.columnsPerPage);
+		}
+
+		//Calculate maximum width for a figure
+		if (modelData.columns > dimensions.columnsPerPage || modelData.position === 'p') {
+			width = dimensions.innerSectionWidth;
+			modelData.columns = dimensions.columnsPerPage;
+		} else {
+			width = (modelData.columns * dimensions.columnWidth) + (dimensions.gutterWidth * (modelData.columns - 1));
+		}
+		this.$el.css("width", width + "px");
+
+		//Get the height of the caption
+		var captionHeight = this.$el.find("figcaption").outerHeight(true);
+
+		//Calculate height of figure plus the caption
+		height = (width / modelData.aspect) + captionHeight;
+
+		//If the height of the figure is greater than the page height, scale it down
+		if (height > dimensions.innerSectionHeight) {
+			height = dimensions.innerSectionHeight;
+
+			//set new width and the new column coverage number
+			width = (height - captionHeight) * modelData.aspect;
+			this.$el.css("width", width + "px");
+
+			//update caption height at new width
+			captionHeight = this.$el.find("figcaption").outerHeight(true);
+
+			//update column coverage
+			modelData.columns = Math.ceil((width + dimensions.gutterWidth) / (dimensions.gutterWidth + dimensions.columnWidth));
+		}
+
+		//round the height/width to 2 decimal places
+		width = roundNumber(width,2);
+		height = roundNumber(height,2);
+
+		this.$el.css({ height : height + "px", width : width + "px"});
+
+		this.calculatedHeight = height;
+		this.calculatedWidth = width;
+
+		//update model number of columns based on calculations
+		this.model.set('columns', modelData.columns);
+
+		//Set the size of the figure content div inside the actual figure element
+		this.$el.find('.figure_content').css({
+			width : width,
+			height : height - captionHeight
+		});
+
+		this.sizeCalculated = true;
+		return this;
 	}
 });
 // OsciTk Namespace Initialization //
@@ -1363,6 +1630,9 @@ OsciTk.views.App = OsciTk.views.BaseView.extend({
 		// Add the navigation view to the AppView
 		app.views.navigationView = new OsciTk.views.Navigation();
 		this.addView(app.views.navigationView);
+		
+		// Add the footnotes view to the AppView
+		app.views.footnotesView = new OsciTk.views.Footnotes();
 	}
 });
 // OsciTk Namespace Initialization //
@@ -1459,27 +1729,46 @@ if (typeof OsciTk === 'undefined'){OsciTk = {};}
 if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 // OsciTk Namespace Initialization //
 
-
-OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
-
-	tagName: 'figure',
-	processed: false,
-
+OsciTk.views.Footnotes = OsciTk.views.BaseView.extend({
+	id: 'footnote',
 	initialize: function() {
-		this.preRender();
+		// listen to layoutComplete event
+		app.dispatcher.on('layoutComplete', function(params) {
+			// find all footnote links in the section content
+			var fnLinks = app.views.sectionView.$el.find('a.footnote-reference');
+			_.each(fnLinks, function(link) {
+				link = $(link);
+				// is there a matching footnote?
+				var id = link.attr('href').slice(1);
+				var fn = app.collections.footnotes.get(id)
+				if (fn) {
+					link.qtip({
+						content: fn.get('body')
+					});
+				}
+			});
+		}, this);
 	},
+});
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
+// OsciTk Namespace Initialization //
 
-	render: function() {
-		console.log("rendering");
-	},
 
-	preRender: function() {
-		var modelData = this.model.toJSON();
-		//console.log(this.options.sectionDimensions, 'dimensions');
+OsciTk.views.MultiColumnFigureImage = OsciTk.views.MultiColumnFigure.extend({
+	renderContent: function() {
+		var container = this.$el.find(".figure_content");
+		var containerHeight = container.height();
+		var containerWidth = container.width();
 
-		if (modelData.position === "n") {
-			this.$el.hide();
-		}
+		container.html(this.model.get('content'));
+		container.children("img").css({
+			height: containerHeight + "px",
+			width: containerWidth + "px"
+		});
+
+		this.contentRendered = true;
 	}
 });
 // OsciTk Namespace Initialization //
@@ -1504,6 +1793,14 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		this.visible = true;
 	},
 
+	resetPage: function() {
+		this.removeAllContent();
+
+		this.$el.children(':not(figure)').remove();
+
+		this.initializeColumns();
+	},
+
 	render : function() {
 		if (this.processingData.rendered) {
 			return this;
@@ -1517,24 +1814,33 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 			height: this.parent.dimensions.innerSectionHeight
 		});
 
-		this.processingData.columns = [];
-		for (var i = 0; i < this.parent.dimensions.columnsPerPage; i++) {
-			this.processingData.columns[i] = {
-				height : this.parent.dimensions.innerSectionHeight,
-				heightRemain : this.parent.dimensions.innerSectionHeight,
-				'$el' : null,
-				offset : 0
-			};
+		//load any unplaced figures
+		var unplacedFigures = this.parent.unplacedFigures;
+		var numUnplacedFigures = unplacedFigures.length;
+		for (var i = 0; i < numUnplacedFigures; i++) {
+			var placed = this.addFigure(unplacedFigures[i]);
+			if (placed) {
+				this.parent.unplacedFigures.splice(i, 1);
+			}
 		}
-		this.processingData.currentColumn = 0;
+
+		this.initializeColumns();
 
 		//set rendered flag so that render does not get called more than once while iterating over content
 		this.processingData.rendered = true;
 
 		return this;
 	},
+
 	layoutContent : function() {
+		var overflow = 'none';
 		var column = this.getCurrentColumn();
+
+		if (column === null) {
+			this.processingComplete();
+			overflow = 'contentOverflow';
+			return overflow;
+		}
 
 		var content = $(this.model.get('content')[(this.model.get('content').length - 1)]);
 
@@ -1546,7 +1852,8 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		if ((column.height - content.position().top) < lineHeight) {
 			content.remove();
 			column.heightRemain = 0;
-			return true;
+			overflow = 'contentOverflow';
+			return overflow;
 		}
 
 		var contentHeight = content.outerHeight(true);
@@ -1564,18 +1871,15 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		}
 
 		//find figure references and process the figure
-		var figureLinks = content.find("a.figure_reference:not(.processed)"),
-			numFigureLinks = figureLinks.length;
+		var figureLinks = content.find("a.figure_reference:not(.processed)");
+		var numFigureLinks = figureLinks.length;
 
 		if (numFigureLinks) {
 			for (var i = 0; i < numFigureLinks; i++) {
-				var figureLink = $(figureLinks[i]),
-					figureId = figureLink.attr("href").substring(1),
-					figure = app.collections.figures.get(figureId);
+				var figureLink = $(figureLinks[i]);
+				var figureId = figureLink.attr("href").substring(1);
+				var figure = app.collections.figures.get(figureId);
 
-				if (figure.get('processed')) {
-					continue;
-				}
 
 				//make sure the figure link is in the viewable area of the current column
 				var linkLocation = figureLink.position().top;
@@ -1583,16 +1887,25 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 					break;
 				}
 				
-				var figureType = figure.get('type'),
-					typeMap = app.config.get('figureViewTypeMap'),
-					figureView = typeMap[figureType] ? typeMap[figureType] : typeMap['default'];
+				var figureType = figure.get('type');
+				var typeMap = app.config.get('figureViewTypeMap');
+				var figureViewType = typeMap[figureType] ? typeMap[figureType] : typeMap['default'];
+				var figureViewInstance = this.parent.getFigureView(figure.get('id'));
 
-				var figureViewInstance = new OsciTk.views[figureView]({
-					model : figure,
-					sectionDimensions : this.parent.dimensions
-				});
-				this.addView(figureViewInstance);
-				//console.log(figureViewInstance, "place the figure");
+				if (!figureViewInstance) {
+					figureViewInstance = new OsciTk.views[figureViewType]({
+						model : figure,
+						sectionDimensions : this.parent.dimensions
+					});
+				}
+
+				if (!figureViewInstance.layoutComplete) {
+					if (this.addFigure(figureViewInstance)) {
+						//figure was added to the page... restart page processing
+						overflow = 'figurePlaced';
+						return overflow;
+					}
+				}
 			}
 		}
 
@@ -1610,11 +1923,10 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		}
 
 		//If we have negative height remaining, the content must be repeated in the next column
-		var overflow = false;
         if (heightRemain < 0) {
-            var overflowHeight = heightRemain ,
-				hiddenLines = Math.ceil(overflowHeight / lineHeight),
-				newHeight = content.position().top + content.outerHeight() + (hiddenLines * lineHeight);
+            var overflowHeight = heightRemain;
+			var hiddenLines = Math.ceil(overflowHeight / lineHeight);
+			var newHeight = content.position().top + content.outerHeight() + (hiddenLines * lineHeight);
 
 			//assign the new height to remove any partial lines of text
 			column.height = newHeight;
@@ -1622,10 +1934,10 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 
 			if (hiddenLines === 0) {
 				heightRemain = 0;
-				overflow = false;
+				overflow = 'none';
 			} else {
 				heightRemain = (hiddenLines * lineHeight) - contentMargin.bottom;
-				overflow = true;
+				overflow = 'contentOverflow';
 			}
 
             if (this.processingData.currentColumn === (this.parent.dimensions.columnsPerPage - 1)) {
@@ -1644,12 +1956,16 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 
 	getCurrentColumn : function() {
 		var currentColumn = null;
+		var minColHeight = parseInt(this.$el.css("line-height"), 10) * this.parent.dimensions.minLinesPerColumn;
 
-		if (this.processingData.columns[this.processingData.currentColumn] && this.processingData.columns[this.processingData.currentColumn].heightRemain > 0) {
+		if (this.processingData.columns[this.processingData.currentColumn] &&
+			this.processingData.columns[this.processingData.currentColumn].height >= minColHeight &&
+			this.processingData.columns[this.processingData.currentColumn].heightRemain > 0) {
 			currentColumn = this.processingData.columns[this.processingData.currentColumn];
 		} else {
 			for(var i = 0; i < this.parent.dimensions.columnsPerPage; i++) {
-				if (this.processingData.columns[i].heightRemain > 0) {
+				if (this.processingData.columns[i].height >= minColHeight &&
+					this.processingData.columns[i].heightRemain > 0) {
 					currentColumn = this.processingData.columns[i];
 					this.processingData.currentColumn = i;
 					break;
@@ -1670,7 +1986,8 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 			var columnCss = {
 				width : this.parent.dimensions.columnWidth + "px",
 				height : currentColumn.height + "px",
-				left : (this.processingData.currentColumn * this.parent.dimensions.columnWidth) + (this.parent.dimensions.gutterWidth * this.processingData.currentColumn)
+				left : this.processingData.columns[this.processingData.currentColumn].position.left,
+				top : this.processingData.columns[this.processingData.currentColumn].position.top
 			};
 
 			currentColumn.$el = $(this.columnTemplate())
@@ -1680,6 +1997,90 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		}
 
 		return currentColumn;
+	},
+
+	initializeColumns: function() {
+		this.processingData.columns = [];
+
+		var pageFigures = this.getChildViewsByType('figure');
+		var numPageFigures = pageFigures.length;
+
+		for (var i = 0; i < this.parent.dimensions.columnsPerPage; i++) {
+			var leftPosition = (i * this.parent.dimensions.columnWidth) + (this.parent.dimensions.gutterWidth * i);
+			var height = this.parent.dimensions.innerSectionHeight;
+			var topPosition = 0;
+
+			var columnPosition = {
+				x : [leftPosition, leftPosition + this.parent.dimensions.columnWidth],
+				y : [topPosition, topPosition + height]
+			};
+
+			if (numPageFigures) {
+				for (var j = 0; j < numPageFigures; j++) {
+
+					var elemX = pageFigures[j].position.x;
+					var elemY = pageFigures[j].position.y;
+
+					if (columnPosition.x[0] < elemX[1] && columnPosition.x[1] > elemX[0] &&
+						columnPosition.y[0] < elemY[1] && columnPosition.y[1] > elemY[0]
+					) {
+						height = height - pageFigures[j].calculatedHeight - this.parent.dimensions.gutterWidth;
+
+						//Adjust column top offset based on vertical location of the figure
+						switch (pageFigures[j].model.get("position").vertical) {
+							//top
+							case 't':
+							//fullpage
+							case 'p':
+								topPosition = topPosition + pageFigures[j].calculatedHeight + this.parent.dimensions.gutterWidth;
+								break;
+							//bottom
+							case 'b':
+								topPosition = topPosition;
+								break;
+						}
+
+						columnPosition.y = [topPosition, topPosition + height];
+					}
+				}
+			}
+
+			this.processingData.columns[i] = {
+				height : height,
+				heightRemain : height > 0 ? height : 0,
+				'$el' : null,
+				offset : 0,
+				position : {
+					left : columnPosition.x[0],
+					top : columnPosition.y[0]
+				}
+			};
+		}
+
+		this.processingData.currentColumn = 0;
+	},
+
+	addFigure: function(figureViewInstance) {
+		var figurePlaced = false;
+
+		this.addView(figureViewInstance);
+		
+		if (!figureViewInstance.layoutComplete) {
+			figureViewInstance.render();
+
+			if (figureViewInstance.layoutComplete) {
+				//figure was placed
+				figurePlaced = true;
+			} else {
+				//figure was not placed... carryover to next page
+				figurePlaced = false;
+				this.removeView(figureViewInstance, false);
+				figureViewInstance.$el.detach();
+				this.parent.unplacedFigures.push(figureViewInstance);
+			}
+		}
+
+		return figurePlaced;
 	}
 });
 // OsciTk Namespace Initialization //
@@ -1702,9 +2103,43 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		}, this);
 
 		app.dispatcher.on("navigate", function(data) {
-			this.getChildViewByIndex(data.page - 1).show();
-			var offset = (data.page - 1) * (this.dimensions.innerSectionHeight)* -1;
-			this.$el.find("#pages").css("-webkit-transform", "translateY(" + offset + "px)");
+			var gotoPage = 1;
+			if (data.page) {
+				gotoPage = data.page;
+			}
+			else if (data.identifier) {
+				switch (data.identifier) {
+					case 'end':
+						gotoPage = this.model.get('pages').length;
+						break;
+					default:
+						//TODO: make this work for an identifier
+						gotoPage = 1;
+						break;
+				}
+			}
+
+			//make the view visible
+			this.getChildViewByIndex(gotoPage - 1).show();
+
+			//calculate the page offset to move the page into view
+			var offset = (gotoPage - 1) * (this.dimensions.innerSectionHeight) * -1;
+
+			//TODO: add step to hide all other pages
+			var pages = this.getChildViews();
+			var numPages = pages.length;
+			for(var i = 0; i < numPages; i++) {
+				if (i !== (gotoPage - 1)) {
+					pages[i].hide();
+				}
+			}
+
+			//move all the pages to the proper offset
+			this.$el.find("#pages").css("-webkit-transform", "translate3d(0, " + offset + "px, 0)");
+
+			//trigger event so other elements can update with current page
+			app.dispatcher.trigger("pageChanged", {page: gotoPage});
+
 		}, this);
 
 		this.$el.addClass("oscitk_multi_column");
@@ -1737,21 +2172,44 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		//remove unwanted sections & parse sections
 		this.cleanData();
 
+		//create a placeholder for figures that do not fit on a page
+		this.unplacedFigures = [];
+
 		this.layoutData.items = this.layoutData.data.length;
 
 		var i = 0;
+		var firstOccurence = true;
+		var itemsOnPage = 0;
 		while(this.layoutData.items > 0) {
 			var pageView = this.getPageForProcessing(undefined, "#pages");
 
 			if (!pageView.processingData.rendered) {
+				itemsOnPage = 0;
 				pageView.render();
 			}
 
-			var overflow = pageView.addContent($(this.layoutData.data[i]).clone()).layoutContent();
+			var content = $(this.layoutData.data[i]).clone();
+			if (firstOccurence) {
+				content.attr('id', 'osci-content-' + i);
+			}
 
-			if (!overflow) {
-				i++;
-				this.layoutData.items--;
+			var layoutResults = pageView.addContent(content).layoutContent();
+
+			switch (layoutResults) {
+				case 'contentOverflow':
+					firstOccurence = false;
+					break;
+				case 'figurePlaced':
+					pageView.resetPage();
+					this.layoutData.items += itemsOnPage;
+					i -= itemsOnPage;
+					itemsOnPage = 0;
+					break;
+				default:
+					i++;
+					this.layoutData.items--;
+					itemsOnPage++;
+					firstOccurence = true;
 			}
 		}
 	},
@@ -1760,8 +2218,8 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		var dimensions = this.dimensions;
 
 		//get window height / width
-		var windowWidth = $(window).width(),
-			windowHeight = $(window).height();
+		var windowWidth = $(window).width();
+		var windowHeight = $(window).height();
 
 		//if the window size did not change, no need to recalculate dimensions
 		if (dimensions.windowWidth && dimensions.windowWidth === windowWidth && dimensions.windowHeight && dimensions.windowHeight === windowHeight) {
@@ -1774,6 +2232,9 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 		//copy gutter width out of the options for easy access
 		dimensions.gutterWidth = this.options.gutterWidth;
+
+		//copy minLinesPerColumn out of options for eacy access
+		dimensions.minLinesPerColumn = this.options.minLinesPerColumn;
 
 		//get the margins of the section container
 		dimensions.sectionMargin = {
@@ -1832,24 +2293,43 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		//remove the footnotes section
 		this.layoutData.data.find("#footnotes").remove();
 
+		var figureRefTemplate = OsciTk.templateManager.get('figure-reference');
 		//remove any inline figures and replace with references
-		var inlineFigures = this.layoutData.data.find("figure");
-		if (inlineFigures.length) {
-			var figureRefTemplate = OsciTk.templateManager.get('figure-reference');
+		var inlineFigures = this.layoutData.data.find("figure").replaceWith(function(){
+			var $this = $(this);
+			var figureData = {
+				id : $this.attr("id"),
+				title : $this.attr("title")
+			};
 
-			for(var i = 0, len = inlineFigures.length; i < len; i++) {
-				var figure = $(inlineFigures[i]);
-				var figureData = {
-					id : figure.attr("id"),
-					title : figure.attr("title")
-				};
-
-				figure.replaceWith(figureRefTemplate(figureData));
-			}
-		}
+			return $(figureRefTemplate(figureData));
+		});
 
 		//chunk the data into managable parts
 		this.layoutData.data = this.layoutData.data.find('section').children();
+	},
+
+	getFigureView: function(figureId) {
+		var childViews = this.getChildViews();
+		var figureView;
+
+		var numPageViews = childViews.length;
+		for (var i = 0; i < numPageViews; i++) {
+			var pageChildViews = childViews[i].getChildViewsByType('figure');
+			var numPageChildViews = pageChildViews.length;
+			for (var j = 0; j < numPageChildViews; j++) {
+				if (figureId === pageChildViews[j].$el.attr('id')) {
+					figureView = pageChildViews[j];
+					break;
+				}
+			}
+
+			if (figureView) {
+				break;
+			}
+		}
+
+		return figureView;
 	}
 });
 // OsciTk Namespace Initialization //
@@ -1860,16 +2340,137 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 
 OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 	id: 'navigation',
+	numPages: null,
+	identifier: null,
+	currentNavigationItem: null,
+	page: null,
 	template: OsciTk.templateManager.get('navigation'),
 	initialize: function() {
 		// when section is loaded, render the navigation control
 		app.dispatcher.on('layoutComplete', function(section) {
+			if (this.identifier) {
+				app.dispatcher.trigger("navigate", {identifier: this.identifier});
+				this.identifier = null;
+			}
+			else {
+				app.dispatcher.trigger("navigate", {page: 1});
+			}
 			this.numPages = section.numPages;
 			this.render();
 		}, this);
+		
+		app.dispatcher.on('pageChanged', function(info) {
+			// clear old identifier in url
+			// app.router.navigate("section/" + previous.id + "/end");
+			this.page = info.page;
+			this.update(info.page);
+		}, this);
+		
+		// bind routedTo
+		app.dispatcher.on('routedToSection', function(params) {
+			this.identifier = params.identifier;
+			if (!params.section_id) {
+				// go to first section
+				this.setCurrentNavigationItem(app.collections.navigationItems.at(0).id);
+			}
+			else {
+				// go to section_id
+				this.setCurrentNavigationItem(params.section_id);
+			}
+		}, this);
 	},
+	
 	render: function() {
-		this.$el.html(this.template({numPages: this.numPages}));
+
+		this.$el.html(this.template({
+			numPages: this.numPages,
+			chapter: this.currentNavigationItem.get('title')
+		}));
+
+		// Hide the pager if there's only one page, show otherwise
+		if (this.numPages == 1) {
+			$('.pager').hide();
+		} else {
+			$('.pager').show();
+		}
+
+		// Calculate the width for the pager head
+		var width = (100/this.numPages);
+		$('.pager .head', this.$el).css('width', width + '%');
+
+		// Navigate to the appropriate page when mousedown happens in the pager
+		$('.pager').mousedown(function(data) {
+			var p = parseInt(app.views.navigationView.numPages * data.offsetX / $(this).width());
+			app.dispatcher.trigger('navigate', { page: p+1 });
+		});
+
+		// Do other things that can happen whenever the page changes
+		this.update(this.page);
+
+	},
+	
+	getCurrentNavigationItem: function(){
+		return this.currentNavigationItem;
+	},
+	
+	setCurrentNavigationItem: function(section_id) {
+		this.currentNavigationItem = app.collections.navigationItems.get(section_id);
+		app.dispatcher.trigger('currentNavigationItemChanged', this.currentNavigationItem);
+	},
+	
+	update: function(page) {
+
+		// Calculate the position of the pager head
+		var width = (100/this.numPages);
+		$('.pager .head', this.$el).css('left', width * (page-1) + '%');
+
+		// unbind both controls to start
+		this.$el.find('.prev-page').unbind('click');
+		this.$el.find('.next-page').unbind('click');
+		
+		// Set previous button state
+		if (page == 1) {
+			// check if we can go to the previous section
+			var previous = this.currentNavigationItem.get('previous');
+			if (previous) {
+				this.$el.find('.prev-page .label').html('Previous Section');
+				this.$el.find('.prev-page').removeClass('inactive').click(function () {
+					app.router.navigate("section/" + previous.id + "/end", {trigger: true});
+				});
+			}
+			// on first page and no previous section, disable interaction
+			else {
+				$('.prev-page', this.$el).addClass('inactive').unbind('click');
+			}
+		} else if (this.numPages > 1) {
+			var $this = this;
+			this.$el.find('.prev-page .label').html('Previous');
+			this.$el.find('.prev-page').removeClass('inactive').click(function () {
+				app.router.navigate("section/" + $this.currentNavigationItem.id);
+				app.dispatcher.trigger('navigate', {page:(page-1)});
+			});
+		}
+
+		// Set next button state
+		if (page == this.numPages) {
+			// check if we can go to the next section
+			var next = this.currentNavigationItem.get('next');
+			if (next) {
+				this.$el.find('.next-page .label').html('Next Section');
+				this.$el.find('.next-page').removeClass('inactive').click(function () {
+					app.router.navigate("section/" + next.id, {trigger: true});
+				});
+			}
+			// on last page and no next section, disable interaction
+			else {
+				this.$el.find('.next-page').addClass('inactive').unbind('click');
+			}
+		} else if (this.numPages > 1) {
+			this.$el.find('.next-page .label').html('Next');
+			this.$el.find('.next-page').removeClass('inactive').click(function () {
+				app.dispatcher.trigger('navigate', { page: page+1 });
+			});
+		}
 	}
 });
 // OsciTk Namespace Initialization //

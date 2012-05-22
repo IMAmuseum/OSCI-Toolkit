@@ -43,6 +43,7 @@
 	<script src="js/backbone/views/MultiColumnSectionView.js"></script>
 	<script src="js/backbone/views/MultiColumnPageView.js"></script>
 	<script src="js/backbone/views/MultiColumnFigureView.js"></script>
+	<script src="js/backbone/views/MultiColumnFigureImageView.js"></script>
 	<script src="js/backbone/views/ToolbarView.js"></script>
 	<script src="js/backbone/views/ToolbarItemView.js"></script>
 	<script src="js/backbone/views/NavigationView.js"></script>
@@ -85,7 +86,8 @@
 					minLinesPerColumn : 5
 				},
 				figureViewTypeMap: {
-					'default': 'MultiColumnFigure' 
+					'default': 'MultiColumnFigure',
+					'image_asset': 'MultiColumnFigureImage'
 				}
 			});
 			app.run();

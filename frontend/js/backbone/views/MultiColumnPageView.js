@@ -41,6 +41,16 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 			height: this.parent.dimensions.innerSectionHeight
 		});
 
+		//load any unplaced figures
+		var unplacedFigures = this.parent.unplacedFigures;
+		var numUnplacedFigures = unplacedFigures.length;
+		for (var i = 0; i < numUnplacedFigures; i++) {
+			var placed = this.addFigure(unplacedFigures[i]);
+			if (placed) {
+				this.parent.unplacedFigures.splice(i, 1);
+			}
+		}
+
 		this.initializeColumns();
 
 		//set rendered flag so that render does not get called more than once while iterating over content
@@ -88,7 +98,10 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		}
 
 		//find figure references and process the figure
-		var figureLinks = content.find("a.figure_reference:not(.processed)");
+		var figureLinks = content.find("a.figure_reference");
+		if (content.hasClass('figure_reference')) {
+			figureLinks.push(content);
+		}
 		var numFigureLinks = figureLinks.length;
 
 		if (numFigureLinks) {
@@ -114,19 +127,13 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 						model : figure,
 						sectionDimensions : this.parent.dimensions
 					});
-
-					this.addView(figureViewInstance);
 				}
-				
-				if (!figureViewInstance.layoutComplete) {
-					figureViewInstance.render();
 
-					if (figureViewInstance.layoutComplete) {
+				if (!figureViewInstance.layoutComplete) {
+					if (this.addFigure(figureViewInstance)) {
 						//figure was added to the page... restart page processing
 						overflow = 'figurePlaced';
 						return overflow;
-					} else {
-						//figure was not placed... carryover to next page
 					}
 				}
 			}
@@ -281,5 +288,28 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		}
 
 		this.processingData.currentColumn = 0;
+	},
+
+	addFigure: function(figureViewInstance) {
+		var figurePlaced = false;
+
+		this.addView(figureViewInstance);
+		
+		if (!figureViewInstance.layoutComplete) {
+			figureViewInstance.render();
+
+			if (figureViewInstance.layoutComplete) {
+				//figure was placed
+				figurePlaced = true;
+			} else {
+				//figure was not placed... carryover to next page
+				figurePlaced = false;
+				this.removeView(figureViewInstance, false);
+				figureViewInstance.$el.detach();
+				this.parent.unplacedFigures.push(figureViewInstance);
+			}
+		}
+
+		return figurePlaced;
 	}
 });
