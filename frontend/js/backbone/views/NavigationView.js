@@ -44,6 +44,38 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 				this.setCurrentNavigationItem(params.section_id);
 			}
 		}, this);
+
+		// Respond to keyboard events
+		$(document).keydown(function(event) {
+			switch(event.which) {
+				case 39:
+					// Right arrow navigates to next page
+					var p = app.views.navigationView.page + 1;
+					if (p > app.views.navigationView.numPages) {
+						var next = app.views.navigationView.currentNavigationItem.get('next');
+						if (next) {
+							app.router.navigate("section/" + next.id, {trigger: true});
+						}
+					} else {
+						app.dispatcher.trigger('navigate', {page: p});
+					}
+					break;
+				case 37:
+					// Left arrow navigates to previous page
+					var p = app.views.navigationView.page - 1;
+					if (p < 1) {
+						var previous = app.views.navigationView.currentNavigationItem.get('previous');
+						if (previous) {
+							app.router.navigate("section/" + previous.id + "/end", {trigger: true});
+						}
+					} else {
+						app.dispatcher.trigger('navigate', {page: p});
+					}					
+					break;
+			}
+
+		});
+
 	},
 	
 	render: function() {
