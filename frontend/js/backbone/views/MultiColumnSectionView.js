@@ -251,26 +251,4 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		return figureView;
 	},
 
-	/**
-	 * Overriding base implementation so that we can handle elements that exist on multiple pages
-	 * but are only visible on one.
-	 */
-	getPageForElementId: function(id) {
-
-		var all_views = this.getChildViews();
-		var views = _.filter(all_views, function(view) { return view.containsElementId(id) });
-
-		// Handle special cases
-		switch(views.length) {
-			case 0:
-				return null;
-			case 1:
-				return _.indexOf(all_views, views[0]) + 1;
-		}
-
-		// TODO: This identifier exists in multiple pages. Figure out which one it's visible in.
-		console.log(id, 'exists in', views);
-
-		return 1;
-	}
 });
