@@ -351,7 +351,7 @@ __p+='<div class=\'figure-browser\'>\n\t<h2>Figures</h2>\n\t<div class=\'figure-
  } 
 ;__p+=' >&nbsp;</div>\n\t\t\t\t\t<div class=\'figure-info\'>\n\t\t\t\t\t\t<!--<h3 class=\'title\'>Figure Title?</h3>-->\n\t\t\t\t\t\t<!--<p class=\'meta-info\'>meta info | more meta</p>-->\n\t\t\t\t\t\t<div class=\'caption\'>\n\t\t\t\t\t\t\t'+
 ( figure.caption )+
-'\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</figure>\n\t\t\t';
+'\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<a class=\'view-in-context\'>View in context</a>\n\t\t\t\t</figure>\n\t\t\t';
  }); 
 ;__p+='\n\t\t</div>\n\t</div>\n</div>';
 }
@@ -1327,9 +1327,13 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 		var numColumns = this.model.get('columns');
 		var offsetLeft = 0;
 		var offsetTop = 0;
+		var maxPositionAttemps = numColumns;
+		var positionAttempt = 0;
 
 		whilePositioned:
-		while (!positioned) {
+		while (!positioned && positionAttempt <= maxPositionAttemps) {
+			positionAttempt++;
+
 			//Detemine the left offset start column and width of the figure
 			if ((column + numColumns) > dimensions.columnsPerPage) {
 				column -= (column + numColumns) - dimensions.columnsPerPage;
@@ -1414,7 +1418,7 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 					//no horizontal position
 					default:
 						column++;
-						if ((column + columns) > dimensions.columnsPerPage) {
+						if (column > dimensions.columnsPerPage) {
 							column = 0;
 						}
 				}
@@ -1701,6 +1705,12 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 			OsciTk.views.Figures.prototype.displayTitle();
 		});
 
+		$('#toolbar .figures-view .view-in-context').click(function() {
+			app.dispatcher.trigger('navigate', { figure: $(this).parent('figure').attr('data-figure-id') });
+			app.views.toolbarView.contentClose();
+			return false;
+		});
+
 		return this;
 	},
 	displayTitle: function() {
@@ -1871,7 +1881,10 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		}
 
 		//find figure references and process the figure
-		var figureLinks = content.find("a.figure_reference:not(.processed)");
+		var figureLinks = content.find("a.figure_reference");
+		if (content.hasClass('figure_reference')) {
+			figureLinks.push(content);
+		}
 		var numFigureLinks = figureLinks.length;
 
 		if (numFigureLinks) {
@@ -2106,6 +2119,10 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 			var gotoPage = 1;
 			if (data.page) {
 				gotoPage = data.page;
+			}
+			else if (data.figure) {
+				// TODO: handle navigation to a figure
+				console.log('navigate to figure', data.figure);
 			}
 			else if (data.identifier) {
 				switch (data.identifier) {
