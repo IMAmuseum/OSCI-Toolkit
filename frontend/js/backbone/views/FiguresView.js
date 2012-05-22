@@ -65,7 +65,7 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 		});
 
 		$('#toolbar .figures-view .view-in-context').click(function() {
-			app.dispatcher.trigger('navigate', { figure: $(this).parent('figure').attr('data-figure-id') });
+			app.dispatcher.trigger('navigate', { identifier: $(this).parent('figure').attr('data-figure-id') });
 			app.views.toolbarView.contentClose();
 			return false;
 		});

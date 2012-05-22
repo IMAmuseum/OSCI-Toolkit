@@ -37,5 +37,8 @@ OsciTk.views.Page = OsciTk.views.BaseView.extend({
 	removeAllContent : function() {
 		this.model.removeAllContent();
 		return this;
+	},
+	containsElementId : function(id) {
+		return (this.$el.find('#' + id).length != 0);
 	}
 });
