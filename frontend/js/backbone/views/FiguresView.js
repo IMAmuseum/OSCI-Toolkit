@@ -13,6 +13,9 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 		}, this);
 	},
 	render: function() {
+
+		this.$el.show(); // Show first so that widths can be calculated
+
 		var fig_data = app.collections.figures.toJSON();
 		this.$el.html(this.template({figures: fig_data}));
 
