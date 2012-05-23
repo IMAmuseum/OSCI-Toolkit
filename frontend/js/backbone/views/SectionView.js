@@ -28,6 +28,11 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 		}, this);
 
 	},
+	rerender: function() {
+		this.model.removeAllPages();
+		this.removeAllChildViews();
+		this.render();
+	},
 	render: function() {
 		app.dispatcher.trigger("layoutStart");
 		this.renderContent();
