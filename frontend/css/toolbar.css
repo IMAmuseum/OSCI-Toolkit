@@ -149,18 +149,48 @@ div.form-error {
 
 /* FONT VIEW */
 div.font-view div.font-control {
-	border: 1px solid #000;
-	margin: 20px 10px;
+	margin: 0 30px 30px 10px;
 	display: inline-block;
 }
-div.font-view div.font-control span {
-	padding: 5px;
+div.font-view div.font-control a {
+	height: 40px;
+	width: 80px;
+	border: 1px solid #8C8C8C;
+	display: inline-block;
+	text-align: center;
+	vertical-align: bottom;
+	text-decoration: none;
+	border-radius: 4px;
+	margin: 0 10px 0 0;
 }
-div.font-view div.font-control span.large {
-	font-size: 3em;
+div.font-view div.font-control a.larger {
+	font-size: 36px;
 }
-div.font-view div.font-control span.small {
-	font-size: 1em;
+div.font-view div.font-control a.smaller {
+	font-size: 24px;
+	padding-top: 10px;
+}
+
+div.font-view div.theme-control {
+	margin: 0 10px 30px 10px;
+	display: inline-block;
+}
+div.font-view div.theme-control a {
+	height: 40px;
+	width: 80px;
+	border: 1px solid #8C8C8C;
+	display: inline-block;
+	text-align: center;
+	vertical-align: bottom;
+	text-decoration: none;
+	border-radius: 4px;
+	margin: 0 10px 0 0;
+	padding: 12px 0 0 0;
+}
+
+div.font-view a:hover {
+	background-color: #8C8C8C;
+	color: #FFF;
 }
 
 /* FIGURE VIEW */
