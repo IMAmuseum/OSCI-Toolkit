@@ -12,8 +12,6 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		this.options.pageView = 'MultiColumnPage';
 
 		app.dispatcher.on("windowResized", function() {
-			console.log(this.model, "resizing");
-
 			//get the identifier of the first element on the page to try and keep the reader in the same location
 			var identifier;
 			var page = this.getChildViewByIndex(app.views.navigationView.page - 1);

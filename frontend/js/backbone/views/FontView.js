@@ -34,7 +34,7 @@ OsciTk.views.Font = OsciTk.views.BaseView.extend({
 			"font-size": this.currentFontSize + "%"
 		});
 
-		sectionView.rerender();
+		app.dispatcher.trigger("windowResized");
 	},
 	changeTheme: function(e) {
 		e.preventDefault();
