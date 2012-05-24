@@ -3,6 +3,10 @@ if (typeof OsciTk === 'undefined'){OsciTk = {};}
 if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 // OsciTk Namespace Initialization //
 
+/*
+ * This class is currently deprecated, but could be used as a template for a more advanced image viewer
+ */
+
 OsciTk.views.FullscreenImageFigureView = OsciTk.views.BaseView.extend({
 	className: 'fullscreen-image-figure',
 	initialize: function() {
