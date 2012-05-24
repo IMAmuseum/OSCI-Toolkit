@@ -3,8 +3,8 @@ if (typeof OsciTk === 'undefined'){OsciTk = {};}
 if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 // OsciTk Namespace Initialization //
 
-OsciTk.views.FullscreenImageFigureView = OsciTk.views.BaseView.extend({
-	className: 'fullscreen-image-figure',
+OsciTk.views.FullscreenHTMLFigureView = OsciTk.views.BaseView.extend({
+	className: 'fullscreen-html-figure',
 	initialize: function() {
 		this.render();
 	},

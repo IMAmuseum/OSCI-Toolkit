@@ -18,8 +18,17 @@ OsciTk.views.FullscreenFigureView = OsciTk.views.BaseView.extend({
 
 		var figure = null;
 		switch (figure_model.get('type')) {
+
 			case 'image_asset':
-				var figure = new OsciTk.views.FullscreenImageFigureView({
+				// For simple images, this is a better way to display within fancybox than the alternate method below
+				// TODO: generalize for other types of media?
+				$.fancybox.open({
+					href: $(figure_model.get('content')).attr('src')
+				});
+				return;
+
+			case 'html_asset':			
+				var figure = new OsciTk.views.FullscreenHTMLFigureView({
 					id: id,
 					model: figure_model
 				});
