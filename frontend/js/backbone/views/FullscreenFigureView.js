@@ -18,8 +18,8 @@ OsciTk.views.FullscreenFigureView = OsciTk.views.BaseView.extend({
 
 		var figure = null;
 		switch (figure_model.get('type')) {
-			case 'image_asset':
 
+			case 'image_asset':
 				// For simple images, this is a better way to display within fancybox than the alternate method below
 				// TODO: generalize for other types of media?
 				$.fancybox.open({
@@ -27,16 +27,11 @@ OsciTk.views.FullscreenFigureView = OsciTk.views.BaseView.extend({
 				});
 				return;
 
-				/*
-				 * Alternate implementation, if we need to have a custom image viewport like a tiled image viewer -
-				 * but this may be a different asset type
-				 *
-				var figure = new OsciTk.views.FullscreenImageFigureView({
+			case 'html_asset':			
+				var figure = new OsciTk.views.FullscreenHTMLFigureView({
 					id: id,
 					model: figure_model
 				});
-				*/				
-
 				break;
 
 			default:
