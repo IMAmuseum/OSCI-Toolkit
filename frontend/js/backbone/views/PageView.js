@@ -15,11 +15,19 @@ OsciTk.views.Page = OsciTk.views.BaseView.extend({
 				.attr("data-page_num", this.model.collection.length);
 	},
 	events: {
-		'click a.figure_reference': 'showFigureFullscreen'
+		'click figure .figure_content': 'onFigureContentClicked',
+		'click a.figure_reference': 'onFigureReferenceClicked'
+	},
+	onFigureContentClicked: function(event_data) {
+		app.dispatcher.trigger('showFigureFullscreen', $(event_data.currentTarget).parent('figure').attr('id'));
+		return false;
+	},
+	onFigureReferenceClicked: function(event_data) {
+		app.dispatcher.trigger('showFigureFullscreen', event_data.currentTarget.hash.substring(1));
+		return false;
 	},
 	render: function() {
 		this.$el.html(this.template(this.model.toJSON()));
-
 		return this;
 	},
 	processingComplete : function() {
@@ -43,9 +51,5 @@ OsciTk.views.Page = OsciTk.views.BaseView.extend({
 	},
 	containsElementId : function(id) {
 		return (this.$el.find('#' + id).length != 0);
-	},
-	showFigureFullscreen: function(data) {
-		app.dispatcher.trigger('showFigureFullscreen', data.currentTarget.hash.substring(1));
-		return false;
 	}
 });

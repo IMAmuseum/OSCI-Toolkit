@@ -12,6 +12,19 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 			this.render();
 		}, this);
 	},
+	events: {
+		"click .figure-preview": "onFigurePreviewClicked",
+		"click a.view-in-context": "onViewInContextClicked"
+	},
+	onFigurePreviewClicked: function(event_data) {
+		app.dispatcher.trigger('showFigureFullscreen', $(event_data.target).parent('figure').attr('data-figure-id'));
+		return false;
+	},
+	onViewInContextClicked: function(event_data) {
+		app.dispatcher.trigger('navigate', { identifier: $(event_data.target).parent('figure').attr('data-figure-id') });
+		app.views.toolbarView.contentClose();
+		return false;		
+	},
 	render: function() {
 
 		this.$el.show(); // Show first so that widths can be calculated
@@ -65,12 +78,6 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 			}
 			new_fig.show().addClass('active');
 			OsciTk.views.Figures.prototype.displayTitle();
-		});
-
-		$('#toolbar .figures-view .view-in-context').click(function() {
-			app.dispatcher.trigger('navigate', { identifier: $(this).parent('figure').attr('data-figure-id') });
-			app.views.toolbarView.contentClose();
-			return false;
 		});
 
 		return this;
