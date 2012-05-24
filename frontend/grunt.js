@@ -50,7 +50,9 @@ module.exports = function(grunt) {
 					'css/search.css',
 					'css/toolbar.css',
 					'css/section.css',
-					'css/multiColumnSection.css'
+					'css/multiColumnSection.css',
+					'css/themeNight.css',
+					'css/themeSepia.css'
 				],
 				dest: 'dist/OSCI-Toolkit-<%= meta.version %>.css'
 			}

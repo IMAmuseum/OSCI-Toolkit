@@ -679,3 +679,11 @@ h1, h2, h3, h4, h5 {
 #section.oscitk_multi_column figure .figure_content {
 	overflow: hidden;
 }
+body.night {
+	background: #000;
+	color: #EEE;
+}
+body.sepia {
+	background:#FBF0D9;
+	color:#5F4B32;
+}
