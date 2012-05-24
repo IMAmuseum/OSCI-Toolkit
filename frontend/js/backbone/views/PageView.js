@@ -50,6 +50,6 @@ OsciTk.views.Page = OsciTk.views.BaseView.extend({
 		return this;
 	},
 	containsElementId : function(id) {
-		return (this.$el.find('#' + id).length != 0);
+		return (this.$el.find('#' + id).length !== 0);
 	}
 });

@@ -12,9 +12,22 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		this.options.pageView = 'MultiColumnPage';
 
 		app.dispatcher.on("windowResized", function() {
-			this.removeAllChildViews();
-			this.model.removeAllPages();
-			this.render();
+			console.log(this.model, "resizing");
+
+			//get the identifier of the first element on the page to try and keep the reader in the same location
+			var identifier;
+			var page = this.getChildViewByIndex(app.views.navigationView.page - 1);
+			var element = page.$el.find("[id]:first");
+			if (element.length) {
+				identifier = element.attr("id");
+			}
+
+			//update the navigationView identifier if found
+			if (identifier) {
+				app.views.navigationView.identifier = identifier;
+			}
+
+			this.rerender();
 		}, this);
 
 		app.dispatcher.on("navigate", function(data) {
@@ -27,11 +40,15 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 					case 'end':
 						gotoPage = this.model.get('pages').length;
 						break;
+					case 'start':
+						gotoPage = 1;
+						break;
 					default:
 						var page_for_id = this.getPageForElementId(data.identifier);
-						if (page_for_id != null) {
+						if (page_for_id !== null) {
 							gotoPage = page_for_id;
 						} else {
+							gotoPage = 1;
 							console.log('id', data.identifier, 'not found in any page');
 						}
 						break;

@@ -70,7 +70,7 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 						}
 					} else {
 						app.dispatcher.trigger('navigate', {page: p});
-					}					
+					}
 					break;
 			}
 
@@ -98,7 +98,7 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 
 		// Navigate to the appropriate page when mousedown happens in the pager
 		$('.pager').mousedown(function(data) {
-			var p = parseInt(app.views.navigationView.numPages * data.offsetX / $(this).width());
+			var p = parseInt(app.views.navigationView.numPages * data.offsetX / $(this).width(), 10);
 			app.dispatcher.trigger('navigate', { page: p+1 });
 		});
 

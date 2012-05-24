@@ -44,8 +44,8 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 	},
 	getPageForElementId : function(id) {
 		var views = this.getChildViews();
-		var p = _.find(views, function(view) { return view.containsElementId(id) });
-		if ((p != undefined) && (p != -1)) {
+		var p = _.find(views, function(view) { return view.containsElementId(id); });
+		if ((p !== undefined) && (p !== -1)) {
 			return _.indexOf(views, p) + 1;
 		}
 		return null;

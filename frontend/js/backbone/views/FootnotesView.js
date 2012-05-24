@@ -14,7 +14,7 @@ OsciTk.views.Footnotes = OsciTk.views.BaseView.extend({
 				link = $(link);
 				// is there a matching footnote?
 				var id = link.attr('href').slice(1);
-				var fn = app.collections.footnotes.get(id)
+				var fn = app.collections.footnotes.get(id);
 				if (fn) {
 					link.qtip({
 						content: fn.get('body')
@@ -22,5 +22,5 @@ OsciTk.views.Footnotes = OsciTk.views.BaseView.extend({
 				}
 			});
 		}, this);
-	},
+	}
 });
