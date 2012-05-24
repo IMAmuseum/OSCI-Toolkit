@@ -14,6 +14,9 @@ OsciTk.views.Page = OsciTk.views.BaseView.extend({
 		this.$el.addClass("page-num-" + this.model.collection.length)
 				.attr("data-page_num", this.model.collection.length);
 	},
+	events: {
+		'click a.figure_reference': 'showFigureFullscreen'
+	},
 	render: function() {
 		this.$el.html(this.template(this.model.toJSON()));
 
@@ -40,5 +43,9 @@ OsciTk.views.Page = OsciTk.views.BaseView.extend({
 	},
 	containsElementId : function(id) {
 		return (this.$el.find('#' + id).length != 0);
+	},
+	showFigureFullscreen: function(data) {
+		app.dispatcher.trigger('showFigureFullscreen', data.currentTarget.hash.substring(1));
+		return false;
 	}
 });
