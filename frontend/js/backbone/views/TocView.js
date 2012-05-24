@@ -18,6 +18,8 @@ OsciTk.views.Toc = OsciTk.views.BaseView.extend({
 		}));
 	},
 	itemClick: function(event) {
+		event.preventDefault();
+
 		var sectionId = $(event.currentTarget).attr('data-section-id');
 		// app.dispatcher.trigger('navigateToSection', sectionId);
 		// TODO: don't really want to address the appRouter directly

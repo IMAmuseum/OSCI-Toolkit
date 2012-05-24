@@ -129,6 +129,8 @@ div.toc-view li {
 }
 div.toc-view > ul > li > a {
 	display: inline-block;
+	text-decoration: none;
+	color: #8C8C8C;
 }
 div.toc-view h4, div.toc-view h5 {
 	margin: 0px;
