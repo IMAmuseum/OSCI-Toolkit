@@ -1,5 +1,5 @@
 /*
- * OSCI Toolkit - v0.1.0 - 2012-05-22
+ * OSCI Toolkit - v0.1.0 - 2012-05-24
  * http://oscitoolkit.org/
  * Copyright (c) 2010-2012 The Art Institute of Chicago and the Indianapolis Museum of Art
  * GNU General Public License
@@ -329,13 +329,15 @@ __p+='<div class=\'figure-browser\'>\n\t<h2>Figures</h2>\n\t<div class=\'figure-
  _.each(figures, function(figure) { 
 ;__p+='\n\t\t\t\t<figure class=\'thumbnail\' data-figure-id="'+
 ( figure.id )+
-'">\n\t\t\t\t\t<div class=\'figure-thumbnail\' ';
+'">\n\t\t\t\t\t';
  if (figure.thumbnail_url != undefined) { 
-;__p+='style="background-image: url(\''+
+;__p+='\n\t\t\t\t\t\t<img class=\'figure-thumbnail\' src=\''+
 ( figure.thumbnail_url )+
-'\');" ';
+'\'/>\n\t\t\t\t\t';
+ } else { 
+;__p+='\n\t\t\t\t\t\t<div class=\'figure-thumbnail\'>&nbsp;</div>\n\t\t\t\t\t';
  } 
-;__p+=' >&nbsp;</div>\n\t\t\t\t\t<figcaption>'+
+;__p+='\n\t\t\t\t\t<figcaption>'+
 ( figure.title )+
 '</figcaption>\n\t\t\t\t</figure>\n\t\t\t';
  }); 
@@ -343,13 +345,15 @@ __p+='<div class=\'figure-browser\'>\n\t<h2>Figures</h2>\n\t<div class=\'figure-
  _.each(figures, function(figure) { 
 ;__p+='\n\t\t\t\t<figure class=\'preview\' data-figure-id="'+
 ( figure.id )+
-'">\n\t\t\t\t\t<div class=\'figure-preview\' ';
+'">\n\t\t\t\t\t';
  if (figure.thumbnail_url != undefined) { 
-;__p+='style="background-image: url(\''+
+;__p+='\n\t\t\t\t\t\t<img class=\'figure-preview\' src=\''+
 ( figure.thumbnail_url )+
-'\');"';
+'\'/>\n\t\t\t\t\t';
+ } else { 
+;__p+='\n\t\t\t\t\t\t<div class=\'figure-preview\'>&nbsp;</div>\n\t\t\t\t\t';
  } 
-;__p+=' >&nbsp;</div>\n\t\t\t\t\t<div class=\'figure-info\'>\n\t\t\t\t\t\t<!--<h3 class=\'title\'>Figure Title?</h3>-->\n\t\t\t\t\t\t<!--<p class=\'meta-info\'>meta info | more meta</p>-->\n\t\t\t\t\t\t<div class=\'caption\'>\n\t\t\t\t\t\t\t'+
+;__p+='\n\t\t\t\t\t<div class=\'figure-info\'>\n\t\t\t\t\t\t<!--<h3 class=\'title\'>Figure Title?</h3>-->\n\t\t\t\t\t\t<!--<p class=\'meta-info\'>meta info | more meta</p>-->\n\t\t\t\t\t\t<div class=\'caption\'>\n\t\t\t\t\t\t\t'+
 ( figure.caption )+
 '\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<a class=\'view-in-context\'>View in context</a>\n\t\t\t\t</figure>\n\t\t\t';
  }); 
@@ -360,7 +364,7 @@ return __p;
 OsciTk.templates['font'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class="font-control"><span class="large">+A</span> <span class="small">-A</span></div>';
+__p+='<h2>Reading Settings</h2>\n<div class="font-control">\n\t<h3>Font Size</h3>\n\t<a href="#font-larger" class="larger font-button">A</a>\n\t<a href="#font-smaller" class="smaller font-button">A</a>\n</div>\n<div class="theme-control">\n\t<h3>Theme</h3>\n\t<a href="#normal" class="theme-button">Normal</a>\n\t<a href="#sepia" class="theme-button">Sepia</a>\n\t<a href="#night" class="theme-button">Night</a>\n</div>';
 }
 return __p;
 }
@@ -1137,9 +1141,20 @@ OsciTk.views.Page = OsciTk.views.BaseView.extend({
 		this.$el.addClass("page-num-" + this.model.collection.length)
 				.attr("data-page_num", this.model.collection.length);
 	},
+	events: {
+		'click figure .figure_content': 'onFigureContentClicked',
+		'click a.figure_reference': 'onFigureReferenceClicked'
+	},
+	onFigureContentClicked: function(event_data) {
+		app.dispatcher.trigger('showFigureFullscreen', $(event_data.currentTarget).parent('figure').attr('id'));
+		return false;
+	},
+	onFigureReferenceClicked: function(event_data) {
+		app.dispatcher.trigger('showFigureFullscreen', event_data.currentTarget.hash.substring(1));
+		return false;
+	},
 	render: function() {
 		this.$el.html(this.template(this.model.toJSON()));
-
 		return this;
 	},
 	processingComplete : function() {
@@ -1160,6 +1175,9 @@ OsciTk.views.Page = OsciTk.views.BaseView.extend({
 	removeAllContent : function() {
 		this.model.removeAllContent();
 		return this;
+	},
+	containsElementId : function(id) {
+		return (this.$el.find('#' + id).length !== 0);
 	}
 });
 // OsciTk Namespace Initialization //
@@ -1192,6 +1210,11 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 		}, this);
 
 	},
+	rerender: function() {
+		this.model.removeAllPages();
+		this.removeAllChildViews();
+		this.render();
+	},
 	render: function() {
 		app.dispatcher.trigger("layoutStart");
 		this.renderContent();
@@ -1200,6 +1223,14 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 	},
 	onClose: function() {
 		this.model.removeAllPages();
+	},
+	getPageForElementId : function(id) {
+		var views = this.getChildViews();
+		var p = _.find(views, function(view) { return view.containsElementId(id); });
+		if ((p !== undefined) && (p !== -1)) {
+			return _.indexOf(views, p) + 1;
+		}
+		return null;
 	},
 	getPageForProcessing : function(id, newTarget) {
 		var page;
@@ -1637,6 +1668,10 @@ OsciTk.views.App = OsciTk.views.BaseView.extend({
 		
 		// Add the footnotes view to the AppView
 		app.views.footnotesView = new OsciTk.views.Footnotes();
+
+		// Add the fullscreen figure view to the AppView
+		app.views.fsFigureView = new OsciTk.views.FullscreenFigureView();
+
 	}
 });
 // OsciTk Namespace Initialization //
@@ -1653,7 +1688,23 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 			this.render();
 		}, this);
 	},
+	events: {
+		"click .figure-preview": "onFigurePreviewClicked",
+		"click a.view-in-context": "onViewInContextClicked"
+	},
+	onFigurePreviewClicked: function(event_data) {
+		app.dispatcher.trigger('showFigureFullscreen', $(event_data.target).parent('figure').attr('data-figure-id'));
+		return false;
+	},
+	onViewInContextClicked: function(event_data) {
+		app.dispatcher.trigger('navigate', { identifier: $(event_data.target).parent('figure').attr('data-figure-id') });
+		app.views.toolbarView.contentClose();
+		return false;
+	},
 	render: function() {
+
+		this.$el.show(); // Show first so that widths can be calculated
+
 		var fig_data = app.collections.figures.toJSON();
 		this.$el.html(this.template({figures: fig_data}));
 
@@ -1705,12 +1756,6 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 			OsciTk.views.Figures.prototype.displayTitle();
 		});
 
-		$('#toolbar .figures-view .view-in-context').click(function() {
-			app.dispatcher.trigger('navigate', { figure: $(this).parent('figure').attr('data-figure-id') });
-			app.views.toolbarView.contentClose();
-			return false;
-		});
-
 		return this;
 	},
 	displayTitle: function() {
@@ -1727,11 +1772,46 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 OsciTk.views.Font = OsciTk.views.BaseView.extend({
 	className: 'font-view',
 	template: OsciTk.templateManager.get('font'),
+	currentFontSize: 100,
 	initialize: function() {
 		this.render();
 	},
 	render: function() {
 		this.$el.html(this.template());
+		return this;
+	},
+	events: {
+		"click .font-button": "changeFontSize",
+		"click .theme-button": "changeTheme"
+	},
+	changeFontSize: function(e) {
+		e.preventDefault();
+
+		var sectionView = app.views.sectionView;
+		var clicked = $(e.target);
+
+		if (clicked.attr("href") === "#font-larger") {
+			this.currentFontSize += 25;
+		} else {
+			this.currentFontSize -= 25;
+		}
+
+		sectionView.$el.css({
+			"font-size": this.currentFontSize + "%"
+		});
+
+		app.dispatcher.trigger("windowResized");
+	},
+	changeTheme: function(e) {
+		e.preventDefault();
+
+		var clicked = $(e.target);
+		var theme = clicked.attr("href").substr(1);
+		var body = $("body");
+
+		body.removeClass("normal sepia night");
+
+		body.addClass(theme);
 	}
 });
 // OsciTk Namespace Initialization //
@@ -1750,7 +1830,7 @@ OsciTk.views.Footnotes = OsciTk.views.BaseView.extend({
 				link = $(link);
 				// is there a matching footnote?
 				var id = link.attr('href').slice(1);
-				var fn = app.collections.footnotes.get(id)
+				var fn = app.collections.footnotes.get(id);
 				if (fn) {
 					link.qtip({
 						content: fn.get('body')
@@ -1758,7 +1838,71 @@ OsciTk.views.Footnotes = OsciTk.views.BaseView.extend({
 				}
 			});
 		}, this);
+	}
+});
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
+// OsciTk Namespace Initialization //
+
+OsciTk.views.FullscreenFigureView = OsciTk.views.BaseView.extend({
+	id: 'fsFigureView',
+	initialize: function() {
+		app.dispatcher.on('showFigureFullscreen', this.showFigureFullscreen);
 	},
+	showFigureFullscreen: function(id) {
+
+		var figure_model = app.collections.figures.get(id);
+		if (figure_model == undefined) {
+			alert('Error: Figure ' + id + ' not found');
+			return;
+		}
+
+		var figure = null;
+		switch (figure_model.get('type')) {
+
+			case 'image_asset':
+				// For simple images, this is a better way to display within fancybox than the alternate method below
+				// TODO: generalize for other types of media?
+				$.fancybox.open({
+					href: $(figure_model.get('content')).attr('src')
+				});
+				return;
+
+			case 'html_asset':			
+				var figure = new OsciTk.views.FullscreenHTMLFigureView({
+					id: id,
+					model: figure_model
+				});
+				break;
+
+			default:
+				console.log('Unsupported figure type', figure_model);
+				return;
+		}
+
+		$.fancybox.open({
+			content: figure.$el.html()
+		});
+
+	}
+
+});
+// OsciTk Namespace Initialization //
+if (typeof OsciTk === 'undefined'){OsciTk = {};}
+if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
+// OsciTk Namespace Initialization //
+
+OsciTk.views.FullscreenHTMLFigureView = OsciTk.views.BaseView.extend({
+	className: 'fullscreen-html-figure',
+	initialize: function() {
+		this.render();
+	},
+	render: function() {
+		this.$el.html(this.model.get('content'));
+		return this;
+	}
+
 });
 // OsciTk Namespace Initialization //
 if (typeof OsciTk === 'undefined'){OsciTk = {};}
@@ -2110,9 +2254,20 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		this.options.pageView = 'MultiColumnPage';
 
 		app.dispatcher.on("windowResized", function() {
-			this.removeAllChildViews();
-			this.model.removeAllPages();
-			this.render();
+			//get the identifier of the first element on the page to try and keep the reader in the same location
+			var identifier;
+			var page = this.getChildViewByIndex(app.views.navigationView.page - 1);
+			var element = page.$el.find("[id]:first");
+			if (element.length) {
+				identifier = element.attr("id");
+			}
+
+			//update the navigationView identifier if found
+			if (identifier) {
+				app.views.navigationView.identifier = identifier;
+			}
+
+			this.rerender();
 		}, this);
 
 		app.dispatcher.on("navigate", function(data) {
@@ -2120,18 +2275,22 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 			if (data.page) {
 				gotoPage = data.page;
 			}
-			else if (data.figure) {
-				// TODO: handle navigation to a figure
-				console.log('navigate to figure', data.figure);
-			}
 			else if (data.identifier) {
 				switch (data.identifier) {
 					case 'end':
 						gotoPage = this.model.get('pages').length;
 						break;
-					default:
-						//TODO: make this work for an identifier
+					case 'start':
 						gotoPage = 1;
+						break;
+					default:
+						var page_for_id = this.getPageForElementId(data.identifier);
+						if (page_for_id !== null) {
+							gotoPage = page_for_id;
+						} else {
+							gotoPage = 1;
+							console.log('id', data.identifier, 'not found in any page');
+						}
 						break;
 				}
 			}
@@ -2347,7 +2506,8 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		}
 
 		return figureView;
-	}
+	},
+
 });
 // OsciTk Namespace Initialization //
 if (typeof OsciTk === 'undefined'){OsciTk = {};}
@@ -2395,6 +2555,38 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 				this.setCurrentNavigationItem(params.section_id);
 			}
 		}, this);
+
+		// Respond to keyboard events
+		$(document).keydown(function(event) {
+			switch(event.which) {
+				case 39:
+					// Right arrow navigates to next page
+					var p = app.views.navigationView.page + 1;
+					if (p > app.views.navigationView.numPages) {
+						var next = app.views.navigationView.currentNavigationItem.get('next');
+						if (next) {
+							app.router.navigate("section/" + next.id, {trigger: true});
+						}
+					} else {
+						app.dispatcher.trigger('navigate', {page: p});
+					}
+					break;
+				case 37:
+					// Left arrow navigates to previous page
+					var p = app.views.navigationView.page - 1;
+					if (p < 1) {
+						var previous = app.views.navigationView.currentNavigationItem.get('previous');
+						if (previous) {
+							app.router.navigate("section/" + previous.id + "/end", {trigger: true});
+						}
+					} else {
+						app.dispatcher.trigger('navigate', {page: p});
+					}
+					break;
+			}
+
+		});
+
 	},
 	
 	render: function() {
@@ -2417,7 +2609,7 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 
 		// Navigate to the appropriate page when mousedown happens in the pager
 		$('.pager').mousedown(function(data) {
-			var p = parseInt(app.views.navigationView.numPages * data.offsetX / $(this).width());
+			var p = parseInt(app.views.navigationView.numPages * data.offsetX / $(this).width(), 10);
 			app.dispatcher.trigger('navigate', { page: p+1 });
 		});
 
@@ -2659,11 +2851,11 @@ OsciTk.views.ToolbarItem = OsciTk.views.BaseView.extend({
 			// the toolbar should know who the active view is
 			this.parent.activeContentView = this.options.toolbarItem.view;
 			// hide all the views besides this one
-				children = this.parent.$el.find('#toolbar-content').children().not('#' + this.contentView.id);
-				_.each(children, function(otherView) {
-					$(otherView).hide();
-				}, this);
-				this.contentView.$el.show();
+			children = this.parent.$el.find('#toolbar-content').children().not('#' + this.contentView.id);
+			_.each(children, function(otherView) {
+				$(otherView).hide();
+			}, this);
+			this.contentView.$el.show();
 			// animate the opening of the toolbar
 			this.parent.contentOpen();
 		}
@@ -2707,9 +2899,9 @@ OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 		// tracks the state of the content area drawer
 		this.isContentOpen = false;
 		this.render();
-		$('#toolbar-close').live('click', function() {
-			app.views.toolbarView.contentClose();
-		});
+	},
+	events: {
+		"click #toolbar-close": "contentClose"
 	},
 	render: function() {
 		this.$el.html(this.template());
@@ -2731,18 +2923,25 @@ OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 		}
 		this.$el.animate({
 			'height': toolbarHeight + 'px'
-		}, 'fast', function() {
-			$('#toolbar-close').show();
-		});
+		}, 'fast');
+
+		$('#toolbar-close').animate({
+			top: "10px"
+		}, 'fast');
+
 		this.isContentOpen = true;
 		
 	},
 	contentClose: function() {
-		$('#toolbar-close').hide();
+		$('#toolbar-close').animate({
+			top: "-" + $('#toolbar-close').height() + "px"
+		}, 'fast');
+
 		this.$el.animate({
 			'height': this.$el.find('#toolbar-handle').outerHeight() + 'px',
 			'width': '100%'
 		}, 'fast');
+
 		this.isContentOpen = false;
 	}
 });

@@ -1,5 +1,5 @@
 /*
- * OSCI Toolkit - v0.1.0 - 2012-05-22
+ * OSCI Toolkit - v0.1.0 - 2012-05-24
  * http://oscitoolkit.org/
  * Copyright (c) 2010-2012 The Art Institute of Chicago and the Indianapolis Museum of Art
  * GNU General Public License
@@ -180,9 +180,7 @@ div#toolbar {
 	max-height: 80%;
 	min-height: 40px;
 	overflow: hidden;
-	
 	font-family:Arial, Helvetica, sans-serif;
-
 }
 div#toolbar-content {
 	position: absolute;
@@ -190,7 +188,7 @@ div#toolbar-content {
 	left: 0px;
 	background-color: #eee;
 	width: 100%;
-	padding: 0px 40px;
+	padding: 20px 20px;
 	overflow-y: auto;
 	background: url('../img/bg-toolbar.gif') repeat;
 }
@@ -204,15 +202,17 @@ div#toolbar-content {
 	border-bottom-right-radius:5px;
 }
 #toolbar-close {
-	display: none;
 	z-index: 10;
 	position: absolute;
-	top: 10px;right: 50px;
+	top: -30px;
+	right: 20px;
 	padding: 0px;
 	cursor: pointer;
-	height:30px;width:30px;overflow:hidden;
-	
-	overflow:hidden;text-indent:100%;white-space:nowrap;
+	height:30px;
+	width:30px;
+	overflow:hidden;
+	text-indent:100%;
+	white-space:nowrap;
 	background: url('../img/bg-btn-close.png') no-repeat left top;
 	opacity:.2;
 }
@@ -221,7 +221,7 @@ div#toolbar-content {
 }
 
 #toolbar h2 {
-	padding-bottom: 0.5em;
+	margin: 0 0 20px 0;
 	border-bottom: 5px solid #8C8C8C;
 }
 div.toolbar-item {
@@ -322,18 +322,48 @@ div.form-error {
 
 /* FONT VIEW */
 div.font-view div.font-control {
-	border: 1px solid #000;
-	margin: 20px 10px;
+	margin: 0 30px 30px 10px;
 	display: inline-block;
 }
-div.font-view div.font-control span {
-	padding: 5px;
+div.font-view div.font-control a {
+	height: 40px;
+	width: 80px;
+	border: 1px solid #8C8C8C;
+	display: inline-block;
+	text-align: center;
+	vertical-align: bottom;
+	text-decoration: none;
+	border-radius: 4px;
+	margin: 0 10px 0 0;
 }
-div.font-view div.font-control span.large {
-	font-size: 3em;
+div.font-view div.font-control a.larger {
+	font-size: 36px;
 }
-div.font-view div.font-control span.small {
-	font-size: 1em;
+div.font-view div.font-control a.smaller {
+	font-size: 24px;
+	padding-top: 10px;
+}
+
+div.font-view div.theme-control {
+	margin: 0 10px 30px 10px;
+	display: inline-block;
+}
+div.font-view div.theme-control a {
+	height: 40px;
+	width: 80px;
+	border: 1px solid #8C8C8C;
+	display: inline-block;
+	text-align: center;
+	vertical-align: bottom;
+	text-decoration: none;
+	border-radius: 4px;
+	margin: 0 10px 0 0;
+	padding: 12px 0 0 0;
+}
+
+div.font-view a:hover {
+	background-color: #8C8C8C;
+	color: #FFF;
 }
 
 /* FIGURE VIEW */

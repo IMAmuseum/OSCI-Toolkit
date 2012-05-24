@@ -45,13 +45,15 @@ __p+='<div class=\'figure-browser\'>\n\t<h2>Figures</h2>\n\t<div class=\'figure-
  _.each(figures, function(figure) { 
 ;__p+='\n\t\t\t\t<figure class=\'thumbnail\' data-figure-id="'+
 ( figure.id )+
-'">\n\t\t\t\t\t<div class=\'figure-thumbnail\' ';
+'">\n\t\t\t\t\t';
  if (figure.thumbnail_url != undefined) { 
-;__p+='style="background-image: url(\''+
+;__p+='\n\t\t\t\t\t\t<img class=\'figure-thumbnail\' src=\''+
 ( figure.thumbnail_url )+
-'\');" ';
+'\'/>\n\t\t\t\t\t';
+ } else { 
+;__p+='\n\t\t\t\t\t\t<div class=\'figure-thumbnail\'>&nbsp;</div>\n\t\t\t\t\t';
  } 
-;__p+=' >&nbsp;</div>\n\t\t\t\t\t<figcaption>'+
+;__p+='\n\t\t\t\t\t<figcaption>'+
 ( figure.title )+
 '</figcaption>\n\t\t\t\t</figure>\n\t\t\t';
  }); 
@@ -59,13 +61,15 @@ __p+='<div class=\'figure-browser\'>\n\t<h2>Figures</h2>\n\t<div class=\'figure-
  _.each(figures, function(figure) { 
 ;__p+='\n\t\t\t\t<figure class=\'preview\' data-figure-id="'+
 ( figure.id )+
-'">\n\t\t\t\t\t<div class=\'figure-preview\' ';
+'">\n\t\t\t\t\t';
  if (figure.thumbnail_url != undefined) { 
-;__p+='style="background-image: url(\''+
+;__p+='\n\t\t\t\t\t\t<img class=\'figure-preview\' src=\''+
 ( figure.thumbnail_url )+
-'\');"';
+'\'/>\n\t\t\t\t\t';
+ } else { 
+;__p+='\n\t\t\t\t\t\t<div class=\'figure-preview\'>&nbsp;</div>\n\t\t\t\t\t';
  } 
-;__p+=' >&nbsp;</div>\n\t\t\t\t\t<div class=\'figure-info\'>\n\t\t\t\t\t\t<!--<h3 class=\'title\'>Figure Title?</h3>-->\n\t\t\t\t\t\t<!--<p class=\'meta-info\'>meta info | more meta</p>-->\n\t\t\t\t\t\t<div class=\'caption\'>\n\t\t\t\t\t\t\t'+
+;__p+='\n\t\t\t\t\t<div class=\'figure-info\'>\n\t\t\t\t\t\t<!--<h3 class=\'title\'>Figure Title?</h3>-->\n\t\t\t\t\t\t<!--<p class=\'meta-info\'>meta info | more meta</p>-->\n\t\t\t\t\t\t<div class=\'caption\'>\n\t\t\t\t\t\t\t'+
 ( figure.caption )+
 '\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<a class=\'view-in-context\'>View in context</a>\n\t\t\t\t</figure>\n\t\t\t';
  }); 
@@ -76,7 +80,7 @@ return __p;
 OsciTk.templates['font'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class="font-control"><span class="large">+A</span> <span class="small">-A</span></div>';
+__p+='<h2>Reading Settings</h2>\n<div class="font-control">\n\t<h3>Font Size</h3>\n\t<a href="#font-larger" class="larger font-button">A</a>\n\t<a href="#font-smaller" class="smaller font-button">A</a>\n</div>\n<div class="theme-control">\n\t<h3>Theme</h3>\n\t<a href="#normal" class="theme-button">Normal</a>\n\t<a href="#sepia" class="theme-button">Sepia</a>\n\t<a href="#night" class="theme-button">Night</a>\n</div>';
 }
 return __p;
 }
