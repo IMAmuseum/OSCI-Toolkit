@@ -401,13 +401,14 @@ function osci_tk_figure_preview($nid) {
 	);
 	
 	//Add the image preview to the return
-	if ($results['image_uri'])
-	{
+	if ($results['image_uri']) {
 		$ret->div = theme_image_style(array(
 			'style_name' 	=> variable_get('osci_tk_image_style_figure_preview', 'osci_tk_default'),
 			'path' 			=> $results['image_uri'],
 			'alt' 			=> $node->title,
 			'title' 		=> $node->title,
+			'width'         => null,
+			'height'        => null,
 			'attributes' 	=> array(
 				'class' => 'preview_image',
 			)
