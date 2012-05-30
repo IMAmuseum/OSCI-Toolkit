@@ -12,7 +12,23 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 			this.render();
 		}, this);
 	},
+	events: {
+		"click .figure-preview": "onFigurePreviewClicked",
+		"click a.view-in-context": "onViewInContextClicked"
+	},
+	onFigurePreviewClicked: function(event_data) {
+		app.dispatcher.trigger('showFigureFullscreen', $(event_data.target).parent('figure').attr('data-figure-id'));
+		return false;
+	},
+	onViewInContextClicked: function(event_data) {
+		app.dispatcher.trigger('navigate', { identifier: $(event_data.target).parent('figure').attr('data-figure-id') });
+		app.views.toolbarView.contentClose();
+		return false;
+	},
 	render: function() {
+
+		this.$el.show(); // Show first so that widths can be calculated
+
 		var fig_data = app.collections.figures.toJSON();
 		this.$el.html(this.template({figures: fig_data}));
 

@@ -12,9 +12,20 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		this.options.pageView = 'MultiColumnPage';
 
 		app.dispatcher.on("windowResized", function() {
-			this.removeAllChildViews();
-			this.model.removeAllPages();
-			this.render();
+			//get the identifier of the first element on the page to try and keep the reader in the same location
+			var identifier;
+			var page = this.getChildViewByIndex(app.views.navigationView.page - 1);
+			var element = page.$el.find("[id]:first");
+			if (element.length) {
+				identifier = element.attr("id");
+			}
+
+			//update the navigationView identifier if found
+			if (identifier) {
+				app.views.navigationView.identifier = identifier;
+			}
+
+			this.rerender();
 		}, this);
 
 		app.dispatcher.on("navigate", function(data) {
@@ -27,9 +38,17 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 					case 'end':
 						gotoPage = this.model.get('pages').length;
 						break;
-					default:
-						//TODO: make this work for an identifier
+					case 'start':
 						gotoPage = 1;
+						break;
+					default:
+						var page_for_id = this.getPageForElementId(data.identifier);
+						if (page_for_id !== null) {
+							gotoPage = page_for_id;
+						} else {
+							gotoPage = 1;
+							console.log('id', data.identifier, 'not found in any page');
+						}
 						break;
 				}
 			}
@@ -41,9 +60,16 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 			var offset = (gotoPage - 1) * (this.dimensions.innerSectionHeight) * -1;
 
 			//TODO: add step to hide all other pages
+			var pages = this.getChildViews();
+			var numPages = pages.length;
+			for(var i = 0; i < numPages; i++) {
+				if (i !== (gotoPage - 1)) {
+					pages[i].hide();
+				}
+			}
 
 			//move all the pages to the proper offset
-			this.$el.find("#pages").css("-webkit-transform", "translateY(" + offset + "px)");
+			this.$el.find("#pages").css("-webkit-transform", "translate3d(0, " + offset + "px, 0)");
 
 			//trigger event so other elements can update with current page
 			app.dispatcher.trigger("pageChanged", {page: gotoPage});
@@ -79,6 +105,9 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 		//remove unwanted sections & parse sections
 		this.cleanData();
+
+		//create a placeholder for figures that do not fit on a page
+		this.unplacedFigures = [];
 
 		this.layoutData.items = this.layoutData.data.length;
 
@@ -235,5 +264,6 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		}
 
 		return figureView;
-	}
+	},
+
 });

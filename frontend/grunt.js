@@ -32,13 +32,14 @@ module.exports = function(grunt) {
 					'js/backbone/collections/**/*.js',
 					'js/backbone/views/PageView.js',
 					'js/backbone/views/SectionView.js',
+					'js/backbone/views/MultiColumnFigureView.js',
 					'js/backbone/views/**/*.js',
 					'js/appBootstrap.js'
 				],
 				dest: 'dist/OSCI-Toolkit-<%= meta.version %>.js'
 			},
 			dependencies: {
-				src: ['js/external/json2.js', 'js/external/jquery-1.7.1.js', 'js/external/underscore-1.3.3.js', 'js/external/backbone.js'],
+				src: ['js/external/json2.js', 'js/external/jquery-1.7.1.js', 'js/external/underscore-1.3.3.js', 'js/external/backbone.js', 'js/external/jquery.qtip.min.js', 'js/external/fancybox/jquery.fancybox.js'],
 				dest: 'dist/OSCI-Toolkit-<%= meta.version %>-dependencies.js'
 			},
 			css: {
@@ -49,7 +50,9 @@ module.exports = function(grunt) {
 					'css/search.css',
 					'css/toolbar.css',
 					'css/section.css',
-					'css/multiColumnSection.css'
+					'css/multiColumnSection.css',
+					'css/themeNight.css',
+					'css/themeSepia.css'
 				],
 				dest: 'dist/OSCI-Toolkit-<%= meta.version %>.css'
 			}

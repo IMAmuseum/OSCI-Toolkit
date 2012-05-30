@@ -28,6 +28,11 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 		}, this);
 
 	},
+	rerender: function() {
+		this.model.removeAllPages();
+		this.removeAllChildViews();
+		this.render();
+	},
 	render: function() {
 		app.dispatcher.trigger("layoutStart");
 		this.renderContent();
@@ -36,6 +41,14 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 	},
 	onClose: function() {
 		this.model.removeAllPages();
+	},
+	getPageForElementId : function(id) {
+		var views = this.getChildViews();
+		var p = _.find(views, function(view) { return view.containsElementId(id); });
+		if ((p !== undefined) && (p !== -1)) {
+			return _.indexOf(views, p) + 1;
+		}
+		return null;
 	},
 	getPageForProcessing : function(id, newTarget) {
 		var page;

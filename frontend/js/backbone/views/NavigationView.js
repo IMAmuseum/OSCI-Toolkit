@@ -44,21 +44,65 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 				this.setCurrentNavigationItem(params.section_id);
 			}
 		}, this);
+
+		// Respond to keyboard events
+		$(document).keydown(function(event) {
+			switch(event.which) {
+				case 39:
+					// Right arrow navigates to next page
+					var p = app.views.navigationView.page + 1;
+					if (p > app.views.navigationView.numPages) {
+						var next = app.views.navigationView.currentNavigationItem.get('next');
+						if (next) {
+							app.router.navigate("section/" + next.id, {trigger: true});
+						}
+					} else {
+						app.dispatcher.trigger('navigate', {page: p});
+					}
+					break;
+				case 37:
+					// Left arrow navigates to previous page
+					var p = app.views.navigationView.page - 1;
+					if (p < 1) {
+						var previous = app.views.navigationView.currentNavigationItem.get('previous');
+						if (previous) {
+							app.router.navigate("section/" + previous.id + "/end", {trigger: true});
+						}
+					} else {
+						app.dispatcher.trigger('navigate', {page: p});
+					}
+					break;
+			}
+
+		});
+
 	},
 	
 	render: function() {
+
 		this.$el.html(this.template({
 			numPages: this.numPages,
 			chapter: this.currentNavigationItem.get('title')
 		}));
+
+		// Hide the pager if there's only one page, show otherwise
 		if (this.numPages == 1) {
 			$('.pager').hide();
 		} else {
 			$('.pager').show();
 		}
+
+		// Calculate the width for the pager head
 		var width = (100/this.numPages);
 		$('.pager .head', this.$el).css('width', width + '%');
 
+		// Navigate to the appropriate page when mousedown happens in the pager
+		$('.pager').mousedown(function(data) {
+			var p = parseInt(app.views.navigationView.numPages * data.offsetX / $(this).width(), 10);
+			app.dispatcher.trigger('navigate', { page: p+1 });
+		});
+
+		// Do other things that can happen whenever the page changes
 		this.update(this.page);
 
 	},
@@ -74,6 +118,7 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 	
 	update: function(page) {
 
+		// Calculate the position of the pager head
 		var width = (100/this.numPages);
 		$('.pager .head', this.$el).css('left', width * (page-1) + '%');
 

@@ -2,7 +2,7 @@
 <ul>
 	<% _.each(items, function(item) { %>
 		<li class="toc-item">
-			<a data-section-id="<%= item.id %>">
+			<a data-section-id="<%= item.id %>" href="#">
 				<div class="toc-item-thumbnail">
 					<% if (item.get('thumbnail')) { %>
 						<img src="<%= item.get('thumbnail') %>">
@@ -15,6 +15,7 @@
 					<% } %>
 				</div>
 			</a>
+			<hr>
 		</li>
 	<% }); %>
 </ul>

@@ -4,7 +4,11 @@
 		<div class='figure-reel'>
 			<% _.each(figures, function(figure) { %>
 				<figure class='thumbnail' data-figure-id="<%= figure.id %>">
-					<div class='figure-thumbnail' <% if (figure.thumbnail_url != undefined) { %>style="background-image: url('<%= figure.thumbnail_url %>');" <% } %> >&nbsp;</div>
+					<% if (figure.thumbnail_url != undefined) { %>
+						<img class='figure-thumbnail' src='<%= figure.thumbnail_url %>'/>
+					<% } else { %>
+						<div class='figure-thumbnail'>&nbsp;</div>
+					<% } %>
 					<figcaption><%= figure.title %></figcaption>
 				</figure>
 			<% }); %>
@@ -20,7 +24,11 @@
 		<div class='figure-reel'>
 			<% _.each(figures, function(figure) { %>
 				<figure class='preview' data-figure-id="<%= figure.id %>">
-					<div class='figure-preview' <% if (figure.thumbnail_url != undefined) { %>style="background-image: url('<%= figure.thumbnail_url %>');"<% } %> >&nbsp;</div>
+					<% if (figure.thumbnail_url != undefined) { %>
+						<img class='figure-preview' src='<%= figure.thumbnail_url %>'/>
+					<% } else { %>
+						<div class='figure-preview'>&nbsp;</div>
+					<% } %>
 					<div class='figure-info'>
 						<!--<h3 class='title'>Figure Title?</h3>-->
 						<!--<p class='meta-info'>meta info | more meta</p>-->
@@ -28,6 +36,7 @@
 							<%= figure.caption %>
 						</div>
 					</div>
+					<a class='view-in-context'>View in context</a>
 				</figure>
 			<% }); %>
 		</div>

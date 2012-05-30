@@ -1,5 +1,4 @@
 #section {
-	background: #eee;
 	margin: 60px 40px;
 	padding: 20px;
 	position: absolute;
@@ -24,8 +23,6 @@
 		padding: 6px;
 		margin: 60px 10px 10px 10px;
 	}
-
-
 }
 
 section figure img.thumbnail {

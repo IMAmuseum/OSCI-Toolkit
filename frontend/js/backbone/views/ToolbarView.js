@@ -13,9 +13,9 @@ OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 		// tracks the state of the content area drawer
 		this.isContentOpen = false;
 		this.render();
-		$('#toolbar-close').live('click', function() {
-			app.views.toolbarView.contentClose();
-		});
+	},
+	events: {
+		"click #toolbar-close": "contentClose"
 	},
 	render: function() {
 		this.$el.html(this.template());
@@ -37,18 +37,25 @@ OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 		}
 		this.$el.animate({
 			'height': toolbarHeight + 'px'
-		}, 'fast', function() {
-			$('#toolbar-close').show();
-		});
+		}, 'fast');
+
+		$('#toolbar-close').animate({
+			top: "10px"
+		}, 'fast');
+
 		this.isContentOpen = true;
 		
 	},
 	contentClose: function() {
-		$('#toolbar-close').hide();
+		$('#toolbar-close').animate({
+			top: "-" + $('#toolbar-close').height() + "px"
+		}, 'fast');
+
 		this.$el.animate({
 			'height': this.$el.find('#toolbar-handle').outerHeight() + 'px',
 			'width': '100%'
 		}, 'fast');
+
 		this.isContentOpen = false;
 	}
 });

@@ -31,12 +31,14 @@ OsciTk.views.BaseView = Backbone.View.extend({
 
 		return this;
 	},
-	removeView: function(view) {
+	removeView: function(view, close) {
 		if (this.childViews) {
 			for (var i = 0, len = this.childViews.length; i < len; i++) {
 				if (view.cid === this.childViews[i].cid) {
 					this.childViews.splice(i, 1);
-					view.close();
+					if (close || close === undefined) {
+						view.close();
+					}
 					break;
 				}
 			}

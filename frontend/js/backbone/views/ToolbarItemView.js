@@ -36,11 +36,11 @@ OsciTk.views.ToolbarItem = OsciTk.views.BaseView.extend({
 			// the toolbar should know who the active view is
 			this.parent.activeContentView = this.options.toolbarItem.view;
 			// hide all the views besides this one
-				children = this.parent.$el.find('#toolbar-content').children().not('#' + this.contentView.id);
-				_.each(children, function(otherView) {
-					$(otherView).hide();
-				}, this);
-				this.contentView.$el.show();
+			children = this.parent.$el.find('#toolbar-content').children().not('#' + this.contentView.id);
+			_.each(children, function(otherView) {
+				$(otherView).hide();
+			}, this);
+			this.contentView.$el.show();
 			// animate the opening of the toolbar
 			this.parent.contentOpen();
 		}
