@@ -76,7 +76,6 @@ function osci_tk_nodetree_field_presave($entity_type, $entity, $field, $instance
  			}
  		}
  		$items = osci_tk_nodetree_sort_nodetree($items);
- 		dpm($items, 'items');
 	}
 	
 }

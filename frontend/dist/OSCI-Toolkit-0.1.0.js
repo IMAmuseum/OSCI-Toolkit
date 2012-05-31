@@ -508,7 +508,7 @@ __p+='<h2>Table of Contents</h2>\n<ul>\n\t';
  _.each(items, function(item) { 
 ;__p+='\n\t\t<li class="toc-item">\n\t\t\t<a data-section-id="'+
 ( item.id )+
-'">\n\t\t\t\t<div class="toc-item-thumbnail">\n\t\t\t\t\t';
+'" href="#">\n\t\t\t\t<div class="toc-item-thumbnail">\n\t\t\t\t\t';
  if (item.get('thumbnail')) { 
 ;__p+='\n\t\t\t\t\t\t<img src="'+
 ( item.get('thumbnail') )+
@@ -522,7 +522,7 @@ __p+='<h2>Table of Contents</h2>\n<ul>\n\t';
 ( item.get('subtitle') )+
 '</h5>\n\t\t\t\t\t';
  } 
-;__p+='\n\t\t\t\t</div>\n\t\t\t</a>\n\t\t</li>\n\t';
+;__p+='\n\t\t\t\t</div>\n\t\t\t</a>\n\t\t\t<hr>\n\t\t</li>\n\t';
  }); 
 ;__p+='\n</ul>';
 }
@@ -2806,6 +2806,8 @@ OsciTk.views.Toc = OsciTk.views.BaseView.extend({
 		}));
 	},
 	itemClick: function(event) {
+		event.preventDefault();
+
 		var sectionId = $(event.currentTarget).attr('data-section-id');
 		// app.dispatcher.trigger('navigateToSection', sectionId);
 		// TODO: don't really want to address the appRouter directly
