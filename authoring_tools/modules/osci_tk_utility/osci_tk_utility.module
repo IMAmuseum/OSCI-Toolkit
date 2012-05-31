@@ -440,3 +440,127 @@ function _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time = null)
 	// return revision id
 	return $vid;
 }
+
+/**
+ * THe FoLLoWiNG PRoViDeS THe iDeNTiFieR FieLD
+ * 
+ */
+
+function osci_tk_utility_field_info() {
+	return array(
+			'identifier' => array(
+					'label' 			=> t('Identifier'),
+					'description' 		=> t('Provides the ability to specify a type and value for identifier information'),
+					'default_widget' 	=> 'identifier_widget',
+					'default_formatter' => 'identifier_formatter'
+			)
+	);
+}
+
+function osci_tk_utility_field_formatter_info() {
+	return array(
+			'identifier_default' => array(
+					'label'         => t('Identifier Default'),
+					'field types'   => array('identifier'),
+			)
+	);
+}
+
+function osci_tk_utility_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+	switch ($display['type']) {
+		case 'identifier_default':
+			foreach ($items as $item) {
+				$element[] = array(
+						'#type' => 'item',
+						'#title' => 'Identifier',
+						'#markup' => "{$item['identifier_type']}: {$item['identifier']}"
+						);
+			}
+			break;
+	}
+	return $element;
+}
+
+function osci_tk_utility_field_widget_info()
+{
+	return array(
+			'identifier_widget' => array(
+					'label' => t('Identifier'),
+					'field types' => array('identifier'),
+					'settings' => array(),
+					'behaviors' => array(
+							'default value' => FIELD_BEHAVIOR_DEFAULT,
+							'multiple values' => FIELD_BEHAVIOR_CUSTOM
+					)
+			)
+	);
+}
+
+function osci_tk_utility_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+	if ($instance['widget']['type'] === 'identifier_widget') {
+		$el = array(
+				'#type' => 'fieldset',
+				'#prefix' => '<div id="identifiers-container">',
+				'#suffix' => '</div>'
+		);
+		$max = $form_state['field'][$field['field_name']][LANGUAGE_NONE]['items_count'];
+
+		for($i = 0; $i < $max; $i++) {
+			$itemDelta = $i;
+			$item = isset($items[$itemDelta]) ? $items[$itemDelta]: array();
+				
+			$el[] = array(
+					'identifier_type' => array(
+							'#type'    => 'select',
+							'#title'   => 'Identifier Type',
+							'#options' => array(
+									'ISBN' => 'ISBN',
+									'DOI'  => 'DOI'
+							),
+							'#default_value' => isset($item['identifier_type']) ? $item['identifier_type'] : ''
+					),
+					'identifier' => array(
+							'#type' => 'textfield',
+							'#title' => 'Identifier',
+							'#default_value' => isset($item['identifier']) ? $item['identifier'] : ''
+					)
+			);
+		}
+		$el['add_more'] = array(
+				'#type' => 'submit',
+				'#name' => 'osci_tk_utility_add_more',
+				'#value' => t('Add another identifier'),
+				'#attributes' => array('class' => array('field-add-more-submit')),
+				'#limit_validation_errors' => array(),
+				'#submit' => array('osci_tk_utility_add_more_submit'),
+				'#ajax' => array(
+						'callback' 	=> 'osci_tk_utility_add_more_js',
+						'wrapper' 	=> 'identifiers-container',
+						'effect' 	=> 'fade',
+						'method' 	=> 'replace'
+				),
+				'#weight' => 100
+		);
+
+	}
+	$element = $element + $el;
+	return $element;
+}
+
+function osci_tk_utility_field_is_empty($item, $field) {
+	if ($field['type'] === 'identifier') {
+		if (empty($item['identifier'])) return TRUE;
+	}
+	return FALSE;
+}
+
+function osci_tk_utility_add_more_submit($form, &$form_state)
+{
+	$form_state['field']['field_identifier'][LANGUAGE_NONE]['items_count']++;
+	$form_state['rebuild'] = true;
+}
+
+function osci_tk_utility_add_more_js($form, $form_state)
+{
+	return $form['field_identifier'];
+}
