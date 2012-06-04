@@ -9,7 +9,6 @@ OsciTk.models.Note = OsciTk.models.BaseModel.extend({
 			id: null,
 			note: null,
 			section_id: null,
-			paragraph_id: null,
 			tags: []
 		};
 	},
