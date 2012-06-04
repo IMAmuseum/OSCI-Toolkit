@@ -8,7 +8,28 @@ function osci_tk_epub_preprocess_epub_package(&$vars)
 		switch($k)
 		{
 			case 'identifier':
-				$metaThemed[] = '<dc:identifier id="publication-id">' . $v . '</dc:identifier>';
+				$first = true;
+				foreach($v as $identifier) {
+					if ($first) {
+						$elementId = "publication-id";
+					} else {
+						$elementId = "publication-id-" . $identifier['identifier_type'];
+					}
+					$identifierString = '<dc:identifier id="' . $elementId . '">urn:' . $identifier['identifier_type'] . ':' . $identifier['identifier'] . '</dc:identifier>';
+
+					switch ($identifier['identifier_type']) {
+						case 'doi':
+							$identifierString .= '<meta refines="#' . $elementId . '" property="identifier-type" scheme="onix:codelist5">06</meta>';
+							break;
+						case 'isbn':
+							$identifierString .= '<meta refines="#' . $elementId . '" property="identifier-type" scheme="onix:codelist5">15</meta>';
+							break;
+					}
+
+					$metaThemed[] = $identifierString;
+					$first = false;
+				}
+				
 				break;
 			case 'meta':
 				foreach ($v as $prop => $value)
