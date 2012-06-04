@@ -7,7 +7,7 @@ jQuery(document).ready(function() {
 		event.preventDefault();
 		var data = {
 			'section_id'	: $('#edit-section-id').val(),
-			'paragraph_id'	: $('#edit-paragraph-id').val(),
+			'content_id'	: $('#edit-content-id').val(),
 			'tags'			: $('#edit-tags').val().split(/\s*,\s*/),
 			'note'			: $('#edit-note').val(),
 		};
@@ -21,7 +21,7 @@ jQuery(document).ready(function() {
 		event.preventDefault();
 		var data = {
 			'section_id'		: $('#edit-section-id--2').val(),
-			'paragraph_id'		: $('#edit-paragraph-id--2').val(),
+			'content_id'		: $('#edit-content-id--2').val(),
 			'include_children'	: $('#edit-include-children').is(':checked')
 		};
 		var target = $('#ret-result');
