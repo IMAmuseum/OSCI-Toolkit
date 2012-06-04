@@ -33,6 +33,9 @@ OsciTk.views.App = OsciTk.views.BaseView.extend({
 		
 		// Add the footnotes view to the AppView
 		app.views.footnotesView = new OsciTk.views.Footnotes();
+		
+		// Add the inline notes view to the AppView
+		app.views.inlineNotesView = new OsciTk.views.InlineNotes();
 
 		// Add the fullscreen figure view to the AppView
 		app.views.fsFigureView = new OsciTk.views.FullscreenFigureView();
