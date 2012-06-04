@@ -7,3 +7,6 @@ core = "7.x"
 files[] = osci_tk_search.module
 files[] = osci_tk_search.admin.inc
 files[] = osci_tk_search.templates.inc
+
+dependencies[] = apachesolr
+dependencies[] = osci_tk_nodetree
