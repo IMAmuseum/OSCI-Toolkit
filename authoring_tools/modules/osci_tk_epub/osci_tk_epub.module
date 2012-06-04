@@ -574,7 +574,7 @@ function _osci_tk_epub_generate_package_document($node, $revTime, $forExport = f
 		'metadata' => $metadata,
 		'manifest' => array(),
 		'spine' => array()
-		);
+	);
 
 	/***** Build the manifest and spine *****/
 
@@ -926,9 +926,9 @@ function _osci_tk_epub_get_book_metadata(&$pub, &$data)
 	//Get the identifier
 	if (isset($pub->field_osci_tk_identifier) &&
 		isset($pub->field_osci_tk_identifier[$lang]) &&
-		strlen($pub->field_osci_tk_identifier[$lang][0]['value']))
+		strlen($pub->field_osci_tk_identifier[$lang][0]['identifier']))
 	{
-		$metadata['identifier'] = $pub->field_osci_tk_identifier[$lang][0]['value'];
+		$metadata['identifier'] = $pub->field_osci_tk_identifier[$lang];
 	}
 
 	//Get the creator

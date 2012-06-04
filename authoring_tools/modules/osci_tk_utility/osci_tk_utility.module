@@ -514,8 +514,9 @@ function osci_tk_utility_field_widget_form(&$form, &$form_state, $field, $instan
 							'#type'    => 'select',
 							'#title'   => 'Identifier Type',
 							'#options' => array(
-									'ISBN' => 'ISBN',
-									'DOI'  => 'DOI'
+									'isbn' => 'ISBN',
+									'doi'  => 'DOI',
+									'uuid' => 'UUID'
 							),
 							'#default_value' => isset($item['identifier_type']) ? $item['identifier_type'] : ''
 					),
@@ -556,11 +557,13 @@ function osci_tk_utility_field_is_empty($item, $field) {
 
 function osci_tk_utility_add_more_submit($form, &$form_state)
 {
-	$form_state['field']['field_identifier'][LANGUAGE_NONE]['items_count']++;
+	$fieldName = $form_state['clicked_button']['#parents'][0];
+	$form_state['field'][$fieldName][LANGUAGE_NONE]['items_count']++;
 	$form_state['rebuild'] = true;
 }
 
 function osci_tk_utility_add_more_js($form, $form_state)
 {
-	return $form['field_identifier'];
+	$fieldName = $form_state['clicked_button']['#parents'][0];
+	return $form[$fieldName];
 }

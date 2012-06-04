@@ -3,4 +3,3 @@ description = "Provides a field to store the a custom hierarchy of nodes"
 package = "OSCI ToolKit"
 version = "1.0"
 core = "7.x"
-dependencies[] = osci_tk_features
