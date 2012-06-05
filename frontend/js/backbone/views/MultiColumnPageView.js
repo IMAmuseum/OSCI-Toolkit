@@ -110,7 +110,6 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 				var figureId = figureLink.attr("href").substring(1);
 				var figure = app.collections.figures.get(figureId);
 
-
 				//make sure the figure link is in the viewable area of the current column
 				var linkLocation = figureLink.position().top;
 				if (linkLocation <= 0 || linkLocation >= column.height) {
@@ -153,8 +152,8 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		}
 
 		//If we have negative height remaining, the content must be repeated in the next column
-        if (heightRemain < 0) {
-            var overflowHeight = heightRemain;
+		if (heightRemain < 0) {
+			var overflowHeight = heightRemain;
 			var hiddenLines = Math.ceil(overflowHeight / lineHeight);
 			var newHeight = content.position().top + content.outerHeight() + (hiddenLines * lineHeight);
 
@@ -170,16 +169,37 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 				overflow = 'contentOverflow';
 			}
 
-            if (this.processingData.currentColumn === (this.parent.dimensions.columnsPerPage - 1)) {
+			if (this.processingData.currentColumn === (this.parent.dimensions.columnsPerPage - 1)) {
 				this.processingComplete();
-            }
-        }
+			}
+		}
 
-        if (heightRemain === 0 && this.processingData.currentColumn === (this.parent.dimensions.columnsPerPage - 1)) {
+		if (heightRemain === 0 && this.processingData.currentColumn === (this.parent.dimensions.columnsPerPage - 1)) {
 			this.processingComplete();
-        }
+		}
 
-        column.heightRemain = heightRemain;
+		column.heightRemain = heightRemain;
+
+		//place a paragraph number
+		if (content.is("p")) {
+			var paragraphNumber = content.data("paragraph_number");
+			var pidIsOnPage = this.$el.find(".paragraph-identifier-" + paragraphNumber);
+
+			if (pidIsOnPage.length === 0) {
+				var contentPosition = content.position();
+				var columnPosition = column.$el.position();
+
+				var pid = $("<div>", {
+					"class": "paragraph-identifier paragraph-identifier-" + paragraphNumber,
+					data: {"paragraph_identifier": paragraphNumber},
+					html: "<span class=\"number\">" + paragraphNumber + "</span>",
+					css: {
+						top: (columnPosition.top + contentPosition.top) + "px",
+						left: (columnPosition.left + contentPosition.left - this.parent.dimensions.gutterWidth) + "px"
+					}
+				}).appendTo(this.$el);
+			}
+		}
 
 		return overflow;
 	},
@@ -236,7 +256,7 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		var numPageFigures = pageFigures.length;
 
 		for (var i = 0; i < this.parent.dimensions.columnsPerPage; i++) {
-			var leftPosition = (i * this.parent.dimensions.columnWidth) + (this.parent.dimensions.gutterWidth * i);
+			var leftPosition = (i * this.parent.dimensions.columnWidth) + (this.parent.dimensions.gutterWidth * (i + 1));
 			var height = this.parent.dimensions.innerSectionHeight;
 			var topPosition = 0;
 

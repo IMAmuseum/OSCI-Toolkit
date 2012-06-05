@@ -113,18 +113,25 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 		var i = 0;
 		var firstOccurence = true;
+		var paragraphNumber = 1;
+		var paragraphsOnPage = 0;
 		var itemsOnPage = 0;
 		while(this.layoutData.items > 0) {
 			var pageView = this.getPageForProcessing(undefined, "#pages");
 
 			if (!pageView.processingData.rendered) {
 				itemsOnPage = 0;
+				paragraphsOnPage = 0;
 				pageView.render();
 			}
 
 			var content = $(this.layoutData.data[i]).clone();
 			if (firstOccurence) {
 				content.attr('id', 'osci-content-' + i);
+			}
+
+			if (content.is("p")) {
+				content.attr("data-paragraph_number", paragraphNumber);
 			}
 
 			var layoutResults = pageView.addContent(content).layoutContent();
@@ -135,6 +142,10 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 					break;
 				case 'figurePlaced':
 					pageView.resetPage();
+
+					paragraphNumber -= paragraphsOnPage;
+					paragraphsOnPage = 0;
+
 					this.layoutData.items += itemsOnPage;
 					i -= itemsOnPage;
 					itemsOnPage = 0;
@@ -143,6 +154,12 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 					i++;
 					this.layoutData.items--;
 					itemsOnPage++;
+
+					if (content.is("p")) {
+						paragraphNumber++;
+						paragraphsOnPage++;
+					}
+
 					firstOccurence = true;
 			}
 		}
@@ -203,7 +220,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 		//Determine the number of columns per page
 		dimensions.columnsPerPage = Math.floor(dimensions.innerSectionWidth / dimensions.columnWidth);
-		if (dimensions.innerSectionWidth < (dimensions.columnsPerPage * dimensions.columnWidth) + ((dimensions.columnsPerPage - 1) * this.options.gutterWidth))
+		if (dimensions.innerSectionWidth < (dimensions.columnsPerPage * dimensions.columnWidth) + ((dimensions.columnsPerPage + 1) * this.options.gutterWidth))
 		{
 			dimensions.columnsPerPage = dimensions.columnsPerPage - 1;
 		}
@@ -211,7 +228,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		//Large gutters look ugly... reset column width if gutters get too big
 		var gutterCheck = (dimensions.innerSectionWidth - (dimensions.columnsPerPage * dimensions.columnWidth)) / (dimensions.columnsPerPage - 1);
 		if (gutterCheck > this.options.gutterWidth) {
-			dimensions.columnWidth = (dimensions.innerSectionWidth - (this.options.gutterWidth * (dimensions.columnsPerPage - 1))) / dimensions.columnsPerPage;
+			dimensions.columnWidth = (dimensions.innerSectionWidth - (this.options.gutterWidth * (dimensions.columnsPerPage + 1))) / dimensions.columnsPerPage;
 		}
 
 		this.dimensions = dimensions;

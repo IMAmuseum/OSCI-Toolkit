@@ -98,7 +98,7 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 			}
 
 			//If the figure is not as wide as the available space, center it
-			var availableWidth = (dimensions.columnWidth * numColumns) + ((numColumns - 1) * dimensions.gutterWidth);
+			var availableWidth = (dimensions.columnWidth * numColumns) + ((numColumns + 1) * dimensions.gutterWidth);
 			var addLeftPadding = 0;
 			if (this.calculatedWidth < availableWidth) {
 				addLeftPadding = Math.floor((availableWidth - this.calculatedWidth) / 2);
