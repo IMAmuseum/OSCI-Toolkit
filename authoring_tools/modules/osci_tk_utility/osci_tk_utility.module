@@ -467,14 +467,15 @@ function osci_tk_utility_field_formatter_info() {
 }
 
 function osci_tk_utility_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+	$element = array();
 	switch ($display['type']) {
 		case 'identifier_default':
 			foreach ($items as $item) {
 				$element[] = array(
-						'#type' => 'item',
-						'#title' => 'Identifier',
-						'#markup' => "{$item['identifier_type']}: {$item['identifier']}"
-						);
+					'#type' => 'item',
+					'#title' => 'Identifier',
+					'#markup' => "{$item['identifier_type']}: {$item['identifier']}"
+				);
 			}
 			break;
 	}
