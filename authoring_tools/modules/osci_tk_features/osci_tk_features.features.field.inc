@@ -1400,84 +1400,6 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-publication-body'
-  $fields['node-publication-body'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(
-        0 => 'node',
-      ),
-      'field_name' => 'body',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
-      'module' => 'text',
-      'settings' => array(),
-      'translatable' => '0',
-      'type' => 'text_with_summary',
-    ),
-    'field_instance' => array(
-      'bundle' => 'publication',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'hidden',
-          'module' => 'text',
-          'settings' => array(),
-          'type' => 'text_default',
-          'weight' => 0,
-        ),
-        'epub' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-        'teaser' => array(
-          'label' => 'hidden',
-          'module' => 'text',
-          'settings' => array(
-            'trim_length' => 600,
-          ),
-          'type' => 'text_summary_or_trimmed',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'body',
-      'label' => 'Body',
-      'required' => FALSE,
-      'settings' => array(
-        'display_summary' => TRUE,
-        'text_processing' => 1,
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'module' => 'text',
-        'settings' => array(
-          'rows' => 20,
-          'summary_rows' => 5,
-        ),
-        'type' => 'text_textarea_with_summary',
-        'weight' => '-4',
-      ),
-    ),
-  );
-
   // Exported field: 'node-publication-field_nodetree'
   $fields['node-publication-field_nodetree'] = array(
     'field_config' => array(
@@ -1504,7 +1426,7 @@ function osci_tk_features_field_default_fields() {
           'module' => 'osci_tk_nodetree',
           'settings' => array(),
           'type' => 'nodetree_default',
-          'weight' => 8,
+          'weight' => '2',
         ),
         'epub' => array(
           'label' => 'above',
@@ -1531,7 +1453,7 @@ function osci_tk_features_field_default_fields() {
         'module' => 'osci_tk_nodetree',
         'settings' => array(),
         'type' => 'nodetree_nodetree_form',
-        'weight' => '11',
+        'weight' => '8',
       ),
     ),
   );
@@ -1575,10 +1497,10 @@ function osci_tk_features_field_default_fields() {
           'module' => 'image',
           'settings' => array(
             'image_link' => '',
-            'image_style' => '',
+            'image_style' => 'medium',
           ),
           'type' => 'image',
-          'weight' => 7,
+          'weight' => '0',
         ),
         'epub' => array(
           'label' => 'above',
@@ -1616,7 +1538,7 @@ function osci_tk_features_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'image_image',
-        'weight' => '10',
+        'weight' => '7',
       ),
     ),
   );
@@ -1660,7 +1582,7 @@ function osci_tk_features_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 2,
+          'weight' => '3',
         ),
         'epub' => array(
           'label' => 'above',
@@ -1690,7 +1612,7 @@ function osci_tk_features_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '0',
+        'weight' => '3',
       ),
     ),
   );
@@ -1732,7 +1654,7 @@ function osci_tk_features_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 5,
+          'weight' => '1',
         ),
         'epub' => array(
           'label' => 'above',
@@ -1762,7 +1684,7 @@ function osci_tk_features_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '6',
+        'weight' => '2',
       ),
     ),
   );
@@ -1771,42 +1693,29 @@ function osci_tk_features_field_default_fields() {
   $fields['node-publication-field_osci_tk_identifier'] = array(
     'field_config' => array(
       'active' => '1',
-      'cardinality' => '1',
+      'cardinality' => '-1',
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_osci_tk_identifier',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
-      'module' => 'text',
-      'settings' => array(
-        'max_length' => '1024',
-      ),
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'module' => 'osci_tk_utility',
+      'settings' => array(),
       'translatable' => '0',
-      'type' => 'text',
+      'type' => 'identifier',
     ),
     'field_instance' => array(
       'bundle' => 'publication',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'UUID, DOI, ISBN or ISSN',
+      'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'text',
+          'module' => 'osci_tk_utility',
           'settings' => array(),
-          'type' => 'text_default',
-          'weight' => 1,
+          'type' => 'identifier_default',
+          'weight' => '7',
         ),
         'epub' => array(
           'label' => 'above',
@@ -1826,17 +1735,14 @@ function osci_tk_features_field_default_fields() {
       'label' => 'Identifier',
       'required' => 0,
       'settings' => array(
-        'text_processing' => '0',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
-        'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'size' => '60',
-        ),
-        'type' => 'text_textfield',
-        'weight' => '-2',
+        'active' => 0,
+        'module' => 'osci_tk_utility',
+        'settings' => array(),
+        'type' => 'identifier_widget',
+        'weight' => '1',
       ),
     ),
   );
@@ -1880,7 +1786,7 @@ function osci_tk_features_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 3,
+          'weight' => '4',
         ),
         'epub' => array(
           'label' => 'above',
@@ -1910,7 +1816,7 @@ function osci_tk_features_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '2',
+        'weight' => '4',
       ),
     ),
   );
@@ -1952,7 +1858,7 @@ function osci_tk_features_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 6,
+          'weight' => '6',
         ),
         'epub' => array(
           'label' => 'above',
@@ -1982,7 +1888,7 @@ function osci_tk_features_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '8',
+        'weight' => '6',
       ),
     ),
   );
@@ -2031,7 +1937,7 @@ function osci_tk_features_field_default_fields() {
           'module' => 'taxonomy',
           'settings' => array(),
           'type' => 'taxonomy_term_reference_link',
-          'weight' => 4,
+          'weight' => '5',
         ),
         'epub' => array(
           'label' => 'above',
@@ -2061,7 +1967,7 @@ function osci_tk_features_field_default_fields() {
           'size' => 60,
         ),
         'type' => 'taxonomy_autocomplete',
-        'weight' => '4',
+        'weight' => '5',
       ),
     ),
   );
@@ -2716,7 +2622,6 @@ function osci_tk_features_field_default_fields() {
   t('The topic of the resource. Typically, the subject will be represented using keywords, key phrases, or classification codes. Recommended best practice is to use a controlled vocabulary.');
   t('Thumbnail');
   t('Title');
-  t('UUID, DOI, ISBN or ISSN');
 
   return $fields;
 }

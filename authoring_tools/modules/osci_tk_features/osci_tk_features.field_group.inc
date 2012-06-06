@@ -142,5 +142,92 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_footnotes|node|section|form'] = $field_group;
 
+  $field_group = new stdClass();
+  $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
+  $field_group->api_version = 1;
+  $field_group->identifier = 'group_publication_content|node|publication|form';
+  $field_group->group_name = 'group_publication_content';
+  $field_group->entity_type = 'node';
+  $field_group->bundle = 'publication';
+  $field_group->mode = 'form';
+  $field_group->parent_name = 'group_publication';
+  $field_group->data = array(
+    'label' => 'Content',
+    'weight' => '12',
+    'children' => array(
+      0 => 'field_nodetree',
+    ),
+    'format_type' => 'tab',
+    'format_settings' => array(
+      'formatter' => 'closed',
+      'instance_settings' => array(
+        'description' => '',
+        'classes' => '',
+        'required_fields' => 1,
+      ),
+    ),
+  );
+  $export['group_publication_content|node|publication|form'] = $field_group;
+
+  $field_group = new stdClass();
+  $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
+  $field_group->api_version = 1;
+  $field_group->identifier = 'group_publication_info|node|publication|form';
+  $field_group->group_name = 'group_publication_info';
+  $field_group->entity_type = 'node';
+  $field_group->bundle = 'publication';
+  $field_group->mode = 'form';
+  $field_group->parent_name = 'group_publication';
+  $field_group->data = array(
+    'label' => 'Info',
+    'weight' => '11',
+    'children' => array(
+      0 => 'field_osci_tk_cover_image',
+      1 => 'field_osci_tk_creator',
+      2 => 'field_osci_tk_description',
+      3 => 'field_osci_tk_publisher',
+      4 => 'field_osci_tk_rights',
+      5 => 'field_osci_tk_subject',
+      6 => 'field_osci_tk_identifier',
+      7 => 'title',
+    ),
+    'format_type' => 'tab',
+    'format_settings' => array(
+      'formatter' => 'closed',
+      'instance_settings' => array(
+        'description' => '',
+        'classes' => '',
+        'required_fields' => 1,
+      ),
+    ),
+  );
+  $export['group_publication_info|node|publication|form'] = $field_group;
+
+  $field_group = new stdClass();
+  $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
+  $field_group->api_version = 1;
+  $field_group->identifier = 'group_publication|node|publication|form';
+  $field_group->group_name = 'group_publication';
+  $field_group->entity_type = 'node';
+  $field_group->bundle = 'publication';
+  $field_group->mode = 'form';
+  $field_group->parent_name = '';
+  $field_group->data = array(
+    'label' => 'Publication',
+    'weight' => '11',
+    'children' => array(
+      0 => 'group_publication_info',
+      1 => 'group_publication_content',
+    ),
+    'format_type' => 'tabs',
+    'format_settings' => array(
+      'formatter' => '',
+      'instance_settings' => array(
+        'classes' => '',
+      ),
+    ),
+  );
+  $export['group_publication|node|publication|form'] = $field_group;
+
   return $export;
 }
