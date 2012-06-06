@@ -171,10 +171,10 @@ function osci_tk_epub_node_submit($node, $form, &$form_state)
 	}
 
 	//add a uuid if not added by user
-	if (isset($form_state['values']['field_osci_tk_identifier']) && !strlen($form_state['values']['field_osci_tk_identifier']['und'][0]['value']))
-	{
-		$node->field_osci_tk_identifier['und'][0]['value'] = uniqid(" urn:uuid:", true);
-	}
+	// if (isset($form_state['values']['field_osci_tk_identifier']) && !strlen($form_state['values']['field_osci_tk_identifier']['und'][0]['value']))
+	// {
+	// 	$node->field_osci_tk_identifier['und'][0]['value'] = uniqid(" urn:uuid:", true);
+	// }
 
 }
 
