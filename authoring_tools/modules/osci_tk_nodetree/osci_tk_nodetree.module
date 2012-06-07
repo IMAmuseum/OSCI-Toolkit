@@ -331,3 +331,120 @@ function osci_tk_nodetree_autocomplete_value($element, $input = FALSE, $form_sta
 
 // 	return $form;
 // }
+
+function osci_tk_nodetree_get_data_for_nid($nid) {
+	$nodeTreeData = array();
+	$fields = db_query("SELECT field_name FROM {field_config} WHERE type = 'osci_tk_nodetree'", array(), array('fetch' => PDO::FETCH_ASSOC));
+	foreach($fields as $field) {
+		$tableName = 'field_data_' . $field['field_name'];
+		$treeNodes = db_query("SELECT * FROM {" . $tableName . "} WHERE entity_id IN (SELECT entity_id FROM {" . $tableName . "} WHERE field_nodetree_target_nid = :nid) order by entity_id, delta", array(':nid' => $nid), array('fetch' => PDO::FETCH_ASSOC));
+		
+		$prevRootNid = null;
+		$prevNid = null;
+		$next = false;
+		foreach($treeNodes as $treeNode) {
+			if ($prevRootNid === $treeNode['entity_id'] && $next) {
+				$nodeTreeData[count($nodeTreeData) - 1]['nextNid'] = $treeNode['field_nodetree_target_nid'];
+				$next = false;
+			} 
+
+			if ($prevRootNid === $treeNode['entity_id'] && 
+				isset($nodeTreeData[count($nodeTreeData) - 1]) &&
+				$nodeTreeData[count($nodeTreeData) - 1]['nid'] === $treeNode['field_nodetree_parent_nid']) {
+				$nodeTreeData[count($nodeTreeData) - 1]['children'][] = $treeNode['field_nodetree_target_nid'];
+			}
+
+			if ($prevRootNid !== $treeNode['entity_id']) {
+				$prevRootNid = null;
+				$prevNid = null;
+				$next = false;
+			}
+
+			if ($treeNode['field_nodetree_target_nid'] === $nid) {
+				$nodeTreeData[] = array(
+					'rootNid' => $treeNode['entity_id'],
+					'parentNid' => $treeNode['field_nodetree_parent_nid'] ? $treeNode['field_nodetree_parent_nid'] : $treeNode['entity_id'],
+					'prevNid' => $prevNid,
+					'nextNid' => null,
+					'nid' => $treeNode['field_nodetree_target_nid'],
+					'children' => array()
+				);
+				$next = true;
+			}
+
+			$prevNid = $treeNode['field_nodetree_target_nid'];
+			$prevRootNid = $treeNode['entity_id'];
+		}
+	}
+
+	return $nodeTreeData;
+}
+
+function osci_tk_nodetree_block_info() {
+	return array(
+		'osci_tk_nodetree_navigation' => array(
+			'info' => t('Nodetree Navigation'),
+			'cache' => DRUPAL_CACHE_PER_PAGE
+		)
+	);
+}
+
+function osci_tk_nodetree_block_view($delta = '') {
+	$block = array();
+
+	switch ($delta) {
+		case 'osci_tk_nodetree_navigation':
+			$block['subject'] = t('Nodetree Navigation');
+			$block['content'] = '';
+			if ($node = menu_get_object()) {
+
+				$treeData = osci_tk_nodetree_get_data_for_nid($node->nid);
+
+				foreach($treeData as $tree) {
+					$rootNode = node_load($tree['rootNid']);
+					$title = l($rootNode->title, "node/" . $tree['rootNid']);
+
+					$items = array();
+					if ($tree['parentNid']) {
+						$parentNode = node_load($tree['parentNid']);
+						$items[] = "Up: " . l($parentNode->title, "node/" . $tree['parentNid']);
+					}
+
+					if ($tree['prevNid']) {
+						$parentNode = node_load($tree['prevNid']);
+						$items[] = "Prev: " . l($parentNode->title, "node/" . $tree['prevNid']);
+					}
+
+					if ($tree['nextNid']) {
+						$parentNode = node_load($tree['nextNid']);
+						$items[] = "Next: " . l($parentNode->title, "node/" . $tree['nextNid']);
+					}
+
+					if (count($tree['children'])) {
+						$childItems = array(
+							'data' => 'Direct Descendants',
+							'children' => array()
+						);
+
+						foreach($tree['children'] as $childNid) {
+							$childNode = node_load($childNid);
+							$childItems['children'][] = l($childNode->title, "node/" . $childNid);
+						}
+
+						$items[] = $childItems;
+					}
+
+					$block['content'] .= theme_item_list(array(
+						'items' => $items,
+						'title' => $title,
+						'type' => "ul",
+						'attributes' => array()
+					));
+				} 
+			}
+
+			break;
+	}
+
+	return $block;
+}
