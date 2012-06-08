@@ -2,10 +2,14 @@
 <ul>
 	<% _.each(notes, function(note) { %>
 		<li>
-			<p>P#<%= note.get('content_id') %> - <%= note.get('note') %><br>
-			<% if (note.get('tags').length > 0) { %>
-				<small>tags: <% _.each(note.get('tags'), function(tag) { %><%= tag %> <% }); %></small>
-			<% } %>
+			<p>
+				<a href="#" class="noteLink" data-content_id="<%= note.get('content_id') %>">
+					P#<%= note.get('content_id') %> - <%= note.get('note') %>
+				</a>
+				<br>
+				<% if (note.get('tags').length > 0) { %>
+					<small>tags: <% _.each(note.get('tags'), function(tag) { %><%= tag %> <% }); %></small>
+				<% } %>
 			</p>
 		</li>
 	<% }); %>
