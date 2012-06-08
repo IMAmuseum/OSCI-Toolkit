@@ -7,8 +7,9 @@ OsciTk.models.Note = OsciTk.models.BaseModel.extend({
 	defaults: function() {
 		return {
 			id: null,
-			note: null,
+			content_id: null,
 			section_id: null,
+			note: null,
 			tags: []
 		};
 	},
@@ -29,7 +30,8 @@ OsciTk.models.Note = OsciTk.models.BaseModel.extend({
 		if (method == 'create') {
 			// convert the model attributes to standard form encoding
 			options.data = this.urlFormEncode(model);
-			// all responses are successful by design, check the returned success attribute for real status
+			// all response codes are successful by design, check 
+			// the returned success attribute for real status
 			// and properly error if necessary
 			options.success = function(data, textStatus, jqXHR) {
 				var response = JSON.parse(data);
@@ -72,7 +74,10 @@ OsciTk.models.Note = OsciTk.models.BaseModel.extend({
 	urlFormEncode: function(model) {
 		var data = '';
 		for (var key in model.attributes) {
-			if ($.isArray(model.attributes[key])) {
+			if (model.attributes[key] === null) {
+				continue;
+			}
+			else if ($.isArray(model.attributes[key])) {
 				for (var element in model.attributes[key]) {
 					data = data + key + '[]=' + model.attributes[key][element] + '&';
 				}
