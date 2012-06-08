@@ -6,7 +6,6 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 	template: OsciTk.templateManager.get('note-popup'),
 	tempNotes: [],
-	saveTimeout: null,
 	initialize: function() {
 		var $this = this;
 		// set up qtip options
@@ -38,22 +37,32 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 			
 			// bind to the click action on that page's element.
 			page.$el.bind('click', function(event){
-				// check that the target's id is a valid osci content id
-				if (event.target.id.match(/^osci-content-/)) {
+				// check that the target has a data-osci_content_id attribute
+				var contentId = $(event.target).attr('data-osci_content_id');
+				if (contentId) {
 					// find the note content if pre-existing
 					var note;
-					var notes = app.collections.notes.where({content_id: event.target.id});
+					var notes = app.collections.notes.where({content_id: contentId});
 					if (notes[0]) {
 						note = notes[0];
 					}
 					else {
 						note = new OsciTk.models.Note({
-							content_id: event.target.id,
+							content_id: contentId,
 							section_id: app.models.section.id
 						});
 						app.collections.notes.add(note);
 					}
-					// fire the tooltip
+					console.log(note, 'note');
+					// fire the tooltip, note the preset of position.  Some paragraphs are 
+					// continuations, so place their tooltips below the paragraph
+					var myPosition = 'bottom left';
+					var atPosition = 'top left';
+					var marginTop = parseInt($(event.target).css('margin-top'));
+					if (marginTop < 0) {
+						myPosition = 'top left';
+						atPosition = 'bottom left';
+					}
 					$(event.target).qtip("destroy");
 					$(event.target).qtip({
 						id: note.cid,
@@ -72,31 +81,35 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 							fixed: true
 						},
 						position: {
-							my: 'bottom left',
-							at: 'top left',
+							my: myPosition,
+							at: atPosition,
 							target: $(event.target)
 						},
 						events: {
 							render: function(event, api) {
-								console.log(api, 'api');
 								// bind to keyup on text area to sync changes to back end
 								api.elements.content.find('.noteForm textarea').bind('keyup', function(e) {
-									console.log(e, 'event');
 									// save the content to the model in case the note disappears (user clicks off)
 									var cid = api.elements.tooltip.attr('id').match(/c\d+/)[0];
 									// search the collection for this cid
 									var note = app.collections.notes.getByCid(cid);
 									note.set('note', e.target.value);
 									// clear the previous timer if there is one
-									if ($this.saveTimeout != null) {
-										clearTimeout($this.saveTimeout);
-										$this.saveTimeout = null;
+									if (typeof($this['saveTimeout'+cid]) !== 'undefined') {
+										clearTimeout($this['saveTimeout'+cid]);
+										delete($this['saveTimeout'+cid]);
 									}
 									// set timer to save the note
-									$this.saveTimeout = window.setTimeout(function() {
+									$this['saveTimeout'+cid] = window.setTimeout(function() {
 										note.save();
 									}, 1500);
 								});
+								
+								// set focus on the textarea
+								// setTimeout?  don't ask.
+								setTimeout(function() {
+									api.elements.content.find('.noteForm textarea').focus();
+								}, 0);
 							}
 						}
 					});
