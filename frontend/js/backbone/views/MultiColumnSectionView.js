@@ -284,6 +284,6 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		}
 
 		return figureView;
-	},
+	}
 
 });
