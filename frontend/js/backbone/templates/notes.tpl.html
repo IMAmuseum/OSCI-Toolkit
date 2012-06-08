@@ -2,9 +2,9 @@
 <ul>
 	<% _.each(notes, function(note) { %>
 		<li>
-			<p>P#<%= note.paragraph_id %> - <%= note.note %><br>
-			<% if (note.tags.length > 0) { %>
-				<small>tags: <% _.each(note.tags, function(tag) { %><%= tag %> <% }); %></small>
+			<p>P#<%= note.get('content_id') %> - <%= note.get('note') %><br>
+			<% if (note.get('tags').length > 0) { %>
+				<small>tags: <% _.each(note.get('tags'), function(tag) { %><%= tag %> <% }); %></small>
 			<% } %>
 			</p>
 		</li>

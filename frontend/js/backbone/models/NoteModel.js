@@ -35,8 +35,13 @@ OsciTk.models.Note = OsciTk.models.BaseModel.extend({
 			// and properly error if necessary
 			options.success = function(data, textStatus, jqXHR) {
 				var response = JSON.parse(data);
+				console.log(response, 'response');
 				if (!response.success) {
 					options.error(model, jqXHR);
+				}
+				else {
+					model.id = response.note.id;
+					model.trigger('change');
 				}
 			};
 			options.type = 'POST';
@@ -50,6 +55,9 @@ OsciTk.models.Note = OsciTk.models.BaseModel.extend({
 				console.log(response, 'update response');
 				if (!response.success) {
 					options.error(model, jqXHR);
+				}
+				else {
+					model.trigger('change');
 				}
 			};
 			options.type = 'POST';
@@ -65,6 +73,9 @@ OsciTk.models.Note = OsciTk.models.BaseModel.extend({
 				console.log(response, 'delete response');
 				if (!response.success) {
 					options.error(model, jqXHR);
+				}
+				else {
+					model.trigger('change');
 				}
 			};
 			$.ajax(endpoint, options);

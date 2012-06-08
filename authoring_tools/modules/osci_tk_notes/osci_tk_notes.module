@@ -24,11 +24,8 @@ function osci_tk_notes_menu() {
 function osci_tk_notes_request() {
 	global $user;
 	$args = array();
-	// dpm('notes request');
 	if ($user->uid > 0) {
 		if (count($_POST) > 0) {
-			dpm($_POST, 'post request');
-				
 			// POST request, insert a note into the db
 			if (isset($_POST['section_id']) && !empty($_POST['section_id'])
 				&& isset($_POST['content_id']) && !empty($_POST['content_id'])
@@ -88,7 +85,7 @@ function osci_tk_notes_request() {
 					$note->language = LANGUAGE_NONE;
 					$note->uid = $user->uid;
 					$note->status = 1;
-					$note->title = $user->name.' s'.$section->nid.' c'.$_POST['content_id'];
+					$note->title = $user->name.' s:'.$section->nid.' c:'.$_POST['content_id'];
 					$note->body['und'][0]['value'] = $_POST['note'];
 					$note->field_section['und'][0]['nid'] = $section->nid;
 					$note->field_content_id['und'][0]['value'] = $_POST['content_id'];
