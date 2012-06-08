@@ -130,6 +130,9 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 				content.attr('id', 'osci-content-' + i);
 			}
 
+			//add a data attribute for all content for when content is repeated it still has an identifier
+			content.attr("data-osci_content_id", 'osci-content-' + i);
+
 			if (content.is("p")) {
 				content.attr("data-paragraph_number", paragraphNumber);
 			}
