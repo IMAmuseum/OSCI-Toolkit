@@ -14,12 +14,22 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 		}, this);
 	},
 	render: function() {
+		// filter notes - only show ones with ids (saved to server)
 		var notes = _.filter(app.collections.notes.models, function(note) {
 			if (note.id !== null) return true;
 			return false;
 		});
-		console.log(notes);
 		this.$el.html(this.template({notes: notes}));
+		// bind the clicks to trigger the click on the appropriate content_id
+		this.$el.find('.noteLink').on('click', function(e) {
+			var target = $(e.target);
+			var content_id = target.attr('data-content_id');
+			if (content_id) {
+				app.dispatcher.trigger('navigate', {identifier: content_id});
+				$('#'+content_id).click();
+				app.views.toolbarView.contentClose();
+			}
+		});
 		return this;
 	}
 });
