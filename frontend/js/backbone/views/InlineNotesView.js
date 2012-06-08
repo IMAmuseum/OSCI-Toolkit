@@ -85,6 +85,9 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 							at: atPosition,
 							target: $(event.target)
 						},
+						style: {
+							classes: 'note-tooltip'
+						},
 						events: {
 							render: function(event, api) {
 								// bind to keyup on text area to sync changes to back end
@@ -104,12 +107,6 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 										note.save();
 									}, 1500);
 								});
-								
-								// set focus on the textarea
-								// setTimeout?  don't ask.
-								setTimeout(function() {
-									api.elements.content.find('.noteForm textarea').focus();
-								}, 0);
 							}
 						}
 					});

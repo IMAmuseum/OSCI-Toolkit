@@ -1,15 +1,19 @@
 <h2>Notes</h2>
-<ul>
+<ul class="notesList">
 	<% _.each(notes, function(note) { %>
-		<li>
+		<li class="notesListItem">
 			<p>
 				<a href="#" class="noteLink" data-content_id="<%= note.get('content_id') %>">
-					P#<%= note.get('content_id') %> - <%= note.get('note') %>
+					[NOTE_ICON]
 				</a>
-				<br>
-				<% if (note.get('tags').length > 0) { %>
-					<small>tags: <% _.each(note.get('tags'), function(tag) { %><%= tag %> <% }); %></small>
-				<% } %>
+				<span>
+					<small><%= note.get('note') %></small>
+				</span>
+				<div class="noteTags">
+					<% if (note.get('tags').length > 0) { %>
+						<small>tags: <% _.each(note.get('tags'), function(tag) { %><%= tag %> <% }); %></small>
+					<% } %>
+				</div>
 			</p>
 		</li>
 	<% }); %>
