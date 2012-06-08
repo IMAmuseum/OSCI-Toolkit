@@ -6,9 +6,9 @@ jQuery(document).ready(function() {
 	ret_submit.click(function(event) {
 		event.preventDefault();
 		var data = {
-			'book_id'		: $('#edit-book-id').val(),
+			'publication_id': $('#edit-publication-id').val(),
 			'section_id'	: $('#edit-section-id').val(),
-			'paragraph_id'	: $('#edit-paragraph-id').val()
+			'element_id'	: $('#edit-element-id').val()
 		};
 		var target = $('#ret-result');
 		retrieve_note(data, target);
@@ -23,5 +23,5 @@ function retrieve_note(data, target) {
 	
 	$.get(endpoint, data, function(data) {
 		target.html(data);
-	})
+	});
 }

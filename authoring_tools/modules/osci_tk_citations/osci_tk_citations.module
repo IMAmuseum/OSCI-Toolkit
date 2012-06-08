@@ -21,31 +21,32 @@ function osci_tk_citations_menu() {
 
 function osci_tk_citations_request() {
 
-	if (isset($_GET['section_id']) && !empty($_GET['section_id'])
-		&& isset($_GET['paragraph_id']) && !empty($_GET['paragraph_id'])) {
+	if (isset($_GET['publication_id']) && !empty($_GET['publication_id'])
+		&& isset($_GET['section_id']) && !empty($_GET['section_id'])
+		&& isset($_GET['element_id']) && !empty($_GET['element_id'])) {
 		
+		$pid = $_GET['publication_id'];
 		$sid = $_GET['section_id'];
-		$pid = $_GET['paragraph_id'];
+		$eid = $_GET['element_id'];
+		$revTime = isset($_GET['revision']) ? $_GET['revision'] : time();
 		
 		// load the section node and its book-parent section. if no parent, use itself
 		//TODO: MAKE SURE THIS IS A PUBLICATION
-		$section = node_load($sid);
-		$book_section = isset($section->book['bid']) 
-			? node_load($section->book['bid']) 
-			: $section;
-		
-		// for missing values on the section, inherit from the book-parent section
-		if ((!isset($section->author) || empty($section->author)) && isset($book->author)) {
-			$section->author = $book->author;
+		$publication = node_load($pid, _osci_tk_utility_retrieve_revision_id_by_timestamp($pid, $revTime));
+		$section = node_load($sid, _osci_tk_utility_retrieve_revision_id_by_timestamp($sid, $revTime));
+		dpm($publication);
+		// for missing values on the section, inherit from the publication-parent section
+		if ((!isset($section->author) || empty($section->author)) && isset($publication->author)) {
+			$section->author = $publication->author;
 		}
-		if ((!isset($section->publisher) || empty($section->publisher)) && isset($book->publisher)) {
-			$section->publisher = $book->publisher;
+		if ((!isset($section->publisher) || empty($section->publisher)) && isset($publication->publisher)) {
+			$section->publisher = $publication->publisher;
 		}
-		if ((!isset($section->publication_date) || empty($section->publication_date)) && isset($book->publication_date)) {
-			$section->publication_date = $book->publication_date;
+		if ((!isset($section->publication_date) || empty($section->publication_date)) && isset($publication->publication_date)) {
+			$section->publication_date = $publication->publication_date;
 		}
-		if ((!isset($section->editor) || empty($section->editor)) && isset($book->editor)) {
-			$section->editor = $book->editor;
+		if ((!isset($section->editor) || empty($section->editor)) && isset($publication->editor)) {
+			$section->editor = $publication->editor;
 		}
 		
 		// output the json response
@@ -54,9 +55,9 @@ function osci_tk_citations_request() {
 			'citation' => array(
 				'author' 			=> $section->author,
 				'section_title' 	=> $section->title,
-				'book_title' 		=> $book_section->title,
+				'book_title' 		=> $publication->title,
 				'publisher' 		=> $section->publisher,
-				'paragraph' 		=> $pid,
+				'element' 			=> $eid,
 				'publication_date' 	=> $section->publication_date,
 				'editor' 			=> $section->editor,
 				'url'				=> ""
@@ -80,13 +81,22 @@ function osci_tk_citations_demo() {
 		'#title'			=> 'Retrieve Citation Data',
 		'#attributes'		=> array('class' => array('retrieve-form'))
 	);
+	$form['retrieve']['publication_id'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'Publication id',
+	);
 	$form['retrieve']['section_id'] = array(
 		'#type'				=> 'textfield',
 		'#title'			=> 'Section id',
 	);
-	$form['retrieve']['paragraph_id'] = array(
+	$form['retrieve']['element_id'] = array(
 		'#type'				=> 'textfield',
-		'#title'			=> 'Paragraph id',
+		'#title'			=> 'Element id',
+	);
+	$form['retrieve']['revision'] = array(
+		'#type'				=> 'textfield',
+		'#title'			=> 'Revision timestamp',
+		'#default_value'			=> time()
 	);
 	$form['retrieve']['submit'] = array(
 			'#type'			=> 'button',
