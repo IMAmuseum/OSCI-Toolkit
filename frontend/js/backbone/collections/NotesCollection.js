@@ -36,6 +36,7 @@ OsciTk.collections.Notes = OsciTk.collections.BaseCollection.extend({
 				if (data.success === true) {
 					// notes were returned, set to the notes collection
 					app.collections.notes.reset(data.notes);
+					app.dispatcher.trigger('notesLoaded', app.collections.notes);
 				}
 			}
 		});

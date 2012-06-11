@@ -8,29 +8,7 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 	tempNotes: [],
 	initialize: function() {
 		var $this = this;
-		// set up qtip options
-		this.qtipOptions = {
-			content: {
-				text: "Test tooltip",
-				title: {
-					text: "Notes"
-				}
-			},
-			show: {
-				ready: true,
-				event: ''
-			},
-			hide: {
-				event: 'mouseleave',
-				delay: 500,
-				fixed: true
-			},
-			position: {
-				my: 'bottom left',
-				at: 'top left',
-				target: $(event.target)
-			}
-		}
+		
 		app.dispatcher.on('pageChanged', function(pageChanged) {
 			// get the current page
 			var page = app.views.sectionView.childViews[pageChanged.page - 1];
@@ -111,6 +89,20 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 						}
 					});
 				}
+			});
+		});
+		
+		// place icon next to paragraphs with notes after layout is complete
+		app.dispatcher.bind('notesLoaded', function(params) {
+			_.each(app.views.sectionView.$el.find('p'), function(p) {
+				_.each(app.collections.notes.models, function(n) {
+					if (p.id == n.get('content_id')) {
+						// place a class on the paragraph identifier to indicate a note is present
+						var paraControl = app.views.sectionView.$el
+							.find('.paragraph-controls[data-osci_content_id="' + n.get('content_id') + '"]');
+						paraControl.addClass('notes-present');
+					}
+				});
 			});
 		});
 	}
