@@ -6,6 +6,7 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 	columnTemplate : OsciTk.templateManager.get('multi-column-column'),
 	visible: true,
+	paragraphControlsViews: [],
 	onClose: function() {
 		this.model = undefined;
 	},
@@ -22,7 +23,12 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 
 	resetPage: function() {
 		this.removeAllContent();
-
+		
+		_.each(this.paragraphControlsViews, function(view) {
+			view.close();
+		});
+		this.paragraphControlsViews = [];
+		
 		this.$el.children(':not(figure)').remove();
 
 		this.initializeColumns();
@@ -185,22 +191,12 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 			var paragraphNumber = content.data("paragraph_number");
 			var contentIdentifier = content.data("osci_content_id");
 			var pidIsOnPage = this.$el.find(".paragraph-identifier-" + paragraphNumber);
-
+			console.log(pidIsOnPage, 'pidonpage ' + paragraphNumber);
 			if (pidIsOnPage.length === 0) {
-				var contentPosition = content.position();
-				var columnPosition = column.$el.position();
-
-				var pid = $("<div>", {
-					"class": "paragraph-controls",
-					"data-osci_content_id": contentIdentifier,
-					"data-paragraph_identifier": paragraphNumber,
-					
-					html: "<span class=\"paragraph-identifier paragraph-identifier-" + paragraphNumber + "\">" + paragraphNumber + "</span>",
-					css: {
-						top: (columnPosition.top + contentPosition.top) + "px",
-						left: (columnPosition.left + contentPosition.left - this.parent.dimensions.gutterWidth) + "px"
-					}
-				}).appendTo(this.$el);
+				var pcv = new OsciTk.views.ParagraphControlsView({
+					content: content
+				});
+				this.paragraphControlsViews.push(pcv);
 			}
 		}
 
