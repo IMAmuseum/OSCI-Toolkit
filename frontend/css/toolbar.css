@@ -12,7 +12,6 @@ div#toolbar {
 div#toolbar-content {
 	position: absolute;
 	bottom: 40px;
-	top:0px;
 	left: 0px;
 	background-color: #eee;
 	width: 100%;
