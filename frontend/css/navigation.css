@@ -35,10 +35,15 @@
 
 #navigation .prev-page.side .indicator {
 	background: url('../img/icon-nav-arrow-left.png') no-repeat center top;
+	opacity:40%;
 }
 
 #navigation .next-page.side .indicator {
 	background: url('../img/icon-nav-arrow-right.png') no-repeat center top;
+	opacity:40%;
+}
+#navigation .next-page.side:hover .indicator, #navigation .prev-page.side:hover .indicator {
+	opacity:1;
 }
 
 #navigation .side {
