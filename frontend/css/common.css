@@ -46,6 +46,10 @@ figcaption {
 
 /* misc */
 .fancybox-close {
-	top: 0px;
-	right: 0px;
+	top: 0px!important;
+	right: 0px!important;
+	opacity:.4;
 }
+.fancy-close:hover { opacity: 1; }
+
+
