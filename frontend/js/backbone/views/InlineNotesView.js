@@ -36,7 +36,7 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 					// continuations, so place their tooltips below the paragraph
 					var myPosition = 'bottom left';
 					var atPosition = 'top left';
-					var marginTop = parseInt($(event.target).css('margin-top'));
+					var marginTop = parseInt($(event.target).css('margin-top'), 10);
 					if (marginTop < 0) {
 						myPosition = 'top left';
 						atPosition = 'bottom left';

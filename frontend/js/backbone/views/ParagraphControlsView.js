@@ -8,11 +8,13 @@ OsciTk.views.ParagraphControlsView = OsciTk.views.BaseView.extend({
 	contentIdentifier: null,
 	paragraphNumber: null,
 	content: null,
+	position: null,
 	
 	initialize: function(params) {
 		this.content = params.content;
 		this.paragraphNumber = this.content.data("paragraph_number");
 		this.contentIdentifier = this.content.data("osci_content_id");
+		this.position = params.position;
 		this.render();
 	},
 	
@@ -23,11 +25,8 @@ OsciTk.views.ParagraphControlsView = OsciTk.views.BaseView.extend({
 		this.$el.attr('data-paragraph_identifier', this.paragraphNumber);
 		this.$el.html('<span class="paragraph-identifier paragraph-identifier-' + this.paragraphNumber + '">' 
 			+ this.paragraphNumber + '</span>');
-		this.$el.css({
-			top: contentPosition.top + 'px',
-			left: (contentPosition.left - app.views.sectionView.dimensions.gutterWidth) + "px"
-		});
-		this.content.before(this.$el);
+		this.$el.css(this.position);
+		//this.content.before(this.$el);
 //		var pid = $("<div>", {
 //			"class": "paragraph-controls",
 //			"data-osci_content_id": contentIdentifier,
