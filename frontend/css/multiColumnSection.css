@@ -31,13 +31,13 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	/*overflow-y: hidden;
-	overflow-x: visible;*/
+	overflow-y: hidden;
+	overflow-x: visible;
 	
 
 }
 
-#pages .page { oveflow:hidden; }
+/*#pages .page { oveflow:hidden; }*/
 
 /* a line height must be set for proper calculations */
 .page, .column, .column * {
