@@ -15,10 +15,12 @@
 
 #navigation .prev-page.side {
 	left: 0px;
+	text-align:center;
 }
 
 #navigation .next-page.side {
 	right: 0px;
+	text-align:center;
 }
 
 #navigation .side .indicator {
