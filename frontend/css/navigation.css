@@ -15,17 +15,35 @@
 
 #navigation .prev-page.side {
 	left: 0px;
+	text-align:center;
 }
 
 #navigation .next-page.side {
 	right: 0px;
+	text-align:center;
 }
 
+
 #navigation .side .indicator {
-	position: absolute;
-	width: 40px;	
+	position: absolute;	
 	top: 50%;
-	text-align: center;	
+	/*text-align: center;*/
+	text-indent:100%;overflow:hidden;
+	height:28px;
+	width:40px;
+}
+
+#navigation .prev-page.side .indicator {
+	background: url('../img/icon-nav-arrow-left.png') no-repeat center top;
+	opacity:.4;
+}
+
+#navigation .next-page.side .indicator {
+	background: url('../img/icon-nav-arrow-right.png') no-repeat center top;
+	opacity:.4;
+}
+#navigation .next-page.side:hover .indicator, #navigation .prev-page.side:hover .indicator {
+	opacity:1;
 }
 
 #navigation .side {
@@ -66,10 +84,13 @@
 }
 
 #navigation .button {
-	height: 10px;
+	height: 6px;
 	width: 100px;
 	background-color: #A8C0C5;
-	border-radius: 5px;
+	/*border-radius: 5px;*/
+}
+#navigation .button:hover {
+	background:#52818C;	
 }
 
 #navigation .corner.inactive {
@@ -84,12 +105,12 @@
 
 #navigation .pager {
 	position: absolute;
-	bottom: -10px;
+	bottom: -6px;
 	right: 100px;
 	left: 100px;
-	height: 10px;
-	background-color: #ddd;
-	border-radius: 5px;	
+	height: 6px;
+	background-color: #ccc;
+	/*border-radius: 5px;	*/
 	margin: 0px 20px;
 }
 
@@ -97,9 +118,9 @@
 	position:absolute;
 	left: 33%;
 	width: 33%;
-	height: 12px;
+	height: 8px;
 	top: -1px;
-	background-color: #555;
-	border: 1px solid black;
+	background-color: #333;
+	/*border: 1px solid black;*/
 }
 
