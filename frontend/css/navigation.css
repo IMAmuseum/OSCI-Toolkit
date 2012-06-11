@@ -32,11 +32,11 @@
 }
 
 #navigation .prev-page.side .indicator {
-	background: url('../images/icon-nav-arrow-left.png') no-repeat left top;
+	background: url('../img/icon-nav-arrow-left.png') no-repeat left top;
 }
 
 #navigation .next-page.side .indicator {
-	background: url('../images/icon-nav-arrow-right.png') no-repeat left top;
+	background: url('../img/icon-nav-arrow-right.png') no-repeat left top;
 }
 
 #navigation .side {
