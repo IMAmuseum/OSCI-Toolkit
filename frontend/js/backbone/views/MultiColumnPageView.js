@@ -183,7 +183,7 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		//place a paragraph number
 		if (content.is("p")) {
 			var paragraphNumber = content.data("paragraph_number");
-			var contentIdentifier = content.data("data-osci_content_id");
+			var contentIdentifier = content.data("osci_content_id");
 			var pidIsOnPage = this.$el.find(".paragraph-identifier-" + paragraphNumber);
 
 			if (pidIsOnPage.length === 0) {
@@ -192,10 +192,9 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 
 				var pid = $("<div>", {
 					"class": "paragraph-controls",
-					data: {
-						"paragraph_identifier": paragraphNumber,
-						"osci_content_id": contentIdentifier
-					},
+					"data-osci_content_id": contentIdentifier,
+					"data-paragraph_identifier": paragraphNumber,
+					
 					html: "<span class=\"paragraph-identifier\">" + paragraphNumber + "</span>",
 					css: {
 						top: (columnPosition.top + contentPosition.top) + "px",
