@@ -70,9 +70,9 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 			//move all the pages to the proper offset
 			this.$el.find("#pages").css({
-				"-webkit-transform", "translate3d(0, " + offset + "px, 0)",
-				"-moz-transform", "translate3d(0, " + offset + "px, 0)",
-				"transform", "translate3d(0, " + offset + "px, 0)"
+				"-webkit-transform": "translate3d(0, " + offset + "px, 0)",
+				"-moz-transform": "translate3d(0, " + offset + "px, 0)",
+				"transform": "translate3d(0, " + offset + "px, 0)"
 			});
 
 			//trigger event so other elements can update with current page
