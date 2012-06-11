@@ -12,6 +12,7 @@ div#toolbar {
 div#toolbar-content {
 	position: absolute;
 	bottom: 40px;
+	top:0px;
 	left: 0px;
 	background-color: #eee;
 	width: 100%;
@@ -27,6 +28,7 @@ div#toolbar-content {
 	background: url('../img/bg-toolbar.gif') repeat;
 	border-bottom-left-radius:5px;
 	border-bottom-right-radius:5px;
+	
 }
 #toolbar-close {
 	z-index: 10;
