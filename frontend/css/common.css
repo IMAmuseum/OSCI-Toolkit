@@ -30,6 +30,12 @@ figcaption {
 }
 
 
+.page {
+	font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;	
+}
+.page p {
+	line-height:1.5em;	
+}
 
 .paragraph-controls {
 	color: #BACCD1;
