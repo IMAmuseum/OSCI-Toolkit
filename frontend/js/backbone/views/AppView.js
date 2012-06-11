@@ -9,6 +9,10 @@ OsciTk.views.App = OsciTk.views.BaseView.extend({
 	initialize: function() {
 		$('body').append(this.el);
 		
+		// Add the title view to the appView
+		app.views.titleView = new OsciTk.views.Title();
+		this.addView(app.views.titleView);
+
 		// Add the toolbar to the appView
 		app.views.toolbarView = new OsciTk.views.Toolbar();
 		this.addView(app.views.toolbarView);
