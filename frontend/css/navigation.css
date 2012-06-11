@@ -25,7 +25,18 @@
 	position: absolute;
 	width: 40px;	
 	top: 50%;
-	text-align: center;	
+	/*text-align: center;*/
+	text-indent:100%;overflow:hidden;
+	height:28px;
+	width:16px;
+}
+
+#navigation .prev-page.side .indicator {
+	background: url('../images/icon-nav-arrow-left.png') no-repeat left top;
+}
+
+#navigation .next-page.side .indicator {
+	background: url('../images/icon-nav-arrow-right.png') no-repeat left top;
 }
 
 #navigation .side {
