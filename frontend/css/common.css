@@ -42,3 +42,10 @@ figcaption {
 	font-size:11px;
 	font-family:Arial, Helvetica, sans-serif;
 }
+
+
+/* misc */
+.fancybox-close {
+	top: 0px;
+	right: 0px;
+}
