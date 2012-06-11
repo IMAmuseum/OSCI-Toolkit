@@ -195,7 +195,7 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 					"data-osci_content_id": contentIdentifier,
 					"data-paragraph_identifier": paragraphNumber,
 					
-					html: "<span class=\"paragraph-identifier\">" + paragraphNumber + "</span>",
+					html: "<span class=\"paragraph-identifier paragraph-identifier-" + paragraphNumber + "\">" + paragraphNumber + "</span>",
 					css: {
 						top: (columnPosition.top + contentPosition.top) + "px",
 						left: (columnPosition.left + contentPosition.left - this.parent.dimensions.gutterWidth) + "px"
