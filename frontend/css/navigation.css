@@ -25,21 +25,20 @@
 
 
 #navigation .side .indicator {
-	position: absolute;
-	width: 40px;	
+	position: absolute;	
 	top: 50%;
 	/*text-align: center;*/
 	text-indent:100%;overflow:hidden;
 	height:28px;
-	width:16px;
+	width:40px;
 }
 
 #navigation .prev-page.side .indicator {
-	background: url('../img/icon-nav-arrow-left.png') no-repeat left top;
+	background: url('../img/icon-nav-arrow-left.png') no-repeat center top;
 }
 
 #navigation .next-page.side .indicator {
-	background: url('../img/icon-nav-arrow-right.png') no-repeat left top;
+	background: url('../img/icon-nav-arrow-right.png') no-repeat center top;
 }
 
 #navigation .side {
