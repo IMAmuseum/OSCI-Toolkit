@@ -1,0 +1,16 @@
+.note-tooltip textarea {
+	background-color: #FFFFA3;
+	border: none;
+}
+ul.notesList {
+	list-style-type: none;
+}
+ul.notesList li {
+	padding-bottom: 10px;
+}
+ul.notesList li a {
+	padding-right: 10px;
+}
+.notes-present {
+	background-color: #F00;
+}
