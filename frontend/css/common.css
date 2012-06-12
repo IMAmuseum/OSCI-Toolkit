@@ -56,6 +56,11 @@ figcaption {
 	font-family:Arial, Helvetica, sans-serif;
 }
 
+.figure_reference {
+	vertical-align:super;
+	font-size:10px;
+}
+
 
 /* misc */
 .fancybox-close {
