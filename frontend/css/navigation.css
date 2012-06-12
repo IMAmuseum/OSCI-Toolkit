@@ -11,7 +11,11 @@
 #navigation .header {
 	width: 100%;
 	text-align: center;
+	position:absolute;
+	top:10px;
+	color:#666;
 }
+#navigation .header:hover { color:#333; }
 
 #navigation .prev-page.side {
 	left: 0px;
