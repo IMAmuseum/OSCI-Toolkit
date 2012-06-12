@@ -47,7 +47,7 @@ figcaption {
 	font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;	
 }
 .page p {
-	line-height:1.5em;	
+	/*line-height:1.5em;*/
 }
 
 .paragraph-controls {
@@ -56,6 +56,45 @@ figcaption {
 	font-family:Arial, Helvetica, sans-serif;
 }
 
+a.figure_reference {
+	
+}
+a.footnote-reference {
+	vertical-align:super;
+	font-size:10px;
+	margin-right:10px;
+	text-decoration:none;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* figure tables */
+.figure_content table {
+	width:100%;
+}
+.figure_content table thead{
+	
+}
+.figure_content table thead tr {
+	
+}
+.figure_content table thead th {
+	text-align:left;
+	padding:5px;
+}
+
+.figure_content table tbody {
+	
+}
+.figure_content table tbody tr {
+	
+}
+.figure_content table tbody tr:nth-child(odd) {
+	background: #eee;	
+}
+.figure_content table tbody td {
+	padding:5px;
+}
 
 /* misc */
 .fancybox-close {
