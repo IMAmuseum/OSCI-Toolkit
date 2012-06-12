@@ -144,8 +144,8 @@
 	position:absolute;
 	left: 33%;
 	width: 33%;
-	height: 8px;
-	top: -1px;
+	height: 6px;
+	top: 0px;
 	background-color: #333;
 	/*border: 1px solid black;*/
 }
