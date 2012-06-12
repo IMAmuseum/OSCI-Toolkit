@@ -128,11 +128,9 @@ function osci_tk_search_apachesolr_index_document_build(ApacheSolrDocument $docu
 	} else {
 		if(osci_tk_nodetree_entity_is_tree($entity->nid)) {
 			$publications = _osci_tk_search_get_publications($entity);
-			dd('going to do footnotes');
 			if(!empty($entity->field_footnote)) {
 				_osci_tk_search_create_footnote_documents($entity, $document, $env_id, $publications);
 			}
-			dd('going to do figure');
 			if(!empty($entity->field_figure)) {
 				_osci_tk_search_create_figure_documents($entity, $document, $env_id, $publications);
 			}
