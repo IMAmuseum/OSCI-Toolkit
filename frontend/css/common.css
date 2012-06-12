@@ -47,7 +47,7 @@ figcaption {
 	font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;	
 }
 .page p {
-	line-height:1.5em;	
+	/*line-height:1.5em;*/
 }
 
 .paragraph-controls {
@@ -56,7 +56,9 @@ figcaption {
 	font-family:Arial, Helvetica, sans-serif;
 }
 
-a.figure_reference,
+a.figure_reference {
+	
+}
 a.footnote-reference {
 	vertical-align:super;
 	font-size:10px;
