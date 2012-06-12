@@ -130,10 +130,11 @@ div.Figures-toolbar-item:hover {
 }
 .result-content .result-body {
 	display:block;
-	left:100px;position:absolute;
+	left:90px;position:absolute;
 	white-space:nowrap;
 	text-overflow: ellipsis;
 	overflow:hidden;
+	right:80px;
 }
 
 /* TOC VIEW */
