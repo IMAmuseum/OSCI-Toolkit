@@ -81,16 +81,17 @@
 
 #navigation .label {
 	text-align: center;
+	text-transform:uppercase;
+	color:#52808C;
+	font-size:10px;
 }
 
 #navigation .button {
 	height: 6px;
 	width: 100px;
-	background-color: #A8C0C5;
-	/*border-radius: 5px;*/
 }
 #navigation .button:hover {
-	background:#52818C;	
+	
 }
 
 #navigation .corner.inactive {
