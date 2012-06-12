@@ -11,7 +11,7 @@ OsciTk.views.FullscreenFigureView = OsciTk.views.BaseView.extend({
 	showFigureFullscreen: function(id) {
 
 		var figure_model = app.collections.figures.get(id);
-		if (figure_model == undefined) {
+		if (figure_model === undefined) {
 			alert('Error: Figure ' + id + ' not found');
 			return;
 		}
@@ -27,8 +27,8 @@ OsciTk.views.FullscreenFigureView = OsciTk.views.BaseView.extend({
 				});
 				return;
 
-			case 'html_asset':			
-				var figure = new OsciTk.views.FullscreenHTMLFigureView({
+			case 'html_asset':
+				figure = new OsciTk.views.FullscreenHTMLFigureView({
 					id: id,
 					model: figure_model
 				});
