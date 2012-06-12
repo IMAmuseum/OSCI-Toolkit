@@ -21,8 +21,15 @@ OsciTk.views.Search = OsciTk.views.BaseView.extend({
 		'submit #search-form' : 'search'
 	},
 	render: function() {
-		console.log(this);
 		this.$el.html(this.template(this));
+	},
+	resizeResultsContainer: function() {
+		var containerSize = $('#toolbar-content', this.parent.$el).height();
+		var searchHeaderSize = $('#search-header', this.$el).outerHeight();
+		var searchResultsHeaderSize = $('#search-results-header', this.$el).outerHeight();
+
+		var newContainerHeight = containerSize - searchHeaderSize - searchResultsHeaderSize;
+		$('#search-results-container', this.$el).height(newContainerHeight);
 	},
 	search: function(event) {
 		// prevent the form from submitting
@@ -36,6 +43,8 @@ OsciTk.views.Search = OsciTk.views.BaseView.extend({
 			type: 'POST',
 			success: function(data) {
 				var response = JSON.parse(data);
+				// reset collection
+				searchView.searchResults.reset();
 				// add the incoming docs to the searchResults collection
 				_.each(response.docs, function(doc) {
 					searchView.searchResults.add(doc);
@@ -46,6 +55,7 @@ OsciTk.views.Search = OsciTk.views.BaseView.extend({
 				// re-render the search view
 				searchView.render();
 				searchView.parent.contentOpen();
+				searchView.resizeResultsContainer();
 			}
 		});
 	}

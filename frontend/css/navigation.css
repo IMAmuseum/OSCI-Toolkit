@@ -11,7 +11,11 @@
 #navigation .header {
 	width: 100%;
 	text-align: center;
+	position:absolute;
+	top:10px;
+	color:#666;
 }
+#navigation .header:hover { color:#333; }
 
 #navigation .prev-page.side {
 	left: 0px;
@@ -119,10 +123,10 @@
 	background: url('../img/bg-pager-arrow-next.png') no-repeat right top #52818C;
 }
 #navigation .corner.inactive.prev-page .button {
-	background: url('../img/bg-pager-arrow-prev.png') no-repeat left -12px #ddd !important;
+	background: url('../img/bg-pager-arrow-prev.png') no-repeat left -12px #eee !important;
 }
 #navigation .corner.inactive.next-page .button {
-	background: url('../img/bg-pager-arrow-next.png') no-repeat right -12px #ddd !important;
+	background: url('../img/bg-pager-arrow-next.png') no-repeat right -12px #eee !important;
 }
 
 #navigation .pager {
@@ -140,8 +144,8 @@
 	position:absolute;
 	left: 33%;
 	width: 33%;
-	height: 8px;
-	top: -1px;
+	height: 6px;
+	top: 0px;
 	background-color: #333;
 	/*border: 1px solid black;*/
 }
