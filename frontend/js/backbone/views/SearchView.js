@@ -17,15 +17,13 @@ OsciTk.views.Search = OsciTk.views.BaseView.extend({
 		// add our search results collection to the global namespace for convenience
 		if (app && app.collections) app.collections.searchResults = this.searchResults;
 	},
-	
 	events: {
 		'submit #search-form' : 'search'
 	},
-	
 	render: function() {
+		console.log(this);
 		this.$el.html(this.template(this));
 	},
-	
 	search: function(event) {
 		// prevent the form from submitting
 		event.preventDefault();
@@ -34,7 +32,7 @@ OsciTk.views.Search = OsciTk.views.BaseView.extend({
 		// send search query
 		var searchView = this;
 		$.ajax({
-			url: app.config.get('endpoints')['OsciTkSearch'] + '?key=' + keyword + '&filters=type:note',
+			url: app.config.get('endpoints')['OsciTkSearch'] + '?key=' + keyword,
 			type: 'POST',
 			success: function(data) {
 				var response = JSON.parse(data);
@@ -42,6 +40,7 @@ OsciTk.views.Search = OsciTk.views.BaseView.extend({
 				_.each(response.docs, function(doc) {
 					searchView.searchResults.add(doc);
 				});
+				searchView.searchResults.numFound = response.numFound;
 				// set the keyword to the collection
 				searchView.searchResults.keyword = keyword;
 				// re-render the search view

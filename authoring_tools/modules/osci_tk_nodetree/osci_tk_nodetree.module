@@ -376,8 +376,31 @@ function osci_tk_nodetree_get_data_for_nid($nid) {
 			$prevRootNid = $treeNode['entity_id'];
 		}
 	}
-
 	return $nodeTreeData;
+}
+
+/**
+ * Helper function to determine whether or not a entity id is part of a nodetree
+ * @param  int $nid The entity's nid
+ * @return bool     Whether or not the entity is part of a nodetree
+ */
+function osci_tk_nodetree_entity_is_tree($nid) {
+	$nodeTreeData = array();
+	$query = db_select('field_config', 'fc')
+		->fields('fc', array('field_name'))
+		->condition('type', 'osci_tk_nodetree', '=');
+	$fields = $query->execute();
+
+	$found = false;
+	foreach($fields as $field) {
+		$tableName = 'field_data_' . $field->field_name;
+		$query = db_select($tableName, 'nt')
+			->fields('nt', array('entity_id'))
+			->condition(db_or()->condition('entity_id', $nid)->condition('field_nodetree_target_nid', $nid))
+			->execute();
+		if($query->rowCount()) $found = true;
+	}
+	return $found;
 }
 
 function osci_tk_nodetree_block_info() {

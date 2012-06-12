@@ -5,27 +5,41 @@
 			<input type="hidden" name="page" id="search-page" />
 		</form>
 	</div>
-</div>
-<% if (searchResults.length > 0) { %>
-	<div id="search-summary">Result(s) for "<%= searchResults.keyword %>" (<%= searchResults.length %>)</div>
-	<div id="search-sort">
-		Sort By: 
-		<div id="search-sort-relevance" data-selected="0">Relevance</div>
-		<div id="search-sort-type" data-selected="0">Type</div>
-	</div>
-	<div id="search-results">
+	<div id="search-filters">
+		<div class="label">Filter |</div>
 		<ul>
-			<% _.each(searchResults.models, function(result) { %>
-				<% if (result.get('bundle') === 'note') { %>
-					<li>
-						<%= result.get('bundle_name') %> 
-						sec.<%= result.get('im_field_section')[0] %> p.<%= result.get('is_paragraph_id') %> - 
-						<%= result.get('ss_body') %>
-					</li>
-				<% } else { %>
-					<li><%= result.get('bundle_name') %> - <%= result.get('ss_body') %></li>
-				<% } %>
-			<% }); %>
+			<li id="search-filter-content"><div class="dot">&nbsp;</div><div class="label">Content</div></li>
+			<li id="search-filter-notes"><div class="dot">&nbsp;</div><div class="label">My Notes</div></li>
+			<li id="search-filter-footnotes"><div class="dot">&nbsp;</div><div class="label">Footnotes</div></li>
+			<li id="search-filter-figures"><div class="dot">&nbsp;</div><div class="label">Figures</div></li>
 		</ul>
 	</div>
+</div>
+<% if (searchResults.length > 0) { %>
+<div id="search-results-header">
+	<div id="search-summary">
+		Result(s) for <span id="search-query">"<%= searchResults.keyword %>"</span> (<%= searchResults.numFound %>)
+		<a id="reset-search" href="#">RESET</a>
+	</div>
+	<div id="results-sort">
+		Sort By: 
+		<ul>
+			<li id="results-sort-relevance" class="sort-button"><a href="#" class="sort-button">Relevance</a></li>
+			<li id="results-sort-type"><a href="#" class="sort-button">Type</a></li>
+		</ul>
+	</div>
+</div>
+<div id="search-results-container">	
+	<ul id="search-results">
+		<% _.each(searchResults.models, function(result) { %>
+		<li class="search-result">
+			<div class="result-title"><%= result.get('label') %></div>
+			<div class="result-content">
+				<div class="result-type <%= result.get('bundle') %>"><%= result.get('bundle') %></div>
+				<div class="result-body"><%= result.get('teaser') %></div>
+			</div>
+		</li>
+		<% }); %>
+	</ul>
+</div>
 <% } %>

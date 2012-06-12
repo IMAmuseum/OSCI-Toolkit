@@ -57,6 +57,9 @@ function osci_tk_search_theme($existing, $type, $theme, $path) {
  * Generate basic search results as JSON
  */
 function osci_tk_search_query() {
+	//$node = node_load(493);
+	//_osci_tk_search_build_entity_documents($node, null, null);
+//return 'test';
 	$response = osci_tk_search_do_query();
 	print json_encode($response);
 }
@@ -97,7 +100,7 @@ function osci_tk_search_do_query() {
 		$query->addFilter('_query_', '"(bundle:note AND (is_uid:'.$user->uid.'))"');
 	} else { 
 		// default to content search
-		$query->addFilter('_query_', '"is_book_bid:[1 TO *] AND -bundle:note"');
+		$query->addFilter('_query_', '"im_publication_id:[1 TO *] AND -bundle:note"');
 	}
 	
 	// add content boost parameters to the query
@@ -122,63 +125,91 @@ function osci_tk_search_apachesolr_index_document_build(ApacheSolrDocument $docu
 	if($entity->type === 'note') {
 		$document->addField('is_paragraph_id', $entity->field_paragraph_id['und'][0]['value']);
 		$document->addField('ss_body', $entity->body['und'][0]['value']);
-	}
-	if(isset($entity->book)) {
-		_osci_tk_search_get_path_hierarchy($entity->book, $document);
-		_osci_tk_search_create_paragraph_documents($entity, $document, $env_id);
-		if(!empty($entity->field_footnote)) {
-			_osci_tk_search_create_footnote_documents($entity, $document, $env_id);
-		}
-		if(!empty($entity->field_figure)) {
-			_osci_tk_search_create_figure_documents($entity, $document, $env_id);
+	} else {
+		if(osci_tk_nodetree_entity_is_tree($entity->nid)) {
+			$publications = _osci_tk_search_get_publications($entity);
+			dd('going to do footnotes');
+			if(!empty($entity->field_footnote)) {
+				_osci_tk_search_create_footnote_documents($entity, $document, $env_id, $publications);
+			}
+			dd('going to do figure');
+			if(!empty($entity->field_figure)) {
+				_osci_tk_search_create_figure_documents($entity, $document, $env_id, $publications);
+			}
+			_osci_tk_search_get_path_hierarchy($entity, $document);
+			_osci_tk_search_create_paragraph_documents($entity, $document, $env_id, $publications);
 		}
 	}
 }
 
 /**
- * Generate content path
- * @param  Object             $book     The book object
- * @param  ApacheSolrDocument $document The solr document
+ * Helper function for retrieving an array of publication nids
+ * @param  object $entity The current entity
+ * @return array         The array of publication nids
  */
-function _osci_tk_search_get_path_hierarchy($book, ApacheSolrDocument $document) {
-	// retrieve the books menu tree
-	$tree_data = book_menu_subtree_data($book);
-	$subtree_data = array_pop($tree_data);
-	// generate the content path tree
-	$path_tree = _osci_tk_search_generate_content_path_tree($subtree_data['link']);
-	$tree_hierarchy = array_reverse($path_tree);
-	
-	$current_path = '';
-	foreach($tree_hierarchy as $key => $path) {
-		$current_path .= '/' . $path;
-		// add paths to the solr document
-		$document->addField('sm_path_hierarchy', $current_path);
-		$document->addField('sm_path_hierarchy_depth', $key . $current_path);
+function _osci_tk_search_get_publications($entity) {
+	$trees = osci_tk_nodetree_get_data_for_nid($entity->nid);
+
+	$publications = array();
+	foreach($trees as $tree) {
+		array_push($publications, $tree['rootNid']);
 	}
+	return $publications;
 }
 
 /**
- * Generate the content path hierachy
- * @param  object $link         The current link object
- * @param  array $content_path An array of paths
- * @return array
+ * Builds the necessary documents for a particular entity
+ * @param  object $entity   The entity to process
+ * @param  ApacheSolrDocument ApacheSolrDocument The solr document
+ * @param  string $env_id   Solr environment id 
  */
-function _osci_tk_search_generate_content_path_tree($link, $content_path = null) {
-	// set initial path
-	if(!$content_path) {
-		$content_path[$link['depth'] - 1] = _osci_tk_search_clean_title($link['title']);
-	}
-	// check to see if the section is already at the root
-	if($link['depth'] <= 1) return $content_path;
+function _osci_tk_search_get_path_hierarchy($entity, ApacheSolrDocument $document) {
+	if (!osci_tk_nodetree_entity_is_tree($entity->nid)) return;
 
-	// load the book link
-	$parent_link = book_link_load($link['plid']);
-	$content_path[$parent_link['depth'] - 1] = _osci_tk_search_clean_title($parent_link['title']);
-	// continue to obtain the parent links
-	if($parent_link['depth'] > 1) {
-		$content_path = _osci_tk_search_generate_content_path_tree($parent_link, $content_path);
+	$trees = osci_tk_nodetree_get_data_for_nid($entity->nid);
+	// if we're on the root we don't need to do anything else except add the document
+	if(empty($trees)) {
+		$document->addField('sm_path_hierarchy', "/{$entity->title}");
+		$document->addField('sm_path_hierarchy_depth', "0/{$entity->title}");
+		return;
 	}
-	return $content_path;
+
+	// iterate through all fields
+	foreach($trees as $tree) {
+		$root_nid = $tree['rootNid'];
+		$counter = 1;
+		$current_tree = $tree;
+		$hierachy = array($entity->nid);
+
+		// add inital parent
+		array_unshift($hierachy, $tree['parentNid']);
+
+		do {
+			$parent_trees = osci_tk_nodetree_get_data_for_nid($current_tree['parentNid']);
+			foreach($parent_trees as $parent_tree) {
+				if ($parent_tree['rootNid'] == $root_nid) {
+					array_unshift($hierachy, $parent_tree['parentNid']);
+					$current_tree = $parent_tree;
+					break;
+				} else {
+					$current_tree = null;
+				}
+			}
+		} while (!empty($current_tree) && $current_tree['parentNid'] != $root_nid);
+
+		$current_path = '';
+		$current_hierachy_path = '';
+
+		// buld paths and add to document
+		foreach($hierachy as $key => $nid) {
+			$parent_node = node_load($nid);
+
+			$current_path .= "/{$parent_node->title}";
+
+			$document->addField('sm_path_hierarchy', $current_path);
+			$document->addField('sm_path_hierarchy_depth', $key . $current_path);
+		}
+	}
 }
 
 /**
@@ -186,38 +217,11 @@ function _osci_tk_search_generate_content_path_tree($link, $content_path = null)
  * @param  object $entity     The parent entity
  * @param  object $entity_doc The parent entity solr document
  * @param  string $env_id     Solr environment id
+ * @param  string $publications An array of publications this entity belongs too
  */
-function _osci_tk_search_create_paragraph_documents($entity, $entity_doc, $env_id) {
+function _osci_tk_search_create_paragraph_documents($entity, $entity_doc, $env_id, $publications) {
 	$documents = array();
-	$paragraphs = _osci_tk_search_get_section_paragraphs($entity);
 
-	// setup documents for each paragraph
-	foreach($paragraphs as $delta => $paragraph) {
-		// strip container
-		$content = str_replace(array('<p>', '</p>'), '', $paragraph);
-
-		$pid = _osci_tk_search_create_paragraph_id($entity->nid, $delta);
-
-		$document = clone $entity_doc;
-		$document->id = $document->id . '/' . $pid;
-		$document->url = $document->url . '/' . $pid;
-		$document->path = $document->path . '/' . $pid;
-		$document->content = trim($content);
-		$document->teaser = truncate_utf8($document->content, 300, TRUE);
-		$document->is_paragraph_id = $pid;
-		$document->bundle = 'paragraph';
-		$documents[] = $document;
-	}
-	// send to solr
-	apachesolr_index_send_to_solr($env_id, $documents);
-}
-
-/**
- * Retrieve a section's paragraphs
- * @param  object $entity The entity node
- * @return array
- */
-function _osci_tk_search_get_section_paragraphs($entity) {
 	// retrieve the node in 'epub' view
 	$view = node_view($entity, 'epub');
 	
@@ -231,7 +235,29 @@ function _osci_tk_search_get_section_paragraphs($entity) {
 	// retrieve all content in paragraph tags
 	preg_match_all('/<p>(.*?)<\/p>/', $content, $matches);
 
-	return $matches[0];
+	// setup documents for each paragraph
+	foreach($matches[0] as $delta => $paragraph) {
+		// strip container
+		$content = str_replace(array('<p>', '</p>'), '', $paragraph);
+
+		$pid = _osci_tk_search_create_paragraph_id($entity->nid, $delta);
+
+		$document = clone $entity_doc;
+		$document->id = $document->id . '/' . $pid;
+
+		unset($document->url);
+		unset($document->path);
+
+		$document->content = trim($content);
+		$document->teaser = truncate_utf8($document->content, 300, TRUE);
+		$document->is_paragraph_id = $delta;
+		$document->is_section_id = $entity->nid;
+		$document->im_publication_id = $publications;	
+		$document->bundle = 'paragraph';
+		$documents[] = $document;
+	}
+	// send to solr
+	apachesolr_index_send_to_solr($env_id, $documents);
 }
 
 /**
@@ -239,8 +265,9 @@ function _osci_tk_search_get_section_paragraphs($entity) {
  * @param  object $entity     The parent entity
  * @param  object $entity_doc The parent entity solr document
  * @param  string $env_id     Solr environment id
+ * @param  string $publications An array of publications this entity belongs too
  */
-function _osci_tk_search_create_footnote_documents($entity, $entity_doc, $env_id) {
+function _osci_tk_search_create_footnote_documents($entity, $entity_doc, $env_id, $publications) {
 	$documents = array();
 
 	// setup documents for each footnote
@@ -248,12 +275,16 @@ function _osci_tk_search_create_footnote_documents($entity, $entity_doc, $env_id
 		$fid = 'footnote-' . $delta;
 
 		$document = clone $entity_doc;
-		$document->id = $document->id . '/' . $fid;
-		$document->url = $document->url . '/' . $fid;
+
+		unset($document->url);
+		unset($document->path);
+
 		$document->path = $document->path . '/' . $fid;
 		$document->content = trim($item['value']);
 		$document->teaser = truncate_utf8($document->content, 300, TRUE);
 		$document->ss_footnote_id = _osci_tk_search_create_footnote_id($entity->nid, $delta);
+		$document->im_publication_id = $publications;
+		$document->is_section_id = $entity->nid;		
 		$document->bundle = 'footnote';
 		$documents[] = $document;
 	}
@@ -266,8 +297,9 @@ function _osci_tk_search_create_footnote_documents($entity, $entity_doc, $env_id
  * @param  object $entity     The parent entity
  * @param  object $entity_doc The parent entity solr document
  * @param  string $env_id     Solr environment id
+ * @param  string $publications An array of publications this entity belongs too
  */
-function _osci_tk_search_create_figure_documents($entity, $entity_doc, $env_id) {
+function _osci_tk_search_create_figure_documents($entity, $entity_doc, $env_id, $publications) {
 	$documents = array();
 
 	// setup documents for each figure
@@ -276,12 +308,16 @@ function _osci_tk_search_create_figure_documents($entity, $entity_doc, $env_id) 
 		$fid = 'figure-' . $delta;
 
 		$document = clone $entity_doc;
+
+		unset($document->url);
+		unset($document->path);
+
 		$document->id = $document->id . '/' . $fid;
-		$document->url = $document->url . '/' . $fid;
-		$document->path = $document->path . '/' . $fid;
 		$document->content = trim($item['caption']);
 		$document->teaser = truncate_utf8($document->content, 300, TRUE);
 		$document->ss_figure_id = _osci_tk_figure_create_id($entity->nid, $delta);
+		$document->im_publication_id = $publications;
+		$document->is_section_id = $entity->nid;	
 		$document->bundle = 'figure';
 		$documents[] = $document;
 	}
