@@ -119,10 +119,10 @@
 	background: url('../img/bg-pager-arrow-next.png') no-repeat right top #52818C;
 }
 #navigation .corner.inactive.prev-page .button {
-	background: url('../img/bg-pager-arrow-prev.png') no-repeat left -12px #ddd !important;
+	background: url('../img/bg-pager-arrow-prev.png') no-repeat left -12px #eee !important;
 }
 #navigation .corner.inactive.next-page .button {
-	background: url('../img/bg-pager-arrow-next.png') no-repeat right -12px #ddd !important;
+	background: url('../img/bg-pager-arrow-next.png') no-repeat right -12px #eee !important;
 }
 
 #navigation .pager {
