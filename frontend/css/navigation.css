@@ -112,7 +112,7 @@
 .next-page .button {
 	background: url('../img/bg-pager-arrow-next.png') no-repeat right -6px #A8C0C5;
 }
-.prev-page:hover  .button{
+.prev-page:hover .button{
 	background: url('../img/bg-pager-arrow-prev.png') no-repeat left top #52818C;
 }
 .next-page:hover .button {
