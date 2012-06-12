@@ -1,3 +1,10 @@
+#search-view:after {
+	content: url('../img/bg-fold-shadow.png');
+	display:block;
+	position:relative;
+	bottom:0px;
+	left:0px;
+}
 #search-view #search-header {
 	padding-top: 10px;
 	padding-bottom: 15px;
@@ -134,6 +141,9 @@ ul#search-results li:nth-child(odd) {
 .result-type.content {
 	display: inline-block;	
 	background-color: #8fa6ac;
+	text-align:center;
+	font-size:11px;#FFF
+	text-indent:0px;
 }
 .result-body {
 	float: left;
