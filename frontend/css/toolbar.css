@@ -120,6 +120,21 @@ div.Figures-toolbar-item:hover {
 }
 
 
+/* SEARCH VIEW */
+
+.result-content {
+	position:relative;
+}
+.result-content .result-type.content {
+	
+}
+.result-content .result-body {
+	display:block;
+	left:100px;position:absolute;
+	white-space:nowrap;
+	text-overflow: ellipsis;
+	overflow:hidden;
+}
 
 /* TOC VIEW */
 div.toc-view > ul {
