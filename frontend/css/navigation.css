@@ -102,10 +102,16 @@
 	background-color: #ccc;
 }
 .prev-page .button {
-	background: url('../img/bg-pager-arrow-prev.png') no-repeat left top #A8C0C5;
+	background: url('../img/bg-pager-arrow-prev.png') no-repeat left -6px #A8C0C5;
 }
 .next-page .button {
-	background: url('../img/bg-pager-arrow-next.png') no-repeat right top #A8C0C5;
+	background: url('../img/bg-pager-arrow-next.png') no-repeat right -6px #A8C0C5;
+}
+.prev-page .button:hover {
+	background: url('../img/bg-pager-arrow-prev.png') no-repeat left top #52818C;
+}
+.next-page .button:hover {
+	background: url('../img/bg-pager-arrow-next.png') no-repeat right top #52818C;
 }
 
 #navigation .pager {
