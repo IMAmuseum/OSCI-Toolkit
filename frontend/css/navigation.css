@@ -121,7 +121,7 @@
 #navigation .corner.inactive.prev-page .button {
 	background: url('../img/bg-pager-arrow-prev.png') no-repeat left -12px #ddd !important;
 }
-#navigation .corner.inactive.prev-page .button {
+#navigation .corner.inactive.next-page .button {
 	background: url('../img/bg-pager-arrow-next.png') no-repeat right -12px #ddd !important;
 }
 
