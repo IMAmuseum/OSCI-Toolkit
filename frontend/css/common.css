@@ -56,9 +56,13 @@ figcaption {
 	font-family:Arial, Helvetica, sans-serif;
 }
 
-.figure_reference {
+a.figure_reference,
+a.footnote-reference {
 	vertical-align:super;
 	font-size:10px;
+	margin-right:10px;
+	text-decoration:none;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 
