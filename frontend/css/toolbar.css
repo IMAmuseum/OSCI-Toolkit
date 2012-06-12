@@ -175,10 +175,14 @@ div.font-view div.font-control {
 	margin: 0 10px 0 0;
 }*/
 div.font-view div.font-control a.larger {
-	font-size: 20px;
+	font-size: 18px;
+	line-height:28px;
+	height:28px; /* for firefox */
 }
 div.font-view div.font-control a.smaller {
-	font-size: 12px;
+	line-height:28px;
+	height:28px; /* for firefox */
+	font-size:10px;
 	/*padding-top: 10px;*/
 }
 
@@ -237,6 +241,7 @@ div.font-view div.theme-control a {
 	box-shadow: 0px 1px 1px #e3e3e3;
 	text-shadow:0px 1px 1px #D7E5EB;
 	display:inline-block!important;
+	text-decoration:none;
 }
 div.font-view div.font-control a:hover,
 div.font-view div.theme-control a:hover {
