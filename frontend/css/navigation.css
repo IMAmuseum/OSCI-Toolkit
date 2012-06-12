@@ -85,7 +85,7 @@
 	color:#52808C;
 	font-size:10px;
 	line-height:15px;
-	opacity:.4
+	opacity:.4;
 	
 }
 #navigation .corner:hover label { opacity:1; }
