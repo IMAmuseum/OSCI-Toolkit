@@ -9,6 +9,11 @@ div#toolbar {
 	overflow: hidden;
 	font-family:Arial, Helvetica, sans-serif;
 	border-top:3px solid #ccc;
+	-webkit-transition: all .5s ease;
+	-moz-transition: all .5s ease;
+	-o-transition: all .5s ease;
+	-ms-transition: all .5s ease;
+	transition: all .5s ease;
 }
 div#toolbar-content {
 	position: absolute;
@@ -44,6 +49,11 @@ div#toolbar-content {
 	white-space:nowrap;
 	background: url('../img/bg-btn-close.png') no-repeat left top;
 	opacity:.2;
+	-webkit-transition: all .5s ease;
+	-moz-transition: all .5s ease;
+	-o-transition: all .5s ease;
+	-ms-transition: all .5s ease;
+	transition: all .5s ease;
 }
 #toolbar-close:hover {
 	opacity:.7;cursor:pointer;	
@@ -306,6 +316,7 @@ div.font-view div.theme-control a:active {
 #toolbar .figure-previews .figure-tray {
 	height: 280px;
 	-webkit-overflow-scrolling: touch;	
+	margin: 0 40px;
 }
 
 
