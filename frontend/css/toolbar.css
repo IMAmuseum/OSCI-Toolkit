@@ -8,6 +8,7 @@ div#toolbar {
 	min-height: 40px;
 	overflow: hidden;
 	font-family:Arial, Helvetica, sans-serif;
+	border-top:3px solid #ccc;
 }
 div#toolbar-content {
 	position: absolute;
@@ -27,6 +28,7 @@ div#toolbar-content {
 	background: url('../img/bg-toolbar.gif') repeat;
 	border-bottom-left-radius:5px;
 	border-bottom-right-radius:5px;
+	
 }
 #toolbar-close {
 	z-index: 10;

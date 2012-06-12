@@ -81,16 +81,21 @@
 
 #navigation .label {
 	text-align: center;
+	text-transform:uppercase;
+	color:#52808C;
+	font-size:10px;
+	line-height:15px;
+	opacity:.4;
+	
 }
+#navigation .corner:hover label { opacity:1; }
 
 #navigation .button {
 	height: 6px;
 	width: 100px;
-	background-color: #A8C0C5;
-	/*border-radius: 5px;*/
 }
 #navigation .button:hover {
-	background:#52818C;	
+	
 }
 
 #navigation .corner.inactive {
@@ -99,9 +104,26 @@
 }
 
 #navigation .corner.inactive .button {
-	background-color: #ccc;
+	
 }
-
+.prev-page .button {
+	background: url('../img/bg-pager-arrow-prev.png') no-repeat left -6px #A8C0C5;
+}
+.next-page .button {
+	background: url('../img/bg-pager-arrow-next.png') no-repeat right -6px #A8C0C5;
+}
+.prev-page:hover .button{
+	background: url('../img/bg-pager-arrow-prev.png') no-repeat left top #52818C;
+}
+.next-page:hover .button {
+	background: url('../img/bg-pager-arrow-next.png') no-repeat right top #52818C;
+}
+#navigation .corner.inactive.prev-page .button {
+	background: url('../img/bg-pager-arrow-prev.png') no-repeat left -12px #ddd !important;
+}
+#navigation .corner.inactive.next-page .button {
+	background: url('../img/bg-pager-arrow-next.png') no-repeat right -12px #ddd !important;
+}
 
 #navigation .pager {
 	position: absolute;

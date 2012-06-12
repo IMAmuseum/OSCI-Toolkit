@@ -5,39 +5,65 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 
 OsciTk.views.ParagraphControlsView = OsciTk.views.BaseView.extend({
 	className: 'paragraph-controls',
-	contentIdentifier: null,
-	paragraphNumber: null,
-	content: null,
 	
-	initialize: function(params) {
-		this.content = params.content;
-		this.paragraphNumber = this.content.data("paragraph_number");
-		this.contentIdentifier = this.content.data("osci_content_id");
-		this.render();
+	initialize: function() {
+		this.options.paragraphNumber = this.options.content.data("paragraph_number");
+		this.options.contentIdentifier = this.options.content.data("osci_content_id");
+		this.options.linkItems = app.config.get('paragraphControls');
+
+		if (this.options.linkItems) {
+			this.render();
+		}
 	},
 	
 	render: function() {
-		var contentPosition = this.content.position();
+		var contentPosition = this.options.content.position();
 
-		this.$el.attr('data-osci_content_id', this.contentIdentifier);
-		this.$el.attr('data-paragraph_identifier', this.paragraphNumber);
-		this.$el.html('<span class="paragraph-identifier paragraph-identifier-' + this.paragraphNumber + '">' 
-			+ this.paragraphNumber + '</span>');
-		this.$el.css({
-			top: contentPosition.top + 'px',
-			left: (contentPosition.left - app.views.sectionView.dimensions.gutterWidth) + "px"
+		this.$el.attr('data-osci_content_id', this.options.contentIdentifier);
+		this.$el.attr('data-paragraph_identifier', this.options.paragraphNumber);
+		this.$el.html('<span class="paragraph-identifier paragraph-identifier-' + this.options.paragraphNumber + '">' + (this.options.paragraphNumber + 1) + '</span>');
+		this.$el.css(this.options.position);
+
+		//remove qtip if already present
+		if(this.$el.data("qtip")) {
+			this.$el.qtip("destroy");
+		}
+
+		var tipContent = '';
+		for(var i in this.options.linkItems) {
+			var text = this.options.linkItems[i];
+			tipContent += ' <a href="' + i + '" class="' + i +'">' + text + '</a>';
+		}
+
+		this.$el.qtip({
+			position: {
+				my: "left center",
+				at: "right center",
+				target: this.$el,
+				container: this.$el,
+				adjust: {
+					y: -10
+				}
+			},
+			show: {
+				ready: false,
+				solo: true
+			},
+			overwrite: false,
+			content: tipContent
 		});
-		this.content.before(this.$el);
-//		var pid = $("<div>", {
-//			"class": "paragraph-controls",
-//			"data-osci_content_id": contentIdentifier,
-//			"data-paragraph_identifier": paragraphNumber,
-//			
-//			html: "<span class=\"paragraph-identifier paragraph-identifier-" + paragraphNumber + "\">" + paragraphNumber + "</span>",
-//			css: {
-//				top: (columnPosition.top + contentPosition.top) + "px",
-//				left: (columnPosition.left + contentPosition.left - this.parent.dimensions.gutterWidth) + "px"
-//			}
-//		}).appendTo(this.$el);
+
+		this.$el.on('click', 'a', {content: this.options.content}, function(e) {
+			e.preventDefault();
+
+			app.dispatcher.trigger(
+				$(this).attr('class'),
+				{
+					content: e.data.content
+				}
+			);
+		});
+
+		return this;
 	}
 });

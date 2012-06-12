@@ -191,11 +191,19 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 			var paragraphNumber = content.data("paragraph_number");
 			var contentIdentifier = content.data("osci_content_id");
 			var pidIsOnPage = this.$el.find(".paragraph-identifier-" + paragraphNumber);
-			console.log(pidIsOnPage, 'pidonpage ' + paragraphNumber);
+
 			if (pidIsOnPage.length === 0) {
+				var columnPosition = column.$el.position();
+				var contentPosition = content.position();
 				var pcv = new OsciTk.views.ParagraphControlsView({
-					content: content
+					content: content,
+					position: {
+						top: (columnPosition.top + contentPosition.top) + "px",
+						left: (columnPosition.left + contentPosition.left - this.parent.dimensions.gutterWidth) + "px"
+					}
 				});
+				this.$el.append(pcv.el);
+
 				this.paragraphControlsViews.push(pcv);
 			}
 		}
