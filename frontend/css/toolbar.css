@@ -175,14 +175,15 @@ div.font-view div.font-control {
 	margin: 0 10px 0 0;
 }*/
 div.font-view div.font-control a.larger {
-	font-size: 18px;
+	font-size: 12px;
 	line-height:28px;
 	height:28px; /* for firefox */
+	font-weight:bold;
 }
 div.font-view div.font-control a.smaller {
 	line-height:28px;
 	height:28px; /* for firefox */
-	font-size:10px;
+	font-size:12px;
 	/*padding-top: 10px;*/
 }
 
