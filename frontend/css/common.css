@@ -31,11 +31,11 @@ figcaption {
 
 .title-view {
 	margin:0;padding:0;
-	height:40px;display:block;
+	height:50px;display:block;
 	background: url('../img/logo-osci-1.png') no-repeat 10px center transparent;
 }
 .title-view h1 {
-	line-height:40px;
+	line-height:50px;
 	font-size:17px;
 	color:#52818C;
 	padding-left:120px;
