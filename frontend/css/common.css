@@ -66,6 +66,31 @@ a.footnote-reference {
 }
 
 
+/* figure tables */
+.figure_content table {
+	width:100%;
+}
+.figure_content table thead{
+	
+}
+.figure_content table thead tr {
+	
+}
+.figure_content table thead th {
+	text-align:left;
+	padding:5px;
+}
+
+.figure_content table tbody {
+	
+}
+.figure_content table tbody tr {
+	
+}
+.figure_content table tbody td {
+	padding:5px;
+}
+
 /* misc */
 .fancybox-close {
 	top: 0px!important;
