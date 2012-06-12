@@ -87,6 +87,9 @@ a.footnote-reference {
 .figure_content table tbody tr {
 	
 }
+.figure_content table tbody tr:nth-child(odd) {
+	background: #eee;	
+}
 .figure_content table tbody td {
 	padding:5px;
 }
