@@ -101,7 +101,12 @@
 #navigation .corner.inactive .button {
 	background-color: #ccc;
 }
-
+.prev-page .button {
+	background: url('../img/bg-pager-arrow-prev.png') no-repeat left top #A8C0C5;
+}
+.next-page .button {
+	background: url('../img/bg-pager-arrow-next.png') no-repeat right top #A8C0C5;
+}
 
 #navigation .pager {
 	position: absolute;
