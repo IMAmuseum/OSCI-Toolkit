@@ -163,7 +163,7 @@ div.font-view div.font-control {
 	margin: 0 30px 30px 10px;
 	display: inline-block;
 }
-div.font-view div.font-control a {
+/*div.font-view div.font-control a {
 	height: 40px;
 	width: 80px;
 	border: 1px solid #8C8C8C;
@@ -173,12 +173,12 @@ div.font-view div.font-control a {
 	text-decoration: none;
 	border-radius: 4px;
 	margin: 0 10px 0 0;
-}
+}*/
 div.font-view div.font-control a.larger {
-	font-size: 36px;
+	font-size: 20px;
 }
 div.font-view div.font-control a.smaller {
-	font-size: 24px;
+	font-size: 12px;
 	padding-top: 10px;
 }
 
@@ -186,6 +186,8 @@ div.font-view div.theme-control {
 	margin: 0 10px 30px 10px;
 	display: inline-block;
 }
+
+/*
 div.font-view div.theme-control a {
 	height: 40px;
 	width: 80px;
@@ -203,6 +205,75 @@ div.font-view a:hover {
 	background-color: #8C8C8C;
 	color: #FFF;
 }
+*/
+
+
+
+div.font-view div.font-control a,
+div.font-view div.theme-control a {
+	background-image: linear-gradient(bottom, rgb(189,207,211) 5%, rgb(255,255,255) 90%);
+background-image: -o-linear-gradient(bottom, rgb(189,207,211) 5%, rgb(255,255,255) 90%);
+background-image: -moz-linear-gradient(bottom, rgb(189,207,211) 5%, rgb(255,255,255) 90%);
+background-image: -webkit-linear-gradient(bottom, rgb(189,207,211) 5%, rgb(255,255,255) 90%);
+background-image: -ms-linear-gradient(bottom, rgb(189,207,211) 5%, rgb(255,255,255) 90%);
+
+background-image: -webkit-gradient(
+	linear,
+	left bottom,
+	left top,
+	color-stop(0.05, rgb(189,207,211)),
+	color-stop(0.9, rgb(255,255,255))
+);
+	color:#52818C!important;
+	border:1px solid #999;
+	border-radius:4px;
+	font-size:12px;line-height:28px;
+	height:28px; /* for firefox */
+	text-transform:uppercase;
+	margin:0px;
+	padding:0 20px;
+	font-family: Arial, Helvetica, sans-serif;
+	box-shadow: 0px 1px 1px #e3e3e3;
+	text-shadow:0px 1px 1px #D7E5EB;
+}
+div.font-view div.font-control a:hover,
+div.font-view div.theme-control a:hover {
+	background-image: linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
+background-image: -o-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
+background-image: -moz-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
+background-image: -webkit-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
+background-image: -ms-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
+
+background-image: -webkit-gradient(
+	linear,
+	left bottom,
+	left top,
+	color-stop(0.05, rgb(159,185,191)),
+	color-stop(0.9, rgb(237,242,243))
+);
+	color:#333!important;
+	cursor:pointer;
+}
+div.font-view div.font-control a:active,
+div.font-view div.theme-control a:active {
+	background-image: linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
+background-image: -o-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
+background-image: -moz-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
+background-image: -webkit-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
+background-image: -ms-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
+
+background-image: -webkit-gradient(
+	linear,
+	left bottom,
+	left top,
+	color-stop(0.05, rgb(159,185,191)),
+	color-stop(0.9, rgb(237,242,243))
+);
+	color:#333!important;
+	cursor:pointer;
+	border:1px solid #333;
+}
+
 
 /* FIGURE VIEW */
 
