@@ -43,7 +43,14 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 		this.model.removeAllPages();
 	},
 	getPageForParagraphId: function(pid) {
-		// TODO: write
+		var views = this.getChildViews();
+		var p = _.find(views, function(view) {
+			return view.$el.find("[data-paragraph_number='" + pid + "']").length !== 0;
+		});
+		if ((p !== undefined) && (p !== -1)) {
+			return _.indexOf(views, p) + 1;
+		}
+		return null;
 	},
 	getPageForElementId : function(id) {
 		var views = this.getChildViews();

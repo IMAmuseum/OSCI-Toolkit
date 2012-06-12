@@ -42,7 +42,13 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 						gotoPage = 1;
 						break;
 					default:
-						var page_for_id = this.getPageForElementId(data.identifier);
+						var page_for_id;
+						if(data.identifier.search(/^p-[0-9]+/) > -1) {
+							var pid = data.identifier.replace('p-', '');
+							page_for_id = this.getPageForParagraphId(pid);
+						} else {
+							page_for_id = this.getPageForElementId(data.identifier);
+						}
 						if (page_for_id !== null) {
 							gotoPage = page_for_id;
 						} else {
