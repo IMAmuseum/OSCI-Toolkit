@@ -96,6 +96,20 @@ a.footnote-reference {
 	padding:5px;
 }
 
+/* paragraph number controls */
+.paragraph-controls.notes-present {
+	
+}
+.paragraph-controls.notes-present:after {
+	content: url('../img/bg-note-indicator.png');
+	display:block;
+	position:relative;
+	bottom:0px;
+	left:0px;
+	
+	
+}
+
 /* misc */
 .fancybox-close {
 	top: 0px!important;
