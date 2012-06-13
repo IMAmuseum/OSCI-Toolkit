@@ -421,6 +421,7 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $noC
  */
 function osci_tk_epub_render_navigation_document($nid)
 {
+	header ("Content-Type:text/xml");
 	$dev = false;
 	$revTime = isset($_GET['revision']) ? $_GET['revision'] : time();
 	$node = node_load($nid, _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $revTime));
@@ -436,6 +437,7 @@ function osci_tk_epub_render_navigation_document($nid)
  */
 function osci_tk_epub_render_package_document($nid)
 {
+	header ("Content-Type:text/xml");
 	$dev = false;
 	$revTime = isset($_GET['revision']) ? $_GET['revision'] : time();
 	$node = node_load($nid, _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $revTime));
@@ -728,35 +730,35 @@ function _osci_tk_epub_navigation_generate_toc($node, $forExport = false, $noCac
 }
 
 function osci_tk_epub_navigation_generate_toc_item_list($toc) {
+	
+	$depth = -1;
+	$flag = false;
 	$output = '';
-	for ($i=0; $i < count($toc); $i++) {
-		// add top OL if first item
-		if ($i === 0) {
-			$output = "<ol>";
+	foreach ($toc as $key => $leaf) {
+		while ($leaf['depth'] > $depth) {
+			$output .= '<ol><li>';
+			$flag = false;
+			$depth++;
 		}
-		// add another nesting if depth has increased and we're on at least the second item
-		if ($i > 0) {
-			if ($toc[$i]['depth'] > $toc[($i - 1)]['depth']) {
-				$output .= "<ol>";
-			}
+		while ($leaf['depth'] < $depth) {
+			$output .= '</li></ol>';
+			$depth--;
 		}
-		$attrs = "data-section_id='{$toc[$i]['nid']}'";
-		$attrs .= " data-subtitle='{$toc[$i]['subtitle']}'";
-		$attrs .= " data-timestamp='{$toc[$i]['timestamp']}'";
-		$attrs .= " data-thumbnail='{$toc[$i]['thumbnail']}'";
-		$output .= "<li><a href='{$toc[$i]['url']}' {$attrs}>{$toc[$i]['title']}</a>";
+		if ($flag) {
+			$output .= '</li><li>';
+			$flag = false;
+		}
+		
+		$attrs = "data-section_id='{$leaf['nid']}'";
+		$attrs .= " data-subtitle='{$leaf['subtitle']}'";
+		$attrs .= " data-timestamp='{$leaf['timestamp']}'";
+		$attrs .= " data-thumbnail='{$leaf['thumbnail']}'";
+		$output .= "<a href='{$leaf['url']}' {$attrs}>{$leaf['title']}</a>";
 
-		// if sequence ends or depth will decrease on next iteration, close the li and ol tag now
-		if ($i == (count($toc) - 1) ) {
-			for($c = 0; $c <= $toc[$i]['depth']; $c++) {
-				$output .= "</li></ol>";
-			}
-		}
-		elseif ($toc[($i + 1)]['depth'] < $toc[$i]['depth']) {
-			for($c = 0; $c < ($toc[$i]['depth'] - $toc[($i + 1)]['depth']); $c++) {
-				$output .= "</li></ol>";
-			}
-		}
+		$flag = true;
+	}
+	while ($depth-- > -1) {
+		$output .= '</li></ol>';
 	}
 	return $output;
 }
