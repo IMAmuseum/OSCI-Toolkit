@@ -34,57 +34,51 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 
 		// Set the width of the figure reel if there is more than one thumbnail
 		if (fig_data.length > 1) {
-			var thumbs = $('#toolbar figure.thumbnail');
-			$('#toolbar .figure-browser .figure-reel').width(thumbs.length * (thumbs.outerWidth(true)));
+			var thumbs = this.$el.find('figure.thumbnail');
+			this.$el.find('.figure-browser .figure-reel').width(thumbs.length * (thumbs.outerWidth(true)));
 		}
 
 		// When the reader clicks on a figure thumbnail, show the preview for that figure...
-		$('#toolbar figure.thumbnail').click(function() {
-			$('#toolbar .figure-browser').hide();
-			$('#toolbar .figure-previews figure.active').hide().removeClass('active');
-			var content = $("#toolbar figure.preview[data-figure-id='" + $(this).attr('data-figure-id') + "']");
+		this.$el.on('click', 'figure.thumbnail', {view: this},function(e) {
+			e.data.view.$el.find('.figure-browser').hide();
+			e.data.view.$el.find('.figure-previews figure.active').hide().removeClass('active');
+			var content = e.data.view.$el.find("figure.preview[data-figure-id='" + $(this).attr('data-figure-id') + "']");
 			content.show().addClass('active');
-			OsciTk.views.Figures.prototype.displayTitle();
-			$('#toolbar .figure-previews').show();
-			$('#toolbar').animate({height: $('#toolbar-content').height() + $('#toolbar-handle').height()}, 'fast');
+			e.data.view.displayTitle();
+			e.data.view.$el.find('.figure-previews').show();
+			e.data.view.parent.updateHeight();
 		});
 
 		// When going back to the grid, hide the current preview and replace the close button
-		$('.back-to-grid').click(function() {
-			$('#toolbar').animate({
-				height: $('.figure-browser').height() + $('#toolbar-handle').height()
-			},
-			'fast',
-			function() {
-				$('#toolbar .figure-previews').hide();
-				$('#toolbar .figure-browser').show();
-			}
-			);
+		this.$el.on('click', '.back-to-grid', {view: this}, function(e) {
+			e.data.view.$el.find('.figure-previews').hide();
+			e.data.view.$el.find('.figure-browser').show();
+			e.data.view.parent.updateHeight();
 		});
 
-		$('#toolbar .figure-nav.next').click(function() {
-			var new_fig = $('#toolbar figure.preview.active').hide().removeClass('active').next('figure.preview');
+		this.$el.on('click', '.figure-nav.next', {view: this}, function(e) {
+			var new_fig = e.data.view.$el.find('figure.preview.active').hide().removeClass('active').next('figure.preview');
 			if (new_fig.length === 0) {
-				new_fig = $('#toolbar figure.preview').first();
+				new_fig = e.data.view.$el.find('figure.preview').first();
 			}
 			new_fig.show().addClass('active');
-			OsciTk.views.Figures.prototype.displayTitle();
+			e.data.view.displayTitle();
 		});
 
-		$('#toolbar .figure-nav.prev').click(function() {
-			var new_fig = $('#toolbar figure.preview.active').hide().removeClass('active').prev('figure.preview');
+		this.$el.on('click', '.figure-nav.prev', {view: this}, function(e) {
+			var new_fig = e.data.view.$el.find('figure.preview.active').hide().removeClass('active').prev('figure.preview');
 			if (new_fig.length === 0) {
-				new_fig = $('#toolbar figure.preview').last();
+				new_fig = e.data.view.$el.find('figure.preview').last();
 			}
 			new_fig.show().addClass('active');
-			OsciTk.views.Figures.prototype.displayTitle();
+			e.data.view.displayTitle();
 		});
 
 		return this;
 	},
 	displayTitle: function() {
-		var id = $('#toolbar figure.preview.active').attr('data-figure-id');
+		var id = this.$el.find('figure.preview.active').attr('data-figure-id');
 		var figure = app.collections.figures.get(id);
-		$('#toolbar h2 span.title').html(figure.get('title'));
+		this.$el.find('h2 span.title').html(figure.get('title'));
 	}
 });

@@ -24,6 +24,7 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 
 			var idComponents = markup.id.match(/\w+-(\d+)-(\d+)/);
 			var $markup = $(markup);
+
 			var figure = {
 				id:         markup.id,
 				rawData:    markup,
@@ -42,7 +43,7 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 			};
 
 			// First, check for an explicit thumbnail
-			var thumbnail = $(markup).children('img.thumbnail');
+			var thumbnail = $markup.children('img.thumbnail').remove();
 			if (thumbnail.length) {
 				figure.thumbnail_url = thumbnail.attr('src');
 				figure.preview_url = thumbnail.attr('src');

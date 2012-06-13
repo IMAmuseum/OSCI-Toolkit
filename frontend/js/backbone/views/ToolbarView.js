@@ -26,6 +26,12 @@ OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 		}, this);
 	},
 	contentOpen: function() {
+		this.updateHeight();
+
+		this.isContentOpen = true;
+		
+	},
+	updateHeight: function() {
 		var toolbarContent = this.$el.find('#toolbar-content');
 		var toolbarHandleHeight = this.$el.find('#toolbar-handle').outerHeight();
 		var toolbarHeight = toolbarContent.outerHeight() + toolbarHandleHeight;
@@ -35,26 +41,23 @@ OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 		if (toolbarHeight > toolbarMaxHeight) {
 			toolbarContent.height(toolbarMaxHeight - toolbarHandleHeight);
 		}
-		this.$el.animate({
+		this.$el.css({
 			'height': toolbarHeight + 'px'
-		}, 'fast');
+		});
 
-		$('#toolbar-close').animate({
+		$('#toolbar-close').css({
 			top: "10px"
-		}, 'fast');
-
-		this.isContentOpen = true;
-		
+		});
 	},
 	contentClose: function() {
-		$('#toolbar-close').animate({
+		$('#toolbar-close').css({
 			top: "-" + $('#toolbar-close').height() + "px"
-		}, 'fast');
+		});
 
-		this.$el.animate({
+		this.$el.css({
 			'height': this.$el.find('#toolbar-handle').outerHeight() + 'px',
 			'width': '100%'
-		}, 'fast');
+		});
 
 		this.isContentOpen = false;
 	}
