@@ -106,9 +106,20 @@ a.footnote-reference {
 	position:relative;
 	bottom:0px;
 	left:0px;
-	
-	
 }
+
+/* tooltips */
+.ui-tooltip-content {
+	position: relative;
+	padding: 5px 9px;
+	overflow: hidden;
+	text-align: left;
+	word-wrap: break-word;
+	overflow: hidden;
+	background: #fff;
+	box-shadow: 0 1px 4px #666;
+}
+
 
 /* misc */
 .fancybox-close {
