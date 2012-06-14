@@ -119,6 +119,9 @@ a.footnote-reference {
 	background: #fff;
 	box-shadow: 0 1px 4px #666;
 }
+.ui-tooltip .ui-tooltip-tip canvas {
+	background-color:#000;
+}
 
 
 /* misc */
