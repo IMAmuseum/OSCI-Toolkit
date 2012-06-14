@@ -9,7 +9,6 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 	initialize: function() {
 		// re-render this view when collection changes
 		app.collections.notes.bind('add remove change', function() {
-			console.log('notes collection changed');
 			this.render();
 		}, this);
 	},
@@ -21,7 +20,8 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 		});
 		this.$el.html(this.template({notes: notes}));
 		// bind the clicks to trigger the click on the appropriate content_id
-		this.$el.find('.noteLink').on('click', function(e) {
+		this.$el.on('click', '.noteLink', function(e) {
+			e.preventDefault();
 			var target = $(e.target);
 			var content_id = target.attr('data-content_id');
 			if (content_id) {

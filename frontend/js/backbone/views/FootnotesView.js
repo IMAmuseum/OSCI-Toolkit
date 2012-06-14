@@ -17,7 +17,10 @@ OsciTk.views.Footnotes = OsciTk.views.BaseView.extend({
 				var fn = app.collections.footnotes.get(id);
 				if (fn) {
 					link.qtip({
-						content: fn.get('body')
+						content: fn.get('body'),
+						style: {
+							def: false
+						}
 					});
 				}
 			});

@@ -32,7 +32,7 @@ OsciTk.views.ParagraphControlsView = OsciTk.views.BaseView.extend({
 		var tipContent = '';
 		for(var i in this.options.linkItems) {
 			var text = this.options.linkItems[i];
-			tipContent += ' <a href="' + i + '" class="' + i +'">' + text + '</a>';
+			tipContent += '<a href="' + i + '" data-event="' + i + '" class="' + i +'">' + text + '</a> ';
 		}
 
 		this.$el.qtip({
@@ -49,6 +49,13 @@ OsciTk.views.ParagraphControlsView = OsciTk.views.BaseView.extend({
 				ready: false,
 				solo: true
 			},
+			hide: {
+				fixed: true,
+				delay: 500
+			},
+			style: {
+				def: false
+			},
 			overwrite: false,
 			content: tipContent
 		});
@@ -57,7 +64,7 @@ OsciTk.views.ParagraphControlsView = OsciTk.views.BaseView.extend({
 			e.preventDefault();
 
 			app.dispatcher.trigger(
-				$(this).attr('class'),
+				$(this).data('event'),
 				{
 					content: e.data.content
 				}
