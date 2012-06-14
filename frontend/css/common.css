@@ -122,6 +122,10 @@ a.footnote-reference {
 .ui-tooltip .ui-tooltip-tip {
 	background-color:#fff!important;
 }
+.ui-tooltip, .qtip {
+	max-width:auto!important;
+	background: #fff!important;	
+}
 
 
 /* misc */
