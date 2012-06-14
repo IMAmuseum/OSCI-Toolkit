@@ -103,6 +103,9 @@ a.footnote-reference {
 .paragraph-controls.notes-present span {
 	padding:2px 5px;background:#EBE8C1;color:#333;
 }
+.paragraph-controls. span {
+	padding:2px 5px;
+}
 .paragraph-controls.notes-present:after {
 	/*content: url('../img/bg-note-indicator.png');
 	display:block;
