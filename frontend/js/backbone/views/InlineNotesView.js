@@ -27,13 +27,16 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 				}
 				// fire the tooltip, note the preset of position.  Some paragraphs are
 				// continuations, so place their tooltips below the paragraph
-				var myPosition = 'bottom left';
-				var atPosition = 'top left';
-				var marginTop = parseInt(data.content.css('margin-top'), 10);
-				if (marginTop < 0) {
-					myPosition = 'top left';
-					atPosition = 'bottom left';
-				}
+				// var myPosition = 'bottom left';
+				// var atPosition = 'top left';
+				// var marginTop = parseInt(data.content.css('margin-top'), 10);
+				// if (marginTop < 0) {
+				// 	myPosition = 'top left';
+				// 	atPosition = 'bottom left';
+				// }
+				var noteJson = note.toJSON();
+				noteJson.referenceContent = data.content.text();
+
 				$(data.content).qtip("destroy");
 				$(data.content).qtip({
 					id: note.cid,
@@ -42,24 +45,32 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 							text: "Notes",
 							button: "Close"
 						},
-						text: $this.template(note.toJSON())
+						text: $this.template(noteJson)
 					},
 					show: {
 						ready: true,
-						event: ''
+						event: '',
+						modal: {
+							on:true,
+							dim: false
+						}
 					},
 					hide: {
 						event: 'unfocus',
 						fixed: true
 					},
 					position: {
-						my: myPosition,
-						at: atPosition,
-						target: data.content
+						// my: myPosition,
+						// at: atPosition,
+						// target: data.content
+						my: 'center',
+						at: 'center',
+						target: $(document.body)
 					},
 					style: {
 						classes: 'note-tooltip',
-						def: false
+						def: false,
+						width: app.views.sectionView.dimensions.columnWidth + 'px'
 					},
 					events: {
 						render: function(event, api) {
