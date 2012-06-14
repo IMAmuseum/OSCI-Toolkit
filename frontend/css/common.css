@@ -120,7 +120,7 @@ a.footnote-reference {
 	box-shadow: 0 1px 4px #666;
 }
 .ui-tooltip .ui-tooltip-tip canvas {
-	background-color:#000;
+	background-color:#fff!important;
 }
 
 
