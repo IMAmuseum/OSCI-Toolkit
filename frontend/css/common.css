@@ -98,7 +98,7 @@ a.footnote-reference {
 
 /* paragraph number controls */
 .paragraph-controls {
-	font-size:11px;	
+	font-size:11px!important;	
 }
 .paragraph-controls.notes-present span {
 	padding:2px 5px;background:#EBE8C1;color:#333;
