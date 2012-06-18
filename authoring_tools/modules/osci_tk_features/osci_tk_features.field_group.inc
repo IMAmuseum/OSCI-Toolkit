@@ -10,7 +10,7 @@
 function osci_tk_features_field_group_info() {
   $export = array();
 
-  $field_group = new stdClass();
+  $field_group = new stdClass;
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_body|node|section|form';
@@ -37,7 +37,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_body|node|section|form'] = $field_group;
 
-  $field_group = new stdClass();
+  $field_group = new stdClass;
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_content|node|section|form';
@@ -62,7 +62,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_content|node|section|form'] = $field_group;
 
-  $field_group = new stdClass();
+  $field_group = new stdClass;
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_figures|node|section|form';
@@ -89,7 +89,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_figures|node|section|form'] = $field_group;
 
-  $field_group = new stdClass();
+  $field_group = new stdClass;
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_footnotes_figures|node|section|form';
@@ -115,7 +115,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_footnotes_figures|node|section|form'] = $field_group;
 
-  $field_group = new stdClass();
+  $field_group = new stdClass;
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_footnotes|node|section|form';
@@ -142,7 +142,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_footnotes|node|section|form'] = $field_group;
 
-  $field_group = new stdClass();
+  $field_group = new stdClass;
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_publication_content|node|publication|form';
@@ -169,7 +169,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_publication_content|node|publication|form'] = $field_group;
 
-  $field_group = new stdClass();
+  $field_group = new stdClass;
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_publication_info|node|publication|form';
@@ -182,14 +182,15 @@ function osci_tk_features_field_group_info() {
     'label' => 'Info',
     'weight' => '11',
     'children' => array(
-      0 => 'field_osci_tk_cover_image',
-      1 => 'field_osci_tk_creator',
-      2 => 'field_osci_tk_description',
-      3 => 'field_osci_tk_publisher',
-      4 => 'field_osci_tk_rights',
-      5 => 'field_osci_tk_subject',
-      6 => 'field_osci_tk_identifier',
-      7 => 'title',
+      0 => 'field_osci_tk_identifier',
+      1 => 'field_osci_tk_editor',
+      2 => 'field_osci_tk_cover_image',
+      3 => 'field_osci_tk_creator',
+      4 => 'field_osci_tk_description',
+      5 => 'field_osci_tk_publisher',
+      6 => 'field_osci_tk_rights',
+      7 => 'field_osci_tk_subject',
+      8 => 'title',
     ),
     'format_type' => 'tab',
     'format_settings' => array(
@@ -203,7 +204,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_publication_info|node|publication|form'] = $field_group;
 
-  $field_group = new stdClass();
+  $field_group = new stdClass;
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_publication|node|publication|form';
@@ -216,8 +217,8 @@ function osci_tk_features_field_group_info() {
     'label' => 'Publication',
     'weight' => '11',
     'children' => array(
-      0 => 'group_publication_info',
-      1 => 'group_publication_content',
+      0 => 'group_publication_content',
+      1 => 'group_publication_info',
     ),
     'format_type' => 'tabs',
     'format_settings' => array(
