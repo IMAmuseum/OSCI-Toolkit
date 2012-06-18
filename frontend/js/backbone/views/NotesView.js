@@ -26,6 +26,7 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 			var content_id = target.attr('data-content_id');
 			if (content_id) {
 				app.dispatcher.trigger('navigate', {identifier: content_id});
+				app.dispatcher.trigger('toggleNoteDialog', { contentId: content_id })
 				$('#'+content_id).click();
 				app.views.toolbarView.contentClose();
 			}

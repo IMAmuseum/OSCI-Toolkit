@@ -9,7 +9,8 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 		
 		app.dispatcher.on('toggleNoteDialog', function(data) {
 			var $this = this;
-			var contentId = data.content.data('osci_content_id');
+			var contentId = data.contentId;
+			var content = $('#' + contentId);
 			if (contentId) {
 				// find the note content if pre-existing
 				var note;
@@ -34,10 +35,10 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 				// 	atPosition = 'bottom left';
 				// }
 				var noteJson = note.toJSON();
-				noteJson.referenceContent = data.content.text();
+				noteJson.referenceContent =content.text();
 
-				data.content.qtip("destroy");
-				data.content.qtip({
+				content.qtip("destroy");
+				content.qtip({
 					id: note.cid,
 					content: {
 						title: {
