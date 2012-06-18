@@ -8,7 +8,6 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 	initialize: function() {
 		
 		app.dispatcher.on('toggleNoteDialog', function(data) {
-			console.log(data, 'data');
 			var $this = this;
 			var contentId = data.content.data('osci_content_id');
 			if (contentId) {
@@ -43,7 +42,7 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 					content: {
 						title: {
 							text: "Notes",
-							button: "Close"
+							button: "Save & Close"
 						},
 						text: $this.template(noteJson)
 					},
@@ -76,6 +75,8 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 						render: function(event, api) {
 							// bind to keyup on text area to sync changes to back end
 							api.elements.content.find('.noteForm textarea').bind('keyup', function(e) {
+								// change status text
+								api.elements.content.find('.status').text('Saving...');
 								// save the content to the model in case the note disappears (user clicks off)
 								var cid = api.elements.tooltip.attr('id').match(/c\d+/)[0];
 								// search the collection for this cid
@@ -89,6 +90,7 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 								// set timer to save the note
 								$this['saveTimeout'+cid] = window.setTimeout(function() {
 									note.save();
+									api.elements.content.find('.status').text('Saved');
 								}, 1500);
 							});
 						},
