@@ -294,6 +294,10 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		}
 
 		return figureView;
+	},
+	
+	getCurrentPageView: function() {
+		return this.getChildViewByIndex(app.views.navigationView.page - 1);
 	}
 
 });

@@ -8,6 +8,7 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 	initialize: function() {
 		
 		app.dispatcher.on('toggleNoteDialog', function(data) {
+			console.log(data, 'data');
 			var $this = this;
 			var contentId = data.content.data('osci_content_id');
 			if (contentId) {
@@ -92,11 +93,13 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 							});
 						},
 						hide: function(event, api) {
-							var cid = api.elements.tooltip.attr('id').match(/c\d+/)[0];
-							var note = app.collections.notes.getByCid(cid);
-
-							if (note) {
-								
+							// if closing the modal for a note with content, mark the paragraph control
+							// to indicate this paragraph has a note
+							var content = api.elements.content.find('textarea').val();
+							if (content.length > 0) {
+								var pageView = app.views.sectionView.getCurrentPageView();
+								var pc = pageView.$el.find('.paragraph-controls[data-osci_content_id=' + contentId + ']');
+								pc.addClass('notes-present');
 							}
 						}
 					}
