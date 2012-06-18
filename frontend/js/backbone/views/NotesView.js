@@ -7,17 +7,30 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 	className: 'notes-view',
 	template: OsciTk.templateManager.get('notes'),
 	initialize: function() {
+		$this = this;
+		
 		// re-render this view when collection changes
 		app.collections.notes.bind('add remove change', function() {
 			this.render();
 		}, this);
+		
+		// catch the page changed event and highlight any notes in list that are on current page
+		app.dispatcher.bind('pageChanged notesLoaded', function(data) {
+			pageView = app.views.sectionView.getCurrentPageView();
+			_.each(app.collections.notes.models, function(note) {
+				// reset to false
+				note.set('onCurrentPage', false);
+				// search for note's content id in current page
+				var found = pageView.$el.find('#' + note.get('content_id'));
+				if (found.length > 0) {
+					note.set('onCurrentPage', true)
+				}
+			});
+			$this.render();
+		});
 	},
 	render: function() {
-		// filter notes - only show ones with ids (saved to server)
-		var notes = _.filter(app.collections.notes.models, function(note) {
-			if (note.id !== null) return true;
-			return false;
-		});
+		var notes = this.getSavedNotes();
 		this.$el.html(this.template({notes: notes}));
 		// bind the clicks to trigger the click on the appropriate content_id
 		this.$el.on('click', '.noteLink', function(e) {
@@ -32,5 +45,13 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 			}
 		});
 		return this;
+	},
+	getSavedNotes: function() {
+		// filter notes - only return notes with ids (saved to server)
+		var notes = _.filter(app.collections.notes.models, function(note) {
+			if (note.id !== null) return true;
+			return false;
+		});
+		return notes;
 	}
 });

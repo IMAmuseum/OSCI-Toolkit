@@ -3,7 +3,9 @@
 	<% _.each(notes, function(note) { %>
 		<li class="notesListItem">
 			<p>
-				<a href="#" class="noteLink" data-content_id="<%= note.get('content_id') %>">
+				<a href="#" 
+					class="noteLink <% if (note.get('onCurrentPage')) { %>onCurrentPage<% } %>" 
+					data-content_id="<%= note.get('content_id') %>">
 					[NOTE_ICON]
 				</a>
 				<span>

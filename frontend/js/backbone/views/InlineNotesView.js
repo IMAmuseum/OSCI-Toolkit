@@ -25,15 +25,6 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 					});
 					app.collections.notes.add(note);
 				}
-				// fire the tooltip, note the preset of position.  Some paragraphs are
-				// continuations, so place their tooltips below the paragraph
-				// var myPosition = 'bottom left';
-				// var atPosition = 'top left';
-				// var marginTop = parseInt(data.content.css('margin-top'), 10);
-				// if (marginTop < 0) {
-				// 	myPosition = 'top left';
-				// 	atPosition = 'bottom left';
-				// }
 				var noteJson = note.toJSON();
 				noteJson.referenceContent =content.text();
 
@@ -60,9 +51,6 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 						fixed: true
 					},
 					position: {
-						// my: myPosition,
-						// at: atPosition,
-						// target: data.content
 						my: 'center',
 						at: 'center',
 						target: $(document.body)

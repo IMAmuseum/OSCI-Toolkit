@@ -14,3 +14,6 @@ ul.notesList li a {
 .notes-present {
 	/*background-color: #F00;*/
 }
+.noteLink.onCurrentPage {
+	background-color: red;
+}

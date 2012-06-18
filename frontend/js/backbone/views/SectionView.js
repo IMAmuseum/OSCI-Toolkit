@@ -85,6 +85,10 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 
 		return page;
 	},
+	getCurrentPageView: function() {
+		// TODO: so the only possible child view of a section is a page???
+		return this.getChildViewByIndex(app.views.navigationView.page - 1);
+	},
 	renderContent: function() {
 		//basic layout just loads the content into a single page with scrolling
 		var pageView = this.getPageForProcessing();
