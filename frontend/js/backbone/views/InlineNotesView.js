@@ -5,11 +5,10 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 
 OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 	template: OsciTk.templateManager.get('note-popup'),
-	tempNotes: [],
 	initialize: function() {
-		var $this = this;
 		
 		app.dispatcher.on('toggleNoteDialog', function(data) {
+			var $this = this;
 			var contentId = data.content.data('osci_content_id');
 			if (contentId) {
 				// find the note content if pre-existing
@@ -37,8 +36,8 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 				var noteJson = note.toJSON();
 				noteJson.referenceContent = data.content.text();
 
-				$(data.content).qtip("destroy");
-				$(data.content).qtip({
+				data.content.qtip("destroy");
+				data.content.qtip({
 					id: note.cid,
 					content: {
 						title: {
@@ -91,11 +90,19 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 									note.save();
 								}, 1500);
 							});
+						},
+						hide: function(event, api) {
+							var cid = api.elements.tooltip.attr('id').match(/c\d+/)[0];
+							var note = app.collections.notes.getByCid(cid);
+
+							if (note) {
+								
+							}
 						}
 					}
 				});
 			}
-		});
+		}, this);
 		
 		// place icon next to paragraphs with notes after layout is complete
 		app.dispatcher.bind('notesLoaded', function(params) {
@@ -106,6 +113,6 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 					paragraphControls.addClass('notes-present');
 				}
 			});
-		});
+		}, this);
 	}
 });
