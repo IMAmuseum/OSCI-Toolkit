@@ -4,20 +4,29 @@ div#toolbar {
 	position: absolute;
 	top: 0px;
 	left: 0px;
+	height: 0;
 	max-height: 80%;
 	min-height: 40px;
 	overflow: hidden;
 	font-family:Arial, Helvetica, sans-serif;
 	border-top:3px solid #ccc;
-	-webkit-transition: all .5s ease;
+	-webkit-transition: height .5s ease;
 	-moz-transition: all .5s ease;
 	-o-transition: all .5s ease;
 	-ms-transition: all .5s ease;
 	transition: all .5s ease;
 }
+div#toolbar-content-container {
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	height: 100%;
+	margin-bottom: 40px;
+	background: url('../img/bg-toolbar.gif') repeat;	
+}
 div#toolbar-content {
 	position: absolute;
-	bottom: 40px;
+	bottom: 0px;
 	left: 0px;
 	background-color: #eee;
 	width: 100%;

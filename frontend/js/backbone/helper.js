@@ -35,6 +35,7 @@ function getAttributeByLanguage(attr) {
  */
 function loadXMLDoc(url) {
 	xhttp = new XMLHttpRequest();
+	xhttp.overrideMimeType('text/xml');
 	xhttp.open('GET', url, false);
 	xhttp.send();
 	return xhttp.responseXML;
