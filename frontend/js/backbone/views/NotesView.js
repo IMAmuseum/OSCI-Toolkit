@@ -16,7 +16,14 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 		
 		// catch the page changed event and highlight any notes in list that are on current page
 		app.dispatcher.bind('pageChanged notesLoaded', function(data) {
-			pageView = app.views.sectionView.getCurrentPageView();
+			var page;
+			if (typeof(data.page) === 'undefined') {
+				page = app.views.navigationView.page;
+			}
+			else {
+				page = data.page;
+			}
+			pageView = app.views.sectionView.getChildViewByIndex(page - 1);
 			_.each(app.collections.notes.models, function(note) {
 				// reset to false
 				note.set('onCurrentPage', false);
