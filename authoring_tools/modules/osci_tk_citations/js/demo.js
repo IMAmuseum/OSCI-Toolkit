@@ -22,6 +22,6 @@ function retrieve_note(data, target) {
 	var endpoint = Drupal.settings.basePath + 'api/citations/';
 	
 	$.get(endpoint, data, function(data) {
-		target.html(data);
+		target.html(JSON.stringify(data));
 	});
 }
