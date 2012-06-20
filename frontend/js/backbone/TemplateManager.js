@@ -5,12 +5,12 @@ if (typeof OsciTk.templates === 'undefined'){OsciTk.templates = {};}
 
 OsciTk.templateManager = {
 	get : function(templateName) {
-		return function() {
-			OsciTk.templateManager.useTemplate(templateName);
+		return function(data) {
+			OsciTk.templateManager.useTemplate(templateName, data);
 		}
 	},
 	
-	useTemplate: function(templateName) {
+	useTemplate: function(templateName, templateData) {
 		if (OsciTk.templates[templateName] === undefined) {
 			var templateUrls = app.config.get('templateUrls');
 			var found = false;
@@ -22,11 +22,12 @@ OsciTk.templateManager = {
 					success : function(data, textStatus, jqXHR) {
 						OsciTk.templates[templateName] = _.template(data);
 						found = true;
+						console.log('- found');
 					}
 				});
 				if (found) break;
 			}
 		}
-		return OsciTk.templates[templateName];
+		return OsciTk.templates[templateName](templateData);
 	}
 };
