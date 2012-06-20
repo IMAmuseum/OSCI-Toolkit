@@ -72,7 +72,10 @@
 	
 	<script>jQuery(function() { 
 			app.bootstrap({
-				packageUrl: 'sample/package.opf', 
+				packageUrl: 'sample/package.opf',
+				templateUrls: [
+					'/sites/default/OSCI-Toolkit/frontend/templates/'
+				],
 				endpoints: {
 					'OsciTkNotes': '/api/notes/',
 					'OsciTkNote': '/api/notes/',
