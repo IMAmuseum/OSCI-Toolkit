@@ -28,6 +28,9 @@ OsciTk.models.Package = OsciTk.models.BaseModel.extend({
 
 		//get the publication id
 		var ids = data['package']['metadata']['dc:identifier'];
+		if (!_.isArray(ids)) {
+			ids = [ids];
+		}
 		var numIds = ids.length;
 		for (var i = 0; i < numIds; i++) {
 			var pubId = ids[i];

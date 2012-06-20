@@ -1,0 +1,21 @@
+<div class="citations">
+	<span>Format</span>
+	<ul class="formats">
+		<li class="active"><a href="#citation-format-chicago">Chicago</a></li>
+		<li><a href="#citation-format-mla">MLA</a></li>
+	</ul>
+	<div id="citation-format-chicago" class="citation">
+		<%= creator %>, "<em><%= title %></em>," in <em><%= publicationTitle %></em>, ed. <%= editor %> <%= publisher %> <%= formattedDate %>, para <%= paragraphNumber %>.
+	</div>
+	<div id="citation-format-mla" style="display: none;" class="citation">
+		<%= creator %>, "<em><%= title %></em>," in <span style="text-decoration:underline;"><%= publicationTitle %></span>, ed. <%= editor %> (<%= publisher %>), <%= formattedDate %>, <%= paragraphNumber %>.
+	</div>
+</div>
+<div class="citation_url">
+	<span>Citation URL</span>
+	<input disabled="disabled" value="<%= url %>" />
+</div>
+<div class="reference_text">
+	<span>Reference Text</span>
+	<textarea disabled="disabled"><%= referenceText %></textarea>
+</div>

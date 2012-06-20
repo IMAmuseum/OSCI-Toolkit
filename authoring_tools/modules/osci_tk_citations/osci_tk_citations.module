@@ -37,6 +37,13 @@ function osci_tk_citations_request() {
 		// load the section node and its book-parent section. if no parent, use itself
 		//TODO: MAKE SURE THIS IS A PUBLICATION
 		$publication = node_load($pid, _osci_tk_utility_retrieve_revision_id_by_timestamp($pid, $revTime));
+		if (!$publication) {
+			print json_encode(array(
+				'success' => FALSE
+			));
+			return;
+		}
+
 		$section = node_load($sid, _osci_tk_utility_retrieve_revision_id_by_timestamp($sid, $revTime));
 
 		$citationData = _osci_tk_epub_get_book_metadata($publication);

@@ -58,6 +58,7 @@
 	<script src="js/backbone/views/SearchResultView.js"></script>
 	<script src="js/backbone/views/NotesView.js"></script>
 	<script src="js/backbone/views/InlineNotesView.js"></script>
+	<script src="js/backbone/views/CitationView.js"></script>
 	<script src="js/backbone/views/FootnotesView.js"></script>
 	<script src="js/backbone/views/FiguresView.js"></script>	
 	<script src="js/backbone/views/TocView.js"></script>
@@ -81,7 +82,8 @@
 					'OsciTkNote': '/api/notes/',
 					'OsciTkSearch': '/api/search/',
 					'OsciTkOpenSearch': '/api/opensearch/',
-					'OsciTkAccount': '/api/users/'					
+					'OsciTkAccount': '/api/users/',
+					'OsciTkCitation': '/api/citations/'				
 				},
 				toolbarItems: [
 					{view: 'Toc', text: 'ToC'},
@@ -104,8 +106,8 @@
 					'image_asset': 'MultiColumnFigureImage'
 				},
 				paragraphControls: {
-					'toggleNoteDialog': 'note'
-					//'toggleCiteDialog': 'cite'
+					'toggleNoteDialog': 'note',
+					'toggleCiteDialog': 'cite'
 				}
 			});
 			app.run();

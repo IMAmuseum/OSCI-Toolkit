@@ -4,7 +4,7 @@
     <dc:title id="t1">Example Publication</dc:title>
     <meta refines="#t1" property="title-type">main</meta>
     <meta refines="#t1" property="display-seq">1</meta>    		
-    <dc:identifier id="publication-id">42</dc:identifier>    		
+    <dc:identifier id="publication-id">urn:osci_tk_identifier:12</dc:identifier>    		
     <dc:creator>IMA Lab</dc:creator>    		
     <dc:description>It's about stuff</dc:description>    		
     <dc:publisher>IMA Lab</dc:publisher>    		
