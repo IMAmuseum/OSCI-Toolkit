@@ -18,7 +18,7 @@ OsciTk.templateManager = {
 				$.ajax({
 					async : false,
 					dataType : 'html',
-					url : templateUrl[i] + templateName + '.tpl.html',
+					url : templateUrls[i] + templateName + '.tpl.html',
 					success : function(data, textStatus, jqXHR) {
 						OsciTk.templates[templateName] = _.template(data);
 						found = true;
