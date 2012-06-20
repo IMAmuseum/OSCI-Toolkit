@@ -93,7 +93,8 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 			minColumnWidth : 200,
 			maxColumnWidth : 300,
 			gutterWidth : 40,
-			minLinesPerColumn : 5
+			minLinesPerColumn : 5,
+			defaultLineHeight: 16
 		});
 
 		//initialize dimensions object
