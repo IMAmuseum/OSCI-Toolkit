@@ -6,15 +6,16 @@ if (typeof OsciTk.templates === 'undefined'){OsciTk.templates = {};}
 OsciTk.templateManager = {
 	get : function(templateName) {
 		return function(data) {
-			OsciTk.templateManager.useTemplate(templateName, data);
-		}
+			return OsciTk.templateManager.useTemplate(templateName, data);
+		};
 	},
 	
 	useTemplate: function(templateName, templateData) {
 		if (OsciTk.templates[templateName] === undefined) {
 			var templateUrls = app.config.get('templateUrls');
 			var found = false;
-			for(var i=0; i < templateUrls.length; i++) {
+			var numUrls = templateUrls.length;
+			for(var i=0; i < numUrls; i++) {
 				$.ajax({
 					async : false,
 					dataType : 'html',
@@ -22,7 +23,6 @@ OsciTk.templateManager = {
 					success : function(data, textStatus, jqXHR) {
 						OsciTk.templates[templateName] = _.template(data);
 						found = true;
-						console.log('- found');
 					}
 				});
 				if (found) break;

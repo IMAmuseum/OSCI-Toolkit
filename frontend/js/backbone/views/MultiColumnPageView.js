@@ -213,7 +213,9 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 
 	getCurrentColumn : function() {
 		var currentColumn = null;
-		var minColHeight = parseInt(this.$el.css("line-height"), 10) * this.parent.dimensions.minLinesPerColumn;
+		var lineHeight = parseInt(this.$el.css("line-height"), 10);
+		lineHeight = lineHeight ? lineHeight : 16;
+		var minColHeight =  lineHeight * this.parent.dimensions.minLinesPerColumn;
 
 		if (this.processingData.columns[this.processingData.currentColumn] &&
 			this.processingData.columns[this.processingData.currentColumn].height >= minColHeight &&
