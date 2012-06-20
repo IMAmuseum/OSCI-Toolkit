@@ -901,7 +901,7 @@ function _osci_tk_epub_asset_process_uri($uri, $forExport = false)
 	}
 }
 
-function _osci_tk_epub_get_book_metadata(&$pub, &$data)
+function _osci_tk_epub_get_book_metadata(&$pub, &$data = array())
 {
 	$metadata = array();
 
@@ -932,6 +932,10 @@ function _osci_tk_epub_get_book_metadata(&$pub, &$data)
 	{
 		$metadata['identifier'] = $pub->field_osci_tk_identifier[$lang];
 	}
+	array_unshift($metadata['identifier'], array(
+		"identifier_type" => "osci_tk_identifier",
+		"identifier" => $pub->nid
+	));
 
 	//Get the creator
 	if (isset($pub->field_osci_tk_creator) && isset($pub->field_osci_tk_creator[$lang]))
@@ -941,6 +945,14 @@ function _osci_tk_epub_get_book_metadata(&$pub, &$data)
 		{
 			$metadata['creator'][] = $v['value'];
 		}
+	}
+
+	//Get the Editor
+	if (isset($pub->field_osci_tk_editor) &&
+		isset($pub->field_osci_tk_editor[$lang]) &&
+		strlen($pub->field_osci_tk_editor[$lang][0]['value']))
+	{
+		$metadata['editor'] = $pub->field_osci_tk_editor[$lang][0]['value'];
 	}
 
 	//Get the description
@@ -968,13 +980,14 @@ function _osci_tk_epub_get_book_metadata(&$pub, &$data)
 	}
 
 	//add date element
-	$date = gmdate("Y-m-d", $data['modified']) . 'T' . gmdate("H:i:s", $data['modified']) . 'Z';
+	$modified = isset($data['modified']) ? $data['modified'] : $pub->changed;
+	$date = gmdate("Y-m-d", $modified) . 'T' . gmdate("H:i:s", $modified) . 'Z';
 	$metadata['date'] = $date;
 
 	//add meta elements
 	$metadata['meta'] = array(
 		'dcterms:modified' => $date
-		);
+	);
 
 	return $metadata;
 }

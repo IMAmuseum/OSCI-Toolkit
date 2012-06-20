@@ -21,6 +21,10 @@ function osci_tk_citations_menu() {
 
 function osci_tk_citations_request() {
 
+	header('Cache-Control: no-cache, must-revalidate');
+	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+	header('Content-type: application/json');
+
 	if (isset($_GET['publication_id']) && !empty($_GET['publication_id'])
 		&& isset($_GET['section_id']) && !empty($_GET['section_id'])
 		&& isset($_GET['element_id']) && !empty($_GET['element_id'])) {
@@ -34,34 +38,35 @@ function osci_tk_citations_request() {
 		//TODO: MAKE SURE THIS IS A PUBLICATION
 		$publication = node_load($pid, _osci_tk_utility_retrieve_revision_id_by_timestamp($pid, $revTime));
 		$section = node_load($sid, _osci_tk_utility_retrieve_revision_id_by_timestamp($sid, $revTime));
-		dpm($publication);
-		// for missing values on the section, inherit from the publication-parent section
-		if ((!isset($section->field_osci_tk_creator) || empty($section->field_osci_tk_creator)) && isset($publication->field_osci_tk_creator)) {
-			$section->field_osci_tk_creator = $publication->field_osci_tk_creator;
-		}
-		if ((!isset($section->field_osci_tk_publisher) || empty($section->field_osci_tk_publisher)) && isset($publication->field_osci_tk_publisher)) {
-			$section->field_osci_tk_publisher = $publication->field_osci_tk_publisher;
-		}
-		if ((!isset($section->publication_date) || empty($section->publication_date)) && isset($publication->publication_date)) {
-			$section->publication_date = $publication->publication_date;
-		}
-		if ((!isset($section->editor) || empty($section->editor)) && isset($publication->editor)) {
-			$section->editor = $publication->editor;
-		}
+
+		$citationData = _osci_tk_epub_get_book_metadata($publication);
+		unset($citationData['meta']);
 		
+		//Get the Creator from section if set
+		if (isset($section->field_osci_tk_creator) && isset($section->field_osci_tk_creator['und'])) {
+			$citationData['creator'] = array();
+			foreach($section->field_osci_tk_creator['und'] as $k => $v) {
+				$citationData['creator'][] = $v['value'];
+			}
+		}
+
+		//Get the Editor from section if set
+		if (isset($section->field_osci_tk_editor) &&
+			isset($section->field_osci_tk_editor['und']) &&
+			strlen($section->field_osci_tk_editor['und'][0]['value']))
+		{
+			$citationData['editor'] = $section->field_osci_tk_editor['und'][0]['value'];
+		}
+
+		$citationData['revision'] = $revTime;
+		$citationData['elemtent'] = $eid;
+		$citationData['publicationTitle'] = $citationData['title'];
+		$citationData['title'] = $section->title;
+
 		// output the json response
 		print json_encode(array(
 			'success' => TRUE, 
-			'citation' => array(
-				'author' 			=> $section->author,
-				'section_title' 	=> $section->title,
-				'book_title' 		=> $publication->title,
-				'publisher' 		=> $section->publisher,
-				'element' 			=> $eid,
-				'publication_date' 	=> $section->publication_date,
-				'editor' 			=> $section->editor,
-				'url'				=> ""
-			)
+			'citation' => $citationData
 		));
 		return;
 	}
