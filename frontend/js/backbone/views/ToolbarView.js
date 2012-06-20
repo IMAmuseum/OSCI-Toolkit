@@ -21,6 +21,7 @@ OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 		this.$el.html(this.template());
 		_.each(this.toolbarItems, function(toolbarItem) {
 			var item = new OsciTk.views.ToolbarItem({toolbarItem: toolbarItem});
+			this.toolbarItemViews.push(item);
 			this.addView(item, '#toolbar-handle');
 			item.render();
 		}, this);
