@@ -8,14 +8,16 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 
 	tagName: 'figure',
 	template: OsciTk.templateManager.get('multi-column-figure'),
-	layoutComplete: false,
-	contentRendered: false,
-	sizeCalculated: false,
-	calculatedHeight: 0,
-	calculatedWidth: 0,
-	position: {x:[0,0], y:[0,0]},
 
 	initialize: function() {
+		//set some defaults
+		this.layoutComplete = false;
+		this.contentRendered = false;
+		this.sizeCalculated = false;
+		this.calculatedHeight = 0;
+		this.calculatedWidth = 0;
+		this.position = {x:[0,0], y:[0,0]};
+
 		this.$el.css("visibility", "hidden").attr("id", this.model.get("id"));
 
 		app.dispatcher.on("pageChanged", function(data) {

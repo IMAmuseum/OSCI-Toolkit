@@ -6,8 +6,8 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 OsciTk.views.Font = OsciTk.views.BaseView.extend({
 	className: 'font-view',
 	template: OsciTk.templateManager.get('font'),
-	currentFontSize: 100,
 	initialize: function() {
+		this.currentFontSize = 100;
 		this.render();
 	},
 	render: function() {

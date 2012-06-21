@@ -6,12 +6,14 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 
 OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 	id: 'navigation',
-	numPages: null,
-	identifier: null,
-	currentNavigationItem: null,
-	page: null,
 	template: OsciTk.templateManager.get('navigation'),
 	initialize: function() {
+		//set some defaults
+		this.numPages = null;
+		this.identifier = null;
+		this.currentNavigationItem = null;
+		this.page = null;
+
 		// when section is loaded, render the navigation control
 		app.dispatcher.on('layoutComplete', function(section) {
 			if (this.identifier) {
@@ -47,10 +49,11 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 
 		// Respond to keyboard events
 		$(document).keydown(function(event) {
+			var p;
 			switch(event.which) {
 				case 39:
 					// Right arrow navigates to next page
-					var p = app.views.navigationView.page + 1;
+					p = app.views.navigationView.page + 1;
 					if (p > app.views.navigationView.numPages) {
 						var next = app.views.navigationView.currentNavigationItem.get('next');
 						if (next) {
@@ -62,7 +65,7 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 					break;
 				case 37:
 					// Left arrow navigates to previous page
-					var p = app.views.navigationView.page - 1;
+					p = app.views.navigationView.page - 1;
 					if (p < 1) {
 						var previous = app.views.navigationView.currentNavigationItem.get('previous');
 						if (previous) {

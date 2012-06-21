@@ -71,10 +71,13 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 			});
 
 			if (page.length === 0) {
-				this.model.get('pages').add({});
+				var pagesCollection = this.model.get('pages');
+				pagesCollection.add({
+					pageNumber: this.model.get('pages').length + 1
+				});
 
 				page = new OsciTk.views[this.options.pageView]({
-					model : this.model.get('pages').at(this.model.get('pages').length - 1),
+					model : pagesCollection.last(),
 					pageNumber : this.model.get('pages').length
 				});
 				this.addView(page, newTarget);
