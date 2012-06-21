@@ -31,24 +31,20 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	overflow-y: hidden;
-	overflow-x: visible;
-	/*text-overflow:hidden;*/
-	
-
+	overflow: hidden;
 }
 
-/*#pages .page { oveflow:hidden; }*/
+#pages .page { oveflow:hidden; }
 
 /* a line height must be set for proper calculations */
 .page, .column, .column * {
-	line-height: 1.2;
+	line-height: 1.5em;
 
 }
 
 .column p {
 	text-align: justify;
-	margin: 0 0 1em 0;
+	margin: 0 0 1.5em 0;
 }
 
 h1, h2, h3, h4, h5 {

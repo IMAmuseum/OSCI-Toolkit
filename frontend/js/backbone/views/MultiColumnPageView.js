@@ -4,9 +4,14 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 // OsciTk Namespace Initialization //
 
 OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
-	columnTemplate : OsciTk.templateManager.get('multi-column-column'),
-	visible: true,
-	paragraphControlsViews: [],
+	initialize: function() {
+		this.columnTemplate = OsciTk.templateManager.get('multi-column-column');
+		this.visible = false;
+		this.paragraphControlsViews = [];
+
+		OsciTk.views.MultiColumnPage.__super__.initialize.call(this);
+	},
+
 	onClose: function() {
 		this.model = undefined;
 	},
@@ -80,9 +85,10 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		column.$el.append(content);
 
 		var lineHeight = parseFloat(content.css("line-height"));
+		var contentPosition = content.position();
 
 		//If all of the content is overflowing the column remove it and move to next column
-		if ((column.height - content.position().top) < lineHeight) {
+		if ((column.height - contentPosition.top) < lineHeight) {
 			content.remove();
 			column.heightRemain = 0;
 			overflow = 'contentOverflow';
@@ -160,8 +166,8 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		//If we have negative height remaining, the content must be repeated in the next column
 		if (heightRemain < 0) {
 			var overflowHeight = heightRemain;
-			var hiddenLines = Math.ceil(overflowHeight / lineHeight);
-			var newHeight = content.position().top + content.outerHeight() + (hiddenLines * lineHeight);
+			var hiddenLines = Math.floor(overflowHeight / lineHeight);
+			var newHeight = contentPosition.top + content.outerHeight() + (hiddenLines * lineHeight);
 
 			//assign the new height to remove any partial lines of text
 			column.height = newHeight;
@@ -194,7 +200,6 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 
 			if (pidIsOnPage.length === 0) {
 				var columnPosition = column.$el.position();
-				var contentPosition = content.position();
 				var pcv = new OsciTk.views.ParagraphControlsView({
 					content: content,
 					position: {
@@ -304,6 +309,7 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 				}
 			}
 
+			height = Math.floor(height);
 			this.processingData.columns[i] = {
 				height : height,
 				heightRemain : height > 0 ? height : 0,

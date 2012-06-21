@@ -13,14 +13,13 @@ a {
 	box-sizing: border-box; 
 }
 
-reader {
+#reader {
 	position: relative;
 	top: 0px;
 	left: 0px;
 	height: 100%;
 	width: 100%;
 }
-
 
 figcaption {
 	padding-top:10px;
@@ -47,7 +46,7 @@ figcaption {
 	font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;	
 }
 .page p {
-	/*line-height:1.5em;*/
+	line-height:1.5em;
 }
 
 .paragraph-controls {
