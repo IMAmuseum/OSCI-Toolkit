@@ -271,7 +271,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		});
 
 		//chunk the data into managable parts
-		this.layoutData.data = this.layoutData.data.find('section').children();
+		this.layoutData.data = this.layoutData.data.find('section').children(':not("section")');
 	},
 
 	getFigureView: function(figureId) {
