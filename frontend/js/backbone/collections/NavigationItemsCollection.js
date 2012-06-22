@@ -21,7 +21,15 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 				var navDocument = data.html[1].body.nav;
 				for (var i in navDocument) {
 					if (navDocument[i].type == 'toc') {
-						_.each(navDocument[i].ol.li, function(tocItem) {
+						var navSegment;
+						// do a check if there is only one top level item
+						if (typeof(navDocument[i].ol.li) === 'Array') {
+							navSegment = navDocument[i].ol.li;
+						}
+						else {
+							navSegment = navDocument[i].ol;
+						}
+						_.each(navSegment, function(tocItem) {
 							this.parseChildren(tocItem, null, 0);
 						}, this);
 						break;

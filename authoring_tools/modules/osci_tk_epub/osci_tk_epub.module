@@ -345,7 +345,7 @@ function osci_tk_epub_render($nid, $pubNid = null)
 
 	if ($dev) return $output;
 	header('Content-Type: application/xhtml+xml');
-	print $output;
+	print _filter_clean_content($output, null, null);
 	drupal_exit();
 }
 
@@ -927,6 +927,7 @@ function _osci_tk_epub_get_book_metadata(&$pub, &$data = array())
 	}
 
 	//Get the identifier
+	$metadata['identifier'] = array();
 	if (isset($pub->field_osci_tk_identifier) &&
 		isset($pub->field_osci_tk_identifier[$lang]) &&
 		strlen($pub->field_osci_tk_identifier[$lang][0]['identifier']))
