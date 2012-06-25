@@ -8,7 +8,7 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 	template: OsciTk.templateManager.get('figures'),
 	initialize: function() {
 		// re-render this view when collection changes
-		app.collections.figures.bind('add remove', function() {
+		app.collections.figures.bind('add remove reset', function() {
 			this.render();
 		}, this);
 	},
@@ -26,7 +26,6 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 		return false;
 	},
 	render: function() {
-
 		this.$el.show(); // Show first so that widths can be calculated
 
 		var fig_data = app.collections.figures.toJSON();

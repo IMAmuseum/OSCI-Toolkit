@@ -20,6 +20,7 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 	 * Populates the collection from an array of figure markup
 	 */
 	populateFromMarkup: function(data) {
+		var figures = [];
 		_.each(data, function(markup) {
 
 			var idComponents = markup.id.match(/\w+-(\d+)-(\d+)/);
@@ -57,8 +58,12 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 				// TODO: Default to the figure type default? Also via css?
 			}
 
-			this.add(figure);
+			//add the figure to the array for adding to the collection
+			figures.push(figure);
 
 		}, this);
+	
+		//populate the collection
+		this.reset(figures);
 	}
 });

@@ -13,12 +13,21 @@ OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 		// tracks the state of the content area drawer
 		this.isContentOpen = false;
 		this.render();
+
+		app.dispatcher.on("packageLoaded", function(packageModel) {
+			//Add the publication title to the Toolbar
+			var metadata = packageModel.get("metadata");
+			if (metadata['dc:title'] && metadata['dc:title']['value']) {
+				this.$el.find("#toolbar-title").text(metadata['dc:title']['value']);
+			}
+		}, this);
 	},
 	events: {
 		"click #toolbar-close": "contentClose"
 	},
 	render: function() {
 		this.$el.html(this.template());
+
 		_.each(this.toolbarItems, function(toolbarItem) {
 			var item = new OsciTk.views.ToolbarItem({toolbarItem: toolbarItem});
 			this.toolbarItemViews.push(item);
@@ -30,7 +39,6 @@ OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 		this.updateHeight();
 
 		this.isContentOpen = true;
-		
 	},
 	updateHeight: function() {
 		var toolbarContent = this.$el.find('#toolbar-content');

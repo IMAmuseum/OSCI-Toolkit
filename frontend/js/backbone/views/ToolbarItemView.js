@@ -36,10 +36,9 @@ OsciTk.views.ToolbarItem = OsciTk.views.BaseView.extend({
 			// the toolbar should know who the active view is
 			this.parent.activeContentView = this.options.toolbarItem.view;
 			// hide all the views besides this one
-			children = this.parent.$el.find('#toolbar-content').children().not('#' + this.contentView.id);
-			_.each(children, function(otherView) {
-				$(otherView).hide();
-			}, this);
+			children = this.parent.$el.find('#toolbar-content').children().not('#' + this.contentView.id + ', h2');
+			children.hide();
+
 			this.contentView.$el.show();
 			// animate the opening of the toolbar
 			this.parent.contentOpen();
@@ -58,10 +57,9 @@ OsciTk.views.ToolbarItem = OsciTk.views.BaseView.extend({
 				// the toolbar should know this is now the active view
 				this.parent.activeContentView = this.options.toolbarItem.view;
 				// hide all the views besides this one
-				children = this.parent.$el.find('#toolbar-content').children().not('#' + this.contentView.id);
-				_.each(children, function(otherView) {
-					$(otherView).hide();
-				}, this);
+				children = this.parent.$el.find('#toolbar-content').children().not('#' + this.contentView.id + ', h2');
+				children.hide();
+
 				this.contentView.$el.show();
 				// animate the switch
 				this.parent.contentOpen();

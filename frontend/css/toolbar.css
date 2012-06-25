@@ -1,4 +1,4 @@
-div#toolbar {
+#toolbar {
 	width: 100%;
 	z-index: 100;
 	position: absolute;
@@ -10,29 +10,27 @@ div#toolbar {
 	overflow: hidden;
 	font-family:Arial, Helvetica, sans-serif;
 	border-top:3px solid #ccc;
-	-webkit-transition: height .5s ease;
+	-webkit-transition: all .5s ease;
 	-moz-transition: all .5s ease;
 	-o-transition: all .5s ease;
 	-ms-transition: all .5s ease;
 	transition: all .5s ease;
 }
-div#toolbar-content-container {
+#toolbar-content-container {
 	position: absolute;
 	width: 100%;
 	bottom: 0;
 	height: 100%;
 	margin-bottom: 40px;
-	background: url('../img/bg-toolbar.gif') repeat;	
+	background: #eee url('../img/bg-toolbar.gif') repeat;	
 }
-div#toolbar-content {
+#toolbar-content {
 	position: absolute;
 	bottom: 0px;
 	left: 0px;
-	background-color: #eee;
 	width: 100%;
 	padding: 20px 20px;
-	/*overflow-y: auto;*/
-	background: url('../img/bg-toolbar.gif') repeat;
+	background: url('../img/bg-fold-shadow.png') center 95% no-repeat;
 }
 #toolbar-handle {
 	height: 40px;
@@ -69,8 +67,12 @@ div#toolbar-content {
 }
 
 #toolbar h2 {
-	margin: 0 0 20px 0;
+	margin: 0 0 6px 0;
 	border-bottom: 5px solid #8C8C8C;
+}
+#toolbar h3 {
+	color: #444;
+	margin: 0 0 10px 0;
 }
 div.toolbar-item {
 	height: 35px;
@@ -80,6 +82,8 @@ div.toolbar-item {
 	display:inline-block;
 	top:0px;
 	position:relative;
+	overflow:hidden;
+	text-indent: -9999px;
 }
 div.toolbar-item:after { 
 	content:"";
@@ -97,27 +101,27 @@ div.toolbar-item:first-child:after {
 }
 
 div.Notes-toolbar-item {
-	text-indent: 9999px;
+	
 	background: url('../img/icon-notes.png') center center no-repeat;
 }
 div.Toc-toolbar-item {
-	text-indent: 9999px;
+
 	background: url('../img/icon-toc.png') center center no-repeat;
 }
 div.Account-toolbar-item {
-	text-indent: 9999px;
+
 	background: url('../img/icon-user.png') center center no-repeat;
 }
 div.Search-toolbar-item {
-	text-indent: 9999px;
+
 	background: url('../img/icon-search.png') center center no-repeat;
 }
 div.Font-toolbar-item {
-	text-indent: 9999px;
+
 	background: url('../img/icon-text.png') center center no-repeat;
 }
 div.Figures-toolbar-item {
-	text-indent: 9999px;
+
 	background: url('../img/icon-figure.png') center center no-repeat;
 }
 
