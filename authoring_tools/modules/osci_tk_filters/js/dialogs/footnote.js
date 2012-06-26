@@ -100,7 +100,7 @@
 					replace = $('#fieldset-tab-edit-field-footnote-und-' + (tabCount -1))
 						.find('.footnote_identifier')
 						.attr('data-fnid');
-					editor.insertText('[footnote:' + replace + ']');
+					editor.insertText('[footnoteref:' + replace + ']');
 				}
 			});
 		}
