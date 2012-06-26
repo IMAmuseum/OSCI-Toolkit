@@ -281,7 +281,7 @@ function _osci_tk_utility_node_submit($form, &$form_state)
 		//remove hidden field so that drupal saves this field correctly
 		unset($form_state['values']['field_footnote'][LANGUAGE_NONE]['num_add']);
 		
-		$footnoteTemplate = '[footnote:fn-' . $form_state['values']['nid'] . '-';
+		$footnoteTemplate = '[footnoteref:fn-' . $form_state['values']['nid'] . '-';
 		foreach($form_state['values']['field_footnote'][LANGUAGE_NONE] as $k => $v)
 		{
 			if ($k === 'add_more')
