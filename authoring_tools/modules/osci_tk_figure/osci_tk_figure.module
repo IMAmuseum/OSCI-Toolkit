@@ -196,7 +196,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 		for($i = 0; $i < $max; $i++)
 		{
 			$itemDelta = $i;
-			$item = $items[$itemDelta];
+			$item = isset($items[$itemDelta]) ? $items[$itemDelta] : array();
 			
 			$figId = _osci_tk_figure_create_id($form['nid']['#value'], $itemDelta);
 			

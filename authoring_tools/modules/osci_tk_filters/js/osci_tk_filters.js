@@ -48,6 +48,7 @@
 				footnotes = [];
 			
 			var nextDelta = parseInt($(".field-name-field-footnote").find(".ui-tabs-nav").find("a:last").text(), 10) + 1;
+			nextDelta = nextDelta ? nextDelta : 0;
 
 			// Search for footnote links in body text
 			data.find('a').each(function(idx, val) {
@@ -67,7 +68,7 @@
 						content = CKEDITOR.cleanWord(content, event.editor);
 					}
 					
-					$val.replaceWith('[footnote:fn-' + Drupal.settings.osci_tk_filters.current_nid + '-' + nextDelta + ']');
+					$val.replaceWith('[footnoteref:fn-' + Drupal.settings.osci_tk_filters.current_nid + '-' + nextDelta + ']');
 					
 					data.find('#' + footnote.replace('_', '')).remove();
 					footnotes.push({
