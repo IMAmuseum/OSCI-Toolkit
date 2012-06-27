@@ -7,7 +7,7 @@ OsciTk.collections.Footnotes = OsciTk.collections.BaseCollection.extend({
 	model: OsciTk.models.Footnote,
 	
 	initialize: function() {
-		app.dispatcher.bind('footnotesAvailable', function(footnotes) {
+		app.dispatcher.on('footnotesAvailable', function(footnotes) {
 			this.populateFromMarkup(footnotes);
 		}, this);
 	},

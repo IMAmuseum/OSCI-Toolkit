@@ -15,7 +15,7 @@ OsciTk.models.Note = OsciTk.models.BaseModel.extend({
 	},
 	
 	initialize: function(attributes, options) {
-		this.bind('error', function(model, error) {
+		this.on('error', function(model, error) {
 			console.log([model, error], 'error fired');
 		});
 	},
