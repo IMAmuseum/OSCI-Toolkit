@@ -44,12 +44,15 @@ a.noteLInk, a.noteEdit {
 	text-shadow: 0 1px 1px rgba(255,255,255,.7);
 	line-height:17px;
 	display:inline-block;	
+	color:#666666;
+	padding-left:22px;
+}
+a.noteLInk:hover, a.noteEdit:hover {
+	color:#333;	
 }
 a.noteLink {
 	background: url('../img/icon-link-16.png') no-repeat left top;
-	padding-left:22px;
 }
 a.noteEdit {
 	background: url('../img/icon-edit-16.png') no-repeat left top;
-	padding-left:22px;
 }
