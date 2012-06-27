@@ -41,7 +41,9 @@ ul.notesList li a {
 }
 a.noteLInk, a.noteEdit {
 	font-size:12px;text-transform:uppercase;
-	text-shadow: 0 1px 1px rgba(255,255,255,.7);	
+	text-shadow: 0 1px 1px rgba(255,255,255,.7);
+	line-height:17px;
+	display:inline-block;	
 }
 a.noteLink {
 	background: url('../img/icon-link-16.png') no-repeat left top;
