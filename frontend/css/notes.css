@@ -7,6 +7,13 @@ ul.notesList {
 }
 ul.notesList li {
 	padding-bottom: 10px;
+	display:inline-block;
+	width:140px;
+}
+.the-note {
+	width:140px;max-height:140px;
+	background:#FAFA9F;
+	box-shadow: 0 1px 4px rgba(0,0,0,.4);	
 }
 ul.notesList li a {
 	padding-right: 10px;
