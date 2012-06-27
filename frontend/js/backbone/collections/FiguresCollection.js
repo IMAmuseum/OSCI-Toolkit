@@ -58,12 +58,15 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 				// TODO: Default to the figure type default? Also via css?
 			}
 
-			//add the figure to the array for adding to the collection
+			// add the figure to the array for adding to the collection
 			figures.push(figure);
 
 		}, this);
 	
-		//populate the collection
+		// populate the collection
 		this.reset(figures);
+		
+		// make it known
+		app.dispatcher.trigger('figuresLoaded', this);
 	}
 });
