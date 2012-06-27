@@ -3,7 +3,7 @@
 	<% _.each(notes, function(note) { %>
 		<li class="notesListItem">
 			<div class="the-note">
-				<%= note.get('note') %>
+				<span class="note-content"><%= note.get('note') %></span>
 			</div>
 			<div class="note-tags">
 			<% if (note.get('tags').length > 0) { %>
