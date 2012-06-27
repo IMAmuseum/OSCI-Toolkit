@@ -8,16 +8,24 @@ ul.notesList {
 ul.notesList li {
 	padding-bottom: 10px;
 	display:inline-block;
-	width:140px;
+	width:180px;
 	vertical-align:top;
 	margin-right:20px;
 	font-size:13px;
 }
 .the-note {
-	width:140px;max-height:140px;
+	width:180px;max-height:140px;
 	background:#FAFA9F;
 	box-shadow: 0 1px 4px rgba(0,0,0,.4);
 	
+}
+.the-note:after {
+	position:relative;
+	left:0px;top:70px;
+	content:"";
+	width:180px;height:70px;margin:0;padding:0;
+	display:block;
+	background: url('../img/bg-note-face.png') repeat-x left top;	
 }
 .note-content {
 	padding:5px;
