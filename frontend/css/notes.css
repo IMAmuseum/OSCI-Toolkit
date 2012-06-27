@@ -25,7 +25,7 @@ ul.notesList li {
 	content:"";
 	width:180px;height:70px;margin:0;padding:0;
 	display:block;
-	background: url('../img/bg-note-face.png') repeat-x left top;	
+	background: url('../img/bg-note-fade.png') repeat-x left top;	
 }
 
 .note-content {
