@@ -9,7 +9,6 @@ ul.notesList li {
 	padding-bottom: 10px;
 	display:inline-block;
 	width:140px;
-	overflow:hidden;
 	vertical-align:top;
 	margin-right:20px;
 	font-size:13px;
@@ -40,7 +39,10 @@ ul.notesList li a {
 .noteLink.onCurrentPage {
 	background-color: red;
 }
-
+a.noteLInk, a.noteEdit {
+	font-size:12px;text-transform:uppercase;
+	text-shadow: 0 1px 1px rgba(255,255,255,.7);	
+}
 a.noteLink {
 	background: url('../img/icon-link.png') no-repeat left top;
 	padding-left:22px;
