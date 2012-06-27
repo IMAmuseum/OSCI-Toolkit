@@ -129,7 +129,24 @@ a.footnote-reference {
 }
 .ui-tooltip, .qtip {
 	max-width:auto!important;
-	background: #fff!important;	
+	
+	margin-left:-10px;
+}
+
+.ui-tooltip, .qtip {
+	position: absolute;
+	left: -28000px;
+	top: -28000px;
+	display: none;
+	max-width: 280px;
+	min-width: 50px;
+	font-size: 10.5px;
+	line-height: 12px;
+	border-width: 1px;
+	border-style: solid;
+	background: url('../img/bg-toolbar.gif') repeat;
+	border-radius:6px;
+	box-shadow: 0 0 10px rgba(0,0,0,.6);
 }
 
 
