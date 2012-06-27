@@ -27,6 +27,7 @@ ul.notesList li {
 	display:block;
 	background: url('../img/bg-note-face.png') repeat-x left top;	
 }
+
 .note-content {
 	padding:5px;
 	overflow:hidden;max-height:130px;
