@@ -1,7 +1,7 @@
 <h3>Table of Contents</h3>
 <ul>
 	<% _.each(items, function(item) { %>
-		<li class="toc-item">
+		<li class="toc-item<% if (item.id === app.views.navigationView.currentNavigationItem.id) { print(" active"); } %>">
 			<a data-section-id="<%= item.id %>" href="#">
 				<div class="toc-item-thumbnail">
 					<% if (item.get('thumbnail')) { %>
