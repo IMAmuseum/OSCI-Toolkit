@@ -11,15 +11,25 @@ ul.notesList li {
 	width:140px;
 	overflow:hidden;
 	vertical-align:top;
+	margin-right:20px;
+	font-size:13px;
 }
 .the-note {
 	width:140px;max-height:140px;
 	background:#FAFA9F;
-	box-shadow: 0 1px 4px rgba(0,0,0,.4);	
+	box-shadow: 0 1px 4px rgba(0,0,0,.4);
+	
 }
 .note-content {
 	padding:5px;
-	font-size:13px;	
+	overflow:hidden;max-height:130px;
+	display:block;	
+}
+.note-tags {
+	padding-top:10px;	
+}
+.note-buttons {
+	padding-top:10px;	
 }
 ul.notesList li a {
 	padding-right: 10px;
