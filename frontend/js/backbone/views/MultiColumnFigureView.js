@@ -90,7 +90,7 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 		}
 
 		var positioned = false;
-		var numColumns = this.model.get('columns');
+		var numColumns = this.model.get('calculatedColumns');
 		var offsetLeft = 0;
 		var offsetTop = 0;
 		var maxPositionAttemps = numColumns;
@@ -252,7 +252,7 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 		this.calculatedWidth = width;
 
 		//update model number of columns based on calculations
-		this.model.set('columns', modelData.columns);
+		this.model.set('calculatedColumns', modelData.columns);
 
 		//Set the size of the figure content div inside the actual figure element
 		this.$el.find('.figure_content').css({
