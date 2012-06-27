@@ -30,6 +30,10 @@ ul.notesList li {
 .note-buttons {
 	padding-top:10px;	
 }
+.note-tags .tags-label {
+	text-transform:uppercase;
+	font-weight:bold;
+}
 ul.notesList li a {
 	padding-right: 10px;
 }
