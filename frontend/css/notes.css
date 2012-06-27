@@ -40,3 +40,12 @@ ul.notesList li a {
 .noteLink.onCurrentPage {
 	background-color: red;
 }
+
+a.noteLink {
+	background: url('../img/icon-link.png') no-repeat left top;
+	padding-left:22px;
+}
+a.noteEdit {
+	background: url('../img/icon-edit.png') no-repeat left top;
+	padding-left:22px;
+}
