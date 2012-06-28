@@ -14,7 +14,7 @@ ul.notesList li {
 	font-size:13px;
 }
 .the-note {
-	width:180px;height:140px;
+	width:180px;height:40px;
 	background:#FAFA9F;
 	box-shadow: 0 1px 4px rgba(0,0,0,.4);
 	position:relative;
