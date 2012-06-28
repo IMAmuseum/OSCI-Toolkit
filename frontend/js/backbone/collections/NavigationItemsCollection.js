@@ -45,9 +45,9 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 			id: item.a['data-section_id'],
 			parent: parent,
 			depth: depth,
-			previous: this.at(this.length - 1),
-			next: undefined,
-			length: item.a['data-length'],
+			previous: this.at(this.length - 1) || null,
+			next: null,
+			length: item.a['data-length'] || null,
 			title: item.a['value'],
 			subtitle: item.a['data-subtitle'],
 			thumbnail: item.a['data-thumbnail'],
@@ -57,7 +57,7 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 		this.add(parsedItem);
 		
 		var navItem = this.at(this.length - 1);
-		if (navItem.get('previous') !== undefined) {
+		if (navItem.get('previous') !== null) {
 			navItem.get('previous').set('next', navItem);
 		}
 		// if 'ol' tag is present, sub sections exist, process:
