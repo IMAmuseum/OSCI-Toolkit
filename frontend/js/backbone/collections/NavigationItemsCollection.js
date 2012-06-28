@@ -21,17 +21,8 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 				var navDocument = data.html[1].body.nav;
 				for (var i = 0, c = navDocument.length; i < c; i++) {
 					if (navDocument[i].type == 'toc') {
-						var navSegment;
-						// do a check if there is only one top level item
-						if (_.isArray(navDocument[i].ol.li)) {
-							navSegment = navDocument[i].ol.li;
-						}
-						else {
-							navSegment = navDocument[i].ol;
-						}
-						for (var j = 0, numItems = navSegment.length; j < numItems; j++) {
-							this.parseChildren(navSegment[j], null, 0);
-						}
+						var navSegment = navDocument[i].ol;
+						this.parseChildren(navSegment, null, 0);
 						break;
 					}
 				}
@@ -40,39 +31,51 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 			}
 		}, this);
 	},
-	parseChildren: function(item, parent, depth) {
-		var parsedItem = {
-			id: item.a['data-section_id'],
-			parent: parent,
-			depth: depth,
-			previous: this.at(this.length - 1) || null,
-			next: null,
-			length: item.a['data-length'] || null,
-			title: item.a['value'],
-			subtitle: item.a['data-subtitle'],
-			thumbnail: item.a['data-thumbnail'],
-			timestamp: item.a['data-timestamp'],
-			uri: item.a['href']
-		};
-		this.add(parsedItem);
-		
-		var navItem = this.at(this.length - 1);
-		if (navItem.get('previous') !== null) {
-			navItem.get('previous').set('next', navItem);
+	parseChildren: function(items, parent, depth) {
+		if (_.isArray(items) === false) {
+			items = [items];
 		}
-		// if 'ol' tag is present, sub sections exist, process:
-		if (item.ol && item.ol.li) {
-			var items;
-			// due to the way the xml is parsed, it comes back as an array or a direct object
-			//if (typeof(item.ol.li.length) != 'undefined') {
-			if (item.ol.li.length) {
-				items = item.ol.li;
+		for (var i=0; i < items.length; i++) {
+			var item = items[i];
+			if (item.a) {
+				var parsedItem = {
+					id: item.a['data-section_id'],
+					parent: parent,
+					depth: depth,
+					previous: this.at(this.length - 1) || null,
+					next: null,
+					length: item.a['data-length'] || null,
+					title: item.a['value'],
+					subtitle: item.a['data-subtitle'],
+					thumbnail: item.a['data-thumbnail'],
+					timestamp: item.a['data-timestamp'],
+					uri: item.a['href']
+				};
+				this.add(parsedItem);
+				
+				var navItem = this.at(this.length - 1);
+				if (navItem.get('previous') !== null) {
+					navItem.get('previous').set('next', navItem);
+				}
+				
+				// if 'ol' tag is present, sub sections exist, process:
+				if (item.ol && item.ol.li) {
+					var children;
+					// due to the way the xml is parsed, it comes back as an array or a direct object
+					//if (typeof(item.ol.li.length) != 'undefined') {
+					if (item.ol.li.length) {
+						children = item.ol.li;
+					}
+					else {
+						children = [item.ol.li];
+					}
+					for (var h = 0, numItems = children.length; h < numItems; h++) {
+						this.parseChildren(children[h], navItem, ++depth);
+					}
+				}
 			}
-			else {
-				items = [item.ol.li];
-			}
-			for (var i = 0, numItems = items.length; i < numItems; i++) {
-				this.parseChildren(items[i], navItem, ++depth);
+			if (item.li) {
+				this.parseChildren(item.li, parent, depth);
 			}
 		}
 	}
