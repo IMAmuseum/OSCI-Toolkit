@@ -14,18 +14,18 @@ ul.notesList li {
 	font-size:13px;
 }
 .the-note {
-	width:180px;max-height:140px;
+	width:180px;height:140px;
 	background:#FAFA9F;
 	box-shadow: 0 1px 4px rgba(0,0,0,.4);
-	
+	position:relative;
 }
 .the-note:after {
-	position:relative;
+	position:absolute;
 	left:0px;bottom:0px;
 	content:"";
-	width:180px;height:70px;margin:0;padding:0;
+	width:180px;height:40px;margin:0;padding:0;
 	display:block;
-	background: url('../img/bg-note-fade.png') repeat-x left top;	
+	background: url('../img/bg-note-fade.png') repeat-x left bottom;	
 }
 
 .note-content {
@@ -34,7 +34,9 @@ ul.notesList li {
 	display:block;	
 }
 .note-tags {
-	padding-top:10px;	
+	margin-top:10px;
+	padding:5px;
+	background: rgba(255,255,255,.6);	
 }
 .note-buttons {
 	padding-top:10px;	
