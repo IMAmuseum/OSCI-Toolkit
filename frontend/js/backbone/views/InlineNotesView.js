@@ -63,7 +63,7 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 					events: {
 						render: function(event, api) {
 							// bind to keyup on text area to sync changes to back end
-							api.elements.content.find('.noteForm textarea').bind('keyup', function(e) {
+							api.elements.content.find('.noteForm textarea').on('keyup', function(e) {
 								// change status text
 								api.elements.content.find('.status').text('Saving...');
 								// save the content to the model in case the note disappears (user clicks off)
@@ -99,7 +99,7 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 		}, this);
 		
 		// place icon next to paragraphs with notes after layout is complete
-		app.dispatcher.bind('notesLoaded', function(params) {
+		app.dispatcher.on('notesLoaded', function(params) {
 			_.each(app.collections.notes.models, function(n) {
 				// place a class on the paragraph identifier to indicate a note is present
 				var paragraphControls = app.views.sectionView.$el.find('.paragraph-controls[data-osci_content_id=' + n.get('content_id') + ']');

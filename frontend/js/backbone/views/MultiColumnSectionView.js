@@ -234,16 +234,17 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 		//Determine the number of columns per page
 		dimensions.columnsPerPage = Math.floor(dimensions.innerSectionWidth / dimensions.columnWidth);
-		if (dimensions.innerSectionWidth < (dimensions.columnsPerPage * dimensions.columnWidth) + ((dimensions.columnsPerPage + 1) * this.options.gutterWidth))
+		if (dimensions.innerSectionWidth < (dimensions.columnsPerPage * dimensions.columnWidth) + ((dimensions.columnsPerPage) * this.options.gutterWidth))
 		{
 			dimensions.columnsPerPage = dimensions.columnsPerPage - 1;
 		}
 
 		//Large gutters look ugly... reset column width if gutters get too big
-		var gutterCheck = (dimensions.innerSectionWidth - (dimensions.columnsPerPage * dimensions.columnWidth)) / (dimensions.columnsPerPage - 1);
+		var gutterCheck = (dimensions.innerSectionWidth - (dimensions.columnsPerPage * dimensions.columnWidth)) / (dimensions.columnsPerPage);
 		if (gutterCheck > this.options.gutterWidth) {
-			dimensions.columnWidth = (dimensions.innerSectionWidth - (this.options.gutterWidth * (dimensions.columnsPerPage + 1))) / dimensions.columnsPerPage;
+			dimensions.columnWidth = (dimensions.innerSectionWidth - (this.options.gutterWidth * (dimensions.columnsPerPage))) / dimensions.columnsPerPage;
 		}
+		dimensions.columnWidth = Math.floor(dimensions.columnWidth);
 
 		this.dimensions = dimensions;
 		//set the height of the container

@@ -2,21 +2,18 @@
 <ul class="notesList">
 	<% _.each(notes, function(note) { %>
 		<li class="notesListItem">
-			<p>
-				<a href="#" 
-					class="noteLink <% if (note.get('onCurrentPage')) { %>onCurrentPage<% } %>" 
-					data-content_id="<%= note.get('content_id') %>">
-					[NOTE_ICON]
-				</a>
-				<span>
-					<small><%= note.get('note') %></small>
-				</span>
-				<div class="noteTags">
-					<% if (note.get('tags').length > 0) { %>
-						<small>tags: <% _.each(note.get('tags'), function(tag) { %><%= tag %> <% }); %></small>
-					<% } %>
-				</div>
-			</p>
+			<div class="the-note">
+				<span class="note-content"><%= note.get('note') %></span>
+			</div>
+			<div class="note-tags">
+			<% if (note.get('tags').length > 0) { %>
+				<span class="tags-label">tags:</span> <% _.each(note.get('tags'), function(tag) { %><%= tag %> <% }); %>
+			<% } %>
+			</div>
+			<div class="note-buttons">
+				<a href="#" class="noteLink" data-content_id="<%= note.get('content_id') %>">Link</a>
+				<a href="#" class="noteEdit" data-content_id="<%= note.get('content_id') %>">Edit</a>
+			</div>
 		</li>
 	<% }); %>
 </ul>

@@ -11,6 +11,10 @@ OsciTk.views.Toc = OsciTk.views.BaseView.extend({
 	},
 	initialize: function() {
 		this.parent = this.options.parent;
+
+		app.dispatcher.on("currentNavigationItemChanged", function() {
+			this.render();
+		}, this);
 	},
 	render: function() {
 		this.$el.html(this.template({

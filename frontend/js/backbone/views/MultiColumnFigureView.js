@@ -20,17 +20,23 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 
 		this.$el.css("visibility", "hidden").attr("id", this.model.get("id"));
 
-		app.dispatcher.on("pageChanged", function(data) {
-			if (this.parent.options.pageNumber === data.page) {
-				if (!this.contentRendered) {
-					this.renderContent();
-				}
+		app.dispatcher.on("pageChanged", this.toggleVisibility, this);
+	},
 
-				this.$el.css("visibility", "visible");
-			} else {
-				this.$el.css("visibility", "hidden");
+	onClose: function() {
+		app.dispatcher.off("pageChanged", this.toggleVisibility, this);
+	},
+
+	toggleVisibility: function(data) {
+		if (this.parent.options.pageNumber === data.page) {
+			if (!this.contentRendered) {
+				this.renderContent();
 			}
-		}, this);
+
+			this.$el.css("visibility", "visible");
+		} else {
+			this.$el.css("visibility", "hidden");
+		}
 	},
 
 	render: function() {
@@ -84,7 +90,7 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 		}
 
 		var positioned = false;
-		var numColumns = this.model.get('columns');
+		var numColumns = this.model.get('calculatedColumns');
 		var offsetLeft = 0;
 		var offsetTop = 0;
 		var maxPositionAttemps = numColumns;
@@ -212,8 +218,9 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 		} else {
 			width = (modelData.columns * dimensions.columnWidth) + (dimensions.gutterWidth * (modelData.columns - 1));
 		}
+		width = Math.floor(width);
 		this.$el.css("width", width + "px");
-
+		
 		//Get the height of the caption
 		var captionHeight = this.$el.find("figcaption").outerHeight(true);
 
@@ -235,9 +242,9 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 			modelData.columns = Math.ceil((width + dimensions.gutterWidth) / (dimensions.gutterWidth + dimensions.columnWidth));
 		}
 
-		//round the height/width to 2 decimal places
-		width = roundNumber(width,2);
-		height = roundNumber(height,2);
+		//dont use partial pixels
+		width = Math.floor(width);
+		height = Math.floor(height);
 
 		this.$el.css({ height : height + "px", width : width + "px"});
 
@@ -245,7 +252,7 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 		this.calculatedWidth = width;
 
 		//update model number of columns based on calculations
-		this.model.set('columns', modelData.columns);
+		this.model.set('calculatedColumns', modelData.columns);
 
 		//Set the size of the figure content div inside the actual figure element
 		this.$el.find('.figure_content').css({

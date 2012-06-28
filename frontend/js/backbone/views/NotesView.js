@@ -7,15 +7,13 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 	className: 'notes-view',
 	template: OsciTk.templateManager.get('notes'),
 	initialize: function() {
-		$this = this;
-		
 		// re-render this view when collection changes
-		app.collections.notes.bind('add remove change', function() {
+		app.collections.notes.on('add remove change', function() {
 			this.render();
 		}, this);
 		
 		// catch the page changed event and highlight any notes in list that are on current page
-		app.dispatcher.bind('pageChanged notesLoaded', function(data) {
+		app.dispatcher.on('pageChanged notesLoaded', function(data) {
 			var page;
 			if (typeof(data.page) === 'undefined') {
 				page = app.views.navigationView.page;
@@ -30,11 +28,11 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 				// search for note's content id in current page
 				var found = pageView.$el.find('#' + note.get('content_id'));
 				if (found.length > 0) {
-					note.set('onCurrentPage', true)
+					note.set('onCurrentPage', true);
 				}
 			});
-			$this.render();
-		});
+			this.render();
+		}, this);
 	},
 	render: function() {
 		var notes = this.getSavedNotes();
@@ -46,7 +44,7 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 			var content_id = target.attr('data-content_id');
 			if (content_id) {
 				app.dispatcher.trigger('navigate', {identifier: content_id});
-				app.dispatcher.trigger('toggleNoteDialog', { contentId: content_id })
+				app.dispatcher.trigger('toggleNoteDialog', { contentId: content_id });
 				$('#'+content_id).click();
 				app.views.toolbarView.contentClose();
 			}

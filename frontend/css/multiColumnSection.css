@@ -4,7 +4,7 @@
 }
 
 #section.oscitk_multi_column {
-	margin: 60px 0 60px 40px;
+	margin: 60px 40px;
 	overflow: hidden;
 	padding: 0;
 	position: absolute;
@@ -34,7 +34,7 @@
 	overflow: hidden;
 }
 
-#pages .page { oveflow:hidden; }
+#pages .page { overflow:hidden; }
 
 /* a line height must be set for proper calculations */
 .page, .column, .column * {

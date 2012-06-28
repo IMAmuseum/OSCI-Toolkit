@@ -6,7 +6,7 @@ if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
 OsciTk.views.FullscreenFigureView = OsciTk.views.BaseView.extend({
 	id: 'fsFigureView',
 	initialize: function() {
-		app.dispatcher.on('showFigureFullscreen', this.showFigureFullscreen);
+		app.dispatcher.on('showFigureFullscreen', this.showFigureFullscreen, this);
 	},
 	showFigureFullscreen: function(id) {
 

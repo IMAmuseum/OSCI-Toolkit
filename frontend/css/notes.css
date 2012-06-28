@@ -7,6 +7,41 @@ ul.notesList {
 }
 ul.notesList li {
 	padding-bottom: 10px;
+	display:inline-block;
+	width:180px;
+	vertical-align:top;
+	margin-right:20px;
+	font-size:13px;
+}
+.the-note {
+	width:180px;max-height:140px;
+	background:#FAFA9F;
+	box-shadow: 0 1px 4px rgba(0,0,0,.4);
+	
+}
+.the-note:after {
+	position:relative;
+	left:0px;bottom:0px;
+	content:"";
+	width:180px;height:70px;margin:0;padding:0;
+	display:block;
+	background: url('../img/bg-note-fade.png') repeat-x left top;	
+}
+
+.note-content {
+	padding:5px;
+	overflow:hidden;max-height:130px;
+	display:block;	
+}
+.note-tags {
+	padding-top:10px;	
+}
+.note-buttons {
+	padding-top:10px;	
+}
+.note-tags .tags-label {
+	text-transform:uppercase;
+	font-weight:bold;
 }
 ul.notesList li a {
 	padding-right: 10px;
@@ -16,4 +51,21 @@ ul.notesList li a {
 }
 .noteLink.onCurrentPage {
 	background-color: red;
+}
+a.noteLInk, a.noteEdit {
+	font-size:12px;text-transform:uppercase;
+	text-shadow: 0 1px 1px rgba(255,255,255,.7);
+	line-height:17px;
+	display:inline-block;	
+	color:#666666;
+	padding-left:22px;
+}
+a.noteLInk:hover, a.noteEdit:hover {
+	color:#333;	
+}
+a.noteLink {
+	background: url('../img/icon-link-16.png') no-repeat left top;
+}
+a.noteEdit {
+	background: url('../img/icon-edit-16.png') no-repeat left top;
 }

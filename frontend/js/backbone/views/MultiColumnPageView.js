@@ -29,9 +29,9 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 	resetPage: function() {
 		this.removeAllContent();
 		
-		_.each(this.paragraphControlsViews, function(view) {
-			view.close();
-		});
+		for(var i = 0, c = this.paragraphControlsViews.length; i < c; i++) {
+			this.removeView(this.paragraphControlsViews[i]);
+		}
 		this.paragraphControlsViews = [];
 		
 		this.$el.children(':not(figure)').remove();
@@ -207,7 +207,7 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 						left: (columnPosition.left + contentPosition.left - this.parent.dimensions.gutterWidth) + "px"
 					}
 				});
-				this.$el.append(pcv.el);
+				this.addView(pcv);
 
 				this.paragraphControlsViews.push(pcv);
 			}
@@ -340,7 +340,6 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 				//figure was not placed... carryover to next page
 				figurePlaced = false;
 				this.removeView(figureViewInstance, false);
-				figureViewInstance.$el.detach();
 				this.parent.unplacedFigures.push(figureViewInstance);
 			}
 		}

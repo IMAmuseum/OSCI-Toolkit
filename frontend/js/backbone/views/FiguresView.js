@@ -8,7 +8,7 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 	template: OsciTk.templateManager.get('figures'),
 	initialize: function() {
 		// re-render this view when collection changes
-		app.collections.figures.bind('add remove reset', function() {
+		app.collections.figures.on('add remove reset', function() {
 			this.render();
 		}, this);
 	},

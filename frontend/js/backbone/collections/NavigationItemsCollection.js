@@ -19,19 +19,19 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 				var data = xmlToJson(loadXMLDoc(nav.href));
 				// parse the toc and index
 				var navDocument = data.html[1].body.nav;
-				for (var i in navDocument) {
+				for (var i = 0, c = navDocument.length; i < c; i++) {
 					if (navDocument[i].type == 'toc') {
 						var navSegment;
 						// do a check if there is only one top level item
-						if (typeof(navDocument[i].ol.li) === 'Array') {
+						if (_.isArray(navDocument[i].ol.li)) {
 							navSegment = navDocument[i].ol.li;
 						}
 						else {
 							navSegment = navDocument[i].ol;
 						}
-						_.each(navSegment, function(tocItem) {
-							this.parseChildren(tocItem, null, 0);
-						}, this);
+						for (var j = 0, numItems = navSegment.length; j < numItems; j++) {
+							this.parseChildren(navSegment[j], null, 0);
+						}
 						break;
 					}
 				}
@@ -64,15 +64,16 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 		if (item.ol && item.ol.li) {
 			var items;
 			// due to the way the xml is parsed, it comes back as an array or a direct object
-			if (typeof(item.ol.li.length) != 'undefined') {
+			//if (typeof(item.ol.li.length) != 'undefined') {
+			if (item.ol.li.length) {
 				items = item.ol.li;
 			}
 			else {
 				items = [item.ol.li];
 			}
-			_.each(items, function(item2) {
-				this.parseChildren(item2, navItem, ++depth);
-			}, this);
+			for (var i = 0, numItems = items.length; i < numItems; i++) {
+				this.parseChildren(items[i], navItem, ++depth);
+			}
 		}
 	}
 });
