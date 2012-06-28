@@ -148,6 +148,11 @@ a.footnote-reference {
 	border-radius:6px;
 	box-shadow: 0 0 10px rgba(0,0,0,.6);
 }
+.ui-tooltip-content {
+	background: url('../img/bg-toolbar.gif') repeat;
+	border-bottom-right-radius: 6px;
+	border-bottom-left-radius: 6px;
+}
 
 
 /* misc */
