@@ -14,13 +14,13 @@ ul.notesList li {
 	font-size:13px;
 }
 .the-note {
-	width:180px;max-height:140px;
+	width:180px;height:140px;
 	background:#FAFA9F;
 	box-shadow: 0 1px 4px rgba(0,0,0,.4);
-	
+	position:relative;
 }
 .the-note:after {
-	position:relative;
+	position:absolute;
 	left:0px;bottom:0px;
 	content:"";
 	width:180px;height:70px;margin:0;padding:0;
