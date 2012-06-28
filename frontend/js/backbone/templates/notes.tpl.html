@@ -5,11 +5,11 @@
 			<div class="the-note">
 				<span class="note-content"><%= note.get('note') %></span>
 			</div>
-			<div class="note-tags">
 			<% if (note.get('tags').length > 0) { %>
-				<span class="tags-label">tags:</span> <% _.each(note.get('tags'), function(tag) { %><%= tag %> <% }); %>
+				<div class="note-tags">
+                	<span class="tags-label">tags:</span> <% _.each(note.get('tags'), function(tag) { %><%= tag %> <% }); %>
+                </div>
 			<% } %>
-			</div>
 			<div class="note-buttons">
 				<a href="#" class="noteLink" data-content_id="<%= note.get('content_id') %>">Link</a>
 				<a href="#" class="noteEdit" data-content_id="<%= note.get('content_id') %>">Edit</a>

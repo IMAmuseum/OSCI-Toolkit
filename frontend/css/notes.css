@@ -34,7 +34,9 @@ ul.notesList li {
 	display:block;	
 }
 .note-tags {
-	padding-top:10px;	
+	margin-top:10px;
+	padding:5px;
+	background: rgba(255,255,255,.6);	
 }
 .note-buttons {
 	padding-top:10px;	
