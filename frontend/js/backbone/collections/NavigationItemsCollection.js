@@ -35,7 +35,7 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 		if (_.isArray(items) === false) {
 			items = [items];
 		}
-		for (var i=0; i < items.length; i++) {
+		for (var i = 0, numItems = items.length; i < numItems; i++) {
 			var item = items[i];
 			if (item.a) {
 				var parsedItem = {
@@ -62,15 +62,15 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 				if (item.ol && item.ol.li) {
 					var children;
 					// due to the way the xml is parsed, it comes back as an array or a direct object
-					//if (typeof(item.ol.li.length) != 'undefined') {
 					if (item.ol.li.length) {
 						children = item.ol.li;
 					}
 					else {
 						children = [item.ol.li];
 					}
-					for (var h = 0, numItems = children.length; h < numItems; h++) {
-						this.parseChildren(children[h], navItem, ++depth);
+					var nextDepth = depth + 1;
+					for (var h = 0, numChildren = children.length; h < numChildren; h++) {
+						this.parseChildren(children[h], navItem, nextDepth);
 					}
 				}
 			}
