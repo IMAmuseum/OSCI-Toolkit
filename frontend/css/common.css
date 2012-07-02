@@ -127,7 +127,7 @@ a.footnote-reference {
 }
 .ui-tooltip .ui-tooltip-tip {
 	background: url('../img/bg-toolbar.gif') repeat!important;
-	display:none;
+	display:none!important;
 }
 .ui-tooltip, .qtip {
 	max-width:auto!important;
