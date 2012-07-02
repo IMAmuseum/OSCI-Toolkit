@@ -114,6 +114,12 @@ a.footnote-reference {
 }
 
 /* tooltips */
+.toggleNoteDialog {
+	
+}
+.toggleCiteDialog {
+	
+}
 .ui-tooltip-content {
 	position: relative;
 	padding: 5px 9px;
@@ -123,7 +129,7 @@ a.footnote-reference {
 	overflow: hidden;
 	background: #fff;
 	
-	box-shadow: 0 1px 2px rgba(0,0,0,.4);
+	box-shadow: 0 1px 2px rgba(0,0,0,.2) !important;
 }
 .ui-tooltip .ui-tooltip-tip {
 	background: url('../img/bg-toolbar.gif') repeat!important;
