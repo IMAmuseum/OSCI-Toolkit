@@ -30,7 +30,7 @@
 	left: 0px;
 	width: 100%;
 	padding: 20px 20px;
-	background: url('../img/bg-fold-shadow.png') center 95% no-repeat;
+	background: url('../img/bg-fold-shadow.png') center 98% no-repeat;
 }
 #toolbar-handle {
 	height: 40px;
@@ -65,7 +65,21 @@
 #toolbar-close:hover {
 	opacity:.7;cursor:pointer;	
 }
-
+#toolbar-title-container {
+	z-index: 9;
+	position: absolute;
+	top: -40px;
+	left: 0px;
+	padding: 0 20px;
+	width: 100%;
+	pointer-events:none;
+	background: #eee url('../img/bg-toolbar.gif') repeat;
+	-webkit-transition: all .5s ease;
+	-moz-transition: all .5s ease;
+	-o-transition: all .5s ease;
+	-ms-transition: all .5s ease;
+	transition: all .5s ease;
+}
 #toolbar h2 {
 	margin: 0 0 6px 0;
 	border-bottom: 5px solid #8C8C8C;
@@ -164,6 +178,9 @@ div.Figures-toolbar-item:hover {
 div.toc-view > ul {
 	padding-left: 0px;
 	list-style: none;
+	overflow-x: hidden;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;	
 }
 div.toc-view li {
 	margin-bottom: 16px;

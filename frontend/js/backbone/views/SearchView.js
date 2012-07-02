@@ -24,7 +24,7 @@ OsciTk.views.Search = OsciTk.views.BaseView.extend({
 		this.$el.html(this.template(this));
 	},
 	resizeResultsContainer: function() {
-		var containerSize = $('#toolbar-content', this.parent.$el).height();
+		var containerSize = $('#toolbar-content').height();
 		var searchHeaderSize = $('#search-header', this.$el).outerHeight();
 		var searchResultsHeaderSize = $('#search-results-header', this.$el).outerHeight();
 

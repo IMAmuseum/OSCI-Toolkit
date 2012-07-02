@@ -48,5 +48,15 @@ OsciTk.models.Package = OsciTk.models.BaseModel.extend({
 	
 	sync: function(method, model, options) {
 		console.log('Package.sync: ' + method);
+	},
+
+	getTitle: function() {
+		var title;
+		var metadata = this.get("metadata");
+		if (metadata['dc:title'] && metadata['dc:title']['value']) {
+			title = metadata['dc:title']['value'];
+		}
+
+		return title;
 	}
 });

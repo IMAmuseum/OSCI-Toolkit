@@ -25,17 +25,17 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 		app.views.toolbarView.contentClose();
 		return false;
 	},
-	render: function() {
-		this.$el.show(); // Show first so that widths can be calculated
-
+	active: function() {
 		var fig_data = app.collections.figures.toJSON();
-		this.$el.html(this.template({figures: fig_data}));
-
 		// Set the width of the figure reel if there is more than one thumbnail
 		if (fig_data.length > 1) {
 			var thumbs = this.$el.find('figure.thumbnail');
 			this.$el.find('.figure-browser .figure-reel').width(thumbs.length * (thumbs.outerWidth(true)));
 		}
+	},
+	render: function() {
+		var fig_data = app.collections.figures.toJSON();
+		this.$el.html(this.template({figures: fig_data}));
 
 		// When the reader clicks on a figure thumbnail, show the preview for that figure...
 		this.$el.on('click', 'figure.thumbnail', {view: this},function(e) {
@@ -45,14 +45,14 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 			content.show().addClass('active');
 			e.data.view.displayTitle();
 			e.data.view.$el.find('.figure-previews').show();
-			e.data.view.parent.updateHeight();
+			app.views.toolbarView.updateHeight();
 		});
 
 		// When going back to the grid, hide the current preview and replace the close button
 		this.$el.on('click', '.back-to-grid', {view: this}, function(e) {
 			e.data.view.$el.find('.figure-previews').hide();
 			e.data.view.$el.find('.figure-browser').show();
-			e.data.view.parent.updateHeight();
+			app.views.toolbarView.updateHeight();
 		});
 
 		this.$el.on('click', '.figure-nav.next', {view: this}, function(e) {

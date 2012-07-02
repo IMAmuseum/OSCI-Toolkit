@@ -8,9 +8,9 @@ OsciTk.views.Title = OsciTk.views.BaseView.extend({
 	template: OsciTk.templateManager.get('title'),
 	initialize: function() {
 		app.dispatcher.on('packageLoaded', function(packageModel) {
-			var metadata = packageModel.get("metadata");
-			if (metadata['dc:title'] && metadata['dc:title']['value']) {
-				this.$el.find("#publication-title").text(metadata['dc:title']['value']);
+			var title = packageModel.getTitle();
+			if (title) {
+				this.$el.find("#publication-title").text(title);
 			}
 		}, this);
 
