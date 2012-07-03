@@ -169,6 +169,7 @@ a.footnote-reference {
 .paragraph-controls .ui-tooltip-content {
 	padding:5px;
 	word-wrap:normal!important;
+	box-shadow: 0 0 4px rgba(0,0,0,.3);
 }
 
 
