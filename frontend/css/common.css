@@ -115,10 +115,14 @@ a.footnote-reference {
 
 /* tooltips */
 .toggleNoteDialog {
-	
+	display:inline-block;
+	padding-left:16px;
+	background: url('../img/icon-note-mini.png') no-repeat left top;
 }
 .toggleCiteDialog {
-	
+	display:inline-block;
+	padding-left:16px;
+	background: url('../img/icon-cite-mini.png') no-repeat left top;
 }
 .ui-tooltip-content {
 	position: relative;
