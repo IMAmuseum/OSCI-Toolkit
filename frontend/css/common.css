@@ -178,8 +178,8 @@ a.footnote-reference {
 .ui-tooltip.qtip .ui-tooltip-titlebar {
 	font-size:14px;text-transform:uppercase;
 	border-bottom:3px solid #999;
-	margin-bottom:10px;
-	padding-top:5px;
+	margin: 5px 10px;
+	padding:0 0 5px 0;
 	font-family:Arial, Helvetica, sans-serif;
 }
 
