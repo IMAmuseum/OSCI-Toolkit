@@ -118,6 +118,8 @@ a.footnote-reference {
 	line-height:16px;height:16px;
 	vertical-align:center;
 	text-shadow:0 1px 1px rgba(255,255,255,.8);
+	text-transform:uppercase;
+	text-decoration:none;
 }
 .toggleNoteDialog {
 	display:inline-block;
