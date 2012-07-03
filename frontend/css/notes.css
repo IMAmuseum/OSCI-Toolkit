@@ -67,7 +67,7 @@
 	margin-bottom:5px;
 	display:block;	
 }
-.note-tooltip .status {
+.note-tooltip .status, .citation-tooltip .status {
 	text-align:right;
 	opacity:.8;
 	font-family:Arial, Helvetica, sans-serif;
