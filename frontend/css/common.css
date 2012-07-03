@@ -171,6 +171,9 @@ a.footnote-reference {
 	border-bottom-left-radius: 6px;
 	padding:20px;
 }
+.paragraph-controls .ui-tooltip, .paragraph controls .qtip {
+	box-shadow:none;	
+}
 .paragraph-controls .ui-tooltip-content {
 	padding:5px;
 	word-wrap:normal!important;
