@@ -120,16 +120,17 @@ a.footnote-reference {
 	text-shadow:0 1px 1px rgba(255,255,255,.8);
 	text-transform:uppercase;
 	text-decoration:none;
+	padding:0 5px 0 16px;
 }
 .toggleNoteDialog {
 	display:inline-block;
-	padding-left:16px;
+	
 	background: url('../img/icon-note-mini.png') no-repeat left center;
-	margin-bottom:5px;
+	margin-bottom:8px;
 }
 .toggleCiteDialog {
 	display:inline-block;
-	padding-left:16px;
+	
 	background: url('../img/icon-cite-mini.png') no-repeat left center;
 }
 .ui-tooltip-content {
