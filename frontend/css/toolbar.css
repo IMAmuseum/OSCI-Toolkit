@@ -36,7 +36,7 @@
 	background:
 		/* Shadow covers */
 		
-		linear-gradient(rgba(255,255,255,0), white 70%) 0 100%,
+		linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.7)) 0 100%,
 		
 		/* Shadows */
 		
