@@ -33,7 +33,7 @@
 	/*background: url('../img/bg-fold-shadow.png') center 98% no-repeat;*/
 }
 #toolbar-content:after {
-	content:"<img src="../img/bg-fold-shadow.png" />";
+	content:url('../img/bg-fold-shadow.png');
 	width:100%;
 	position:relative;bottom:20px;
 	left:0px;right:0px;
