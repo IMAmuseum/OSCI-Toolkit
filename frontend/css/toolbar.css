@@ -35,8 +35,9 @@
 #toolbar-content:after {
 	content: "";
 	position: relative;
-	bottom:5px;left:10px;right:10px;
+	bottom:6px;left:10px;right:10px;
 	background: url('../img/bg-fold-shadow.png') no-repeat center top transparent;
+	background-size: 100% 6px;
 	height:10px;display:block;
 
 }
