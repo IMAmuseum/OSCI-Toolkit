@@ -176,7 +176,8 @@ a.footnote-reference {
 	box-shadow:none;	
 }
 .paragraph-controls .ui-tooltip.qtip {
-	box-shadow: 0 0 4px rgba(0,0,0,.3);	
+	box-shadow: 0 0 4px rgba(0,0,0,.3);
+	border:1px solid #ccc;
 }
 .paragraph-controls .ui-tooltip-content {
 	padding:6px;
