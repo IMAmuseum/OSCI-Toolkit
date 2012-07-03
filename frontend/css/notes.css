@@ -42,16 +42,16 @@
 	top:10px;	
 }
 .ui-tooltip-icon .ui-icon {
-	width: 14px;
+	width: 14px!important;
 	height: 14px;
 	text-align: center;
 	text-indent: 0;
 	font: normal bold 10px/13px Tahoma,sans-serif;
 	
 	/*background: transparent none no-repeat -100em -100em;*/
-	background: rgba(0,0,0,.3);
-	border-radius:14px;
-	color:#fff;
+	background: rgba(0,0,0,.3)!important;
+	border-radius:14px!important;
+	color:#fff!important;
 	border:none!important;
 }
 .ui-tooltip-icon .ui-icon:hover {
