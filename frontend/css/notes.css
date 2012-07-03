@@ -40,7 +40,7 @@
 }
 
 .ui-tooltip-titlebar .ui-state-default {
-	top:10px;border:none;	
+	top:10px;border:none !important;	
 }
 .ui-tooltip-icon .ui-icon {
 	width: 14px!important;
