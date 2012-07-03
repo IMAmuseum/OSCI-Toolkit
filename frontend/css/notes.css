@@ -6,6 +6,7 @@
 	margin-bottom:10px;
 	padding:5px;
 	max-width:100%;
+	min-height:60px;
 }
 .note-tooltip .reference-text-content {
 	max-height:120px;
@@ -28,6 +29,9 @@
 	
 	display:block;
 	margin-bottom:10px;	
+	line-height:1.2;
+	font-size:12px;
+	text-shadow: 0 1px 0px rgba(255,255,255,.6);
 }
 
 
