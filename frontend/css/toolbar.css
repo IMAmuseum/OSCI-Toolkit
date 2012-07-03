@@ -31,23 +31,22 @@
 	width: 100%;
 	padding: 20px 20px;
 	/*background: url('../img/bg-fold-shadow.png') center 98% no-repeat;*/
-	
-
-	background:
-		/* Shadow covers */
-		
-		linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.7)) 0 100%,
-		
-		/* Shadows */
-		
-		radial-gradient(50% 100%,farthest-side, rgba(0,0,0,.2), rgba(0,0,0,0)) 0 100%;
-	background-repeat: no-repeat;
-	background-color: #ccc;
-	background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
-	
-	/* Opera doesn't support this in the shorthand */
-	background-attachment: local, local, scroll, scroll;
 }
+#toolbar-content:after {
+	content: "";
+	position: relative;
+	z-index: -1;
+	
+	display: block;
+	
+	height: 30px;
+	margin: 0 0 -30px;
+	background: linear-gradient(top,#FFF,#FFF 30%,rgba(255,255,255,0));
+}
+
+
+
+
 
 
 
