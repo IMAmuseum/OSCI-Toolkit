@@ -7,6 +7,11 @@
 	padding:5px;
 	max-width:100%;
 	min-height:60px;
+	font-size:12px;
+}
+.note-tooltip textarea:focus {
+	border:none!important;
+	box-shadow: 0 1px 3px rgba(0,0,0,.8);
 }
 .note-tooltip .reference-text-content {
 	max-height:120px;
@@ -33,7 +38,25 @@
 	font-size:12px;
 	text-shadow: 0 1px 0px rgba(255,255,255,.6);
 }
-
+.ui-tooltip-titlebar .ui-state-default {
+	top:10px;	
+}
+.ui-tooltip-icon .ui-icon {
+	width: 14px;
+	height: 14px;
+	text-align: center;
+	text-indent: 0;
+	font: normal bold 10px/13px Tahoma,sans-serif;
+	
+	/*background: transparent none no-repeat -100em -100em;*/
+	background: rgba(0,0,0,.3);
+	border-radius:14px;
+	color:#fff;
+	border:none!important;
+}
+.ui-tooltip-icon .ui-icon:hover {
+	background: rgba(0,0,0,.7);
+}
 
 .note-tooltip .reference-text-label {
 	font-weight:bold;
