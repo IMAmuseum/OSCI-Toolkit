@@ -22,7 +22,10 @@
 	background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
 	
 	/* Opera doesn't support this in the shorthand */
-	background-attachment: local, local, scroll, scroll;	
+	background-attachment: local, local, scroll, scroll;
+	
+	display:block;
+	margin-bottom:10px;	
 }
 
 
