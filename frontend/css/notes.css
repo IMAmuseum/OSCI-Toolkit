@@ -6,7 +6,7 @@
 	margin-bottom:10px;
 	padding:5px;
 	max-width:100%;
-	min-height:60px;
+	min-height:100px;
 	font-size:12px;
 }
 .note-tooltip textarea:focus {
@@ -14,7 +14,7 @@
 	box-shadow: 0 1px 3px rgba(0,0,0,.8);
 }
 .note-tooltip .reference-text-content {
-	max-height:120px;
+	max-height:100px;
 	overflow:auto;
 	
 	background:
