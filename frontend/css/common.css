@@ -168,6 +168,7 @@ a.footnote-reference {
 }
 .paragraph-controls .ui-tooltip-content {
 	padding:5px;
+	word-wrap:normal!important;
 }
 
 
