@@ -17,6 +17,9 @@ OsciTk.views.ToolbarItem = OsciTk.views.BaseView.extend({
 		'click': 'itemClicked',
 		'touch': 'itemClicked'
 	},
+	onClose: function() {
+		this.contentView.close();
+	},
 	render: function() {
 		this.contentView = new OsciTk.views[this.options.toolbarItem.view]({parent: this});
 		this.$el.html(this.template({
