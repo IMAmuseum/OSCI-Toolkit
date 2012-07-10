@@ -129,26 +129,99 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		var itemsOnPage = 0;
 		while(this.layoutData.items > 0) {
 			var pageView = this.getPageForProcessing(undefined, "#pages");
+			var layoutResults = null;
+			var figureIds = [];
 
 			if (!pageView.processingData.rendered) {
 				itemsOnPage = 0;
 				paragraphsOnPage = 0;
 				pageView.render();
+
+				//load any unplaced figures
+				figureIds = figureIds.concat(this.unplacedFigures);
 			}
 
 			var content = $(this.layoutData.data[i]).clone();
-			if (firstOccurence) {
-				content.attr('id', 'osci-content-' + i);
+
+			//Process any figures in the content
+			var figureLinks = content.find("a.figure_reference");
+			var numFigureLinks = figureLinks.length;
+			var inlineFigures = content.find("figure");
+			var numinlineFigures = inlineFigures.length;
+			if (content.is("figure") || numFigureLinks || numinlineFigures || figureIds.length) {
+				var j;
+
+				if (content.is("figure")) {
+					figureIds.push(content.attr("id"));
+				}
+
+				if (numFigureLinks) {
+					for (j = 0; j < numFigureLinks; j++) {
+						figureIds.push($(figureLinks[j]).attr("href").substring(1));
+					}
+				}
+
+				if (numinlineFigures) {
+					for (j = 0; j < numinlineFigures; j++) {
+						var tempFigure = $(inlineFigures[j]).remove();
+						figureIds.push(tempFigure.attr("id"));
+					}
+				}
+
+				var numFigureIds = figureIds.length;
+				for (j = 0; j < numFigureIds; j++) {
+					var figure = app.collections.figures.get(figureIds[j]);
+					var figureType = figure.get('type');
+					var typeMap = app.config.get('figureViewTypeMap');
+					var figureViewType = typeMap[figureType] ? typeMap[figureType] : typeMap['default'];
+					var figureViewInstance = this.getFigureView(figure.get('id'));
+
+					if (!figureViewInstance) {
+						figureViewInstance = new OsciTk.views[figureViewType]({
+							model : figure,
+							sectionDimensions : this.dimensions
+						});
+					}
+
+					if (!figureViewInstance.layoutComplete) {
+						if (pageView.addFigure(figureViewInstance)) {
+							//figure was added to the page... restart page processing
+							layoutResults = 'figurePlaced';
+							var inUnplaced = _.indexOf(this.unplacedFigures, figureIds[j]);
+							if (inUnplaced > -1) {
+								this.unplacedFigures.splice(inUnplaced, 1);
+							}
+							break;
+						} else {
+							if (_.indexOf(this.unplacedFigures, figureIds[j]) === -1) {
+								this.unplacedFigures.push(figureIds[j]);
+							}
+							if (content.is("figure")) {
+								layoutResults = 'next';
+							}
+						}
+					} else {
+						if (content.is("figure")) {
+							layoutResults = 'next';
+						}
+					}
+				}
 			}
 
-			//add a data attribute for all content for when content is repeated it still has an identifier
-			content.attr("data-osci_content_id", 'osci-content-' + i);
+			if (layoutResults === null) {
+				if (firstOccurence) {
+					content.attr('id', 'osci-content-' + i);
+				}
 
-			if (content.is("p")) {
-				content.attr("data-paragraph_number", paragraphNumber);
+				//add a data attribute for all content for when content is repeated it still has an identifier
+				content.attr("data-osci_content_id", 'osci-content-' + i);
+
+				if (content.is("p")) {
+					content.attr("data-paragraph_number", paragraphNumber);
+				}
+
+				layoutResults = pageView.addContent(content).layoutContent();
 			}
-
-			var layoutResults = pageView.addContent(content).layoutContent();
 
 			switch (layoutResults) {
 				case 'contentOverflow':
@@ -259,20 +332,8 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		//remove the footnotes section
 		this.layoutData.data.find("#footnotes").remove();
 
-		var figureRefTemplate = OsciTk.templateManager.get('figure-reference');
-		//remove any inline figures and replace with references
-		var inlineFigures = this.layoutData.data.find("figure").replaceWith(function(){
-			var $this = $(this);
-			var figureData = {
-				id : $this.attr("id"),
-				title : $this.attr("title")
-			};
-
-			return $(figureRefTemplate(figureData));
-		});
-
 		//chunk the data into managable parts
-		this.layoutData.data = this.layoutData.data.find('section').children(':not("section")');
+		this.layoutData.data = this.layoutData.data.find('body').children('section').children(':not("section")');
 	},
 
 	getFigureView: function(figureId) {

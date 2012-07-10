@@ -52,16 +52,6 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 			height: this.parent.dimensions.innerSectionHeight
 		});
 
-		//load any unplaced figures
-		var unplacedFigures = this.parent.unplacedFigures;
-		var numUnplacedFigures = unplacedFigures.length;
-		for (var i = 0; i < numUnplacedFigures; i++) {
-			var placed = this.addFigure(unplacedFigures[i]);
-			if (placed) {
-				this.parent.unplacedFigures.splice(i, 1);
-			}
-		}
-
 		this.initializeColumns();
 
 		//set rendered flag so that render does not get called more than once while iterating over content
@@ -109,47 +99,6 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 			column.offset = 0;
 		}
 
-		//find figure references and process the figure
-		var figureLinks = content.find("a.figure_reference");
-		if (content.hasClass('figure_reference')) {
-			figureLinks.push(content);
-		}
-		var numFigureLinks = figureLinks.length;
-
-		if (numFigureLinks) {
-			for (var i = 0; i < numFigureLinks; i++) {
-				var figureLink = $(figureLinks[i]);
-				var figureId = figureLink.attr("href").substring(1);
-				var figure = app.collections.figures.get(figureId);
-
-				//make sure the figure link is in the viewable area of the current column
-				var linkLocation = figureLink.position().top;
-				if (linkLocation <= 0 || linkLocation >= column.height) {
-					break;
-				}
-				
-				var figureType = figure.get('type');
-				var typeMap = app.config.get('figureViewTypeMap');
-				var figureViewType = typeMap[figureType] ? typeMap[figureType] : typeMap['default'];
-				var figureViewInstance = this.parent.getFigureView(figure.get('id'));
-
-				if (!figureViewInstance) {
-					figureViewInstance = new OsciTk.views[figureViewType]({
-						model : figure,
-						sectionDimensions : this.parent.dimensions
-					});
-				}
-
-				if (!figureViewInstance.layoutComplete) {
-					if (this.addFigure(figureViewInstance)) {
-						//figure was added to the page... restart page processing
-						overflow = 'figurePlaced';
-						return overflow;
-					}
-				}
-			}
-		}
-
 		var contentMargin = {
 			top : parseInt(content.css("margin-top"), 10),
 			bottom : parseInt(content.css("margin-bottom"), 10)
@@ -183,6 +132,14 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 
 			if (this.processingData.currentColumn === (this.parent.dimensions.columnsPerPage - 1)) {
 				this.processingComplete();
+			}
+
+			//If all of the content is overflowing the column remove it and move to next column
+			if ((column.height - contentPosition.top) < lineHeight) {
+				content.remove();
+				column.heightRemain = 0;
+				overflow = 'contentOverflow';
+				return overflow;
 			}
 		}
 
@@ -340,7 +297,6 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 				//figure was not placed... carryover to next page
 				figurePlaced = false;
 				this.removeView(figureViewInstance, false);
-				this.parent.unplacedFigures.push(figureViewInstance);
 			}
 		}
 
