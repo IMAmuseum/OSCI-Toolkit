@@ -66,8 +66,5 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 	
 		// populate the collection
 		this.reset(figures);
-		
-		// make it known
-		app.dispatcher.trigger('figuresLoaded', this);
 	}
 });
