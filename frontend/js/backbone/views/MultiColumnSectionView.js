@@ -333,7 +333,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		this.layoutData.data.find("#footnotes").remove();
 
 		//chunk the data into managable parts
-		this.layoutData.data = this.layoutData.data.find('body').children('section').children(':not("section")');
+		this.layoutData.data = this.layoutData.data.find('section').children();
 	},
 
 	getFigureView: function(figureId) {
