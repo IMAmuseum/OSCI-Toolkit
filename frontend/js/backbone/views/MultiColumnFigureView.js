@@ -18,9 +18,10 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 		this.calculatedWidth = 0;
 		this.position = {x:[0,0], y:[0,0]};
 
-		this.$el.css("visibility", "hidden").attr("id", this.model.get("id"));
+		this.$el.attr("id", this.model.get("id"));
 
-		app.dispatcher.on("pageChanged", this.toggleVisibility, this);
+		//TODO: this does not scale
+		//app.dispatcher.on("pageChanged", this.toggleVisibility, this);
 	},
 
 	onClose: function() {
@@ -51,6 +52,11 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 
 		if (isPositioned) {
 			this.layoutComplete = true;
+		}
+
+		//remove this
+		if (!this.contentRendered) {
+			this.renderContent();
 		}
 
 		return this;

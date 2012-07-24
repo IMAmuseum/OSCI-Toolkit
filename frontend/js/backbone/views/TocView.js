@@ -28,7 +28,7 @@ OsciTk.views.Toc = OsciTk.views.BaseView.extend({
 		// app.dispatcher.trigger('navigateToSection', sectionId);
 		// TODO: don't really want to address the appRouter directly
 		app.router.navigate("section/" + sectionId, {trigger: true});
-		this.parent.contentClose();
+		app.views.toolbarView.contentClose();
 	},
 	active: function() {
 		var containerSize = $('#toolbar-content').height();

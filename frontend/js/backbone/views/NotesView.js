@@ -34,21 +34,24 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 			this.render();
 		}, this);
 	},
+	events: {
+		"click .noteLink": "noteLinkClick"
+	},
+	noteLinkClick: function(e) {
+		e.preventDefault();
+		var target = $(e.target);
+		var content_id = target.attr('data-content_id');
+		if (content_id) {
+			app.dispatcher.trigger('navigate', {identifier: content_id});
+			app.dispatcher.trigger('toggleNoteDialog', { contentId: content_id });
+			$('#'+content_id).click();
+			app.views.toolbarView.contentClose();
+		}
+	},
 	render: function() {
 		var notes = this.getSavedNotes();
 		this.$el.html(this.template({notes: notes}));
-		// bind the clicks to trigger the click on the appropriate content_id
-		this.$el.on('click', '.noteLink', function(e) {
-			e.preventDefault();
-			var target = $(e.target);
-			var content_id = target.attr('data-content_id');
-			if (content_id) {
-				app.dispatcher.trigger('navigate', {identifier: content_id});
-				app.dispatcher.trigger('toggleNoteDialog', { contentId: content_id });
-				$('#'+content_id).click();
-				app.views.toolbarView.contentClose();
-			}
-		});
+		
 		return this;
 	},
 	getSavedNotes: function() {

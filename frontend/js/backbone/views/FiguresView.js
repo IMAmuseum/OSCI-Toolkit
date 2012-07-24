@@ -14,7 +14,41 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 	},
 	events: {
 		"click .figure-preview": "onFigurePreviewClicked",
-		"click a.view-in-context": "onViewInContextClicked"
+		"click a.view-in-context": "onViewInContextClicked",
+		"click figure.thumbnail": "onThumbnailClick",
+		"click .back-to-grid": "backToGridClick",
+		"click .figure-nav.next": "figureNextClick",
+		"click .figure-nav.prev": "figurePrevClick"
+	},
+	figureNextClick: function(e) {
+		var new_fig = this.$el.find('figure.preview.active').hide().removeClass('active').next('figure.preview');
+		if (new_fig.length === 0) {
+			new_fig = this.$el.find('figure.preview').first();
+		}
+		new_fig.show().addClass('active');
+		this.displayTitle();
+	},
+	figurePrevClick: function(e) {
+		var new_fig = this.$el.find('figure.preview.active').hide().removeClass('active').prev('figure.preview');
+		if (new_fig.length === 0) {
+			new_fig = this.$el.find('figure.preview').last();
+		}
+		new_fig.show().addClass('active');
+		this.displayTitle();
+	},
+	backToGridClick: function(e) {
+		this.$el.find('.figure-previews').hide();
+		this.$el.find('.figure-browser').show();
+		app.views.toolbarView.updateHeight();
+	},
+	onThumbnailClick: function(e) {
+		this.$el.find('.figure-browser').hide();
+		this.$el.find('.figure-previews figure.active').hide().removeClass('active');
+		var content = this.$el.find("figure.preview[data-figure-id='" + $(e.currentTarget).attr('data-figure-id') + "']");
+		content.show().addClass('active');
+		this.displayTitle();
+		this.$el.find('.figure-previews').show();
+		app.views.toolbarView.updateHeight();
 	},
 	onFigurePreviewClicked: function(event_data) {
 		app.dispatcher.trigger('showFigureFullscreen', $(event_data.target).parent('figure').attr('data-figure-id'));
@@ -36,42 +70,6 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 	render: function() {
 		var fig_data = app.collections.figures.toJSON();
 		this.$el.html(this.template({figures: fig_data}));
-
-		// When the reader clicks on a figure thumbnail, show the preview for that figure...
-		this.$el.on('click', 'figure.thumbnail', {view: this},function(e) {
-			e.data.view.$el.find('.figure-browser').hide();
-			e.data.view.$el.find('.figure-previews figure.active').hide().removeClass('active');
-			var content = e.data.view.$el.find("figure.preview[data-figure-id='" + $(this).attr('data-figure-id') + "']");
-			content.show().addClass('active');
-			e.data.view.displayTitle();
-			e.data.view.$el.find('.figure-previews').show();
-			app.views.toolbarView.updateHeight();
-		});
-
-		// When going back to the grid, hide the current preview and replace the close button
-		this.$el.on('click', '.back-to-grid', {view: this}, function(e) {
-			e.data.view.$el.find('.figure-previews').hide();
-			e.data.view.$el.find('.figure-browser').show();
-			app.views.toolbarView.updateHeight();
-		});
-
-		this.$el.on('click', '.figure-nav.next', {view: this}, function(e) {
-			var new_fig = e.data.view.$el.find('figure.preview.active').hide().removeClass('active').next('figure.preview');
-			if (new_fig.length === 0) {
-				new_fig = e.data.view.$el.find('figure.preview').first();
-			}
-			new_fig.show().addClass('active');
-			e.data.view.displayTitle();
-		});
-
-		this.$el.on('click', '.figure-nav.prev', {view: this}, function(e) {
-			var new_fig = e.data.view.$el.find('figure.preview.active').hide().removeClass('active').prev('figure.preview');
-			if (new_fig.length === 0) {
-				new_fig = e.data.view.$el.find('figure.preview').last();
-			}
-			new_fig.show().addClass('active');
-			e.data.view.displayTitle();
-		});
 
 		return this;
 	},
