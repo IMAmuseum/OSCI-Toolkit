@@ -312,6 +312,12 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 			dimensions.columnsPerPage = dimensions.columnsPerPage - 1;
 		}
 
+		//If we ended up with no columns, force it to one column
+		if (dimensions.columnsPerPage === 0) {
+			dimensions.columnsPerPage = 1;
+			dimensions.columnWidth = dimensions.innerSectionWidth - this.options.gutterWidth;
+		}
+
 		//Large gutters look ugly... reset column width if gutters get too big
 		var gutterCheck = (dimensions.innerSectionWidth - (dimensions.columnsPerPage * dimensions.columnWidth)) / (dimensions.columnsPerPage);
 		if (gutterCheck > this.options.gutterWidth) {
