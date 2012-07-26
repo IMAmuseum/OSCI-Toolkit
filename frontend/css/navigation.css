@@ -150,3 +150,15 @@
 	/*border: 1px solid black;*/
 }
 
+@media (max-width:600px) {
+	#navigation .next-page.corner {
+		display: none;
+	}
+	#navigation .prev-page.corner {
+		display: none;
+	}
+	#navigation .pager {
+		left: 0px;
+		right: 0px;
+	}
+}

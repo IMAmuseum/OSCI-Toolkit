@@ -564,6 +564,8 @@ background-image: -webkit-gradient(
 	#toolbar-handle {
 		width: 100%;
 		right: 0px;
+		border-bottom-left-radius:0;
+		border-bottom-right-radius:0;
 	}
 
 	#toolbar .figure-placeholder {
@@ -571,6 +573,8 @@ background-image: -webkit-gradient(
 		height: 100px;
 	}
 
-
+	#toolbar-content {
+		padding: 6px 20px;
+	}
 }
 
