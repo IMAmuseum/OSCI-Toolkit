@@ -107,7 +107,7 @@ OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 		});
 
 		$('#toolbar-close').css({
-			top: "10px"
+			top: "0px"
 		});
 
 		toolbarTitle.css({

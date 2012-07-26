@@ -41,11 +41,7 @@
 	background-size: 100% 6px;
 	height:6px;display:block;
 	border-bottom:1px solid #e3e3e3;
-
 }
-
-
-
 
 #toolbar-handle {
 	height: 40px;
@@ -55,8 +51,8 @@
 	background: url('../img/bg-toolbar.gif') repeat;
 	border-bottom-left-radius:5px;
 	border-bottom-right-radius:5px;
-	
 }
+
 #toolbar-close {
 	z-index: 10;
 	position: absolute;
@@ -83,7 +79,7 @@
 #toolbar-title-container {
 	z-index: 9;
 	position: absolute;
-	top: -40px;
+	top: -45px;
 	left: 0px;
 	padding: 0 20px;
 	width: 100%;
@@ -96,7 +92,7 @@
 	transition: all .5s ease;
 }
 #toolbar h2 {
-	margin: 0 0 6px 0;
+	margin: 6px 0 6px 0;
 	border-bottom: 5px solid #8C8C8C;
 }
 #toolbar h3 {
