@@ -6,16 +6,16 @@ if (typeof OsciTk.collections === 'undefined'){OsciTk.collections = {};}
 OsciTk.collections.Notes = OsciTk.collections.BaseCollection.extend({
 	model: OsciTk.models.Note,
 	initialize: function() {
-		// Not sure we need this
-		// this.on('change', function() {
-		// 	app.dispatcher.trigger('notesChanged');
-		// });
 		app.dispatcher.on('currentNavigationItemChanged', function(navItem) {
 			//TODO: Refactor once Gray cleans up the NavigationItemModel
 			if (navItem.id) {
 				app.collections.notes.getNotesForSection(navItem.id);
 			}
 		}, this);
+	},
+	comparator: function(note) {
+		// parse out the content id number and use that for internal sorting
+		return note.get('content_id').match(/.*-(\d+)/)[1];
 	},
 	parse: function(response) {
 		if (response.success) {
