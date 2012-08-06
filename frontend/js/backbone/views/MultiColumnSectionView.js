@@ -172,8 +172,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 				for (j = 0; j < numFigureIds; j++) {
 					var figure = app.collections.figures.get(figureIds[j]);
 					var figureType = figure.get('type');
-					var typeMap = app.config.get('figureViewTypeMap');
-					var figureViewType = typeMap[figureType] ? typeMap[figureType] : typeMap['default'];
+					var figureViewType = OsciTk.views.figureTypeRegistry[figureType] ? OsciTk.views.figureTypeRegistry[figureType] : OsciTk.views.figureTypeRegistry['default'];
 					var figureViewInstance = this.getFigureView(figure.get('id'));
 
 					if (!figureViewInstance) {
