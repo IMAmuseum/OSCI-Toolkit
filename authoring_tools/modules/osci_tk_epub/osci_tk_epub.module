@@ -1152,7 +1152,7 @@ function osci_tk_epub_block_view($delta = '')
 				$links = array();
 
 				// add the content document link for sections
-				if ($node->type === 'section') {
+				if ($node->type !== 'publication') {
 					$links[] = l("Content Document", "api/epub/{$nid}/content.xhtml");
 				}
 
