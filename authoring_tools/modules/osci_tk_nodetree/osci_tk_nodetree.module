@@ -4,10 +4,10 @@ function osci_tk_nodetree_menu()
 {
 	$items = array();
 
-	$items['ajax/nodetree/%'] = array(
+	$items['ajax/nodetree/%/%/%'] = array(
 			'title'             => 'Nodetree Autocomplete',
 			'page callback'     => 'osci_tk_nodetree_autocomplete',
-			'page arguments'	=> array(2),
+			'page arguments'	=> array(2,3,4),
 			'access arguments'  => array('access content'),
 			'type'              => MENU_CALLBACK
 	);
@@ -88,7 +88,7 @@ function osci_tk_nodetree_field_widget_form(&$form, &$form_state, $field, $insta
 			$element[$i]['target_nid'] = array(
 					'#type' => 'textfield',
 					'#title' => 'Section',
-					'#autocomplete_path' => 'ajax/nodetree/' . $field['field_name'],
+					'#autocomplete_path' => 'ajax/nodetree/'  . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $field['field_name'],
 					'#value_callback' => 'osci_tk_nodetree_autocomplete_value',
 					'#attributes' => array('class' => array('target-field')),
 					'#default_value' => isset($items[$i]['target_nid']) ? 
@@ -275,19 +275,30 @@ function osci_tk_nodetree_weight_rsort($a, $b) {
 	return $b['weight'] - $a['weight'];
 }
 
-function osci_tk_nodetree_autocomplete($fieldName, $query) {
-	// query on node title
+function osci_tk_nodetree_autocomplete($entityType, $bundle, $fieldName, $query) {
+	$field = field_info_field($fieldName);
+	$instance = field_info_instance($entityType, $fieldName, $bundle);
+	$types = $instance['widget']['settings']['osci_tk_content_types'];
+	$types = array_keys(array_filter($types));
+
 	$query = trim(check_plain($query));
-	$results = db_query("SELECT nid, title 
-			FROM {node} n 
-			WHERE n.type = 'section' 
-			AND n.status = 1 
-			AND n.title LIKE '%{$query}%' 
-			ORDER BY n.created DESC");
-	$response = array();
-	foreach($results as $result) {
+    $results = db_select('node', 'n')
+        ->fields('n', array('title', 'nid'))
+        ->condition('type', $types, 'IN')
+        ->condition('status', 1)
+        ->condition('title', '%'.db_like($query).'%', 'LIKE')
+        ->orderBy('created', 'DESC')
+        ->addTag('node_access')
+        ->range(0, 100)
+        ->execute();
+
+    $response = array();
+	
+	foreach($results as $result) 
+	{
 		$response["[nid:{$result->nid}] {$result->title}"] = $result->title;
 	}
+
 	drupal_json_output($response);
 }
 
@@ -309,28 +320,27 @@ function osci_tk_nodetree_autocomplete_value($element, $input = FALSE, $form_sta
 	return $input;
 }
 
-// TODO: 
-// function osci_tk_figure_field_widget_settings_form($field, $instance)
-// {
-// 	$widget = $instance['widget'];
-// 	$settings = $widget['settings'];
-// 	$form = array();
+function osci_tk_nodetree_field_widget_settings_form($field, $instance)
+{
+	$widget = $instance['widget'];
+	$settings = $widget['settings'];
+	$form = array();
 
-// 	if ($widget['type'] === 'osci_tk_figure_widget')
-// 	{
-// 		$form['osci_tk_figure_types'] = array(
-// 				'#type' => 'checkboxes',
-// 				'#title' => t('Content types that can be referenced'),
-// 				'#description' => t('The available content types for use as a figure.'),
-// 				'#default_value' => $settings['osci_tk_figure_types'],
-// 				'#required' => TRUE,
-// 				'#mulitple' => true,
-// 				'#options' => array_map('check_plain', node_type_get_names())
-// 		);
-// 	}
+	if ($widget['type'] === 'nodetree_nodetree_form')
+	{
+		$form['osci_tk_content_types'] = array(
+				'#type' => 'checkboxes',
+				'#title' => t('Content types that can be referenced'),
+				'#description' => t('The available content types that can be added to this field.'),
+				'#default_value' => isset($settings['osci_tk_content_types']) ? $settings['osci_tk_content_types'] : array("section"),
+				'#required' => TRUE,
+				'#mulitple' => true,
+				'#options' => array_map('check_plain', node_type_get_names())
+		);
+	}
 
-// 	return $form;
-// }
+	return $form;
+}
 
 function osci_tk_nodetree_get_data_for_nid($nid) {
 	$nodeTreeData = array();
