@@ -74,10 +74,11 @@ function osci_tk_nodetree_field_presave($entity_type, $entity, $field, $instance
  			if (is_array($matches) && isset($matches[1])) {
  				$item['parent_nid'] = $matches[1];
  			}
+ 			// make sure nids are parsed out
 			preg_match('/\[nid:(\d+)\]/', $item['target_nid'], $matches);
-                        if (is_array($matches) && isset($matches[1])) {
-                                $item['target_nid'] = $matches[1];
-                        }
+			if (is_array($matches) && isset($matches[1])) {
+				$item['target_nid'] = $matches[1];
+			}
  		}
  		$items = osci_tk_nodetree_sort_nodetree($items);
 	}
