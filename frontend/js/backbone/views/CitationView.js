@@ -39,13 +39,22 @@ OsciTk.views.Citation = OsciTk.views.BaseView.extend({
 								data.citation.date = new Date(data.citation.date);
 								data.citation.formattedDate = (data.citation.date.getMonth() + 1) + "/" + data.citation.date.getDate() + "/" + data.citation.date.getFullYear();
 
+								//make sure data exists for all variables in templates
+								data.citation.creator = data.citation.creator ? data.citation.creator : '';
+								data.citation.description = data.citation.description ? data.citation.description : '';
+								data.citation.editor = data.citation.editor ? data.citation.editor : '';
+								data.citation.publicationTitle = data.citation.publicationTitle ? data.citation.publicationTitle : '';
+								data.citation.publisher = data.citation.publisher ? data.citation.publisher : '';
+								data.citation.rights = data.citation.rights ? data.citation.rights : '';
+								data.citation.title = data.citation.title ? data.citation.title : '';
+
 								//update the display
 								this.set('content.text', citationView.template(data.citation));
 
 								this.elements.content.on('click', 'a', function(e) {
 									e.preventDefault();
 									var $this = $(this);
-									
+
 									var container = $this.parents(".citations");
 									container.find('.citation').hide();
 									container.find($this.attr('href')).show();

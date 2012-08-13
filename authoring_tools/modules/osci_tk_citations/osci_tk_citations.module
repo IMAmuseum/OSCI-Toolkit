@@ -28,12 +28,12 @@ function osci_tk_citations_request() {
 	if (isset($_GET['publication_id']) && !empty($_GET['publication_id'])
 		&& isset($_GET['section_id']) && !empty($_GET['section_id'])
 		&& isset($_GET['element_id']) && !empty($_GET['element_id'])) {
-		
+
 		$pid = $_GET['publication_id'];
 		$sid = $_GET['section_id'];
 		$eid = $_GET['element_id'];
 		$revTime = isset($_GET['revision']) ? $_GET['revision'] : time();
-		
+
 		// load the section node and its book-parent section. if no parent, use itself
 		//TODO: MAKE SURE THIS IS A PUBLICATION
 		$publication = node_load($pid, _osci_tk_utility_retrieve_revision_id_by_timestamp($pid, $revTime));
@@ -48,7 +48,7 @@ function osci_tk_citations_request() {
 
 		$citationData = _osci_tk_epub_get_book_metadata($publication);
 		unset($citationData['meta']);
-		
+
 		//Get the Creator from section if set
 		if (isset($section->field_osci_tk_creator) && isset($section->field_osci_tk_creator['und'])) {
 			$citationData['creator'] = array();
@@ -66,13 +66,13 @@ function osci_tk_citations_request() {
 		}
 
 		$citationData['revision'] = $revTime;
-		$citationData['elemtent'] = $eid;
+		$citationData['element'] = $eid;
 		$citationData['publicationTitle'] = $citationData['title'];
 		$citationData['title'] = $section->title;
 
 		// output the json response
 		print json_encode(array(
-			'success' => TRUE, 
+			'success' => TRUE,
 			'citation' => $citationData
 		));
 		return;
