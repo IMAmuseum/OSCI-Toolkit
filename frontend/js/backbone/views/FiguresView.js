@@ -14,6 +14,7 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 	},
 	events: {
 		"click .figure-preview": "onFigurePreviewClicked",
+		"click a.view-fullscreen": "onFigurePreviewClicked",
 		"click a.view-in-context": "onViewInContextClicked",
 		"click figure.thumbnail": "onThumbnailClick",
 		"click .back-to-grid": "backToGridClick",
