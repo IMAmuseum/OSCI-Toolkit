@@ -352,6 +352,7 @@ div.font-view div.theme-control a:active {
 
 /* FIGURE VIEW */
 
+#toolbar .figures-view .view-fullscreen,
 #toolbar .figures-view .view-in-context {
 	cursor: pointer;
 }
