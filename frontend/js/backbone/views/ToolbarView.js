@@ -48,7 +48,6 @@ OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 		if ((this.activeToolbarItemView && view.cid !== this.activeToolbarItemView.cid) || this.activeToolbarItemView === undefined) {
 			this.activeToolbarItemViewChanged = true;
 			if (this.activeToolbarItemView) {
-				console.log("detaching");
 				this.activeToolbarItemView.contentView.$el.detach();
 			}
 		} else {

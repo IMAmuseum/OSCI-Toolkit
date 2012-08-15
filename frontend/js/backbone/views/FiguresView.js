@@ -39,6 +39,11 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 	backToGridClick: function(e) {
 		this.$el.find('.figure-previews').hide();
 		this.$el.find('.figure-browser').show();
+
+		//Call active to make sure width is set correctly
+		this.active();
+
+		//resize content area to make sure layout is correct
 		app.views.toolbarView.updateHeight();
 	},
 	onThumbnailClick: function(e) {
@@ -60,9 +65,8 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 		return false;
 	},
 	active: function() {
-		var fig_data = app.collections.figures.toJSON();
 		// Set the width of the figure reel if there is more than one thumbnail
-		if (fig_data.length > 1) {
+		if (app.collections.figures.length > 1) {
 			var thumbs = this.$el.find('figure.thumbnail');
 			this.$el.find('.figure-browser .figure-reel').width(thumbs.length * (thumbs.outerWidth(true)));
 		}
