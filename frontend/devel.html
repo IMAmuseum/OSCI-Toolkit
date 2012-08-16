@@ -75,15 +75,15 @@
 			app.bootstrap({
 				packageUrl: 'sample/package.opf',
 				templateUrls: [
-					'js/backbone/templates/'
+					'/osci_tk/frontend/js/backbone/templates/'
 				],
 				endpoints: {
-					'OsciTkNotes': '/api/notes/',
-					'OsciTkNote': '/api/notes/',
-					'OsciTkSearch': '/api/search/',
-					'OsciTkOpenSearch': '/api/opensearch/',
-					'OsciTkAccount': '/api/users/',
-					'OsciTkCitation': '/api/citations/'				
+					'OsciTkNotes': '/osci_tk/api/notes/',
+					'OsciTkNote': '/osci_tk/api/notes/',
+					'OsciTkSearch': '/osci_tk/api/search/',
+					'OsciTkOpenSearch': '/osci_tk/api/opensearch/',
+					'OsciTkAccount': '/osci_tk/api/users/',
+					'OsciTkCitation': '/osci_tk/api/citations/'				
 				},
 				toolbarItems: [
 					{view: 'Toc', text: 'ToC'},
@@ -100,6 +100,10 @@
 					gutterWidth : 40,
 					minLinesPerColumn : 5,
 					defaultLineHeight: 16
+				},
+				figureViewTypeMap: {
+					'default': 'MultiColumnFigure',
+					'image_asset': 'MultiColumnFigureImage'
 				},
 				paragraphControls: {
 					'toggleNoteDialog': 'note',

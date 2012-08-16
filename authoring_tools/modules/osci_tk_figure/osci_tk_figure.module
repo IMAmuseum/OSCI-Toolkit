@@ -10,14 +10,16 @@ function osci_tk_figure_menu()
 		'page arguments'	=> array(2,3,4),
         'access arguments'  => array('access content'),
         'type'              => MENU_CALLBACK,
+        'file'              => 'osci_tk_figure.pages.inc',
     );
     
-    $items['ajax/figurepreview/%'] = array(
+    $items['ajax/figurepreview/%node'] = array(
         'title'             => 'Figure preview',
         'page callback'     => 'osci_tk_figure_preview',
     	'page arguments'	=> array(2),
         'access arguments'  => array('access content'),
         'type'              => MENU_CALLBACK,
+        'file'              => 'osci_tk_figure.pages.inc',
     );
     
    	$items['ajax/figurethumb/save'] = array(
@@ -25,7 +27,15 @@ function osci_tk_figure_menu()
         'page callback'     => 'osci_tk_figure_thumb_save',
         'access arguments'  => array('access content'),
         'type'              => MENU_CALLBACK,
+        'file'              => 'osci_tk_figure.pages.inc',
     );
+
+    $items['ajax/figure/asset-options'] = array(
+        'page callback'     => 'osci_tk_figure_asset_options',
+        'access arguments'  => array('access content'),
+        'type'              => MENU_CALLBACK,
+        'file'              => 'osci_tk_figure.pages.inc',
+    ); 
 
 	return $items;
 }
@@ -161,6 +171,9 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 {
 	if ($instance['widget']['type'] === 'osci_tk_figure_widget')
 	{
+        ctools_include('ajax');
+        ctools_include('modal');
+        ctools_modal_add_js();
 		drupal_add_library('system', 'ui.dialog');
 		drupal_add_js(drupal_get_path('module','osci_tk_figure') . '/js/figure_field.js');
 		
@@ -195,13 +208,14 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 
 		for($i = 0; $i < $max; $i++)
 		{
-			$itemDelta = $i;
-			$item = isset($items[$itemDelta]) ? $items[$itemDelta] : array();
+			$itemDelta  = $i;
+			$item       = isset($items[$itemDelta]) ? $items[$itemDelta] : array();
+			$figId      = _osci_tk_figure_create_id($form['nid']['#value'], $itemDelta);
+            $asset      = isset($item['asset_reference']) ? node_load($item['asset_reference']) : '';
+            $key        = _osci_tk_figure_asset_label($asset);
 			
-			$figId = _osci_tk_figure_create_id($form['nid']['#value'], $itemDelta);
-			
+dpm($element);
 			$figureElement[] = array(
-				'#title' 			=> $itemDelta . ' <span>[figure:' . $figId . ']</span>',
 				'#type' 			=> 'fieldset',
 				'#attributes' 		=> array(
 					'class'			=> array('figure-wrapper')
@@ -212,7 +226,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 					'#markup' => '<figure class="figure_reference_preview">&nbsp;</figure>',
 				),
 				'figure_id' => array(
-					'#markup' => '<div class="figure_identifier" data-figId="' . $figId . '">' . $itemDelta . ' <span>[figure:' . $figId . ']</span> </div>'
+					'#markup' => '<div class="figure_identifier" data-figId="' . $figId . '"><label>Wiki Syntax:</label> <span>[figure:' . $figId . ']</span> </div>'
 				),
 				'options' => array(
 					'#type' => 'hidden',
@@ -225,8 +239,13 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 					'#type'                 => 'textfield',
 					'#autocomplete_path'    => 'ajax/figure/' . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $field['field_name'],
 					'#attributes'			=> array('class' => array('figure_reference_field')),
-					'#default_value'        => isset($item['asset_reference']) ? $item['asset_reference'] : '',
+					'#default_value'        => $key, 
+                    '#element_validate'     => array('osci_tk_figure_reference_validate'),
 				),
+                'asset_options' => array(
+                    '#type' => 'item',
+                    '#markup' => ctools_modal_text_button('Asset Options', 'ajax/figure/asset-options', 'asset options', 'button'),
+                ),
 				'number_template' => array(
 					'#title' 				=> t('Number Template'),
 					'#description' 			=> t('The template to use for generating the figure number. (cat# will be replaced with the catalog number, fig# will be replaced with the figure number)'),
@@ -282,6 +301,19 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 		'#weight' => -100
 	);
 	return $element + $figureElement;
+}
+
+/**
+ * Validate figure reference form element
+ */
+function osci_tk_figure_reference_validate($element, &$form_state, $form) {
+    if (!empty($element['#value'])) { 
+        if (preg_match("/.+\[(\d+)\]/", $element['#value'], $matches)) {
+            form_set_value($element, $matches[1], $form_state);
+        } else {
+            form_set_error($element['#name'], 'Invalid asset reference');
+        } 
+    }
 }
 
 function figure_add_more_submit($form, &$form_state)
@@ -385,112 +417,6 @@ function osci_tk_figure_node_view($node, $view_mode, $langcode) {
 
 }
 
-
-function osci_tk_figure_preview($nid) {
-	// get node and ensure it's a valid figure type
-	$node = node_load($nid);
-	$ret = new stdClass();
-	$time = time();
-	$ret->time = $time;
-	$ret->div = '';
-	
-	//invoke hook per content type to load a preview image and get js callback function name for figure options
-	$results = array_merge(
-		array('image_uri' => null, 'callback' => null),
-		module_invoke_all("osci_tk_figure_preview_" . $node->type, $node)
-	);
-	
-	//Add the image preview to the return
-	if ($results['image_uri']) {
-		$ret->div = theme_image_style(array(
-			'style_name' 	=> variable_get('osci_tk_image_style_figure_preview', 'osci_tk_default'),
-			'path' 			=> $results['image_uri'],
-			'alt' 			=> $node->title,
-			'title' 		=> $node->title,
-			'width'         => null,
-			'height'        => null,
-			'attributes' 	=> array(
-				'class' => 'preview_image',
-			)
-		));
-	} else {
-		$ret->div = '<div class="preview_image">No Preview Available</div>';
-	}
-	
-	//Add the js callback name to the return
-	$ret->callback = $results['callback'];
-	$ret->nid = $nid;
-
-	return drupal_json_output($ret);
-}
-
-function osci_tk_figure_thumb_save() {
-	preg_match('/data:\w+\/(\w+);base64,(.*)/', $_REQUEST['fileDataURI'], $matches);
-	$fileType = $matches[1];
-	switch($fileType) {
-		case "jpeg":
-			$ext = 'jpg';
-			break;
-		case "png":
-			$ext = 'png';
-			break;
-		case "gif":
-			$ext = 'gif';
-			break;
-	}
-	$fileData = base64_decode(str_replace(' ','+',$matches[2]));
-	$figureId = $_REQUEST['figureId'];
-	$dir = $_SERVER['DOCUMENT_ROOT'].substr(base_path(),1)."/sites/default/files/previews/";
-	
-	// remove any previous thumbs for this figure
-	$dirHandle = opendir($dir);
-	while (($file = readdir($dirHandle)) !== FALSE) {
-		if (strstr($file, $figureId)) {
-			unlink(drupal_realpath("public://previews/".$file));
-		}
-	}
-	
-	// save the new figure thumb
-	$filename = $figureId.'.'.time().'.'.$ext;
-	file_put_contents($dir.$filename, $fileData);
-	// form the return
-	$ret = new stdClass;
-	$ret->url = image_style_url(
-		variable_get('osci_tk_image_style_figure_preview', 'osci_tk_default'), 
-		'public://previews/' . $filename
-	);
-	$ret->uri = 'public://previews/' . $filename;
-	print json_encode($ret);
-}
-
-function osci_tk_figure_reference($entity_type, $bundle, $field_name, $queryString = '') 
-{
-	$field = field_info_field($field_name);
-	$instance = field_info_instance($entity_type, $field_name, $bundle);
-	
-	$types = $instance['widget']['settings']['osci_tk_figure_types'];
-	$types = array_keys(array_filter($types));
-	
-    $figs = db_select('node', 'n')
-        ->fields('n', array('title', 'nid'))
-        ->condition('type', $types, 'IN')
-        ->condition('status', 1)
-        ->condition('title', '%'.db_like($queryString).'%', 'LIKE')
-        ->orderBy('created', 'DESC')
-        ->addTag('node_access')
-        ->range(0, 100)
-        ->execute();
-	
-	$matches = array();
-	
-	foreach($figs as $result) 
-	{
-		$matches[$result->nid] = $result->title;
-	}
-	
-	return drupal_json_output($matches);
-}
-
 function osci_tk_figure_osci_tk_image_types() 
 {
 	$types = array();
@@ -543,4 +469,8 @@ function _osci_tk_figure_process_number_template($figure)
 function _osci_tk_figure_create_id($nid, $delta)
 {
 	return 'fig-' . $nid . '-' . $delta;
+}
+
+function _osci_tk_figure_asset_label($asset) {
+    return (is_object($asset)) ? $asset->title . ' [' . $asset->nid . ']' : '';
 }
