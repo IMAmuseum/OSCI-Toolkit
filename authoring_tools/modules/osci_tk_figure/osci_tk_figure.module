@@ -30,8 +30,9 @@ function osci_tk_figure_menu()
         'file'              => 'osci_tk_figure.pages.inc',
     );
 
-    $items['ajax/figure/asset-options'] = array(
+    $items['ajax/figure/asset-options/%node'] = array(
         'page callback'     => 'osci_tk_figure_asset_options',
+        'page arguments'    => array(3),
         'access arguments'  => array('access content'),
         'type'              => MENU_CALLBACK,
         'file'              => 'osci_tk_figure.pages.inc',
@@ -171,6 +172,11 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 {
 	if ($instance['widget']['type'] === 'osci_tk_figure_widget')
 	{
+
+        /**
+         * Load includes
+         */
+        module_load_include('inc', 'osci_tk_figure', 'osci_tk_figure.assets');
         ctools_include('ajax');
         ctools_include('modal');
         ctools_modal_add_js();
@@ -244,7 +250,7 @@ dpm($element);
 				),
                 'asset_options' => array(
                     '#type' => 'item',
-                    '#markup' => ctools_modal_text_button('Asset Options', 'ajax/figure/asset-options', 'asset options', 'button'),
+                    '#markup' => ctools_modal_text_button('Asset Options', 'ajax/figure/asset-options/' . $item['asset_reference'], '', 'button asset-options'),
                 ),
 				'number_template' => array(
 					'#title' 				=> t('Number Template'),

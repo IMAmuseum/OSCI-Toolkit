@@ -11,24 +11,8 @@
 				dest.html(data.div);
 				
 				// replace the image with the preview url if it's in the options
-				if (options.previewUrl) {
+				if (options != null && options.previewUrl) {
 					dest.find('img:first').attr('src', options.previewUrl);
-				}
-				
-				// build a figure options breakout button if a callback has been specified and declared
-				if (data.callback && window[data.callback] && typeof(window[data.callback]) === 'function')
-				{
-					$('<input>', {
-						type : 'button',
-						value : 'Figure Options',
-						'class' : 'ui-button figure_options_button'
-					}).click(function(e){
-						e.preventDefault();
-						
-						var optionsInput = dest.parent().find('input.figure_options');
-						
-						window[data.callback](data.nid, optionsInput);
-					}).appendTo(dest);
 				}
 			},
 			"json"
@@ -42,25 +26,19 @@
          */
 		// live events for the figure fields
         $('.figure_reference_field').live({
-        	'keyup': function(event) {
-	        	// wait a second to see if anything else was pressed
-	        	var origVal = event.target.value;
-	        	setTimeout(function() {
-	        		var currentVal = event.target.value;
-	        		if (currentVal == origVal && currentVal != "" && currentVal == parseInt(currentVal, 10)) {
-	        			// remove figure options and get new preview
-	            		jQuery(event.target).parents('.fieldset-wrapper').find('.figure_options').val("{}");
-	            		getPreviewDiv(currentVal, event.target);
-
-	        		}
-	        	}, 1250);
-        	},
 	        'blur': function(event) {
 	        	setTimeout( function() {
-	        		var currentVal = event.target.value;
+	        		var currentVal = event.target.value.match(/.+\[(\d+)\]/);
+                    currentVal = currentVal[1];
 	            	if (currentVal == parseInt(currentVal, 10)) {
 	            		// remove figure options and get new preview
-	            		jQuery(event.target).parents('.fieldset-wrapper').find('.figure_options').val("{}");
+                        var parentField = $(event.target).parents('.fieldset-wrapper');
+	            		parentField.find('.figure_options').val("{}");
+
+                        // Update the options callback
+                        var href = Drupal.settings.basePath + 'ajax/figure/asset-options/' + currentVal;
+                        parentField.find('a.asset-options').attr('href', href);
+
 	            		getPreviewDiv(currentVal, event.target);
 	            	}
 	        	}, 500);
@@ -69,10 +47,8 @@
         
         // for the figure reference fields already populated on page load
         $('.figure_reference_field').each(function() {
-        	var nid = parseInt($(this).val(), 10);
-        	if ($(this).val() == nid) {
-        		getPreviewDiv(nid, this);
-        	}
+        	var nid = $(this).val().match(/.+\[(\d+)\]/);
+        	getPreviewDiv(nid[1], this);
         })
     });
 	

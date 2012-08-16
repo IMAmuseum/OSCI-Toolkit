@@ -107,12 +107,13 @@ function osci_tk_figure_thumb_save() {
 /**
  * ajax callback for asset options
  */
-function osci_tk_figure_asset_options() {
+function osci_tk_figure_asset_options($node) {
     ctools_include('modal');
     
     $form_state = array(
         'ajax'  => TRUE,
-        'title' => t('Asset Options'),
+        'title' => t($node->title . ' Asset Options'),
+        'node'  => $node,
     );
 
     $form_id = 'osci_tk_figure_asset_' . $node->type . '_options_form';
