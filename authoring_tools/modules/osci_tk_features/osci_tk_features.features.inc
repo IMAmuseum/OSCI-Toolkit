@@ -20,7 +20,7 @@ function osci_tk_features_ctools_plugin_api() {
 function osci_tk_features_image_default_styles() {
   $styles = array();
 
-  // Exported image style: osci_tk_default
+  // Exported image style: osci_tk_default.
   $styles['osci_tk_default'] = array(
     'name' => 'osci_tk_default',
     'effects' => array(
@@ -43,7 +43,7 @@ function osci_tk_features_image_default_styles() {
     ),
   );
 
-  // Exported image style: osci_tk_thumbnail_square
+  // Exported image style: osci_tk_thumbnail_square.
   $styles['osci_tk_thumbnail_square'] = array(
     'name' => 'osci_tk_thumbnail_square',
     'effects' => array(
@@ -93,6 +93,14 @@ function osci_tk_features_node_info() {
       'name' => t('Image Asset'),
       'base' => 'node_content',
       'description' => t('An Image used in a Conservation Asset'),
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
+    'layered_image' => array(
+      'name' => t('Layered Image'),
+      'base' => 'node_content',
+      'description' => '',
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',

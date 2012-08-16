@@ -10,7 +10,7 @@
 function osci_tk_features_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-conservation_asset-field_aspect_ratio'
+  // Exported field: 'node-conservation_asset-field_aspect_ratio'.
   $fields['node-conservation_asset-field_aspect_ratio'] = array(
     'field_config' => array(
       'active' => '1',
@@ -31,6 +31,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '255',
@@ -83,7 +84,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-conservation_asset-field_asset_thumbnail'
+  // Exported field: 'node-conservation_asset-field_asset_thumbnail'.
   $fields['node-conservation_asset-field_asset_thumbnail'] = array(
     'field_config' => array(
       'active' => '1',
@@ -104,6 +105,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -164,7 +166,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-conservation_asset-field_assets'
+  // Exported field: 'node-conservation_asset-field_assets'.
   $fields['node-conservation_asset-field_assets'] = array(
     'field_config' => array(
       'active' => '1',
@@ -185,20 +187,24 @@ function osci_tk_features_field_default_fields() {
           0 => 'nid',
         ),
       ),
+      'locked' => '0',
       'module' => 'node_reference',
       'settings' => array(
         'referenceable_types' => array(
-          'collector' => 0,
+          'category_section' => 0,
           'conservation_asset' => 0,
-          'html_figure' => 0,
+          'cover_section' => 0,
+          'credits_section' => 0,
+          'html_asset' => 0,
           'iip_asset' => 'iip_asset',
-          'image' => 0,
           'image_asset' => 'image_asset',
-          'page' => 0,
+          'layered_image' => 0,
+          'note' => 0,
+          'paper_front_section' => 0,
+          'publication' => 0,
+          'references_section' => 0,
           'section' => 0,
           'svg_asset' => 'svg_asset',
-          'volume' => 0,
-          'work_of_art' => 0,
         ),
         'view' => array(
           'args' => array(),
@@ -256,7 +262,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-conservation_asset-field_data'
+  // Exported field: 'node-conservation_asset-field_data'.
   $fields['node-conservation_asset-field_data'] = array(
     'field_config' => array(
       'active' => '1',
@@ -277,6 +283,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '1',
@@ -327,7 +334,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-conservation_asset-field_image'
+  // Exported field: 'node-conservation_asset-field_image'.
   $fields['node-conservation_asset-field_image'] = array(
     'field_config' => array(
       'active' => '1',
@@ -348,6 +355,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -412,7 +420,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-html_asset-field_asset_thumbnail'
+  // Exported field: 'node-html_asset-field_asset_thumbnail'.
   $fields['node-html_asset-field_asset_thumbnail'] = array(
     'field_config' => array(
       'active' => '1',
@@ -433,6 +441,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -493,7 +502,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-iip_asset-field_asset_thumbnail'
+  // Exported field: 'node-iip_asset-field_asset_thumbnail'.
   $fields['node-iip_asset-field_asset_thumbnail'] = array(
     'field_config' => array(
       'active' => '1',
@@ -514,6 +523,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -574,7 +584,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-iip_asset-field_iip_server'
+  // Exported field: 'node-iip_asset-field_iip_server'.
   $fields['node-iip_asset-field_iip_server'] = array(
     'field_config' => array(
       'active' => '1',
@@ -588,6 +598,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'value',
         ),
       ),
+      'locked' => '0',
       'module' => 'list',
       'settings' => array(
         'allowed_values' => array(),
@@ -639,7 +650,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-iip_asset-field_image'
+  // Exported field: 'node-iip_asset-field_image'.
   $fields['node-iip_asset-field_image'] = array(
     'field_config' => array(
       'active' => '1',
@@ -660,6 +671,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -724,7 +736,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-iip_asset-field_ptiff_attr'
+  // Exported field: 'node-iip_asset-field_ptiff_attr'.
   $fields['node-iip_asset-field_ptiff_attr'] = array(
     'field_config' => array(
       'active' => '1',
@@ -745,6 +757,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '1',
@@ -795,7 +808,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-iip_asset-field_ptiff_path'
+  // Exported field: 'node-iip_asset-field_ptiff_path'.
   $fields['node-iip_asset-field_ptiff_path'] = array(
     'field_config' => array(
       'active' => '1',
@@ -816,6 +829,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '255',
@@ -869,7 +883,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-image_asset-field_asset_thumbnail'
+  // Exported field: 'node-image_asset-field_asset_thumbnail'.
   $fields['node-image_asset-field_asset_thumbnail'] = array(
     'field_config' => array(
       'active' => '1',
@@ -890,6 +904,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -950,7 +965,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-image_asset-field_image'
+  // Exported field: 'node-image_asset-field_image'.
   $fields['node-image_asset-field_image'] = array(
     'field_config' => array(
       'active' => '1',
@@ -971,6 +986,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -1041,7 +1057,262 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-note-body'
+  // Exported field: 'node-layered_image-field_assets'.
+  $fields['node-layered_image-field_assets'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_assets',
+      'foreign keys' => array(
+        'nid' => array(
+          'columns' => array(
+            'nid' => 'nid',
+          ),
+          'table' => 'node',
+        ),
+      ),
+      'indexes' => array(
+        'nid' => array(
+          0 => 'nid',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'node_reference',
+      'settings' => array(
+        'referenceable_types' => array(
+          'category_section' => 0,
+          'conservation_asset' => 0,
+          'cover_section' => 0,
+          'credits_section' => 0,
+          'html_asset' => 0,
+          'iip_asset' => 'iip_asset',
+          'image_asset' => 'image_asset',
+          'layered_image' => 0,
+          'note' => 0,
+          'paper_front_section' => 0,
+          'publication' => 0,
+          'references_section' => 0,
+          'section' => 0,
+          'svg_asset' => 'svg_asset',
+        ),
+        'view' => array(
+          'args' => array(),
+          'display_name' => '',
+          'view_name' => '',
+        ),
+      ),
+      'translatable' => '1',
+      'type' => 'node_reference',
+    ),
+    'field_instance' => array(
+      'bundle' => 'layered_image',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'node_reference',
+          'settings' => array(),
+          'type' => 'node_reference_default',
+          'weight' => 0,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_assets',
+      'label' => 'Assets',
+      'required' => 1,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'node_reference',
+        'settings' => array(
+          'autocomplete_match' => 'contains',
+          'autocomplete_path' => 'node_reference/autocomplete',
+          'size' => '60',
+        ),
+        'type' => 'node_reference_autocomplete',
+        'weight' => '-3',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-layered_image-field_data'.
+  $fields['node-layered_image-field_data'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_data',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(),
+      'translatable' => '1',
+      'type' => 'text_long',
+    ),
+    'field_instance' => array(
+      'bundle' => 'layered_image',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 2,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_data',
+      'label' => 'Data',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'rows' => '5',
+        ),
+        'type' => 'text_textarea',
+        'weight' => '1',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-layered_image-field_image'.
+  $fields['node-layered_image-field_image'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_image',
+      'foreign keys' => array(
+        'fid' => array(
+          'columns' => array(
+            'fid' => 'fid',
+          ),
+          'table' => 'file_managed',
+        ),
+      ),
+      'indexes' => array(
+        'fid' => array(
+          0 => 'fid',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'image',
+      'settings' => array(
+        'default_image' => 0,
+        'uri_scheme' => 'public',
+      ),
+      'translatable' => '1',
+      'type' => 'image',
+    ),
+    'field_instance' => array(
+      'bundle' => 'layered_image',
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
+            'image_style' => '',
+          ),
+          'type' => 'image',
+          'weight' => 1,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_image',
+      'label' => 'Representative Image',
+      'required' => 0,
+      'settings' => array(
+        'alt_field' => 0,
+        'default_image' => 0,
+        'file_directory' => '',
+        'file_extensions' => 'png gif jpg jpeg',
+        'max_filesize' => '',
+        'max_resolution' => '',
+        'min_resolution' => '',
+        'title_field' => 0,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'image',
+        'settings' => array(
+          'preview_image_style' => 'thumbnail',
+          'progress_indicator' => 'throbber',
+        ),
+        'type' => 'image_image',
+        'weight' => '-1',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-note-body'.
   $fields['node-note-body'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1064,6 +1335,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
@@ -1131,7 +1403,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-note-field_content_id'
+  // Exported field: 'node-note-field_content_id'.
   $fields['node-note-field_content_id'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1152,6 +1424,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '255',
@@ -1205,7 +1478,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-note-field_note_tags'
+  // Exported field: 'node-note-field_note_tags'.
   $fields['node-note-field_note_tags'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1226,6 +1499,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'tid',
         ),
       ),
+      'locked' => '0',
       'module' => 'taxonomy',
       'settings' => array(
         'allowed_values' => array(
@@ -1298,7 +1572,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-note-field_section'
+  // Exported field: 'node-note-field_section'.
   $fields['node-note-field_section'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1319,6 +1593,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'nid',
         ),
       ),
+      'locked' => '0',
       'module' => 'node_reference',
       'settings' => array(
         'referenceable_types' => array(
@@ -1400,7 +1675,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-publication-field_nodetree'
+  // Exported field: 'node-publication-field_nodetree'.
   $fields['node-publication-field_nodetree'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1410,6 +1685,7 @@ function osci_tk_features_field_default_fields() {
       'field_name' => 'field_nodetree',
       'foreign keys' => array(),
       'indexes' => array(),
+      'locked' => '0',
       'module' => 'osci_tk_nodetree',
       'settings' => array(),
       'translatable' => '0',
@@ -1458,7 +1734,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-publication-field_osci_tk_cover_image'
+  // Exported field: 'node-publication-field_osci_tk_cover_image'.
   $fields['node-publication-field_osci_tk_cover_image'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1479,6 +1755,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -1543,7 +1820,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-publication-field_osci_tk_creator'
+  // Exported field: 'node-publication-field_osci_tk_creator'.
   $fields['node-publication-field_osci_tk_creator'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1564,6 +1841,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '1024',
@@ -1617,7 +1895,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-publication-field_osci_tk_description'
+  // Exported field: 'node-publication-field_osci_tk_description'.
   $fields['node-publication-field_osci_tk_description'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1638,6 +1916,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
@@ -1689,7 +1968,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-publication-field_osci_tk_editor'
+  // Exported field: 'node-publication-field_osci_tk_editor'.
   $fields['node-publication-field_osci_tk_editor'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1710,6 +1989,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '255',
@@ -1763,7 +2043,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-publication-field_osci_tk_identifier'
+  // Exported field: 'node-publication-field_osci_tk_identifier'.
   $fields['node-publication-field_osci_tk_identifier'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1773,6 +2053,7 @@ function osci_tk_features_field_default_fields() {
       'field_name' => 'field_osci_tk_identifier',
       'foreign keys' => array(),
       'indexes' => array(),
+      'locked' => '0',
       'module' => 'osci_tk_utility',
       'settings' => array(),
       'translatable' => '0',
@@ -1821,7 +2102,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-publication-field_osci_tk_publisher'
+  // Exported field: 'node-publication-field_osci_tk_publisher'.
   $fields['node-publication-field_osci_tk_publisher'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1842,6 +2123,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '1024',
@@ -1895,7 +2177,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-publication-field_osci_tk_rights'
+  // Exported field: 'node-publication-field_osci_tk_rights'.
   $fields['node-publication-field_osci_tk_rights'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1916,6 +2198,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
@@ -1967,7 +2250,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-publication-field_osci_tk_subject'
+  // Exported field: 'node-publication-field_osci_tk_subject'.
   $fields['node-publication-field_osci_tk_subject'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1988,6 +2271,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'tid',
         ),
       ),
+      'locked' => '0',
       'module' => 'taxonomy',
       'settings' => array(
         'allowed_values' => array(
@@ -2046,7 +2330,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-section-field_body'
+  // Exported field: 'node-section-field_body'.
   $fields['node-section-field_body'] = array(
     'field_config' => array(
       'active' => '1',
@@ -2067,6 +2351,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
@@ -2119,7 +2404,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-section-field_figure'
+  // Exported field: 'node-section-field_figure'.
   $fields['node-section-field_figure'] = array(
     'field_config' => array(
       'active' => '1',
@@ -2129,6 +2414,7 @@ function osci_tk_features_field_default_fields() {
       'field_name' => 'field_figure',
       'foreign keys' => array(),
       'indexes' => array(),
+      'locked' => '0',
       'module' => 'osci_tk_figure',
       'settings' => array(),
       'translatable' => '0',
@@ -2188,7 +2474,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-section-field_footnote'
+  // Exported field: 'node-section-field_footnote'.
   $fields['node-section-field_footnote'] = array(
     'field_config' => array(
       'active' => '1',
@@ -2209,6 +2495,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
@@ -2261,7 +2548,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-section-field_osci_tk_title'
+  // Exported field: 'node-section-field_osci_tk_title'.
   $fields['node-section-field_osci_tk_title'] = array(
     'field_config' => array(
       'active' => '1',
@@ -2282,6 +2569,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '1024',
@@ -2336,7 +2624,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-section-field_section_image'
+  // Exported field: 'node-section-field_section_image'.
   $fields['node-section-field_section_image'] = array(
     'field_config' => array(
       'active' => '1',
@@ -2357,6 +2645,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -2421,7 +2710,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-section-field_subtitle'
+  // Exported field: 'node-section-field_subtitle'.
   $fields['node-section-field_subtitle'] = array(
     'field_config' => array(
       'active' => '1',
@@ -2442,6 +2731,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '255',
@@ -2496,7 +2786,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-svg_asset-field_asset_thumbnail'
+  // Exported field: 'node-svg_asset-field_asset_thumbnail'.
   $fields['node-svg_asset-field_asset_thumbnail'] = array(
     'field_config' => array(
       'active' => '1',
@@ -2517,6 +2807,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -2577,7 +2868,7 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-svg_asset-field_svg'
+  // Exported field: 'node-svg_asset-field_svg'.
   $fields['node-svg_asset-field_svg'] = array(
     'field_config' => array(
       'active' => '1',
@@ -2598,6 +2889,7 @@ function osci_tk_features_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'file',
       'settings' => array(
         'display_default' => 0,
