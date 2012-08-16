@@ -10,7 +10,7 @@
 function osci_tk_features_field_group_info() {
   $export = array();
 
-  $field_group = new stdClass;
+  $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_body|node|section|form';
@@ -37,7 +37,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_body|node|section|form'] = $field_group;
 
-  $field_group = new stdClass;
+  $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_content|node|section|form';
@@ -62,7 +62,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_content|node|section|form'] = $field_group;
 
-  $field_group = new stdClass;
+  $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_figures|node|section|form';
@@ -89,7 +89,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_figures|node|section|form'] = $field_group;
 
-  $field_group = new stdClass;
+  $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_footnotes_figures|node|section|form';
@@ -115,7 +115,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_footnotes_figures|node|section|form'] = $field_group;
 
-  $field_group = new stdClass;
+  $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_footnotes|node|section|form';
@@ -142,7 +142,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_footnotes|node|section|form'] = $field_group;
 
-  $field_group = new stdClass;
+  $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_publication_content|node|publication|form';
@@ -169,7 +169,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_publication_content|node|publication|form'] = $field_group;
 
-  $field_group = new stdClass;
+  $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_publication_info|node|publication|form';
@@ -204,7 +204,7 @@ function osci_tk_features_field_group_info() {
   );
   $export['group_publication_info|node|publication|form'] = $field_group;
 
-  $field_group = new stdClass;
+  $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_publication|node|publication|form';

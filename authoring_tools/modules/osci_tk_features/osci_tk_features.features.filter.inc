@@ -10,7 +10,7 @@
 function osci_tk_features_filter_default_formats() {
   $formats = array();
 
-  // Exported format: OSCI ToolKit Default Format
+  // Exported format: OSCI ToolKit Default Format.
   $formats['osci_tk_format'] = array(
     'format' => 'osci_tk_format',
     'name' => 'OSCI ToolKit Default Format',
