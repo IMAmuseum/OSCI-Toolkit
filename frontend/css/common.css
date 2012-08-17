@@ -3,14 +3,14 @@ body {
 }
 
 a {
-	color:#52818C;	
+	color:#52818C;
 }
 
 /* apply a natural box layout model to all elements */
-* { 
-	-moz-box-sizing: border-box; 
-	-webkit-box-sizing: border-box; 
-	box-sizing: border-box; 
+* {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 #reader {
@@ -43,7 +43,7 @@ figcaption {
 }
 
 .page {
-	font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;	
+	font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
 }
 .page p {
 	line-height:1.5em;
@@ -56,7 +56,7 @@ figcaption {
 }
 
 a.figure_reference {
-	
+
 }
 a.footnote-reference {
 	vertical-align:super;
@@ -72,10 +72,10 @@ a.footnote-reference {
 	width:100%;
 }
 .figure_content table thead{
-	
+
 }
 .figure_content table thead tr {
-	
+
 }
 .figure_content table thead th {
 	text-align:left;
@@ -83,13 +83,13 @@ a.footnote-reference {
 }
 
 .figure_content table tbody {
-	
+
 }
 .figure_content table tbody tr {
-	
+
 }
 .figure_content table tbody tr:nth-child(odd) {
-	background: #eee;	
+	background: #eee;
 }
 .figure_content table tbody td {
 	padding:5px;
@@ -97,7 +97,7 @@ a.footnote-reference {
 
 /* paragraph number controls */
 .paragraph-controls {
-	font-size:11px!important;	
+	font-size:11px!important;
 }
 .paragraph-controls.notes-present span {
 	padding:2px 5px;background:#EBE8C1;color:#333;
@@ -124,13 +124,13 @@ a.footnote-reference {
 }
 .toggleNoteDialog {
 	display:inline-block;
-	
+
 	background: url('../img/icon-note-mini.png') no-repeat left center;
 	margin-bottom:8px;
 }
 .toggleCiteDialog {
 	display:inline-block;
-	
+
 	background: url('../img/icon-cite-mini.png') no-repeat left center;
 }
 .ui-tooltip-content {
@@ -141,8 +141,8 @@ a.footnote-reference {
 	word-wrap: break-word;
 	overflow: hidden;
 	background: #fff;
-	
-	
+
+
 }
 .ui-tooltip .ui-tooltip-tip {
 	background: url('../img/bg-toolbar.gif') repeat!important;
@@ -150,7 +150,7 @@ a.footnote-reference {
 }
 .ui-tooltip, .qtip {
 	max-width:auto!important;
-	
+
 	margin-left:-10px;
 }
 
@@ -189,7 +189,7 @@ a.footnote-reference {
 }
 .paragraph-controls .ui-tooltip.qtip {
 	border-radius:4px!important;
-	
+
 }
 .paragraph-controls .ui-tooltip-content {
 	padding:6px;
