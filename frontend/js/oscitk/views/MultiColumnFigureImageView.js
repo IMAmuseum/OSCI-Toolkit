@@ -1,9 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-if (typeof OsciTk.views.figureTypeRegistry === 'undefined'){OsciTk.views.figureTypeRegistry = {};}
-// OsciTk Namespace Initialization //
-
 //Add this view to the figure type registry
 OsciTk.views.figureTypeRegistry["image_asset"] = "MultiColumnFigureImage";
 

@@ -1,8 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 	className: 'notes-view',
 	template: OsciTk.templateManager.get('notes'),
@@ -11,7 +6,7 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 		app.collections.notes.on('add remove change', function() {
 			this.render();
 		}, this);
-		
+
 		// catch the page changed event and highlight any notes in list that are on current page
 		app.dispatcher.on('pageChanged notesLoaded', function(data) {
 			var page;
@@ -51,7 +46,7 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 	render: function() {
 		var notes = this.getSavedNotes();
 		this.$el.html(this.template({notes: notes}));
-		
+
 		return this;
 	},
 	getSavedNotes: function() {

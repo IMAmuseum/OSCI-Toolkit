@@ -1,8 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.views.Account = OsciTk.views.BaseView.extend({
 	className: 'account-view',
 	template: null,

@@ -1,8 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.views.Footnotes = OsciTk.views.BaseView.extend({
 	id: 'footnote',
 	initialize: function() {

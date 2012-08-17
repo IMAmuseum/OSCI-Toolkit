@@ -1,8 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 	initialize: function() {
 		this.columnTemplate = OsciTk.templateManager.get('multi-column-column');
@@ -28,12 +23,12 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 
 	resetPage: function() {
 		this.removeAllContent();
-		
+
 		for(var i = 0, c = this.paragraphControlsViews.length; i < c; i++) {
 			this.removeView(this.paragraphControlsViews[i]);
 		}
 		this.paragraphControlsViews = [];
-		
+
 		this.$el.children(':not(figure)').remove();
 
 		this.initializeColumns();
@@ -286,7 +281,7 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		var figurePlaced = false;
 
 		this.addView(figureViewInstance);
-		
+
 		if (!figureViewInstance.layoutComplete) {
 			figureViewInstance.render();
 

@@ -1,8 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.models === 'undefined'){OsciTk.models = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.models.Note = OsciTk.models.BaseModel.extend({
 	defaults: function() {
 		return {
@@ -13,7 +8,7 @@ OsciTk.models.Note = OsciTk.models.BaseModel.extend({
 			tags: []
 		};
 	},
-	
+
 	initialize: function(attributes, options) {
 		this.on('error', function(model, error) {
 			console.log([model, error], 'error fired');
@@ -22,7 +17,7 @@ OsciTk.models.Note = OsciTk.models.BaseModel.extend({
 
 	sync: function(method, model, options) {
 		var endpoint = app.config.get('endpoints').OsciTkNote;
-		
+
 		console.log('Note.sync: ' + method);
 		console.log(model, 'model');
 		console.log(options, 'options');

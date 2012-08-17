@@ -1,7 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === "undefined"){OsciTk = {};}
-if (typeof OsciTk.templates === "undefined"){OsciTk.templates = {};}
-// OsciTk Namespace Initialization //
 OsciTk.templates['account-login'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -42,37 +38,37 @@ OsciTk.templates['figures'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<div class=\'figure-browser\'>\n\t<h2>Figures</h2>\n\t<div class=\'figure-tray\'>\n\t\t<div class=\'figure-reel\'>\n\t\t\t';
- _.each(figures, function(figure) { 
+ _.each(figures, function(figure) {
 ;__p+='\n\t\t\t\t<figure class=\'thumbnail\' data-figure-id="'+
 ( figure.id )+
 '">\n\t\t\t\t\t';
- if (figure.thumbnail_url != undefined) { 
+ if (figure.thumbnail_url != undefined) {
 ;__p+='\n\t\t\t\t\t\t<img class=\'figure-thumbnail\' src=\''+
 ( figure.thumbnail_url )+
 '\'/>\n\t\t\t\t\t';
- } else { 
+ } else {
 ;__p+='\n\t\t\t\t\t\t<div class=\'figure-thumbnail\'>&nbsp;</div>\n\t\t\t\t\t';
- } 
+ }
 ;__p+='\n\t\t\t\t\t<figcaption>'+
 ( figure.title )+
 '</figcaption>\n\t\t\t\t</figure>\n\t\t\t';
- }); 
+ });
 ;__p+='\n\t\t</div>\n\t</div>\n</div>\n<div class=\'figure-previews\'>\n\t<div class=\'figure-nav prev\' title=\'Previous figure\'>&lt;</div>\n\t<div class=\'figure-nav next\' title=\'Next Figure\'>&gt;</div>\n\n\t<h2><span class=\'back-to-grid\'>&laquo; Figures</span> | <span class=\'title\'>TITLE</span></h2>\n\t<div class=\'figure-tray\'>\n\t\t<div class=\'figure-reel\'>\n\t\t\t';
- _.each(figures, function(figure) { 
+ _.each(figures, function(figure) {
 ;__p+='\n\t\t\t\t<figure class=\'preview\' data-figure-id="'+
 ( figure.id )+
 '">\n\t\t\t\t\t';
- if (figure.thumbnail_url != undefined) { 
+ if (figure.thumbnail_url != undefined) {
 ;__p+='\n\t\t\t\t\t\t<img class=\'figure-preview\' src=\''+
 ( figure.thumbnail_url )+
 '\'/>\n\t\t\t\t\t';
- } else { 
+ } else {
 ;__p+='\n\t\t\t\t\t\t<div class=\'figure-preview\'>&nbsp;</div>\n\t\t\t\t\t';
- } 
+ }
 ;__p+='\n\t\t\t\t\t<div class=\'figure-info\'>\n\t\t\t\t\t\t<!--<h3 class=\'title\'>Figure Title?</h3>-->\n\t\t\t\t\t\t<!--<p class=\'meta-info\'>meta info | more meta</p>-->\n\t\t\t\t\t\t<div class=\'caption\'>\n\t\t\t\t\t\t\t'+
 ( figure.caption )+
 '\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<a class=\'view-in-context\'>View in context</a>\n\t\t\t\t</figure>\n\t\t\t';
- }); 
+ });
 ;__p+='\n\t\t</div>\n\t</div>\n</div>';
 }
 return __p;
@@ -120,23 +116,23 @@ OsciTk.templates['notes'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<h2>Notes</h2>\n<ul>\n\t';
- _.each(notes, function(note) { 
+ _.each(notes, function(note) {
 ;__p+='\n\t\t<li>\n\t\t\t<p>P#'+
 ( note.paragraph_id )+
 ' - '+
 ( note.note )+
 '<br>\n\t\t\t';
- if (note.tags.length > 0) { 
+ if (note.tags.length > 0) {
 ;__p+='\n\t\t\t\t<small>tags: ';
- _.each(note.tags, function(tag) { 
+ _.each(note.tags, function(tag) {
 ;__p+=''+
 ( tag )+
 ' ';
- }); 
+ });
 ;__p+='</small>\n\t\t\t';
- } 
+ }
 ;__p+='\n\t\t\t</p>\n\t\t</li>\n\t';
- }); 
+ });
 ;__p+='\n</ul>';
 }
 return __p;
@@ -184,15 +180,15 @@ with(obj||{}){
 __p+='<div id="search-header">\n\t<div id="search-box">\n\t\t<form id="search-form" name="search-form" method="POST">\n\t\t\t<input type="text" name="keyword" id="search-keyword" placeholder="search" value="'+
 ( query )+
 '"/>\n\t\t\t<input type="hidden" name="page" id="search-page" />\n\t\t</form>\n\t</div>\n</div>\n';
- if (searchResults.length > 0) { 
+ if (searchResults.length > 0) {
 ;__p+='\n\t<div id="search-summary">Result(s) for "'+
 ( searchResults.keyword )+
 '" ('+
 ( searchResults.length )+
 ')</div>\n\t<div id="search-sort">\n\t\tSort By: \n\t\t<div id="search-sort-relevance" data-selected="0">Relevance</div>\n\t\t<div id="search-sort-type" data-selected="0">Type</div>\n\t</div>\n\t<div id="search-results">\n\t\t<ul>\n\t\t\t';
- _.each(searchResults.models, function(result) { 
+ _.each(searchResults.models, function(result) {
 ;__p+='\n\t\t\t\t';
- if (result.get('bundle') === 'note') { 
+ if (result.get('bundle') === 'note') {
 ;__p+='\n\t\t\t\t\t<li>\n\t\t\t\t\t\t'+
 ( result.get('bundle_name') )+
 ' \n\t\t\t\t\t\tsec.'+
@@ -202,17 +198,17 @@ __p+='<div id="search-header">\n\t<div id="search-box">\n\t\t<form id="search-fo
 ' - \n\t\t\t\t\t\t'+
 ( result.get('ss_body') )+
 '\n\t\t\t\t\t</li>\n\t\t\t\t';
- } else { 
+ } else {
 ;__p+='\n\t\t\t\t\t<li>'+
 ( result.get('bundle_name') )+
 ' - '+
 ( result.get('ss_body') )+
 '</li>\n\t\t\t\t';
- } 
+ }
 ;__p+='\n\t\t\t';
- }); 
+ });
 ;__p+='\n\t\t</ul>\n\t</div>\n';
- } 
+ }
 ;__p+='';
 }
 return __p;
@@ -221,25 +217,25 @@ OsciTk.templates['toc'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<h2>Table of Contents</h2>\n<ul>\n\t';
- _.each(items, function(item) { 
+ _.each(items, function(item) {
 ;__p+='\n\t\t<li class="toc-item">\n\t\t\t<a data-section-id="'+
 ( item.id )+
 '" href="#">\n\t\t\t\t<div class="toc-item-thumbnail">\n\t\t\t\t\t';
- if (item.get('thumbnail')) { 
+ if (item.get('thumbnail')) {
 ;__p+='\n\t\t\t\t\t\t<img src="'+
 ( item.get('thumbnail') )+
 '">\n\t\t\t\t\t';
- } 
+ }
 ;__p+='\n\t\t\t\t</div>\n\t\t\t\t<div class="toc-item-text">\n\t\t\t\t\t<h4>'+
 ( item.get('title') )+
 '</h4>\n\t\t\t\t\t';
- if (item.get('subtitle')) { 
+ if (item.get('subtitle')) {
 ;__p+='\n\t\t\t\t\t\t<h5>'+
 ( item.get('subtitle') )+
 '</h5>\n\t\t\t\t\t';
- } 
+ }
 ;__p+='\n\t\t\t\t</div>\n\t\t\t</a>\n\t\t\t<hr>\n\t\t</li>\n\t';
- }); 
+ });
 ;__p+='\n</ul>';
 }
 return __p;

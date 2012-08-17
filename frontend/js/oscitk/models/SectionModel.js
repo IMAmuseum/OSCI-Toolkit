@@ -1,8 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.models === 'undefined'){OsciTk.models = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.models.Section = OsciTk.models.BaseModel.extend({
 	defaults: function() {
 		return {
@@ -22,7 +17,7 @@ OsciTk.models.Section = OsciTk.models.BaseModel.extend({
 	parse: function(response) {
 		console.log('parse section');
 	},
-	
+
 	loadContent: function() {
 		var content = null;
 		if (this.get('contentLoaded') === false) {
@@ -37,7 +32,7 @@ OsciTk.models.Section = OsciTk.models.BaseModel.extend({
 		if (content === null) {
 			content = $(this.get('content'));
 		}
-		
+
 		// parse out footnotes and figures, make them available via event
 		var footnotes = content.find('section#footnotes');
 		var figures   = content.find('figure');

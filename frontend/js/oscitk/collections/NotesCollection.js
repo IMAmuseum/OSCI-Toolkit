@@ -1,8 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.collections === 'undefined'){OsciTk.collections = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.collections.Notes = OsciTk.collections.BaseCollection.extend({
 	model: OsciTk.models.Note,
 	initialize: function() {

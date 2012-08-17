@@ -1,8 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.models === 'undefined'){OsciTk.models = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.models.Package = OsciTk.models.BaseModel.extend({
 	defaults: function() {
 		return {
@@ -42,10 +37,10 @@ OsciTk.models.Package = OsciTk.models.BaseModel.extend({
 
 		this.set('version', data['package'].version);
 		this.set('xmlns', data['package'].xmlns);
-		
+
 		app.dispatcher.trigger('packageLoaded', this);
 	},
-	
+
 	sync: function(method, model, options) {
 		console.log('Package.sync: ' + method);
 	},

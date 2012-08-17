@@ -1,9 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initialization //
-
-
 OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 	template: OsciTk.templateManager.get('multi-column-section'),

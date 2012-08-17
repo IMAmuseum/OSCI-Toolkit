@@ -1,8 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.views.Search = OsciTk.views.BaseView.extend({
 	id: 'search-view',
 	className: 'toolbar-item-view',
@@ -12,7 +7,7 @@ OsciTk.views.Search = OsciTk.views.BaseView.extend({
 	query: '',
 	filters: null,
 	sort: null,
-			
+
 	initialize: function() {
 		// add our search results collection to the global namespace for convenience
 		if (app && app.collections) app.collections.searchResults = this.searchResults;

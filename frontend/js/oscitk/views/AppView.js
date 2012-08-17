@@ -1,14 +1,9 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.views.App = OsciTk.views.BaseView.extend({
 	id: 'reader',
-	
+
 	initialize: function() {
 		$('body').append(this.el);
-		
+
 		// Add the title view to the appView
 		app.views.titleView = new OsciTk.views.Title();
 		this.addView(app.views.titleView);
@@ -34,10 +29,10 @@ OsciTk.views.App = OsciTk.views.BaseView.extend({
 		// Add the navigation view to the AppView
 		app.views.navigationView = new OsciTk.views.Navigation();
 		this.addView(app.views.navigationView);
-		
+
 		// Add the footnotes view to the AppView
 		app.views.footnotesView = new OsciTk.views.Footnotes();
-		
+
 		// Add the inline notes view to the AppView
 		app.views.inlineNotesView = new OsciTk.views.InlineNotes();
 

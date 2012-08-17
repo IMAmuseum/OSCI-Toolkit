@@ -1,8 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 	id: 'toolbar',
 	template: OsciTk.templateManager.get('toolbar'),

@@ -1,15 +1,10 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.templates === 'undefined'){OsciTk.templates = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.templateManager = {
 	get : function(templateName) {
 		return function(data) {
 			return OsciTk.templateManager.useTemplate(templateName, data);
 		};
 	},
-	
+
 	useTemplate: function(templateName, templateData) {
 		if (OsciTk.templates[templateName] === undefined) {
 			var templateUrls = app.config.get('templateUrls');

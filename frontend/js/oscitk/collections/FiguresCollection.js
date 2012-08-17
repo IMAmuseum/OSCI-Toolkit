@@ -1,11 +1,6 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.collections === 'undefined'){OsciTk.collections = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 	model: OsciTk.models.Figure,
-	
+
 	initialize: function() {
 		app.dispatcher.on('figuresAvailable', function(figures) {
 			this.populateFromMarkup(figures);
@@ -16,7 +11,7 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 	comparator: function(figure) {
 		return figure.get('delta');
 	},
-	
+
 	/**
 	 * Populates the collection from an array of figure markup
 	 */
@@ -63,7 +58,7 @@ OsciTk.collections.Figures = OsciTk.collections.BaseCollection.extend({
 			figures.push(figure);
 
 		}, this);
-	
+
 		// populate the collection
 		this.reset(figures);
 	}

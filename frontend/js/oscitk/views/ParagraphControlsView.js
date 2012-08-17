@@ -1,11 +1,6 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.views.ParagraphControlsView = OsciTk.views.BaseView.extend({
 	className: 'paragraph-controls',
-	
+
 	initialize: function() {
 		this.options.paragraphNumber = this.options.content.data("paragraph_number");
 		this.options.contentIdentifier = this.options.content.data("osci_content_id");
@@ -15,7 +10,7 @@ OsciTk.views.ParagraphControlsView = OsciTk.views.BaseView.extend({
 			this.render();
 		}
 	},
-	
+
 	render: function() {
 		var contentPosition = this.options.content.position();
 

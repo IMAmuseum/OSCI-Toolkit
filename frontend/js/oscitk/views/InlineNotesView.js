@@ -1,12 +1,7 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 	template: OsciTk.templateManager.get('note-popup'),
 	initialize: function() {
-		
+
 		app.dispatcher.on('toggleNoteDialog', function(data) {
 			var $this = this;
 			var contentId = data.contentId;
@@ -97,7 +92,7 @@ OsciTk.views.InlineNotes = OsciTk.views.BaseView.extend({
 				});
 			}
 		}, this);
-		
+
 		// place icon next to paragraphs with notes after layout is complete
 		app.dispatcher.on('notesLoaded', function(params) {
 			_.each(app.collections.notes.models, function(n) {

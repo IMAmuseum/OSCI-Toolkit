@@ -1,9 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initialization //
-
-
 OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 	id: 'navigation',
 	template: OsciTk.templateManager.get('navigation'),
@@ -26,14 +20,14 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 			this.numPages = section.numPages;
 			this.render();
 		}, this);
-		
+
 		app.dispatcher.on('pageChanged', function(info) {
 			// clear old identifier in url
 			// app.router.navigate("section/" + previous.id + "/end");
 			this.page = info.page;
 			this.update(info.page);
 		}, this);
-		
+
 		// bind routedTo
 		app.dispatcher.on('routedToSection', function(params) {
 			this.identifier = params.identifier;
@@ -85,7 +79,7 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 		});
 
 	},
-	
+
 	render: function() {
 
 		this.$el.html(this.template({
@@ -114,16 +108,16 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 		this.update(this.page);
 
 	},
-	
+
 	getCurrentNavigationItem: function(){
 		return this.currentNavigationItem;
 	},
-	
+
 	setCurrentNavigationItem: function(section_id) {
 		this.currentNavigationItem = app.collections.navigationItems.get(section_id);
 		app.dispatcher.trigger('currentNavigationItemChanged', this.currentNavigationItem);
 	},
-	
+
 	update: function(page) {
 
 		// Calculate the position of the pager head
@@ -133,7 +127,7 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 		// unbind both controls to start
 		this.$el.find('.prev-page').unbind('click');
 		this.$el.find('.next-page').unbind('click');
-		
+
 		// Set previous button state
 		if (page == 1) {
 			// check if we can go to the previous section

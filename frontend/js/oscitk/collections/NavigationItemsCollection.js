@@ -1,8 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.collections === 'undefined'){OsciTk.collections = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 	model: OsciTk.models.NavigationItem,
 	currentNavigationItem: null,
@@ -26,7 +21,7 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 						break;
 					}
 				}
-				
+
 				app.dispatcher.trigger('navigationLoaded', this);
 			}
 		}, this);
@@ -52,12 +47,12 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 					uri: item.a['href']
 				};
 				this.add(parsedItem);
-				
+
 				var navItem = this.at(this.length - 1);
 				if (navItem.get('previous') !== null) {
 					navItem.get('previous').set('next', navItem);
 				}
-				
+
 				// if 'ol' tag is present, sub sections exist, process:
 				if (item.ol && item.ol.li) {
 					var children;

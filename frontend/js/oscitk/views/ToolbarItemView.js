@@ -1,8 +1,3 @@
-// OsciTk Namespace Initialization //
-if (typeof OsciTk === 'undefined'){OsciTk = {};}
-if (typeof OsciTk.views === 'undefined'){OsciTk.views = {};}
-// OsciTk Namespace Initialization //
-
 OsciTk.views.ToolbarItem = OsciTk.views.BaseView.extend({
 	className: 'toolbar-item',
 	template: OsciTk.templateManager.get('toolbar-item'),
@@ -34,7 +29,7 @@ OsciTk.views.ToolbarItem = OsciTk.views.BaseView.extend({
 			this.contentView.render();
 			this.contentViewRendered = true;
 		}
-		
+
 		this.parent.setActiveToolbarItemView(this);
 		this.parent.toggleContentView();
 
