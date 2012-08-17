@@ -30,9 +30,9 @@ function osci_tk_figure_menu()
         'file'              => 'osci_tk_figure.pages.inc',
     );
 
-    $items['ajax/figure/asset-options/%node'] = array(
+    $items['ajax/figure/asset-options/%/%/%node'] = array(
         'page callback'     => 'osci_tk_figure_asset_options',
-        'page arguments'    => array(3),
+        'page arguments'    => array(3, 4, 5),
         'access arguments'  => array('access content'),
         'type'              => MENU_CALLBACK,
         'file'              => 'osci_tk_figure.pages.inc',
@@ -172,11 +172,9 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 {
 	if ($instance['widget']['type'] === 'osci_tk_figure_widget')
 	{
-
         /**
          * Load includes
          */
-        module_load_include('inc', 'osci_tk_figure', 'osci_tk_figure.assets');
         ctools_include('ajax');
         ctools_include('modal');
         ctools_modal_add_js();
@@ -198,19 +196,13 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 		$figureElement = array(
 			'#theme' => 'osci_tk_fieldset_tabs',
 			'#type' => 'fieldset',
-//			'#attached' => array(
-//				'js' => array(
-//					array('data' => drupal_get_path('module', 'osci_tk_figure') . '/js/figure_field.js', 'scope' => 'footer'),
-//				),
-//				'css' => array(
-//					drupal_get_path('module', 'osci_tk_figure') . '/css/figure_field.css'
-//				)
-//			),
 			'#prefix' => '<div id="figures-container">',
 			'#suffix' => '</div>'
 		);
 
 		$max = $form_state['field'][$field['field_name']][LANGUAGE_NONE]['items_count'];
+        $path = 'ajax/figure/asset-options/' . $field['field_name'] . '/';
+        drupal_add_js(array('figureAjaxPath' => $path), 'setting');
 
 		for($i = 0; $i < $max; $i++)
 		{
@@ -219,8 +211,8 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 			$figId      = _osci_tk_figure_create_id($form['nid']['#value'], $itemDelta);
             $asset      = isset($item['asset_reference']) ? node_load($item['asset_reference']) : '';
             $key        = _osci_tk_figure_asset_label($asset);
+            $item_path  = isset($item['asset_reference']) ? $path . $i . '/' . $item['asset_reference'] : $_GET['q'];
 			
-dpm($element);
 			$figureElement[] = array(
 				'#type' 			=> 'fieldset',
 				'#attributes' 		=> array(
@@ -232,11 +224,11 @@ dpm($element);
 					'#markup' => '<figure class="figure_reference_preview">&nbsp;</figure>',
 				),
 				'figure_id' => array(
-					'#markup' => '<div class="figure_identifier" data-figId="' . $figId . '"><label>Wiki Syntax:</label> <span>[figure:' . $figId . ']</span> </div>'
+					'#markup' => '<div class="figure_identifier" data-delta="' . $i . '" data-figId="' . $figId . '"><label>Wiki Syntax:</label> <span>[figure:' . $figId . ']</span> </div>'
 				),
 				'options' => array(
 					'#type' => 'hidden',
-					'#default_value' => isset($item['options']) ? $item['options'] : '',
+					'#value' => isset($item['options']) ? $item['options'] : '',
 					'#attributes' => array('class' => 'figure_options'),
 				),
 				'asset_reference' => array(
@@ -250,7 +242,7 @@ dpm($element);
 				),
                 'asset_options' => array(
                     '#type' => 'item',
-                    '#markup' => ctools_modal_text_button('Asset Options', 'ajax/figure/asset-options/' . $item['asset_reference'], '', 'button asset-options'),
+                    '#markup' => ctools_modal_text_button('Asset Options', $item_path, '', 'button asset-options'),
                 ),
 				'number_template' => array(
 					'#title' 				=> t('Number Template'),
@@ -480,3 +472,32 @@ function _osci_tk_figure_create_id($nid, $delta)
 function _osci_tk_figure_asset_label($asset) {
     return (is_object($asset)) ? $asset->title . ' [' . $asset->nid . ']' : '';
 }
+
+function osci_tk_figure_asset_options_form($form, &$form_state) {
+    $form['submit'] = array(
+        '#type'     => 'submit',
+        '#value'    => t('Submit'),
+    );
+
+    $form['#submit'][] = 'osci_tk_figure_asset_options_form_submit';
+
+    return $form;
+}
+
+function osci_tk_figure_asset_options_form_submit(&$form, &$form_state) {
+    $ignore = array(
+        'form_id',
+        'form_build_id',
+        'form_token',
+        'submit',
+        'op',
+    );
+
+    foreach ($form_state['values'] as $key => $val) {
+        if (in_array($key, $ignore)) continue;
+
+        $options[$key] = $val;
+    }
+
+    $form_state['options'] = json_encode($options);
+} 
