@@ -1,35 +1,3 @@
-String.prototype.replaceArray = function(find, replace) {
-	var replaceString = this;
-	for (var i = 0; i < find.length; i++) {
-		replaceString = replaceString.replace(find[i], replace);
-	}
-	return replaceString;
-};
-
-String.prototype.toCamel = function(){
-    return this.replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
-		.replace(/\s/g, '')
-		.replace(/^(.)/, function($1) { return $1.toLowerCase(); });
-};
-
-/*
- * Retrieve attribute based on language
- */
-function getAttributeByLanguage(attr) {
-	var items = [];
-	for(var i = 0; i < attr.length; i++) {
-		// get language specific and language neutral
-		if(!attr[i].lang || (attr[i].lang && attr[i].lang == tap.language)) {
-			items.push(attr[i]);
-		}
-	}
-	// return all items if no language matched
-	if(items.length === 0) {
-		items = attr;
-	}
-	return items;
-}
-
 /*
  * Load xml document
  */
@@ -39,14 +7,6 @@ function loadXMLDoc(url) {
 	xhttp.open('GET', url, false);
 	xhttp.send();
 	return xhttp.responseXML;
-}
-
-/*
- * Attempt to make the variable an array
- */
-function objectToArray(obj) {
-	if(obj === undefined) return;
-	return Object.prototype.toString.call(obj) !== '[object Array]' ? [obj] : obj;
 }
 
 /*
@@ -104,8 +64,4 @@ function xmlToJson(xml, namespace) {
 		}
 	}
 	return(obj);
-}
-
-function roundNumber(num, dec) {
-	return Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
 }
