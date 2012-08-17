@@ -107,13 +107,18 @@ function osci_tk_figure_thumb_save() {
 /**
  * ajax callback for asset options
  */
-function osci_tk_figure_asset_options($node) {
+function osci_tk_figure_asset_options($field, $delta, $node) {
+    module_load_include('inc', 'osci_tk_figure', 'osci_tk_figure.assets');
     ctools_include('modal');
+
+    // TODO: figure out how to populate form values 
     
     $form_state = array(
-        'ajax'  => TRUE,
-        'title' => t($node->title . ' Asset Options'),
-        'node'  => $node,
+        'ajax'          => TRUE,
+        'title'         => t($node->title . ' Asset Options'),
+        'field'         => $field,
+        'delta'         => $delta,
+        'node'          => $node,
     );
 
     $form_id = 'osci_tk_figure_asset_' . $node->type . '_options_form';
@@ -126,6 +131,10 @@ function osci_tk_figure_asset_options($node) {
     $output = ctools_modal_form_wrapper($form_id, $form_state);
 
     if ($form_state['executed']) {
+        $field_id = $field . '[und][' . $delta . '][options]';
+        $script = "<script>jQuery('input[name=\"" . $field_id . "\"]').attr('value', '" . $form_state['options'] . "'); console.log('assd');</script>";
+
+        $output[] = ajax_command_append('#content', $script);
         $output[] = ctools_modal_command_dismiss();
     }
 

@@ -26,17 +26,18 @@
          */
 		// live events for the figure fields
         $('.figure_reference_field').live({
-	        'blur': function(event) {
+	        'change': function(event) {
 	        	setTimeout( function() {
 	        		var currentVal = event.target.value.match(/.+\[(\d+)\]/);
                     currentVal = currentVal[1];
 	            	if (currentVal == parseInt(currentVal, 10)) {
 	            		// remove figure options and get new preview
                         var parentField = $(event.target).parents('.fieldset-wrapper');
-	            		parentField.find('.figure_options').val("{}");
+	            		parentField.find('.figure_options').val("");
 
                         // Update the options callback
-                        var href = Drupal.settings.basePath + 'ajax/figure/asset-options/' + currentVal;
+                        var idx = parentField.find('.figure_identifier').data('delta');
+                        var href = Drupal.settings.basePath + Drupal.settings.figureAjaxPath + idx + '/' + currentVal;
                         parentField.find('a.asset-options').attr('href', href);
 
 	            		getPreviewDiv(currentVal, event.target);

@@ -5,7 +5,7 @@
 	});
 	
 	$(document).ajaxComplete(function(e, xhr, settings){
-		if (settings.extraData && settings.extraData._triggering_element_name.indexOf('_add_more') > -1)
+		if (settings.extraData && settings.extraData._triggering_element_name && settings.extraData._triggering_element_name.indexOf('_add_more') > -1) 
 		{
 			$(".fieldset-tabs:not(.ui-tabs)").each(function(){
 				var $this = $(this);
