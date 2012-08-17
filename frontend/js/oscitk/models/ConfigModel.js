@@ -1,0 +1,1 @@
+OsciTk.models.Config = OsciTk.models.BaseModel.extend({});

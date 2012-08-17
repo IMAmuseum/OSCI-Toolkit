@@ -1,0 +1,1 @@
+OsciTk.models.BaseModel = Backbone.Model.extend();

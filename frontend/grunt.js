@@ -15,25 +15,26 @@ module.exports = function(grunt) {
 				' */'
 		},
 		lint: {
-			files: ['grunt.js', 'js/backbone/**/*.js', 'js/appBootstrap.js']
+			files: ['grunt.js', 'js/oscitk/**/*.js', 'js/appBootstrap.js']
 		},
 		concat: {
 			dist: {
 				src: [
 					'<banner:meta.banner>',
-					'js/backbone/helper.js',
-					'js/backbone/Router.js',
-					'js/backbone/TemplateManager.js',
-					'js/backbone/collections/BaseCollection.js',
-					'js/backbone/models/BaseModel.js',
-					'js/backbone/views/BaseView.js',
-					'js/backbone/templates/CompiledTemplates.js',
-					'js/backbone/models/**/*.js',
-					'js/backbone/collections/**/*.js',
-					'js/backbone/views/PageView.js',
-					'js/backbone/views/SectionView.js',
-					'js/backbone/views/MultiColumnFigureView.js',
-					'js/backbone/views/**/*.js',
+					'js/oscitk/OsciTk.js',
+					'js/oscitk/helper.js',
+					'js/oscitk/Router.js',
+					'js/oscitk/TemplateManager.js',
+					'js/oscitk/collections/BaseCollection.js',
+					'js/oscitk/models/BaseModel.js',
+					'js/oscitk/views/BaseView.js',
+					'js/oscitk/templates/CompiledTemplates.js',
+					'js/oscitk/models/**/*.js',
+					'js/oscitk/collections/**/*.js',
+					'js/oscitk/views/PageView.js',
+					'js/oscitk/views/SectionView.js',
+					'js/oscitk/views/MultiColumnFigureView.js',
+					'js/oscitk/views/**/*.js',
 					'js/appBootstrap.js'
 				],
 				dest: 'dist/OSCI-Toolkit-<%= meta.version %>.js'
@@ -79,8 +80,8 @@ module.exports = function(grunt) {
 		},
 		precompileTemplates: {
 			dist : {
-				src: ['js/backbone/templates/*.tpl.html'],
-				dest: 'js/backbone/templates/CompiledTemplates.js'
+				src: ['js/oscitk/templates/*.tpl.html'],
+				dest: 'js/oscitk/templates/CompiledTemplates.js'
 			}
 		},
 		jshint: {
@@ -118,10 +119,7 @@ module.exports = function(grunt) {
 
 	//Helper for compiligin Underscore templates
 	grunt.registerHelper('precompileTemplates', function(files) {
-		var output = '// OsciTk Namespace Initialization //\n' +
-			'if (typeof OsciTk === "undefined"){OsciTk = {};}\n' +
-			'if (typeof OsciTk.templates === "undefined"){OsciTk.templates = {};}\n' +
-			'// OsciTk Namespace Initialization //\n';
+		var output = '';
 
 		if (files) {
 			output += files.map(function(filepath) {

@@ -480,11 +480,15 @@ function _osci_tk_epub_generate_figure_document($node, $index, $noCache = false,
 			return $output;
 		}
 	}
-
-	$view = node_view($node, 'epub');
-	// TODO: Handle the export case?
-	$content = drupal_render($view['field_figure'][$index]);
-
+	$figNode = node_load($node->field_figure['und'][$index]['asset_reference']);
+	if ($figNode->type === "layered_image") {
+		$content = _osci_tk_layered_image_get_layered_image_html($figNode->nid);
+	}
+	else {
+		$view = node_view($node, 'epub');
+		$content = drupal_render($view['field_figure'][$index]);
+	}
+	
 	// pass the prepared figure to the theme function which wraps it in
 	// a valid epub3 content document
 	$themed_figure = theme('epub_figure_content_document', array('figure_markup' => $content));

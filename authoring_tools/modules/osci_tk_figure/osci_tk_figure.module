@@ -329,6 +329,9 @@ function osci_tk_figure_form_alter(&$form, &$form_state, $form_id)
 {
 	if (strpos($form_id, '_node_form') !== false)
 	{
+		if (isset($form['field_data'])) {
+			$form['field_data']['#attributes']['style'] = array('display:none');
+		}
 		//if the figure field is enabled and the utility module is not handling this, add the callback
 		if (isset($form['field_figure']) && !function_exists("osci_tk_utility_node_submit"))
 		{
