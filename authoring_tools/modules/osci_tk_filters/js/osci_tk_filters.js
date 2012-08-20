@@ -28,7 +28,11 @@
 					{
 						updateContainerNum--;
 						var updateId = $(footnoteContainers[updateContainerNum]).find("textarea").attr("id");
-						CKEDITOR.instances[updateId].setData(window.osci_tk_new_footnotes[i].content);
+						if (CKEDITOR.instances[updateId]) {
+							CKEDITOR.instances[updateId].setData(window.osci_tk_new_footnotes[i].content);
+						} else {
+							$(footnoteContainers[updateContainerNum]).find("textarea").html(window.osci_tk_new_footnotes[i].content);
+						}
 					}
 
 					window.osci_tk_new_footnotes = null;
