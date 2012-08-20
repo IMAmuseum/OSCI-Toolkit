@@ -231,7 +231,7 @@ var LayeredImage = function(container) { // container should be a html element
 }
 
 
-ConservationAsset.prototype.createLayer = function(layerData) {
+LayeredImage.prototype.createLayer = function(layerData) {
     // alias jquery
     var $ = this.$;
     var layer;
@@ -268,7 +268,7 @@ ConservationAsset.prototype.createLayer = function(layerData) {
 }
 
 
-ConservationAsset.prototype.removeLayer = function(layerData) {
+LayeredImage.prototype.removeLayer = function(layerData) {
     if (layerData.polymapLayer) {
         this.map.remove(layerData.polymapLayer);
     }
@@ -277,7 +277,7 @@ ConservationAsset.prototype.removeLayer = function(layerData) {
 }
 
 
-ConservationAsset.prototype.toggleLayer = function(layerData) {
+LayeredImage.prototype.toggleLayer = function(layerData) {
     if (layerData.visible) {
         this.removeLayer(layerData);
     }
@@ -286,12 +286,12 @@ ConservationAsset.prototype.toggleLayer = function(layerData) {
     }
 }
 
-ConservationAsset.prototype.repaintLayer = function(layerData) {
+LayeredImage.prototype.repaintLayer = function(layerData) {
     this.removeLayer(layerData);
     this.createLayer(layerData);
 }
 
-ConservationAsset.prototype.createLayerIIP = function(layerData) {
+LayeredImage.prototype.createLayerIIP = function(layerData) {
     var CA = this;
     var layer = this.polymaps.image();
     var tileLoader = function(c) {
@@ -321,7 +321,7 @@ ConservationAsset.prototype.createLayerIIP = function(layerData) {
 }
 
 
-ConservationAsset.prototype.createLayerImage = function(layerData) {
+LayeredImage.prototype.createLayerImage = function(layerData) {
     // alias polymaps, as our load and unload functions change "this" inside
     var CA = this;
     var load = function(tile) {
@@ -345,7 +345,7 @@ ConservationAsset.prototype.createLayerImage = function(layerData) {
 }
 
 
-ConservationAsset.prototype.createLayerSVG = function(layerData) {
+LayeredImage.prototype.createLayerSVG = function(layerData) {
     // alias polymaps, as our load and unload functions change "this" inside
     var CA = this;
     var load = function(tile) {
@@ -369,7 +369,7 @@ ConservationAsset.prototype.createLayerSVG = function(layerData) {
 }
 
 
-ConservationAsset.prototype.zoomToContainer = function() {
+LayeredImage.prototype.zoomToContainer = function() {
     // always calculate at the highest possible zoom, 18, 
     // for max fineness of alignment
     var zoomToCalculateAt = 18
@@ -429,7 +429,7 @@ ConservationAsset.prototype.zoomToContainer = function() {
 }
 
 
-ConservationAsset.prototype.createUI = function() {
+LayeredImage.prototype.createUI = function() {
     // local aliases
     var $ = this.$
     , CA = this
@@ -540,13 +540,13 @@ ConservationAsset.prototype.createUI = function() {
             this.ui.layerSelector1
             .bind('click', {
                 layerControlNum: 1, 
-                conservationAsset: this
+                layeredImage: this
             }, this.toggleLayerSelector);
             
             this.ui.layerSelector2
             .bind('click', {
                 layerControlNum: 2, 
-                conservationAsset: this
+                layeredImage: this
             }, this.toggleLayerSelector)
         }
         if (this.figureOptions.interaction || this.figureOptions.editing) {
@@ -710,7 +710,7 @@ ConservationAsset.prototype.createUI = function() {
     });
 };
 
-ConservationAsset.prototype.reset = function() {
+LayeredImage.prototype.reset = function() {
     var $ = this.$, i, count,
         CA = this;
         
@@ -781,7 +781,7 @@ ConservationAsset.prototype.reset = function() {
 };
 
 
-ConservationAsset.prototype.refreshViewfinder = function() {
+LayeredImage.prototype.refreshViewfinder = function() {
 	var $ = this.$;
 	var CA = this;
 	// first clear out any contents
@@ -815,7 +815,7 @@ ConservationAsset.prototype.refreshViewfinder = function() {
 };
 
 
-ConservationAsset.prototype.refreshViewfinderViewport = function() {
+LayeredImage.prototype.refreshViewfinderViewport = function() {
     
     if (this.ui.viewfinder.hasClass('viewfinder-open')) {
         var $ = this.$;
@@ -856,14 +856,14 @@ ConservationAsset.prototype.refreshViewfinderViewport = function() {
 };
 
 
-ConservationAsset.prototype.refreshViewfinderOpacity = function(opacity) {
+LayeredImage.prototype.refreshViewfinderOpacity = function(opacity) {
 	if (this.ui.viewfinderLayer2) {
 		this.ui.viewfinderLayer2.css('opacity', opacity);
 	}
 };
 
 
-ConservationAsset.prototype.fullscreen = function(reset) {
+LayeredImage.prototype.fullscreen = function(reset) {
     var $ = this.$;
     var CA = this;
 
@@ -886,7 +886,7 @@ ConservationAsset.prototype.fullscreen = function(reset) {
     	width:	Math.round(modalWidth * 0.9) + 'px',
     	left: 	Math.round(modalWidth * 0.05) + 'px'
     });
-    // retrieve the original markup for this ConservationAsset and 
+    // retrieve the original markup for this LayeredImage and 
     // remap the IDs of the asset and its layers
     var markup = $(this.settings.originalMarkup);
     markup.attr('id', markup.attr('id') + '-fullscreen');
@@ -931,7 +931,7 @@ ConservationAsset.prototype.fullscreen = function(reset) {
     .append(markup)
     .prependTo(figureWrapper);
     
-    var tempCA = new ConservationAsset(markup);
+    var tempCA = new LayeredImage(markup);
     
     if (reset) {
         tempCA.reset();
@@ -939,7 +939,7 @@ ConservationAsset.prototype.fullscreen = function(reset) {
 };
 
 //resize the control bar so no wrapping occurs
-ConservationAsset.prototype.resizeControlBar = function()
+LayeredImage.prototype.resizeControlBar = function()
 {
     var containerWidth = this.container.outerWidth(),
         controlBarWidth = this.ui.controlbar.outerWidth(),
@@ -963,10 +963,10 @@ ConservationAsset.prototype.resizeControlBar = function()
     
 };
 
-ConservationAsset.prototype.toggleLayerSelector = function(event) {
+LayeredImage.prototype.toggleLayerSelector = function(event) {
     // set up aliases and build dynamic variable names
     var $ = jQuery;
-    var CA = event.data.conservationAsset;
+    var CA = event.data.layeredImage;
     var layerSelector = $(this);
     var layerControlNum = event.data.layerControlNum;
     var layerControlOther = (layerControlNum == 1) ? 2 : 1;
@@ -1083,7 +1083,7 @@ ConservationAsset.prototype.toggleLayerSelector = function(event) {
 };
 
 
-ConservationAsset.prototype.toggleAnnotationSelector = function() {
+LayeredImage.prototype.toggleAnnotationSelector = function() {
 	
     // local aliases
     var $ = this.$;
@@ -1179,7 +1179,7 @@ ConservationAsset.prototype.toggleAnnotationSelector = function() {
 };
 
 
-ConservationAsset.prototype.resetZoomRange = function(zoomMin) {
+LayeredImage.prototype.resetZoomRange = function(zoomMin) {
     // set the zoom range
     zoomMin = zoomMin || 0;
     var zoomMax = 0;
@@ -1203,7 +1203,7 @@ ConservationAsset.prototype.resetZoomRange = function(zoomMin) {
 }
 
 
-ConservationAsset.prototype.getZoomLevels = function(width, height) {
+LayeredImage.prototype.getZoomLevels = function(width, height) {
     var tileSize = this.map.tileSize().x;
     // there is always at least one zoom level
     var zoomLevels = 1;
@@ -1216,12 +1216,12 @@ ConservationAsset.prototype.getZoomLevels = function(width, height) {
 }
 
 
-ConservationAsset.prototype.getScale = function(zoom_levels, zoom) {
+LayeredImage.prototype.getScale = function(zoom_levels, zoom) {
     return Math.pow(2, zoom_levels - zoom);
 }
 
 
-ConservationAsset.prototype.realignLayers = function() {
+LayeredImage.prototype.realignLayers = function() {
     var $ = this.$
     , i, count;
 	
@@ -1249,7 +1249,7 @@ ConservationAsset.prototype.realignLayers = function() {
 };
 
 
-ConservationAsset.prototype.clearPopups = function() {
+LayeredImage.prototype.clearPopups = function() {
     var CA = this;
     
     if (this.ui.currentPopup) {
@@ -1262,7 +1262,7 @@ ConservationAsset.prototype.clearPopups = function() {
 };
 
 
-ConservationAsset.prototype.toggleControls = function(duration) {
+LayeredImage.prototype.toggleControls = function(duration) {
     duration = duration || 400;
     var $ = this.$;
     
@@ -1276,7 +1276,7 @@ ConservationAsset.prototype.toggleControls = function(duration) {
 };
 
 //move the legend so it does not overlap any other controls
-ConservationAsset.prototype.positionLegend = function()
+LayeredImage.prototype.positionLegend = function()
 {
     if (this.ui.legendItemsCount) 
     {
@@ -1290,7 +1290,7 @@ ConservationAsset.prototype.positionLegend = function()
 };
 
 
-ConservationAsset.prototype.addLegendItem = function(layerData) {
+LayeredImage.prototype.addLegendItem = function(layerData) {
     var $ = this.$;
     
     // only show if there is color data
@@ -1324,7 +1324,7 @@ ConservationAsset.prototype.addLegendItem = function(layerData) {
 };
 
 
-ConservationAsset.prototype.removeLegendItem = function(layerData) {
+LayeredImage.prototype.removeLegendItem = function(layerData) {
     var $ = this.$;
     var CA = this;
     
@@ -1353,7 +1353,7 @@ ConservationAsset.prototype.removeLegendItem = function(layerData) {
 };
 
 // toggle on any annotation layer that's configured from the figure options 
-ConservationAsset.prototype.showAnnotationPresets = function() {
+LayeredImage.prototype.showAnnotationPresets = function() {
     for (var j=0, layerCount = this.annotationLayers.length; j < layerCount; j++) {
         this.removeLayer(this.annotationLayers[j]);
         this.removeLegendItem(this.annotationLayers[j]);
@@ -1375,7 +1375,7 @@ ConservationAsset.prototype.showAnnotationPresets = function() {
     }
 }
 
-ConservationAsset.prototype.getVisibleBaseLayers = function() {
+LayeredImage.prototype.getVisibleBaseLayers = function() {
 	var i, count,
 		layers = [];
 	
@@ -1389,7 +1389,7 @@ ConservationAsset.prototype.getVisibleBaseLayers = function() {
 	return layers;
 }
 
-ConservationAsset.prototype.getVisibleBaseLayerIds = function() {
+LayeredImage.prototype.getVisibleBaseLayerIds = function() {
 	var i, count,
 		layers = [];
 	
@@ -1404,7 +1404,7 @@ ConservationAsset.prototype.getVisibleBaseLayerIds = function() {
 }
 
 
-ConservationAsset.prototype.getVisibleAnnotationIds = function() {
+LayeredImage.prototype.getVisibleAnnotationIds = function() {
 	var i, count,
 		annotations = [];
 	
@@ -1419,7 +1419,7 @@ ConservationAsset.prototype.getVisibleAnnotationIds = function() {
 }
 
 
-ConservationAsset.prototype.getExtents = function() {
+LayeredImage.prototype.getExtents = function() {
 	var extents = this.map.extent();
 	return { 
 		swLon: extents[0].lon, 
@@ -1430,7 +1430,7 @@ ConservationAsset.prototype.getExtents = function() {
 }
 
 
-ConservationAsset.prototype.setExtents = function(extents) {
+LayeredImage.prototype.setExtents = function(extents) {
 	this.map.extent(extents);
 	// update zoom slider
 	if (this.ui.zoomSlider) {
@@ -1439,7 +1439,7 @@ ConservationAsset.prototype.setExtents = function(extents) {
 }
 
 
-ConservationAsset.prototype.getSliderPosition = function() {
+LayeredImage.prototype.getSliderPosition = function() {
 	if (typeof this.ui.slider != 'undefined') {
 		return this.ui.slider.slider('value');
 	}
@@ -1449,7 +1449,7 @@ ConservationAsset.prototype.getSliderPosition = function() {
 }
 
 
-ConservationAsset.prototype.getLayerById = function(id) {
+LayeredImage.prototype.getLayerById = function(id) {
 	for (var i=0, count = this.layers.length; i < count; i++) {
 		if (this.layers[i].layer_id && this.layers[i].layer_id == id) {
 			return this.layers[i];
@@ -1477,7 +1477,7 @@ window.caCollection = new CACollection();
 //window.addEventListener('load', function() {
 //    var assets = jQuery('.conservation-asset').not('.noload');
 //    for(var i=0, count = assets.length; i < count; i++) {
-//        new ConservationAsset(assets[i]);
+//        new LayeredImage(assets[i]);
 //    }
 //}, false);
 
