@@ -69,11 +69,11 @@ var LayeredImage = function(container) { // container should be a html element
     }
     
     // push this new asset into the registry, only render if not already present
-    if (!window.caCollection.add(this)) {
+    if (!window.liCollection.add(this)) {
     	return;
     };
     
-    // load the conservation asset id and configuration
+    // load the layered image id and configuration
     this.id = this.container.attr('id');
     this.settings = this.container.data();
     this.settings.zoomStep = this.settings.zoomStep || 0.1;
@@ -469,7 +469,7 @@ LayeredImage.prototype.createUI = function() {
                     x: event.clientX,
                     y: event.clientY
                 };
-                caCollection.userIsDraggingAsset = CA.id;
+                liCollection.userIsDraggingAsset = CA.id;
             }
 	    });
     }
@@ -494,7 +494,7 @@ LayeredImage.prototype.createUI = function() {
 	        CA.fullscreen();
 	    }
 	    else {
-	    	window.caCollection.remove(CA);
+	    	window.liCollection.remove(CA);
 	        $('.ca-ui-fullscreen-modal').remove();
 	        if (window.scrollOffset) {
 	            window.scrollTo(window.scrollOffset[0], window.scrollOffset[1]);
@@ -670,7 +670,7 @@ LayeredImage.prototype.createUI = function() {
         var controlState = container.attr('data-controls') || 'false';
         if (controlState == 'false') {
         	// ensure no other CA has its controls up
-        	var assets = window.caCollection.list();
+        	var assets = window.liCollection.list();
         	for (var i=0, count = assets.length; i < count; i++) {
         		var asset = assets[i];
         		if (asset.container.attr('data-controls') == 'true') {
@@ -1470,9 +1470,9 @@ function outerHTML(node){
 		})(node);
 }
 
-window.caCollection = new CACollection();
+window.liCollection = new LICollection();
 
-// auto load any conservation assets 
+// auto load any layered images 
 // had to comment out due to double parsing in reader
 //window.addEventListener('load', function() {
 //    var assets = jQuery('.conservation-asset').not('.noload');
@@ -1482,9 +1482,9 @@ window.caCollection = new CACollection();
 //}, false);
 
 // update the viewfinder if an asset is being dragged
-function conservationMousemove(e) {
-    if (window.caCollection && caCollection.userIsDraggingAsset) {
-        var asset = caCollection.find(caCollection.userIsDraggingAsset);
+function liMousemove(e) {
+    if (window.liCollection && liCollection.userIsDraggingAsset) {
+        var asset = liCollection.find(liCollection.userIsDraggingAsset);
 
         if (asset) {
             if (!asset.settings.dragging) {
@@ -1495,20 +1495,20 @@ function conservationMousemove(e) {
 
             if (e.conservationDraggingRemove) {
                 asset.settings.dragging = undefined;
-                caCollection.userIsDraggingAsset = false;
+                liCollection.userIsDraggingAsset = false;
             }
         }
     }
 }
 
 // update the viewfinder and remove the dragging flag when done dragging
-function conservationMouseup(e) {
-    if (window.caCollection && caCollection.userIsDraggingAsset) {
+function liMouseup(e) {
+    if (window.liCollection && liCollection.userIsDraggingAsset) {
         e.conservationDraggingRemove = true;
-        conservationMousemove(e);
+        liMousemove(e);
     }
 }
 
 // bind the mouse events for asset dragging and viewfinder updating
-window.addEventListener("mousemove", conservationMousemove, false);
-window.addEventListener("mouseup", conservationMouseup, false);
+window.addEventListener("mousemove", liMousemove, false);
+window.addEventListener("mouseup", liMouseup, false);
