@@ -2,12 +2,8 @@
 OsciTk.views.figureTypeRegistry["layered_image"] = "MultiColumnFigureLayeredImage";
 
 OsciTk.views.MultiColumnFigureLayeredImage = OsciTk.views.MultiColumnFigure.extend({
-	initialize: function() {
-		this.figContent = null;
-		this.contentRendered = false;
-	},
 	renderContent: function() {
-		console.log(this.model, 'model');
+		this.figContent = this.figContent || null;
 		var container = this.$el.find(".figure_content");
 		var containerHeight = container.height();
 		var containerWidth = container.width();
@@ -36,16 +32,12 @@ OsciTk.views.MultiColumnFigureLayeredImage = OsciTk.views.MultiColumnFigure.exte
 	},
 	renderFromContentDoc: function() {
 		var figureContent = this.$el.find('.figure_content');
-		console.log(figureContent, 'figureContent');
 		// empty the figure contents
 		figureContent.empty();
-
 		// place figure content into container
 		figureContent.html(this.figContent);
-		
 		// spawn Layered Image
-
-
+		
 		this.contentRendered = true;
 	}
 });
