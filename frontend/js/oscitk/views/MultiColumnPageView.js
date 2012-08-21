@@ -11,6 +11,19 @@ OsciTk.views.MultiColumnPage = OsciTk.views.Page.extend({
 		this.model = undefined;
 	},
 
+	events: {
+		'click a.figure_reference': 'onFigureReferenceClicked'
+	},
+
+	onFigureReferenceClicked: function(event_data) {
+		var figureId = event_data.currentTarget.hash.substring(1);
+		var figureView = app.views.figures[figureId];
+		if (figureView && figureView.fullscreen) {
+			figureView.fullscreen();
+		}
+		return false;
+	},
+
 	hide: function() {
 		this.$el.css("visibility", "hidden");
 		this.visible = false;

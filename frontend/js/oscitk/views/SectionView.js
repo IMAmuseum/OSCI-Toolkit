@@ -17,18 +17,20 @@ OsciTk.views.Section = OsciTk.views.BaseView.extend({
 
 				app.models.section.loadContent();
 				this.changeModel(app.models.section);
-				this.removeAllChildViews();
 				this.render();
 			}
 		}, this);
 
 	},
-	rerender: function() {
+	render: function() {
+		//Allow subclasses to do something before we render
+		if (this.preRender) {
+			this.preRender();
+		}
+		//clean up the view incase we have already rendered this before
 		this.model.removeAllPages();
 		this.removeAllChildViews();
-		this.render();
-	},
-	render: function() {
+
 		app.dispatcher.trigger("layoutStart");
 		this.renderContent();
 		app.dispatcher.trigger("layoutComplete", {numPages : this.model.get('pages').length});

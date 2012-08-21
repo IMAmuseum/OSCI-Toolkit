@@ -9,18 +9,6 @@ OsciTk.views.Page = OsciTk.views.BaseView.extend({
 		this.$el.addClass("page-num-" + this.model.collection.length)
 				.attr("data-page_num", this.model.collection.length);
 	},
-	events: {
-		'click figure .figure_content': 'onFigureContentClicked',
-		'click a.figure_reference': 'onFigureReferenceClicked'
-	},
-	onFigureContentClicked: function(event_data) {
-		app.dispatcher.trigger('showFigureFullscreen', $(event_data.currentTarget).parent('figure').attr('id'));
-		return false;
-	},
-	onFigureReferenceClicked: function(event_data) {
-		app.dispatcher.trigger('showFigureFullscreen', event_data.currentTarget.hash.substring(1));
-		return false;
-	},
 	render: function() {
 		this.$el.html(this.template(this.model.toJSON()));
 		return this;
