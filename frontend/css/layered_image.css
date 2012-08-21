@@ -99,8 +99,8 @@ div.layered_image-asset .ui-slider-handle {
 
 .ca-ui-zoom {
 	position: absolute;
-	top: 5px;
-	right: 5px;
+	top: 0px;
+	right: 0px;
 	background: #000;
 	opacity: 0.75;
 	width: 50px;
@@ -114,6 +114,17 @@ div.layered_image-asset .ui-slider-handle {
 	border-bottom: 1px solid #888;
 }
 
+.ca-ui-zoom-out {
+	background: url('../img/icon-zoom-out.png') center no-repeat;
+	width: 50px;
+	height: 50px;
+}
+
+.ca-ui-zoom-slider {
+	display: none;
+}
+
+/* Not using zoom slider
 .ca-ui-zoom-slider {
 	height: 75px;
 	width: 5px;
@@ -129,20 +140,14 @@ div.layered_image-asset .ui-slider-handle {
 	left: -4px;
 	margin-bottom: -5px;
 }
-
-.ca-ui-zoom-out {
-	background: url('../img/icon-zoom-out.png') center no-repeat;
-	width: 16px;
-	height: 16px;
-	border-top: 1px solid #888;
-}
+*/
 
 /* ViewFinder */
 
 .ca-ui-viewfinder {
 	position: absolute;
-	top: 15px;
-	right: 40px;
+	top: 0px;
+	left: 0px;
     display: none;
 }
 
@@ -150,16 +155,15 @@ div.layered_image-asset .ui-slider-handle {
 	width: 100px;
 	background: transparent;
 	height: 100px;
-	border: 2px solid white;
-	background: #000 url('../img/icon-viewfinder-small.png') bottom left no-repeat;
+	background: #000 url('../img/icon-viewfinder-small-rev.png') bottom right no-repeat;
     overflow: hidden;
     box-shadow: 0 0 2px #000;
 }
 
 .ca-ui-viewfinder.viewfinder-closed {
-	width: 20px;
-	height: 16px;
-	background: #000 url('../img/icon-viewfinder-big.png') center no-repeat;
+	width: 50px;
+	height: 50px;
+	background: #000 url('../img/icon-viewfinder-big-rev.png') center no-repeat;
 	opacity: 0.75;
 }
 
@@ -167,6 +171,10 @@ div.layered_image-asset .ui-slider-handle {
 	position: absolute;
 	top: 0px;
 	left: 0px;
+}
+
+.ca-ui-viewfinderLayer img {
+	width: 100%;
 }
 
 .ca-ui-viewfinder-viewport {
