@@ -19,7 +19,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 				app.views.navigationView.identifier = identifier;
 			}
 
-			this.rerender();
+			this.render();
 		}, this);
 
 		app.dispatcher.on("navigate", function(data) {
@@ -97,6 +97,11 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 		OsciTk.views.MultiColumnSection.__super__.initialize.call(this);
 	},
 
+	preRender: function() {
+		//make sure no figure views are hanging around
+		app.views.figures = {};
+	},
+
 	renderContent: function() {
 		this.$el.html(this.template());
 
@@ -170,7 +175,8 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 					var figureViewInstance = this.getFigureView(figure.get('id'));
 
 					if (!figureViewInstance) {
-						figureViewInstance = new OsciTk.views[figureViewType]({
+						//create instance and add it to app.views for ease of access
+						app.views.figures[figureIds[j]] = figureViewInstance = new OsciTk.views[figureViewType]({
 							model : figure,
 							sectionDimensions : this.dimensions
 						});
@@ -336,25 +342,8 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 	},
 
 	getFigureView: function(figureId) {
-		var childViews = this.getChildViews();
-		var figureView;
-
-		var numPageViews = childViews.length;
-		for (var i = 0; i < numPageViews; i++) {
-			var pageChildViews = childViews[i].getChildViewsByType('figure');
-			var numPageChildViews = pageChildViews.length;
-			for (var j = 0; j < numPageChildViews; j++) {
-				if (figureId === pageChildViews[j].$el.attr('id')) {
-					figureView = pageChildViews[j];
-					break;
-				}
-			}
-
-			if (figureView) {
-				break;
-			}
+		if (app.views.figures[figureId]) {
+			return app.views.figures[figureId];
 		}
-
-		return figureView;
 	}
 });

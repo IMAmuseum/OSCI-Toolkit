@@ -38,9 +38,5 @@ OsciTk.views.App = OsciTk.views.BaseView.extend({
 
 		// Add the citation view to the AppView
 		app.views.citationView = new OsciTk.views.Citation();
-
-		// Add the fullscreen figure view to the AppView
-		app.views.fsFigureView = new OsciTk.views.FullscreenFigureView();
-
 	}
 });

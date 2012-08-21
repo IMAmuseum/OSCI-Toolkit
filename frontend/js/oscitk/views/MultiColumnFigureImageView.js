@@ -14,5 +14,10 @@ OsciTk.views.MultiColumnFigureImage = OsciTk.views.MultiColumnFigure.extend({
 		});
 
 		this.contentRendered = true;
+	},
+	fullscreen: function() {
+		$.fancybox.open({
+			href: $(this.model.get('content')).attr('src')
+		});
 	}
 });

@@ -39,7 +39,7 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 				// go to section_id
 				this.setCurrentNavigationItem(params.section_id);
 			}
-			console.log(this, "routedToSection");
+
 			var title = app.models.docPackage.getTitle();
 			title = (title) ? title + " | ": "";
 			title += this.getCurrentNavigationItem().get('title');
