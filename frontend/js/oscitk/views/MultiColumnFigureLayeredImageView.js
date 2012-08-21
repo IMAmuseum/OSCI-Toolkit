@@ -9,13 +9,13 @@ OsciTk.views.MultiColumnFigureLayeredImage = OsciTk.views.MultiColumnFigure.exte
 		var containerWidth = container.width();
 
 		// the content document may already be loaded
-		if (this.figContent) {
+		if (this.figContent !== null) {
 			this.renderFromContentDoc();
 		}
 		else {
 			// get the figure content document from object's data-url attribute
 			var figObj = $(this.model.get('content'));
-			var figObjUrl = figObj.attr('data-url');
+			var figObjUrl = figObj.attr('data');
 			if (figObjUrl !== undefined) {
 				var $this = this;
 				$.ajax({
@@ -31,13 +31,13 @@ OsciTk.views.MultiColumnFigureLayeredImage = OsciTk.views.MultiColumnFigure.exte
 		}
 	},
 	renderFromContentDoc: function() {
-		var figureContent = this.$el.find('.figure_content');
-		// empty the figure contents
-		figureContent.empty();
-		// place figure content into container
-		figureContent.html(this.figContent);
-		// spawn Layered Image
-		
+		var contentDiv = this.$el.find('.figure_content');
+		console.log(contentDiv, 'contentDiv');
+		contentDiv.empty();
+		console.log(this.figContent, 'figContent');
+		// place figure content into container and spawn Layered Image
+		contentDiv.html(this.figContent);
+		new window.LayeredImage(contentDiv.find('.layered_image-asset')[0]);
 		this.contentRendered = true;
 	}
 });
