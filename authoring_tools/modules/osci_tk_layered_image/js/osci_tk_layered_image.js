@@ -106,7 +106,7 @@ var LayeredImage = function(container) { // container should be a html element
 
     // extract the layer data
     this.layers = [];
-    var layerContainer = this.container.find('.conservation-layers');
+    var layerContainer = this.container.find('.layered_image-layers');
     var layerItems = layerContainer.find('li');
     for (i=0, count = layerItems.length; i < count; i++) {
         var layerMarkup = $(layerItems[i]);
