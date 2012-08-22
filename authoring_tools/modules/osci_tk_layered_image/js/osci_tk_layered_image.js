@@ -1275,15 +1275,18 @@ LayeredImage.prototype.toggleControls = function(duration) {
 //move the legend so it does not overlap any other controls
 LayeredImage.prototype.positionLegend = function()
 {
-	if (this.ui.legendItemsCount) 
-	{
-		var viewfinderHeight = parseInt(this.ui.viewfinder.outerHeight(), 10),
-			viewfinderTop = parseInt(this.ui.viewfinder.css('top'), 10);
+	// This function used to ensure the viewport and legend didn't overlap.
+	// this is not a concern in this implementation, as the controls are not stacked
 
-		this.ui.legend.css({
-			top : (viewfinderTop + viewfinderHeight + 4) + 'px'
-		});
-	}
+	// if (this.ui.legendItemsCount)
+	// {
+	// 	var viewfinderHeight = parseInt(this.ui.viewfinder.outerHeight(), 10),
+	// 	viewfinderTop = parseInt(this.ui.viewfinder.css('top'), 10);
+
+	// 	this.ui.legend.css({
+	// 	top : (viewfinderTop + viewfinderHeight + 4) + 'px'
+	// 	});
+	// }
 };
 
 

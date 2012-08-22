@@ -19,8 +19,8 @@ div.layered_image-asset .ui-slider-handle {
 
 .ca-ui-controlbar {
 	position: absolute;
-	bottom: 0px;
-	right: 0px;
+	bottom: 0;
+	right: 0;
 	height: 50px;
 	background: #000;
 	opacity: 0.75;
@@ -29,10 +29,9 @@ div.layered_image-asset .ui-slider-handle {
 }
 
 .ca-ui-annotation {
-	padding: 5px 5px 5px 5px;
 	float: right;
-	width: 20px;
-	height: 20px;
+	width: 50px;
+	height: 50px;
 	background: url('../img/icon-annotation.png') center no-repeat;
 	border-right: 1px solid #888;
 }
@@ -66,7 +65,7 @@ div.layered_image-asset .ui-slider-handle {
 	float: left;
 	vertical-align: middle;
 	text-align: center;
-	padding: 4px 8px 0px 5px;
+	padding: 4px 8px 0 5px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -99,8 +98,8 @@ div.layered_image-asset .ui-slider-handle {
 
 .ca-ui-zoom {
 	position: absolute;
-	top: 0px;
-	right: 0px;
+	top: 0;
+	right: 0;
 	background: #000;
 	opacity: 0.75;
 	width: 50px;
@@ -146,8 +145,8 @@ div.layered_image-asset .ui-slider-handle {
 
 .ca-ui-viewfinder {
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: 0;
+	left: 0;
     display: none;
 }
 
@@ -169,8 +168,8 @@ div.layered_image-asset .ui-slider-handle {
 
 .ca-ui-viewfinderLayer {
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: 0;
+	left: 0;
 }
 
 .ca-ui-viewfinderLayer img {
@@ -184,23 +183,22 @@ div.layered_image-asset .ui-slider-handle {
 
 .ca-ui-legend {
 	position: absolute;
-	top: 35px;
-	right: 40px;
+	top: 0;
+	right: 55px;
     background: #000;
     opacity: 0.75;
     color: #fff;
-    border-radius: 5px;
     display: block;
 }
 
 .ca-ui-legend ul {
     list-style: none;
-    margin: 0px !important;
+    margin: 0 !important;
 	padding: 7px 7px 7px 7px !important;  
 }
 
 .ca-ui-legend li {
-    padding: 5px 0px 5px 0px !important;
+    padding: 5px 0 5px 0 !important;
 }
 
 .ca-ui-legend .item-box {
@@ -214,7 +212,7 @@ div.layered_image-asset .ui-slider-handle {
 .ca-ui-fullscreen-modal {
     position: absolute;
     top: 26px;
-    left: 0px;
+    left: 0;
     width: 100%;
     height: 100%;
     z-index: 9990;
@@ -224,25 +222,25 @@ div.layered_image-asset .ui-slider-handle {
 .ca-ui-fullscreen-wrap {
     position: absolute;
     top: 26px;
-    left: 0px;
+    left: 0;
     width: 100%;
     height: 100%;
     z-index: 9999;
-    -moz-box-shadow: 0px 0px 5px 5px #000;
-    -webkit-box-shadow: 0px 0px 5px 5px #000;
-    box-shadow: 0px 0px 5px 5px #000;
+    -moz-box-shadow: 0 0 5px 5px #000;
+    -webkit-box-shadow: 0 0 5px 5px #000;
+    box-shadow: 0 0 5px 5px #000;
 }
 
 .ca-ui-fullscreen-wrap {
 	position: absolute;
 	top: 26px;
-	left: 0px;
+	left: 0;
 	width: 100%;
 	height: 100%;
 	z-index: 9999;
 	/*-moz-box-shadow: 5px 5px 5px 5px #000;
     -webkit-box-shadow: 5px 5px 5px 5px #000;*/
-    box-shadow: 0px 0px 5px 5px #000;
+    box-shadow: 0 0 5px 5px #000;
 }
 
 .ca-ui-fullscreen-wrap figcaption {
@@ -262,7 +260,7 @@ div.layered_image-asset .ui-slider-handle {
 }
 
 .ca-ui-fullscreen-wrap figure {
-	margin: 0px;
+	margin: 0;
 }
 
 .ca-ui-annotation-selector {
@@ -276,7 +274,7 @@ div.layered_image-asset .ui-slider-handle {
 
 .ca-ui-annotation-selector-list {
 	list-style: none;
-	margin: 0px !important;
+	margin: 0 !important;
 	padding: 10px 10px 10px 10px !important;
 }
 
@@ -294,7 +292,7 @@ div.layered_image-asset .ui-slider-handle {
 
 .ca-ui-annotation-selector-list hr {
 	border: 1px solid gray;
-	height: 0px;
+	height: 0;
 }
 
 .ca-ui-annotation-selector-item-box {
@@ -324,12 +322,12 @@ div.layered_image-asset .ui-slider-handle {
 
 .ca-ui-layer-selector-popup hr {
 	border: 1px solid gray;
-	height: 0px;
+	height: 0;
 }
 
 .ca-ui-layer-selector-popup ul {
 	list-style: none;
-	margin: 0px !important;
+	margin: 0 !important;
 	padding: 10px 10px 10px 10px !important;
 }
 
