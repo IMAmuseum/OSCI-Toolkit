@@ -10,6 +10,10 @@ OsciTk.views.MultiColumnFigureLayeredImage = OsciTk.views.MultiColumnFigure.exte
 		var containerHeight = container.height();
 		var containerWidth = container.width();
 
+		// place figure options on figure tag
+		var jsonOptions = JSON.stringify(this.model.get('options'));
+		this.$el.attr('data-options', jsonOptions);
+
 		// the content document may already be loaded
 		if (this.figContent !== null) {
 			this.renderFromContentDoc();
