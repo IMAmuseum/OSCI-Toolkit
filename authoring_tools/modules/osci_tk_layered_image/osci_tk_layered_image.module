@@ -65,6 +65,7 @@ function osci_tk_layered_image_demo() {
 }
 
 function osci_tk_layered_image_form_alter(&$form, &$form_state, $form_id) {
+	dpm($form_id, 'form_id');
 	// allow to reference content types for node reference field
 	if ($form_id == 'field_ui_field_edit_form') {
 		if ($form['#field']['field_name'] == 'field_assets') {
@@ -90,6 +91,7 @@ function osci_tk_layered_image_form_alter(&$form, &$form_state, $form_id) {
 				// get default value
 				$default = '';
 				$annotationState = FALSE;
+				dpm($form_state, 'form_state');
 				if (isset($form_state['node']->field_assets['und'][$key]['annotation_flag'])) {
 					$default = (bool) $form_state['node']->field_assets['und'][$key]['annotation_flag'];
 					// store for later for the color selector
@@ -223,7 +225,7 @@ function osci_tk_layered_image_node_presave($node) {
 
 function osci_tk_layered_image_node_load($nodes, $types) {
 	foreach ($nodes as &$node) {
-		if ($node->type == 'layered_image_asset') {
+		if ($node->type == 'layered_image') {
 			// get aspect ratio
 			$node->field_aspect_ratio['und'][0]['value'] = _osci_tk_layered_image_get_layered_image_aspect($node);
 			// get serialized flag data
