@@ -23,8 +23,8 @@ div.layered_image-asset .ui-slider-handle {
 	right: 0;
 	height: 50px;
 	background: #000;
-	opacity: 0.75;
 	margin: 0;
+	opacity: 0.85;
     display: none;
 }
 
@@ -34,6 +34,11 @@ div.layered_image-asset .ui-slider-handle {
 	height: 50px;
 	background: url('../img/icon-annotation.png') center no-repeat;
 	border-right: 1px solid #888;
+	display: none;
+}
+
+.ca-ui-annotation.active {
+	background-color: #444;
 }
 
 .ca-ui-reset {
@@ -101,7 +106,7 @@ div.layered_image-asset .ui-slider-handle {
 	top: 0;
 	right: 0;
 	background: #000;
-	opacity: 0.75;
+	opacity: 0.85;
 	width: 50px;
     display: none;
 }
@@ -163,7 +168,7 @@ div.layered_image-asset .ui-slider-handle {
 	width: 50px;
 	height: 50px;
 	background: #000 url('../img/icon-viewfinder-big-rev.png') center no-repeat;
-	opacity: 0.75;
+	opacity: 0.85;
 }
 
 .ca-ui-viewfinderLayer {
@@ -186,7 +191,7 @@ div.layered_image-asset .ui-slider-handle {
 	top: 0;
 	right: 55px;
     background: #000;
-    opacity: 0.75;
+    opacity: 0.85;
     color: #fff;
     display: block;
 }
@@ -266,20 +271,23 @@ div.layered_image-asset .ui-slider-handle {
 .ca-ui-annotation-selector {
 	position: absolute;
 	background: #000;
-	opacity: 0.75;
 	margin: 0;
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
+	background-color: #444;
+	opacity: 0.85;
+	padding: 3px 5px 0 5px;
+	color: #fff;
+}
+
+.ca-ui-annotation-selector .title {
+	font-weight: bold;
 }
 
 .ca-ui-annotation-selector-list {
 	list-style: none;
-	margin: 0 !important;
-	padding: 10px 10px 10px 10px !important;
+	padding: 7px 0 10px 0;
 }
 
 .ca-ui-annotation-selector-list li {
-	color: #fff;
 	height: 15px;
 	font-size: 12px;
 }
@@ -314,7 +322,7 @@ div.layered_image-asset .ui-slider-handle {
 .ca-ui-layer-selector-popup {
 	position: absolute;
 	background: #000;
-	opacity: 0.75;
+	opacity: 0.85;
 	margin: 0;
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;

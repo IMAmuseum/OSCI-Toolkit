@@ -512,9 +512,9 @@ LayeredImage.prototype.createUI = function() {
 	// annotation control
 	if (this.annotationLayers.length > 0) {
 		this.ui.annotation = $('<div class="ca-ui-annotation"></div>')
-		.bind('click', function(event) {
-			CA.toggleAnnotationSelector();
-		});
+			.bind('click', function(event) {
+				CA.toggleAnnotationSelector();
+			});
 		if (this.figureOptions.annotation || this.figureOptions.editing) {
 			this.ui.annotation.appendTo(this.ui.controlbar);
 		}
@@ -653,7 +653,7 @@ LayeredImage.prototype.createUI = function() {
 	});
 	
 	// store references to the control elements, so they can be manipulated as a collection
-	this.ui.controls = [this.ui.controlbar, this.ui.zoom, this.ui.viewfinder, this.ui.currentPopup];
+	this.ui.controls = [this.ui.controlbar, this.ui.zoom, this.ui.viewfinder, this.ui.currentPopup, this.ui.annotation];
 	
 	/*  DISABLED FOR DEBUGGING - CODE BELOW WORKS .. sometimes
 	 *
@@ -1092,6 +1092,10 @@ LayeredImage.prototype.toggleAnnotationSelector = function() {
 	}
 	else {
 		this.clearPopups();
+
+		// set an active class on the button to change appearance
+		this.ui.annotation.addClass('active');
+
 		// get the position of the button's top right corner - this is where to bind the popup
 		var parentOffset = this.ui.annotation.offsetParent().position();
 		var elOffset = this.ui.annotation.position();
@@ -1108,6 +1112,7 @@ LayeredImage.prototype.toggleAnnotationSelector = function() {
 			right: right, 
 			bottom: bottom
 		});
+		$('<div class="title">Annotations</div><hr>').appendTo(this.ui.annotationSelector);
 		this.ui.annotationSelectorList = $('<ul class="ca-ui-annotation-selector-list"></ul>');
 		for (var i=0, count = this.annotationLayers.length; i < count; i++) {
 			var layerData = this.annotationLayers[i];
@@ -1254,7 +1259,11 @@ LayeredImage.prototype.clearPopups = function() {
 			CA.ui.currentPopup.remove();
 			CA.ui.currentPopup = false;
 		});
-		
+	}
+	if (this.ui.controls) {
+		$.each(this.ui.controls, function() {
+			$(this).removeClass('active');
+		});
 	}
 };
 
@@ -1266,7 +1275,7 @@ LayeredImage.prototype.toggleControls = function(duration) {
 	$.each(this.ui.controls, function() {
 		// do this test, this.currentPopup could be false making "this" the window
 		if (this != window) {
-			this.fadeToggle(duration); 
+			this.fadeToggle(duration);
 		}
 	});
    
