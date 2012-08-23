@@ -548,8 +548,8 @@ LayeredImage.prototype.createUI = function() {
 		}
 		if (this.figureOptions.interaction || this.figureOptions.editing) {
 			this.ui.controlbar
-			.append(this.ui.layerSelector2)
-			.append(this.ui.layerSelector1);
+				.append(this.ui.layerSelector2)
+				.append(this.ui.layerSelector1);
 		}
 
 		// opacity slider
