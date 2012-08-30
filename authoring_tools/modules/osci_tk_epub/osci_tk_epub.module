@@ -1298,15 +1298,18 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
 
 	$toc = _osci_tk_get_flattened_nodetree_toc($node, $revTime);
 
-	dpm($toc);
-
 	$content = '<h1>' . $node->title . '</h1>';
 
 	foreach($toc as $item) {
 		$content .= '<h2>' . $item['title'] . '</h2>';
+
+		$vid = _osci_tk_epub_get_revision_id($item['nid']);
+		$section_node = node_load($item['nid'], $vid);
+		$content .= _osci_tk_epub_generate_content_document($section_node, false);
+
 	}
 
-	return $content; // TODO: remove after development
+	//return $content; // For use in development
 
 	print $content;
 	exit();
