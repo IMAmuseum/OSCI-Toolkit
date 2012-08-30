@@ -16,24 +16,24 @@
 .note-tooltip .reference-text-content {
 	max-height:80px;
 	overflow:auto;
-	
+
 	background:
 		/* Shadow covers */
 		linear-gradient(white 30%, rgba(255,255,255,0)),
 		linear-gradient(rgba(255,255,255,0), white 70%) 0 100%,
-		
+
 		/* Shadows */
 		radial-gradient(50% 0, farthest-side, rgba(0,0,0,.2), rgba(0,0,0,0)),
 		radial-gradient(50% 100%,farthest-side, rgba(0,0,0,.2), rgba(0,0,0,0)) 0 100%;
 	background-repeat: no-repeat;
 	background-color: #ccc;
 	background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
-	
+
 	/* Opera doesn't support this in the shorthand */
 	background-attachment: local, local, scroll, scroll;
-	
+
 	display:block;
-	margin-bottom:10px;	
+	margin-bottom:10px;
 	line-height:1.2;
 	font-size:12px;
 	text-shadow: 0 1px 0px rgba(255,255,255,.6);
@@ -48,7 +48,7 @@
 	text-align: center;
 	text-indent: 0;
 	font: normal bold 10px/13px Tahoma,sans-serif;
-	
+
 	/*background: transparent none no-repeat -100em -100em;*/
 	background: rgba(0,0,0,.3)!important;
 	border-radius:14px!important;
@@ -65,19 +65,27 @@
 	font-family:Arial, Helvetica, sans-serif;
 	border-bottom:2px solid #999;
 	margin-bottom:5px;
-	display:block;	
+	display:block;
 }
 .note-tooltip .status, .citation-tooltip .status {
 	text-align:right;
 	opacity:.8;
 	font-family:Arial, Helvetica, sans-serif;
 }
+.notesReel {
+	overflow-y: hidden;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	height: 180px;
+}
 ul.notesList {
 	list-style-type: none;
+	height: 180px;
 }
 ul.notesList li {
 	padding-bottom: 10px;
-	display:inline-block;
+	display:block;
+	float:left;
 	width:180px;
 	vertical-align:top;
 	margin-right:20px;
@@ -86,7 +94,7 @@ ul.notesList li {
 .the-note {
 	width:180px;height:140px;
 	background:#FAFA9F;
-	box-shadow: 0 1px 4px rgba(0,0,0,.4);
+	/*box-shadow: 0 1px 4px rgba(0,0,0,.4);*/
 	position:relative;
 }
 .the-note:after {
@@ -95,21 +103,21 @@ ul.notesList li {
 	content:"";
 	width:180px;height:40px;margin:0;padding:0;
 	display:block;
-	background: url('../img/bg-note-fade.png') repeat-x left bottom;	
+	background: url('../img/bg-note-fade.png') repeat-x left bottom;
 }
 
 .note-content {
 	padding:5px;
 	overflow:hidden;max-height:130px;
-	display:block;	
+	display:block;
 }
 .note-tags {
 	margin-top:10px;
 	padding:5px;
-	background: rgba(255,255,255,.6);	
+	background: rgba(255,255,255,.6);
 }
 .note-buttons {
-	padding-top:10px;	
+	padding-top:10px;
 }
 .note-tags .tags-label {
 	text-transform:uppercase;
@@ -128,12 +136,12 @@ a.noteLInk, a.noteEdit {
 	font-size:12px;text-transform:uppercase;
 	text-shadow: 0 1px 1px rgba(255,255,255,.7);
 	line-height:17px;
-	display:inline-block;	
+	display:inline-block;
 	color:#666666;
 	padding-left:22px;
 }
 a.noteLInk:hover, a.noteEdit:hover {
-	color:#333;	
+	color:#333;
 }
 a.noteLink {
 	background: url('../img/icon-link-16.png') no-repeat left top;
