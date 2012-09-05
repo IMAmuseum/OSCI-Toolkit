@@ -2,14 +2,14 @@
 	width: 100%;
 	z-index: 100;
 	position: absolute;
-	top: 0px;
+	top: -87px;
 	left: 0px;
-	height: 0;
+/*	height: 0;*/
 	max-height: 80%;
 	min-height: 40px;
-	overflow: hidden;
+/*	overflow: hidden;*/
 	font-family:Arial, Helvetica, sans-serif;
-	border-top:3px solid #ccc;
+/*	border-top:3px solid #ccc;*/
 	-webkit-transition: all .5s ease;
 	-moz-transition: all .5s ease;
 	-o-transition: all .5s ease;
@@ -17,21 +17,22 @@
 	transition: all .5s ease;
 }
 #toolbar-content-container {
-	position: absolute;
+/*	position: absolute;*/
 	width: 100%;
-	bottom: 0;
-	height: 100%;
-	margin-bottom: 40px;
-	background: #eee url('../img/bg-toolbar.gif') repeat;	
+/*	bottom: 0;*/
+/*	height: 100%;*/
+	margin-top: 40px;
+	background: #eee url('../img/bg-toolbar.gif') repeat;
 }
 #toolbar-content {
-	position: absolute;
-	bottom: 0px;
-	left: 0px;
+/*	position: absolute;*/
+/*	bottom: 0px;
+	left: 0px;*/
 	width: 100%;
 	padding: 20px 20px;
+	overflow: hidden;
 	/*background: url('../img/bg-fold-shadow.png') center 98% no-repeat;*/
-	
+
 }
 #toolbar-content:after {
 	content: "";
@@ -41,12 +42,13 @@
 	background-size: 100% 6px;
 	height:6px;display:block;
 	border-bottom:1px solid #e3e3e3;
+	clear: both;
 }
 
 #toolbar-handle {
 	height: 40px;
 	position: absolute;
-	bottom: 0px;
+	bottom: -40px;
 	right: 40px;
 	background: url('../img/bg-toolbar.gif') repeat;
 	border-bottom-left-radius:5px;
@@ -56,7 +58,7 @@
 #toolbar-close {
 	z-index: 10;
 	position: absolute;
-	top: -30px;
+	top: 3px;
 	right: 20px;
 	padding: 0px;
 	cursor: pointer;
@@ -74,12 +76,12 @@
 	transition: all .5s ease;
 }
 #toolbar-close:hover {
-	opacity:.7;cursor:pointer;	
+	opacity:.7;cursor:pointer;
 }
 #toolbar-title-container {
 	z-index: 9;
 	position: absolute;
-	top: -45px;
+	top: 0;
 	left: 0px;
 	padding: 0 20px;
 	width: 100%;
@@ -110,7 +112,7 @@ div.toolbar-item {
 	overflow:hidden;
 	text-indent: -9999px;
 }
-div.toolbar-item:after { 
+div.toolbar-item:after {
 	content:"";
 	width:2px;height:35px!important;
 	overflow:hidden;display:block;
@@ -122,11 +124,11 @@ div.toolbar-item:after {
 	position:absolute;top:0px;
 }
 div.toolbar-item:first-child:after {
-	display:none!important;	
+	display:none!important;
 }
 
 div.Notes-toolbar-item {
-	
+
 	background: url('../img/icon-notes.png') center center no-repeat;
 }
 div.Toc-toolbar-item {
@@ -154,7 +156,7 @@ div.Notes-toolbar-item,
 div.Toc-toolbar-item,
 div.Account-toolbar-item,
 div.Search-toolbar-item,
-div.Font-toolbar-item, 
+div.Font-toolbar-item,
 div.Figures-toolbar-item {
 	opacity:.7;
 }
@@ -162,27 +164,9 @@ div.Notes-toolbar-item:hover,
 div.Toc-toolbar-item:hover,
 div.Account-toolbar-item:hover,
 div.Search-toolbar-item:hover,
-div.Font-toolbar-item:hover, 
+div.Font-toolbar-item:hover,
 div.Figures-toolbar-item:hover {
 	opacity:1;
-}
-
-
-/* SEARCH VIEW */
-
-.result-content {
-	position:relative;
-}
-.result-content .result-type.content {
-	
-}
-.result-content .result-body {
-	display:block;
-	left:90px;position:absolute;
-	white-space:nowrap;
-	text-overflow: ellipsis;
-	overflow:hidden;
-	right:80px;
 }
 
 /* TOC VIEW */
@@ -191,7 +175,7 @@ div.toc-view > ul {
 	list-style: none;
 	overflow-x: hidden;
 	overflow-y: auto;
-	-webkit-overflow-scrolling: touch;	
+	-webkit-overflow-scrolling: touch;
 }
 div.toc-view li {
 	margin-bottom: 16px;
@@ -288,7 +272,7 @@ div.font-view div.theme-control a {
 	background-image: -moz-linear-gradient(bottom, rgb(189,207,211) 5%, rgb(255,255,255) 90%);
 	background-image: -webkit-linear-gradient(bottom, rgb(189,207,211) 5%, rgb(255,255,255) 90%);
 	background-image: -ms-linear-gradient(bottom, rgb(189,207,211) 5%, rgb(255,255,255) 90%);
-	
+
 	background-image: -webkit-gradient(
 		linear,
 		left bottom,
@@ -318,7 +302,7 @@ div.font-view div.theme-control a:hover {
 	background-image: -moz-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
 	background-image: -webkit-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
 	background-image: -ms-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
-	
+
 	background-image: -webkit-gradient(
 		linear,
 		left bottom,
@@ -336,7 +320,7 @@ div.font-view div.theme-control a:active {
 	background-image: -moz-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
 	background-image: -webkit-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
 	background-image: -ms-linear-gradient(bottom, rgb(159,185,191) 5%, rgb(237,242,243) 90%);
-	
+
 	background-image: -webkit-gradient(
 		linear,
 		left bottom,
@@ -369,18 +353,18 @@ div.font-view div.theme-control a:active {
 
 #toolbar .figure-browser .figure-tray {
 	height: 180px;
-	-webkit-overflow-scrolling: touch;	
+	-webkit-overflow-scrolling: touch;
 }
 
 #toolbar .figure-previews .figure-tray {
 	height: 280px;
-	-webkit-overflow-scrolling: touch;	
+	-webkit-overflow-scrolling: touch;
 	margin: 0 40px;
 }
 
 
 #toolbar .figure-browser .figure-reel {
-	height: 150px;
+	height: 160px;
 }
 
 #toolbar .figure-previews .figure-reel {
@@ -391,7 +375,7 @@ div.font-view div.theme-control a:active {
 #toolbar .figure-nav {
 	position: absolute;
 	padding: 10px;
-	cursor: pointer;	
+	cursor: pointer;
 	color: #52818C;
 	font-size: 2em;
 }
@@ -423,7 +407,7 @@ div.font-view div.theme-control a:active {
 	-webkit-margin-end: 20px;
 	background-position: center;
 	background-size: cover;
-	background-image: url('../img/osci-default-figure.png');	
+	background-image: url('../img/osci-default-figure.png');
 }
 
 #toolbar .preview .figure-placeholder,
@@ -449,7 +433,7 @@ div.font-view div.theme-control a:active {
 	display: none;
 	-webkit-margin-before: 0px;
 	-webkit-margin-start: 0px;
-	-webkit-margin-end: 0px;		
+	-webkit-margin-end: 0px;
 }
 
 #toolbar .back-to-grid {
@@ -466,16 +450,16 @@ div.font-view div.theme-control a:active {
 #toolbar-content input[type='text'], #toolbar-content input[type='password'] {
 	border-radius:4px;
 	border:1px solid #999;
-	font-size:14px;	
+	font-size:14px;
 	line-height:28px;
 	padding-left:5px;padding-right:5px;
 	/*-moz-box-shadow:    inset 0 1px 2px #666;
    -webkit-box-shadow: inset 0 1px 2px #666;
    box-shadow:         inset 0 1px 2px #666;*/
-   
+
    height:28px; /* for firefox */
    box-shadow: 0px 1px 1px #e3e3e3;
-   
+
 }
 #toolbar-content input[type='text']:active, #toolbar-content input[type='password']:active,
 #toolbar-content input[type='text']:focus, #toolbar-content input[type='password']:focus {
@@ -561,6 +545,9 @@ background-image: -webkit-gradient(
 		display: none;
 	}
 	*/
+	#toolbar {
+		top: -57px;
+	}
 
 	#toolbar-handle {
 		width: 100%;
