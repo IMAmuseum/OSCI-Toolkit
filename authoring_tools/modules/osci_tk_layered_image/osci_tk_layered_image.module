@@ -216,7 +216,6 @@ function osci_tk_layered_image_node_presave($node) {
 		foreach ($node->field_assets['und'] as $key => $value) {
 			$data[] = $value;
 		}
-		dpm($data);
 		$serialized_data = serialize($data);
 		$node->field_data['und'][0]['value'] = $serialized_data;
 	}
@@ -224,7 +223,7 @@ function osci_tk_layered_image_node_presave($node) {
 
 function osci_tk_layered_image_node_load($nodes, $types) {
 	foreach ($nodes as &$node) {
-		if ($node->type == 'layered_image_asset') {
+		if ($node->type == 'layered_image') {
 			// get aspect ratio
 			$node->field_aspect_ratio['und'][0]['value'] = _osci_tk_layered_image_get_layered_image_aspect($node);
 			// get serialized flag data
@@ -249,7 +248,7 @@ function osci_tk_layered_image_node_load($nodes, $types) {
 			// get the attributes and attach to the node
 			$attr = _osci_tk_layered_image_get_svg_attr(drupal_realpath($node->field_svg['und'][0]['uri']));
 			$node->field_svg['und'][0]['width'] = $attr->width;
-			$node->field_svg['und'][0]['height'] = $attr->height;            
+			$node->field_svg['und'][0]['height'] = $attr->height; 
 		}
 	}
 }
@@ -508,15 +507,15 @@ function _osci_tk_layered_image_get_svg_attr($file_path) {
 	// get the width and height from the viewBox attribute of the svg
 	$xml = simplexml_load_file($file_path);
 	if (is_object($xml)) {
-		$viewBox = explode(' ', (string) $xml->attributes()->viewBox);
-		if (isset($viewBox[3])) {
-			$attr->width = $viewBox[2] - $viewBox[0];
-			$attr->height = $viewBox[3] - $viewBox[1];
-			return $attr;
-		}
+		$xmlAttr = (array) $xml->attributes();
+		$viewBox = explode(' ', $xmlAttr['@attributes']['viewbox']);
+		$attr->width = $viewBox[2] - $viewBox[0];
+		$attr->height = $viewBox[3] - $viewBox[1];
 	}
-	$attr->width = 0;
-	$attr->height = 0;
+	else {
+		$attr->width = 0;
+		$attr->height = 0;
+	}
 	return $attr;
 }
 

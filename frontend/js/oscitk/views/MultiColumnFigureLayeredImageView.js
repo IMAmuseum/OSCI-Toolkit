@@ -2,11 +2,17 @@
 OsciTk.views.figureTypeRegistry["layered_image"] = "MultiColumnFigureLayeredImage";
 
 OsciTk.views.MultiColumnFigureLayeredImage = OsciTk.views.MultiColumnFigure.extend({
+	// override MultiColumnFigure's events - polymaps handles events for this class
+	events: {},
 	renderContent: function() {
 		this.figContent = this.figContent || null;
 		var container = this.$el.find(".figure_content");
 		var containerHeight = container.height();
 		var containerWidth = container.width();
+
+		// place figure options on figure tag
+		var jsonOptions = JSON.stringify(this.model.get('options'));
+		this.$el.attr('data-options', jsonOptions);
 
 		// the content document may already be loaded
 		if (this.figContent !== null) {
@@ -32,9 +38,7 @@ OsciTk.views.MultiColumnFigureLayeredImage = OsciTk.views.MultiColumnFigure.exte
 	},
 	renderFromContentDoc: function() {
 		var contentDiv = this.$el.find('.figure_content');
-		console.log(contentDiv, 'contentDiv');
 		contentDiv.empty();
-		console.log(this.figContent, 'figContent');
 		// place figure content into container and spawn Layered Image
 		contentDiv.html(this.figContent);
 		new window.LayeredImage(contentDiv.find('.layered_image-asset')[0]);

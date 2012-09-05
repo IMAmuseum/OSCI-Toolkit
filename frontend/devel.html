@@ -4,6 +4,9 @@
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 	<link rel='apple-touch-icon' href='img/icon-app-57.png' />
+	<link type="text/css" rel="stylesheet" href="js/external/jquery-ui.custom.css">
+	<link type="text/css" rel="stylesheet" href="js/external/jquery.qtip.min.css">
+	<link type="text/css" rel="stylesheet" href="js/external/fancybox/jquery.fancybox.css">
 	<link type="text/css" rel="stylesheet" href="css/common.css">
 	<link type="text/css" rel="stylesheet" href="css/toolbar.css">
 	<link type="text/css" rel="stylesheet" href="css/section.css">
@@ -11,10 +14,9 @@
 	<link type="text/css" rel="stylesheet" href="css/search.css">
 	<link type="text/css" rel="stylesheet" href="css/navigation.css">
 	<link type="text/css" rel="stylesheet" href="css/notes.css">
+	<link type="text/css" rel="stylesheet" href="css/layered_image.css">
 	<link type="text/css" rel="stylesheet" href="css/themeNight.css">
 	<link type="text/css" rel="stylesheet" href="css/themeSepia.css">
-	<link type="text/css" rel="stylesheet" href="js/external/jquery.qtip.min.css">
-	<link type="text/css" rel="stylesheet" href="js/external/fancybox/jquery.fancybox.css">
 	<script src="js/external/json2.js"></script>
 	<script src="js/external/jquery-1.7.1.js"></script>
 	<script src="js/external/jquery.qtip.min.js"></script>
@@ -76,7 +78,8 @@
 
 	<script>jQuery(function() {
 			app.bootstrap({
-				packageUrl: 'sample/package.opf',
+				// packageUrl: 'sample/package.opf',
+				packageUrl: '/api/epub/502/package.opf',
 				templateUrls: [
 					'js/oscitk/templates/'
 				],
