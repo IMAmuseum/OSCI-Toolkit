@@ -33,7 +33,9 @@ OsciTk.views.Navigation = OsciTk.views.BaseView.extend({
 			this.identifier = params.identifier;
 			if (!params.section_id) {
 				// go to first section
-				this.setCurrentNavigationItem(app.collections.navigationItems.at(0).id);
+				var sectionId = app.collections.navigationItems.at(0).id;
+				this.setCurrentNavigationItem(sectionId);
+				app.router.navigate("section/" + sectionId, {trigger: false});
 			}
 			else {
 				// go to section_id

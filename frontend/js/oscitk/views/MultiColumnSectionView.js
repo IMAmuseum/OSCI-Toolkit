@@ -123,7 +123,7 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 
 		var i = 0;
 		var firstOccurence = true;
-		var paragraphNumber = 0;
+		var paragraphNumber = 1;
 		var paragraphsOnPage = 0;
 		var itemsOnPage = 0;
 		while(this.layoutData.items > 0) {
