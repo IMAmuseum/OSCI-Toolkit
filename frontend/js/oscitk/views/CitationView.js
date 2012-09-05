@@ -13,6 +13,13 @@ OsciTk.views.Citation = OsciTk.views.BaseView.extend({
 				'element_id': data.contentId
 			};
 
+			var colWidth = app.views.sectionView.dimensions.columnWidth;
+			var windowWidth = $(window).width();
+			var tooltipWidth = colWidth;
+			if (colWidth * 1.5 < windowWidth) {
+				tooltipWidth = colWidth * 1.5;
+			}
+
 			content.qtip("destroy");
 			content.qtip({
 				content: {
@@ -81,7 +88,7 @@ OsciTk.views.Citation = OsciTk.views.BaseView.extend({
 				style: {
 					classes: 'citation-tooltip',
 					def: false,
-					width: app.views.sectionView.dimensions.columnWidth + 'px'
+					width: tooltipWidth + 'px'
 				},
 				events: {
 					hide: function(event, api) {

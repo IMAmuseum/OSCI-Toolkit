@@ -173,7 +173,7 @@ a.footnote-reference {
 	background: url('../img/bg-toolbar.gif') repeat;
 	border-bottom-right-radius: 6px;
 	border-bottom-left-radius: 6px;
-	padding:20px;
+	padding:10px;
 }
 .ui-tooltip.qtip .ui-tooltip-titlebar {
 	font-size:14px;text-transform:uppercase;
