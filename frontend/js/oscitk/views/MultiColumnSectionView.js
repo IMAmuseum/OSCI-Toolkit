@@ -37,8 +37,8 @@ OsciTk.views.MultiColumnSection = OsciTk.views.Section.extend({
 						break;
 					default:
 						var page_for_id;
-						if(data.identifier.search(/^p-[0-9]+/) > -1) {
-							var pid = data.identifier.replace('p-', '');
+						if(data.identifier.search(/^p-[0-9]-[0-9]+/) > -1) {
+							var pid = data.identifier.slice(data.identifier.lastIndexOf('-') + 1, data.identifier.length);
 							page_for_id = this.getPageForParagraphId(pid);
 						} else {
 							page_for_id = this.getPageForElementId(data.identifier);
