@@ -12,7 +12,7 @@ function osci_tk_figure_menu()
         'type'              => MENU_CALLBACK,
         'file'              => 'osci_tk_figure.pages.inc',
     );
-    
+
     $items['ajax/figurepreview/%node'] = array(
         'title'             => 'Figure preview',
         'page callback'     => 'osci_tk_figure_preview',
@@ -21,7 +21,7 @@ function osci_tk_figure_menu()
         'type'              => MENU_CALLBACK,
         'file'              => 'osci_tk_figure.pages.inc',
     );
-    
+
    	$items['ajax/figurethumb/save'] = array(
         'title'             => 'Save Figure Thumbnail',
         'page callback'     => 'osci_tk_figure_thumb_save',
@@ -36,7 +36,7 @@ function osci_tk_figure_menu()
         'access arguments'  => array('access content'),
         'type'              => MENU_CALLBACK,
         'file'              => 'osci_tk_figure.pages.inc',
-    ); 
+    );
 
 	return $items;
 }
@@ -50,7 +50,7 @@ function osci_tk_figure_theme()
 			'variables' => array(
 				'item'	=> array()
 			),
-		), 		 
+		),
 		'field__field_figure' => array(
 			'template' => 'templates/field__field_figure',
 			'variables' => array()
@@ -70,7 +70,7 @@ function osci_tk_figure_field_info()
 	);
 }
 
-function osci_tk_figure_field_formatter_info() 
+function osci_tk_figure_field_formatter_info()
 {
 	$formatters = array(
 		'osci_tk_figure' => array(
@@ -78,7 +78,7 @@ function osci_tk_figure_field_formatter_info()
             'field types'   => array('osci_tk_figure'),
 		)
 	);
-	
+
 	return $formatters;
 }
 
@@ -97,7 +97,7 @@ function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $ins
 				{
 					continue;
 				}
-				
+
 				$figureNode = node_load($item['asset_reference']);
 
 				$item['fig_id'] = _osci_tk_figure_create_id($entity->nid, $delta);
@@ -114,7 +114,7 @@ function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $ins
 			}
 			break;
 	}
-	
+
 	return $element;
 }
 
@@ -160,7 +160,7 @@ function osci_tk_figure_field_is_empty($item, $field)
 {
 	$return = false;
 
-	if (empty($item['asset_reference']) || !is_numeric($item['asset_reference'])) 
+	if (empty($item['asset_reference']) || !is_numeric($item['asset_reference']))
 	{
 		$return = true;
 	}
@@ -180,7 +180,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
         ctools_modal_add_js();
 		drupal_add_library('system', 'ui.dialog');
 		drupal_add_js(drupal_get_path('module','osci_tk_figure') . '/js/figure_field.js');
-		
+
 		// load any additional module javascript for handling figure options
 		if (isset($instance['widget']['settings']['osci_tk_figure_types']))
 		{
@@ -192,7 +192,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 				}
 			}
 		}
-		
+
 		$figureElement = array(
 			'#theme' => 'osci_tk_fieldset_tabs',
 			'#type' => 'fieldset',
@@ -212,7 +212,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
             $asset      = isset($item['asset_reference']) ? node_load($item['asset_reference']) : '';
             $key        = _osci_tk_figure_asset_label($asset);
             $item_path  = isset($item['asset_reference']) ? $path . $i . '/' . $item['asset_reference'] : $_GET['q'];
-			
+
 			$figureElement[] = array(
 				'#type' 			=> 'fieldset',
 				'#attributes' 		=> array(
@@ -237,7 +237,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 					'#type'                 => 'textfield',
 					'#autocomplete_path'    => 'ajax/figure/' . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $field['field_name'],
 					'#attributes'			=> array('class' => array('figure_reference_field')),
-					'#default_value'        => $key, 
+					'#default_value'        => $key,
                     '#element_validate'     => array('osci_tk_figure_reference_validate'),
 				),
                 'asset_options' => array(
@@ -282,7 +282,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 			);
 		}
 	}
-	
+
 	$figureElement['add_more'] = array(
 		'#type' => 'submit',
 		'#name' => 'figure_add_more',
@@ -305,12 +305,12 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
  * Validate figure reference form element
  */
 function osci_tk_figure_reference_validate($element, &$form_state, $form) {
-    if (!empty($element['#value'])) { 
+    if (!empty($element['#value'])) {
         if (preg_match("/.+\[(\d+)\]/", $element['#value'], $matches)) {
             form_set_value($element, $matches[1], $form_state);
         } else {
             form_set_error($element['#name'], 'Invalid asset reference');
-        } 
+        }
     }
 }
 
@@ -332,24 +332,15 @@ function osci_tk_figure_form_alter(&$form, &$form_state, $form_id)
 		if (isset($form['field_data'])) {
 			$form['field_data']['#attributes']['style'] = array('display:none');
 		}
-		//if the figure field is enabled and the utility module is not handling this, add the callback
-		if (isset($form['field_figure']) && !function_exists("osci_tk_utility_node_submit"))
-		{
-			array_unshift($form['actions']['submit']['#submit'], 'osci_tk_figure_node_submit');
-		}
+
+		array_unshift($form['actions']['submit']['#submit'], 'osci_tk_figure_node_submit');
 	}
 }
 
 function osci_tk_figure_node_submit($form, &$form_state)
 {
-	//let the utility module handle this if enabled (reduces the number of loops)
-	if (function_exists("osci_tk_utility_node_submit")) 
-	{
-		return;
-	}
-	
 	list($replaceIds, $newIds) = _osci_tk_figure_node_get_replace_ids($form, $form_state);
-	
+
 	if (count($replaceIds))
 	{
 		foreach($form_state['values'] as $k => $v)
@@ -360,7 +351,7 @@ function osci_tk_figure_node_submit($form, &$form_state)
 				{
 					if (isset($form_state['values'][$k][LANGUAGE_NONE][$delta]['value']))
 					{
-						$form_state['values'][$k][LANGUAGE_NONE][$delta]['value'] = 
+						$form_state['values'][$k][LANGUAGE_NONE][$delta]['value'] =
 							str_replace($replaceIds, $newIds, $form_state['values'][$k][LANGUAGE_NONE][$delta]['value']);
 					}
 				}
@@ -374,7 +365,7 @@ function _osci_tk_figure_node_get_replace_ids($form, &$form_state)
 	$offset = 0;
 	$replaceIds = array();
 	$newIds = array();
-	
+
 	//update figure references for renumbering if one deleted
 	if (isset($form_state['values']['field_figure']))
 	{
@@ -385,7 +376,7 @@ function _osci_tk_figure_node_get_replace_ids($form, &$form_state)
 			{
 				continue;
 			}
-			
+
 			$figId = _osci_tk_figure_create_id($form_state['values']['nid'], $k);
 			if (empty($v['asset_reference']) || !is_numeric($v['asset_reference']))
 			{
@@ -393,7 +384,7 @@ function _osci_tk_figure_node_get_replace_ids($form, &$form_state)
 				$replaceIds[] = $figureTemplate . $figId . ']';
 				$newIds[] = '';
 			}
-			else if ($offset > 0) 
+			else if ($offset > 0)
 			{
 				$replaceIds[] = $figureTemplate . $figId . ']';
 				$newFigId = _osci_tk_figure_create_id($form_state['values']['nid'], $k - $offset);
@@ -401,27 +392,27 @@ function _osci_tk_figure_node_get_replace_ids($form, &$form_state)
 			}
 		}
 	}
-	
+
 	return array($replaceIds, $newIds);
 }
 
 
 function osci_tk_figure_node_view($node, $view_mode, $langcode) {
-  
+
   if (($node->type == 'section') && ($view_mode == 'full')) {
 
     // Add the authoring figure preview UI
     drupal_add_library('system', 'ui.dialog');
     drupal_add_js(drupal_get_path('module', 'osci_tk_figure') . '/js/figure_preview.js');
-    
+
   }
 
 }
 
-function osci_tk_figure_osci_tk_image_types() 
+function osci_tk_figure_osci_tk_image_types()
 {
 	$types = array();
-	
+
 	$types[] = array(
 		'title'			=> 'Body Copy Authoring - Figure Preview',
 		'variable'		=> 'osci_tk_image_style_figure_preview',
@@ -452,18 +443,18 @@ function osci_tk_figure_osci_tk_image_types()
 		'variable'		=> 'osci_tk_image_style_print',
 		'description'	=> 'A version of a image for printing'
 	);
-	
+
 	return $types;
 }
 
 function _osci_tk_figure_process_number_template($figure)
 {
 	$numberTemplate = str_replace(
-		array('fig#', 'cat#.'), 
-		array(((int)$figure['delta']) + 1, ''), 
+		array('fig#', 'cat#.'),
+		array(((int)$figure['delta']) + 1, ''),
 		$figure['number_template']
 	);
-	
+
 	return $numberTemplate;
 }
 
@@ -503,4 +494,4 @@ function osci_tk_figure_asset_options_form_submit(&$form, &$form_state) {
     }
 
     $form_state['options'] = json_encode($options);
-} 
+}
