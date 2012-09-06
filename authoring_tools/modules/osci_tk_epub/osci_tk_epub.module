@@ -1184,6 +1184,7 @@ function osci_tk_epub_block_view($delta = '')
 					$links[] = l("Nav Document", "api/epub/{$nid}/nav.xhtml");
 					$links[] = l("NCX Document", "api/epub/{$nid}/toc.ncx");
 					$links[] = l("Package Document", "api/epub/{$nid}/package.opf");
+					$links[] = l("Print-friendly", "api/epub/{$nid}/print_view");
 					$links[] = drupal_render($form);
 				}
 
