@@ -21,6 +21,10 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 		//app.dispatcher.on("pageChanged", this.toggleVisibility, this);
 	},
 
+	events: {
+		"click .figure_content" : "fullscreen"
+	},
+
 	onClose: function() {
 		app.dispatcher.off("pageChanged", this.toggleVisibility, this);
 	},
@@ -63,6 +67,12 @@ OsciTk.views.MultiColumnFigure = OsciTk.views.BaseView.extend({
 		this.$el.find(".figure_content").html(this.model.get('content'));
 
 		this.contentRendered = true;
+	},
+
+	fullscreen: function() {
+		$.fancybox.open({
+			content: this.model.get('content')
+		});
 	},
 
 	positionElement: function() {

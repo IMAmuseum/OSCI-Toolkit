@@ -1,7 +1,44 @@
-<div id="search-summary">Result(s) for "<%= keyword %>" (<%= result_count %>)</div>
-<div id="search-sort">
-	Sort By: 
-	<div id="search-sort-relevance" data-selected="0">Relevance</div>
-	<div id="search-sort-type" data-selected="0">Type</div>
+<% if (query.keyword) { %>
+<div id="search-results-header">
+	<div id="search-summary">
+		Result(s) for <span id="search-query">"<%= query.keyword %>"</span> (<%= response.numFound %>)
+		<a id="reset-search" href="#">RESET</a>
+	</div>
+	<div id="results-sort">
+		Sort By:
+		<ul>
+			<li id="results-sort-relevance" class="sort-button"><a href="#" class="sort-button">Relevance</a></li>
+			<li id="results-sort-type"><a href="#" class="sort-button">Type</a></li>
+		</ul>
+	</div>
 </div>
-<div id="search-results"><%= search_results %></div>
+<div id="search-results-container">
+	<div id="search-results">
+		<div id="search-results-content">
+			<% _.each(results, function(group) { var first = true;%>
+				<div class="result-section">
+					<% _.each(group, function(result) { %>
+					<% if (first) { %>
+					<div class="result-title"><%= result.get('label') %></div>
+					<% first = false; } %>
+					<div class="search-result" data-id="<%= result.get('id') %>">
+						<div class="result-content">
+							<div class="result-type <%= result.get('bundle') %>"><%= result.get('bundle') %></div>
+							<div class="result-body"><%= result.get('teaser') %></div>
+						</div>
+					</div>
+					<% }); %>
+				</div>
+			<% }); %>
+		</div>
+	</div>
+	<div id="filter-by-section">
+		<div class="section-title">Filter by section</div>
+		<ul>
+			<% _.each(response.facets, function(facet) { %>
+				<li><a href="#" data-filter="section:<%= facet.section_id %>" class="facet"><%= facet.section %></a> (<%= facet.count %>)</li>
+			<% }); %>
+		</ul>
+	</div>
+</div>
+<% } %>

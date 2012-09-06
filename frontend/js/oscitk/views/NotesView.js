@@ -46,6 +46,7 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 	render: function() {
 		var notes = this.getSavedNotes();
 		this.$el.html(this.template({notes: notes}));
+		this.active();
 
 		return this;
 	},
@@ -56,5 +57,12 @@ OsciTk.views.Notes = OsciTk.views.BaseView.extend({
 			return false;
 		});
 		return notes;
+	},
+	active: function() {
+		// Set the width of the notes reel if there is more than one note
+		if (app.collections.notes.length > 1) {
+			var notes = this.$el.find('.notesListItem');
+			this.$el.find('.notesList').width(notes.length * (notes.first().outerWidth(true)));
+		}
 	}
 });

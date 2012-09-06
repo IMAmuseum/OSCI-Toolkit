@@ -1,46 +1,19 @@
-<h3>Search</h3>
 <div id="search-header">
+	<h3>Search</h3>
 	<div id="search-box">
 		<form id="search-form" name="search-form" method="POST">
-			<input type="text" name="keyword" id="search-keyword" placeholder="search" value="<%= query %>"/>
+			<input type="text" name="keyword" id="search-keyword" placeholder="search" value="<%= query.keyword %>"/>
 			<input type="hidden" name="page" id="search-page" />
 		</form>
 	</div>
 	<div id="search-filters">
 		<div class="label">Filter |</div>
 		<ul>
-			<li id="search-filter-content"><div class="dot">&nbsp;</div><div class="label">Content</div></li>
-			<li id="search-filter-notes"><div class="dot">&nbsp;</div><div class="label">My Notes</div></li>
-			<li id="search-filter-footnotes"><div class="dot">&nbsp;</div><div class="label">Footnotes</div></li>
-			<li id="search-filter-figures"><div class="dot">&nbsp;</div><div class="label">Figures</div></li>
+			<li class="filter" data-filter="type:content" id="search-filter-content"><div class="dot">&nbsp;</div><div class="label">Content</div></li>
+			<li class="filter" data-filter="type:notes" id="search-filter-notes"><div class="dot">&nbsp;</div><div class="label">My Notes</div></li>
+			<li class="filter" data-filter="type:footnotes" id="search-filter-footnotes"><div class="dot">&nbsp;</div><div class="label">Footnotes</div></li>
+			<li class="filter" data-filter="type:figures" id="search-filter-figures"><div class="dot">&nbsp;</div><div class="label">Figures</div></li>
 		</ul>
 	</div>
 </div>
-<% if (searchResults.length > 0) { %>
-<div id="search-results-header">
-	<div id="search-summary">
-		Result(s) for <span id="search-query">"<%= searchResults.keyword %>"</span> (<%= searchResults.numFound %>)
-		<a id="reset-search" href="#">RESET</a>
-	</div>
-	<div id="results-sort">
-		Sort By: 
-		<ul>
-			<li id="results-sort-relevance" class="sort-button"><a href="#" class="sort-button">Relevance</a></li>
-			<li id="results-sort-type"><a href="#" class="sort-button">Type</a></li>
-		</ul>
-	</div>
-</div>
-<div id="search-results-container">	
-	<ul id="search-results">
-		<% _.each(searchResults.models, function(result) { %>
-		<li class="search-result">
-			<div class="result-title"><%= result.get('label') %></div>
-			<div class="result-content">
-				<div class="result-type <%= result.get('bundle') %>"><%= result.get('bundle') %></div>
-				<div class="result-body"><%= result.get('teaser') %></div>
-			</div>
-		</li>
-		<% }); %>
-	</ul>
-</div>
-<% } %>
+<div id="search-results-wrapper"></div>

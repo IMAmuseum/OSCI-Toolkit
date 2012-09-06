@@ -13,7 +13,7 @@ OsciTk.collections.NavigationItems = OsciTk.collections.BaseCollection.extend({
 				// TODO: ERROR CHECK THE RETURNED XML
 				var data = xmlToJson(loadXMLDoc(nav.href));
 				// parse the toc and index
-				var navDocument = data.html[1].body.nav;
+				var navDocument = data.html.body.nav;
 				for (var i = 0, c = navDocument.length; i < c; i++) {
 					if (navDocument[i].type == 'toc') {
 						var navSegment = navDocument[i].ol;

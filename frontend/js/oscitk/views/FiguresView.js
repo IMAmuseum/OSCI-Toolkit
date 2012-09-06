@@ -52,7 +52,11 @@ OsciTk.views.Figures = OsciTk.views.BaseView.extend({
 		app.views.toolbarView.updateHeight();
 	},
 	onFigurePreviewClicked: function(event_data) {
-		app.dispatcher.trigger('showFigureFullscreen', $(event_data.target).parent('figure').attr('data-figure-id'));
+		var figureId = $(event_data.target).parent('figure').attr('data-figure-id');
+		var figureView = app.views.figures[figureId];
+		if (figureView && figureView.fullscreen) {
+			figureView.fullscreen();
+		}
 		return false;
 	},
 	onViewInContextClicked: function(event_data) {

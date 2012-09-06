@@ -4,6 +4,9 @@
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 	<link rel='apple-touch-icon' href='img/icon-app-57.png' />
+	<link type="text/css" rel="stylesheet" href="js/external/jquery-ui.custom.css">
+	<link type="text/css" rel="stylesheet" href="js/external/jquery.qtip.min.css">
+	<link type="text/css" rel="stylesheet" href="js/external/fancybox/jquery.fancybox.css">
 	<link type="text/css" rel="stylesheet" href="css/common.css">
 	<link type="text/css" rel="stylesheet" href="css/toolbar.css">
 	<link type="text/css" rel="stylesheet" href="css/section.css">
@@ -11,16 +14,18 @@
 	<link type="text/css" rel="stylesheet" href="css/search.css">
 	<link type="text/css" rel="stylesheet" href="css/navigation.css">
 	<link type="text/css" rel="stylesheet" href="css/notes.css">
+	<link type="text/css" rel="stylesheet" href="css/layered_image.css">
 	<link type="text/css" rel="stylesheet" href="css/themeNight.css">
 	<link type="text/css" rel="stylesheet" href="css/themeSepia.css">
-	<link type="text/css" rel="stylesheet" href="js/external/jquery.qtip.min.css">
-	<link type="text/css" rel="stylesheet" href="js/external/fancybox/jquery.fancybox.css">
 	<script src="js/external/json2.js"></script>
 	<script src="js/external/jquery-1.7.1.js"></script>
 	<script src="js/external/jquery.qtip.min.js"></script>
 	<script src="js/external/underscore-1.3.3.js"></script>
 	<script src="js/external/backbone.js"></script>
 	<script src="js/external/fancybox/jquery.fancybox.js"></script>
+	<script src="js/external/polymaps.min.js"></script>
+	<script src="js/external/jquery-ui-1.8.23.custom.min.js"></script>
+	<script src="js/external/osci_tk_layered_image.js"></script>
 	<script src="js/oscitk/devel.js"></script>
 	<script src="js/oscitk/OsciTk.js"></script>
 	<script src="js/oscitk/TemplateManager.js"></script>
@@ -50,6 +55,7 @@
 	<script src="js/oscitk/views/MultiColumnPageView.js"></script>
 	<script src="js/oscitk/views/MultiColumnFigureView.js"></script>
 	<script src="js/oscitk/views/MultiColumnFigureImageView.js"></script>
+	<script src="js/oscitk/views/MultiColumnFigureLayeredImageView.js"></script>
 	<script src="js/oscitk/views/TitleView.js"></script>
 	<script src="js/oscitk/views/ToolbarView.js"></script>
 	<script src="js/oscitk/views/ToolbarItemView.js"></script>
@@ -65,8 +71,6 @@
 	<script src="js/oscitk/views/TocView.js"></script>
 	<script src="js/oscitk/views/AccountView.js"></script>
 	<script src="js/oscitk/views/FontView.js"></script>
-	<script src="js/oscitk/views/FullscreenFigureView.js"></script>
-	<script src="js/oscitk/views/FullscreenHTMLFigureView.js"></script>
 	<script src="js/oscitk/views/ParagraphControlsView.js"></script>
 	<script src="js/oscitk/Router.js"></script>
 	<script src="js/oscitk/helper.js"></script>

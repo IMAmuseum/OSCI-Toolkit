@@ -24,44 +24,49 @@ function xmlToJson(xml, namespace) {
 			}
 		}
 	}
-	if (xml.nodeType === Node.TEXT_NODE) { // text
-		obj = xml.nodeValue.replace(/^\s+|\s+$/g, '');
-	} else {
-		if (xml.nodeType === 1) { // element
-			// do attributes
-			if (xml.attributes.length > 0) {
-				var attribute;
-				obj = {};
-				for (i = 0; i < xml.attributes.length; i++) {
-					attribute = xml.attributes.item(i);
-					obj[attribute.nodeName.replaceArray(namespace, '').toCamel()] = attribute.nodeValue;
-				}
-			}
-		}
 
-		// do children
-		if (xml.hasChildNodes()) {
-			var key, value, item;
-			if (obj === true) { obj = {}; }
-			for (i = 0; i < xml.childNodes.length; i++) {
-				item = xml.childNodes.item(i);
-				key = item.nodeType === 3 ? 'value' : item.nodeName.replaceArray(namespace, '').toCamel();
-				value = xmlToJson(item, namespace);
-				if(value.length !== 0 && key !== '#comment') { // ignore empty nodes and comments
-					if (obj.hasOwnProperty(key)) {
-						if(item.nodeType === 3) {
-							obj[key] += value;
-						} else {
-							if (obj[key].constructor !== Array) {
-								obj[key] = [obj[key]];
-							}
-							obj[key].push(value);
-						}
-					} else if (item.nodeType !== 3 || value !== '') {
-						obj[key] = value;					}
-				}
+	var result = true;
+	if (xml.attributes && xml.attributes.length > 0) {
+		var attribute;
+		result = {};
+		for (var attributeID = 0; attributeID < xml.attributes.length; attributeID++) {
+			attribute = xml.attributes.item(attributeID);
+			result[attribute.nodeName.replaceArray(namespace, '').toCamel()] = attribute.nodeValue;
+		}
+	}
+	if (xml.hasChildNodes()) {
+		var key, value, xmlChild;
+		if (result === true) { result = {}; }
+		for (var child = 0; child < xml.childNodes.length; child++) {
+			xmlChild = xml.childNodes.item(child);
+			if ((xmlChild.nodeType & 7) === 1) {
+				key = xmlChild.nodeName.replaceArray(namespace, '').toCamel();
+				value = xmlToJson(xmlChild, namespace);
+				if (result.hasOwnProperty(key)) {
+					if (result[key].constructor !== Array) { result[key] = [result[key]]; }
+					result[key].push(value);
+				} else { result[key] = value; }
+			} else if ((xmlChild.nodeType - 1 | 1) === 3) {
+				key = 'value';
+				value = xmlChild.nodeType === 3 ? xmlChild.nodeValue.replace(/^\s+|\s+$/g, '') : xmlChild.nodeValue;
+				if (result.hasOwnProperty(key)) { result[key] += value; }
+				else if (xmlChild.nodeType === 4 || value !== '') { result[key] = value; }
 			}
 		}
 	}
-	return(obj);
+	return(result);
 }
+
+String.prototype.replaceArray = function(find, replace) {
+	var replaceString = this;
+	for (var i = 0; i < find.length; i++) {
+		replaceString = replaceString.replace(find[i], replace);
+	}
+	return replaceString;
+};
+
+String.prototype.toCamel = function(){
+    return this.replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
+		.replace(/\s/g, '')
+		.replace(/^(.)/, function($1) { return $1.toLowerCase(); });
+};

@@ -13,6 +13,13 @@ OsciTk.views.Citation = OsciTk.views.BaseView.extend({
 				'element_id': data.contentId
 			};
 
+			var colWidth = app.views.sectionView.dimensions.columnWidth;
+			var windowWidth = $(window).width();
+			var tooltipWidth = colWidth;
+			if (colWidth * 1.5 < windowWidth) {
+				tooltipWidth = colWidth * 1.5;
+			}
+
 			content.qtip("destroy");
 			content.qtip({
 				content: {
@@ -28,9 +35,8 @@ OsciTk.views.Citation = OsciTk.views.BaseView.extend({
 							if (data.success) {
 								//add reference text to the response
 								data.citation.referenceText = content.text();
-								//TODO: create proper url
-								data.citation.url = "http://test";
-								data.citation.paragraphNumber = content.data('paragraph_number') + 1;
+								data.citation.url = document.URL + "/p-" + app.models.section.get('id') + "-" + content.data('paragraph_number');
+								data.citation.paragraphNumber = content.data('paragraph_number');
 								data.citation.date = new Date(data.citation.date);
 								data.citation.formattedDate = (data.citation.date.getMonth() + 1) + "/" + data.citation.date.getDate() + "/" + data.citation.date.getFullYear();
 
@@ -81,7 +87,7 @@ OsciTk.views.Citation = OsciTk.views.BaseView.extend({
 				style: {
 					classes: 'citation-tooltip',
 					def: false,
-					width: app.views.sectionView.dimensions.columnWidth + 'px'
+					width: tooltipWidth + 'px'
 				},
 				events: {
 					hide: function(event, api) {

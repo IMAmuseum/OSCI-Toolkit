@@ -16,7 +16,7 @@ OsciTk.views.ParagraphControlsView = OsciTk.views.BaseView.extend({
 
 		this.$el.attr('data-osci_content_id', this.options.contentIdentifier);
 		this.$el.attr('data-paragraph_identifier', this.options.paragraphNumber);
-		this.$el.html('<span class="paragraph-identifier paragraph-identifier-' + this.options.paragraphNumber + '">' + (this.options.paragraphNumber + 1) + '</span>');
+		this.$el.html('<span class="paragraph-identifier paragraph-identifier-' + this.options.paragraphNumber + '">' + (this.options.paragraphNumber) + '</span>');
 		this.$el.css(this.options.position);
 
 		//remove qtip if already present

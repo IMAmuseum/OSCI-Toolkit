@@ -80,48 +80,27 @@ OsciTk.views.Toolbar = OsciTk.views.BaseView.extend({
 	},
 	updateHeight: function() {
 		var toolbarContent = this.$el.find('#toolbar-content');
+
+		var toolbarHeight = this.$el.height();
 		//clear height form content or resize does not work
 		toolbarContent.height("");
+		var toolbarContentHeight = toolbarContent.height();
 
-		var toolbarTitle = $('#toolbar-title-container');
-		var toolbarTitleHeight = toolbarTitle.outerHeight();
-		var toolbarHandleHeight = this.$el.find('#toolbar-handle').outerHeight();
-		var toolbarHeight = toolbarContent.outerHeight() + toolbarHandleHeight + toolbarTitleHeight;
+		var toolbarTitleHeight = $('#toolbar-title-container').outerHeight();
 
-		//see if height is larger than the maximum allowd height
-		var toolbarMaxHeightPercentage = parseInt(this.$el.css('max-height'), 10);
-		toolbarMaxHeightPercentage = toolbarMaxHeightPercentage ? toolbarMaxHeightPercentage : 85;
-		var toolbarMaxHeight = $(window).height() * (toolbarMaxHeightPercentage / 100);
-		if (toolbarHeight > toolbarMaxHeight) {
-			toolbarContent.height(toolbarMaxHeight - toolbarHandleHeight - toolbarTitleHeight);
+		if (toolbarContentHeight > (toolbarHeight - toolbarTitleHeight)) {
+			toolbarContent.height((toolbarHeight - toolbarTitleHeight) + 'px');
+		} else {
+			toolbarContent.height('');
 		}
+
 		this.$el.css({
-			height: toolbarHeight + 'px',
-			top: 0
-		});
-
-		$('#toolbar-close').css({
-			top: "0px"
-		});
-
-		toolbarTitle.css({
 			top: 0
 		});
 	},
 	contentClose: function() {
-		var toolbarClose = $('#toolbar-close');
-		toolbarClose.css({
-			top: "-" + toolbarClose.height() + "px"
-		});
-
-		var toolbarTitle = $('#toolbar-title-container');
-		toolbarTitle.css({
-			top: "-" + toolbarTitle.height() + "px"
-		});
-
 		this.$el.css({
-			top: '-' + (this.$el.height() - this.$el.find('#toolbar-handle').outerHeight()) + 'px',
-			width: '100%'
+			top: '-' + this.$el.height() + 'px'
 		});
 
 		this.isContentOpen = false;

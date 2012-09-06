@@ -61,6 +61,14 @@ function osci_tk_epub_menu()
 		'file' => 'osci_tk_epub.publish.inc'
 	);
 
+	$items['api/epub/%/print_view'] = array(
+		'title' => 'ePub Print View',
+		'page callback' => 'osci_tk_epub_print_view',
+		'page arguments' => array(2),
+		'access arguments' => array('access content'),
+		'type' => MENU_CALLBACK,
+	);
+
 	return $items;
 }
 
@@ -677,22 +685,8 @@ function _osci_tk_epub_generate_package_document($node, $revTime, $forExport = f
 	return $output;
 }
 
-/**
- * Render the ePub table of contents for the book of the given node
- */
-function _osci_tk_epub_navigation_generate_toc($node, $forExport = false, $noCache = false, $revTime = null)
-{
-	if ($node->type !== 'publication') return null;
-	$revTime = $revTime ? $revTime : time();
-	
-	// Check the cache
-	if (!$noCache) {
-		$cache_key = "osci_epub_toc_{$node->nid}_{$revTime}";
-		$output = _osci_tk_epub_check_cache($cache_key);
-		if (!is_null($output)) {
-			return $output;
-		}
-	}
+
+function _osci_tk_get_flattened_nodetree_toc($node, $revTime) {
 
 	// first get flattened nodetree and get node information
 	$toc = array();
@@ -721,6 +715,30 @@ function _osci_tk_epub_navigation_generate_toc($node, $forExport = false, $noCac
 		);
 		$toc[] = $tocItem;
 	}
+
+	return $toc;
+
+}
+
+
+/**
+ * Render the ePub table of contents for the book of the given node
+ */
+function _osci_tk_epub_navigation_generate_toc($node, $forExport = false, $noCache = false, $revTime = null)
+{
+	if ($node->type !== 'publication') return null;
+	$revTime = $revTime ? $revTime : time();
+	
+	// Check the cache
+	if (!$noCache) {
+		$cache_key = "osci_epub_toc_{$node->nid}_{$revTime}";
+		$output = _osci_tk_epub_check_cache($cache_key);
+		if (!is_null($output)) {
+			return $output;
+		}
+	}
+
+	$toc = _osci_tk_get_flattened_nodetree_toc($node, $revTime);
 
 	$output = "<nav epub:type='toc' id='book-{$node->nid}-toc'>";
 	$output .= "<h1>Table of Contents</h1>"; // Optional header
@@ -1259,4 +1277,41 @@ function _osci_tk_epub_get_revision_id($nid)
 	}
 
 	return $vid ? $vid: null;
+}
+
+
+function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
+
+	$node = node_load($nid);
+
+	if ($node->type !== 'publication') return null;
+	$revTime = $revTime ? $revTime : time();
+	
+	// Check the cache
+	if (!$noCache) {
+		$cache_key = "osci_epub_toc_{$node->nid}_{$revTime}";
+		$output = _osci_tk_epub_check_cache($cache_key);
+		if (!is_null($output)) {
+			return $output;
+		}
+	}
+
+	$toc = _osci_tk_get_flattened_nodetree_toc($node, $revTime);
+
+	$content = '<h1>' . $node->title . '</h1>';
+
+	foreach($toc as $item) {
+		$content .= '<h2>' . $item['title'] . '</h2>';
+
+		$vid = _osci_tk_epub_get_revision_id($item['nid']);
+		$section_node = node_load($item['nid'], $vid);
+		$content .= _osci_tk_epub_generate_content_document($section_node, false);
+
+	}
+
+	//return $content; // For use in development
+
+	print $content;
+	exit();
+
 }
