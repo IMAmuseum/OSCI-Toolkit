@@ -19,18 +19,21 @@ function osci_tk_figure_asset_image_asset_options_form($form, &$form_state) {
     );
 
     $form['reader_options']['disable_interactions'] = array(
-        '#type'     => 'checkbox',
-        '#title'    => t('Disable Interaction'),
+        '#type'             => 'checkbox',
+        '#title'            => t('Disable Interaction'),
+        '#default_value'    => $form_state['options']->disable_interactions,
     );
 
     $form['reader_options']['disable_annotation_selection'] = array(
-        '#type'     => 'checkbox',
-        '#title'    => t('Disable Annotation Selection'),
+        '#type'             => 'checkbox',
+        '#title'            => t('Disable Annotation Selection'),
+        '#default_value'    => $form_state['options']->disable_annotation_selection,
     );
 
     $form['reader_options']['thumbnail'] = array(
-        '#type'     => 'file',
-        '#title'    => 'Thumbnail Image',
+        '#type'             => 'file',
+        '#title'            => 'Thumbnail Image',
+        '#default_value'    => $form_state['options']->thumbnail,
     );
 
     $form['#submit'][] = 'osci_tk_figure_asset_image_asset_options_form_submit';

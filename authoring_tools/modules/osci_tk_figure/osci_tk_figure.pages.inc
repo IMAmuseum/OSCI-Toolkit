@@ -111,28 +111,35 @@ function osci_tk_figure_asset_options($field, $delta, $node) {
     module_load_include('inc', 'osci_tk_figure', 'osci_tk_figure.assets');
     ctools_include('modal');
 
-    // TODO: figure out how to populate form values 
-    
+dpm($_GET['options']);
     $form_state = array(
         'ajax'          => TRUE,
         'title'         => t($node->title . ' Asset Options'),
         'field'         => $field,
         'delta'         => $delta,
         'node'          => $node,
+        'options'       => json_decode($_GET['options']),
     );
 
     $form_id = 'osci_tk_figure_asset_' . $node->type . '_options_form';
 
     // Throw an error if nothing has been implemented for this node type
-    if ($form_id == 'osci_tk_figure_asset__options_form') {
+    if (!function_exists($form_id)) {
         drupal_set_message('Asset options have not been defined for this node type. See osci_tk_figure.api.php for more information', 'error');
+        return;
     }
 
     $output = ctools_modal_form_wrapper($form_id, $form_state);
 
     if ($form_state['executed']) {
-        $field_id = $field . '[und][' . $delta . '][options]';
-        $script = "<script>jQuery('input[name=\"" . $field_id . "\"]').attr('value', '" . $form_state['options'] . "'); console.log('assd');</script>";
+        $field_id   = $field . '[und][' . $delta . '][options]';
+        $href_id    = '#edit-' . str_replace('_', '-', $field) . '-und-' . $delta . '-asset-options .asset-options';
+        $href       = $_GET['q'] . '?options=' . $form_state['options'];
+        $script = "
+<script>
+jQuery('input[name=\"" . $field_id . "\"]').attr('value', '" . $form_state['options'] . "');
+jQuery('" . $href_id . "').attr('href', '" . $href . "');
+</script>";
 
         $output[] = ajax_command_append('#content', $script);
         $output[] = ctools_modal_command_dismiss();
