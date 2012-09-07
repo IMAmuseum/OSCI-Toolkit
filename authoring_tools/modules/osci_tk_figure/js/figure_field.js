@@ -19,6 +19,11 @@
 		);
 		
 	}
+
+    function findReferenceVal(obj) {
+        var val = $(obj).val().match(/.+\[(\d+)\]/);
+        return val[1];
+    }
 	
 	$(document).ready(function() {
         /**************************************************
@@ -28,8 +33,7 @@
         $('.figure_reference_field').live({
 	        'change': function(event) {
 	        	setTimeout( function() {
-	        		var currentVal = event.target.value.match(/.+\[(\d+)\]/);
-                    currentVal = currentVal[1];
+                    currentVal = findReferenceVal(event.target);
 	            	if (currentVal == parseInt(currentVal, 10)) {
 	            		// remove figure options and get new preview
                         var parentField = $(event.target).parents('.fieldset-wrapper');
@@ -48,9 +52,9 @@
         
         // for the figure reference fields already populated on page load
         $('.figure_reference_field').each(function() {
-        	var nid = $(this).val().match(/.+\[(\d+)\]/);
-        	getPreviewDiv(nid[1], this);
+            nid = findReferenceVal(this);
+        	getPreviewDiv(nid, this);
         })
     });
-	
+
 })(jQuery);

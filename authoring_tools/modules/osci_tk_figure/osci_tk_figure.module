@@ -213,6 +213,13 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
             $key        = _osci_tk_figure_asset_label($asset);
             $item_path  = isset($item['asset_reference']) ? $path . $i . '/' . $item['asset_reference'] : $_GET['q'];
 
+            $attributes = array(
+                'attributes' => array(
+                    'class' => array('button', 'asset-options', 'ctools-use-modal'),
+                ),
+                'query' => array('options' => $item['options']),
+            );
+			
 			$figureElement[] = array(
 				'#type' 			=> 'fieldset',
 				'#attributes' 		=> array(
@@ -242,7 +249,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 				),
                 'asset_options' => array(
                     '#type' => 'item',
-                    '#markup' => ctools_modal_text_button('Asset Options', $item_path, '', 'button asset-options'),
+                    '#markup' => l('Asset Options', $item_path, $attributes),
                 ),
 				'number_template' => array(
 					'#title' 				=> t('Number Template'),
