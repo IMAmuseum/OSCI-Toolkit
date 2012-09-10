@@ -134,11 +134,12 @@ dpm($_GET['options']);
     if ($form_state['executed']) {
         $field_id   = $field . '[und][' . $delta . '][options]';
         $href_id    = '#edit-' . str_replace('_', '-', $field) . '-und-' . $delta . '-asset-options .asset-options';
-        $href       = $_GET['q'] . '?options=' . $form_state['options'];
+        $href       = $_GET['q'] . '?options=' . htmlspecialchars($form_state['figure_options']);
+        $encoded_options = addcslashes($form_state['figure_options'], '"');
         $script = "
 <script>
-jQuery('input[name=\"" . $field_id . "\"]').attr('value', '" . $form_state['options'] . "');
-jQuery('" . $href_id . "').attr('href', '" . $href . "');
+jQuery('input[name=\"$field_id\"]').attr('value', '$encoded_options');
+jQuery('$href_id').attr('href', '$href');
 </script>";
 
         $output[] = ajax_command_append('#content', $script);
