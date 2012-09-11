@@ -500,5 +500,5 @@ function osci_tk_figure_asset_options_form_submit(&$form, &$form_state) {
         $options[$key] = $val;
     }
 
-    $form_state['options'] = json_encode($options);
+    $form_state['figure_options'] = json_encode($options);
 }
