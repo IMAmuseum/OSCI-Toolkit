@@ -257,7 +257,7 @@ function osci_tk_utility_form_alter(&$form, &$form_state, $form_id)
 				{
 					$form['field_footnote'][LANGUAGE_NONE][$key]['_weight']['#type'] = 'hidden';
 					$fnId = 'fn-'. $form['nid']['#value'] . '-' . $key;
-					$form['field_footnote'][LANGUAGE_NONE][$key]['#prefix'] = '<div class="footnote_identifier" data-fnId="' . $fnId . '">' . $key . ' <span>[footnote:' . $fnId . ']</span></div>';
+					$form['field_footnote'][LANGUAGE_NONE][$key]['#prefix'] = '<div class="footnote_identifier" data-fnId="' . $fnId . '">' . $key . ' <span>[footnoteref:' . $fnId . ']</span></div>';
 				}
 			}
 		}
