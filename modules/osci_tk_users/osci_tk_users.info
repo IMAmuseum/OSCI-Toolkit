@@ -1,5 +1,0 @@
-name = "Users API"
-description = "Provides the ability to create and log in users"
-package = "OSCI ToolKit"
-version = "1.0"
-core = "7.x"

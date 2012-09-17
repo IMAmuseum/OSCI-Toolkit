@@ -1,7 +1,0 @@
-name = "Layered Image"
-description = "Provides tools for displaying and working with layered images"
-package = "OSCI ToolKit"
-version = "1.0"
-core = "7.x"
-dependencies[] = osci_tk_features
-dependencies[] = libraries

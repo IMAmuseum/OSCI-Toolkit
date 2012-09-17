@@ -1,1 +1,0 @@
-<a epub:type="noteref" href="#<?php print $footnote_id; ?>" class="footnote-reference"><?php print $footnote_index; ?></a>

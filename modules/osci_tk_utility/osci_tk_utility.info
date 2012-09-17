@@ -1,5 +1,0 @@
-name = "OSCI ToolKit Utility"
-description = "Provides misc. utilities for the OSCI ToolKit"
-package = "OSCI ToolKit"
-version = "1.0"
-core = "7.x"

@@ -1,8 +1,0 @@
-name = "Filters"
-description = "Provides text filters for the OSCI ToolKit"
-package = "OSCI ToolKit"
-version = "1.0"
-core = "7.x"
-dependencies[] = "wysiwyg"
-dependencies[] = osci_tk_utility
-dependencies[] = libraries

@@ -1,7 +1,0 @@
-name = "Conservation Tools"
-description = "Provides tools for displaying and working with conservation assets"
-package = "OSCI ToolKit"
-version = "1.0"
-core = "7.x"
-dependencies[] = osci_tk_features
-dependencies[] = libraries

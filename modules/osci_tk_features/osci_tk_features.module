@@ -1,8 +1,0 @@
-<?php
-/**
- * @file
- * Code for the OSCI ToolKit Features feature.
- */
-
-include_once('osci_tk_features.features.inc');
-include_once('osci_tk_features.extra.inc');

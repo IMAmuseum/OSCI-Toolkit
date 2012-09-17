@@ -1,5 +1,0 @@
-name = "OSCI ToolKit Figure"
-description = "Provides figure capabilities to the OSCI ToolKit"
-package = "OSCI ToolKit"
-version = "1.0"
-core = "7.x"

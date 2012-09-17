@@ -1,1 +1,0 @@
-<a href="#<?php print $footnote_id; ?>" class="superscript footnote-reference"><?php print $footnote_index; ?></a>

@@ -1,6 +1,0 @@
-name = "Notes API"
-description = "Provides the ability to store and retrieve user notes"
-package = "OSCI ToolKit"
-version = "1.0"
-core = "7.x"
-dependencies[] = osci_tk_nodetree
