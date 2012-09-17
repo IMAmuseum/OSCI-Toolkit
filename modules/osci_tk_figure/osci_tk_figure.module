@@ -1,0 +1,510 @@
+<?php
+
+function osci_tk_figure_menu()
+{
+	$items = array();
+
+    $items['ajax/figure/%/%/%'] = array(
+        'title'             => 'Figure search',
+        'page callback'     => 'osci_tk_figure_reference',
+		'page arguments'	=> array(2,3,4),
+        'access arguments'  => array('access content'),
+        'type'              => MENU_CALLBACK,
+        'file'              => 'osci_tk_figure.pages.inc',
+    );
+
+    $items['ajax/figurepreview/%node'] = array(
+        'title'             => 'Figure preview',
+        'page callback'     => 'osci_tk_figure_preview',
+    	'page arguments'	=> array(2),
+        'access arguments'  => array('access content'),
+        'type'              => MENU_CALLBACK,
+        'file'              => 'osci_tk_figure.pages.inc',
+    );
+
+   	$items['ajax/figurethumb/save'] = array(
+        'title'             => 'Save Figure Thumbnail',
+        'page callback'     => 'osci_tk_figure_thumb_save',
+        'access arguments'  => array('access content'),
+        'type'              => MENU_CALLBACK,
+        'file'              => 'osci_tk_figure.pages.inc',
+    );
+
+    $items['ajax/figure/asset-options/%/%/%node'] = array(
+        'page callback'     => 'osci_tk_figure_asset_options',
+        'page arguments'    => array(3, 4, 5),
+        'access arguments'  => array('access content'),
+        'type'              => MENU_CALLBACK,
+        'file'              => 'osci_tk_figure.pages.inc',
+    );
+
+	return $items;
+}
+
+function osci_tk_figure_theme()
+{
+	return array(
+		'osci_tk_figure_formatter' => array(
+			'template'	=> 'templates/osci_tk_figure_formatter',
+	        'file'      => 'osci_tk_figure.templates.inc',
+			'variables' => array(
+				'item'	=> array()
+			),
+		),
+		'field__field_figure' => array(
+			'template' => 'templates/field__field_figure',
+			'variables' => array()
+		)
+	);
+}
+
+function osci_tk_figure_field_info()
+{
+	return array(
+		'osci_tk_figure' => array(
+			'label' 			=> t('Figure'),
+			'description' 		=> t('Provides '),
+			'default_widget' 	=> 'osci_tk_figure_widget',
+			'default_formatter' => 'osci_tk_figure_formatter'
+		)
+	);
+}
+
+function osci_tk_figure_field_formatter_info()
+{
+	$formatters = array(
+		'osci_tk_figure' => array(
+			'label'         => t('Default'),
+            'field types'   => array('osci_tk_figure'),
+		)
+	);
+
+	return $formatters;
+}
+
+function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display)
+{
+	global $osci_tk_placed_figures;
+
+	$element = array();
+	switch($display['type'])
+	{
+		case 'osci_tk_figure':
+			foreach($items as $delta => $item)
+			{
+				//if figure placed inline do not output it again
+				if (is_array($osci_tk_placed_figures) && in_array($delta, $osci_tk_placed_figures))
+				{
+					continue;
+				}
+
+				$figureNode = node_load($item['asset_reference']);
+
+				$item['fig_id'] = _osci_tk_figure_create_id($entity->nid, $delta);
+				$item['delta'] = $delta;
+				$item['number_template'] = _osci_tk_figure_process_number_template($item);
+				$item['type'] = $figureNode->type;
+				$invoke = module_invoke_all('osci_tk_figure_aspect', $item);
+                $item['aspect'] = array_pop($invoke);
+
+				$element[$delta] = array(
+					'#theme'	=> 'osci_tk_figure_formatter',
+					'#item'		=> $item,
+				);
+			}
+			break;
+	}
+
+	return $element;
+}
+
+/**************************************************************************
+ * Field Type API: Widget
+ **************************************************************************/
+
+function osci_tk_figure_field_widget_info()
+{
+	return array(
+		'osci_tk_figure_widget' => array(
+			'label' => t('Figure'),
+			'field types' => array('osci_tk_figure', 'text_long'),
+			'settings' => array(),
+			'behaviors' => array('default value' => FIELD_BEHAVIOR_NONE, 'multiple values' => FIELD_BEHAVIOR_CUSTOM)
+        )
+    );
+}
+
+function osci_tk_figure_field_widget_settings_form($field, $instance)
+{
+    $widget = $instance['widget'];
+    $settings = $widget['settings'];
+	$form = array();
+
+	if ($widget['type'] === 'osci_tk_figure_widget')
+	{
+		$form['osci_tk_figure_types'] = array(
+			'#type' => 'checkboxes',
+			'#title' => t('Content types that can be referenced'),
+			'#description' => t('The available content types for use as a figure.'),
+			'#default_value' => $settings['osci_tk_figure_types'],
+			'#required' => TRUE,
+			'#mulitple' => true,
+			'#options' => array_map('check_plain', node_type_get_names())
+		);
+	}
+
+    return $form;
+}
+
+function osci_tk_figure_field_is_empty($item, $field)
+{
+	$return = false;
+
+	if (empty($item['asset_reference']) || !is_numeric($item['asset_reference']))
+	{
+		$return = true;
+	}
+
+	return $return;
+}
+
+function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element)
+{
+	if ($instance['widget']['type'] === 'osci_tk_figure_widget')
+	{
+        /**
+         * Load includes
+         */
+        ctools_include('ajax');
+        ctools_include('modal');
+        ctools_modal_add_js();
+		drupal_add_library('system', 'ui.dialog');
+		drupal_add_js(drupal_get_path('module','osci_tk_figure') . '/js/figure_field.js');
+
+		// load any additional module javascript for handling figure options
+		if (isset($instance['widget']['settings']['osci_tk_figure_types']))
+		{
+			foreach($instance['widget']['settings']['osci_tk_figure_types'] as $type => $active)
+			{
+				if ($active)
+				{
+					module_invoke_all("osci_tk_figure_preview_add_callback_js_" . $type);
+				}
+			}
+		}
+
+		$figureElement = array(
+			'#theme' => 'osci_tk_fieldset_tabs',
+			'#type' => 'fieldset',
+			'#prefix' => '<div id="figures-container">',
+			'#suffix' => '</div>'
+		);
+
+		$max = $form_state['field'][$field['field_name']][LANGUAGE_NONE]['items_count'];
+        $path = 'ajax/figure/asset-options/' . $field['field_name'] . '/';
+        drupal_add_js(array('figureAjaxPath' => $path), 'setting');
+
+		for($i = 0; $i < $max; $i++)
+		{
+			$itemDelta  = $i;
+			$item       = isset($items[$itemDelta]) ? $items[$itemDelta] : array();
+			$figId      = _osci_tk_figure_create_id($form['nid']['#value'], $itemDelta);
+            $asset      = isset($item['asset_reference']) ? node_load($item['asset_reference']) : '';
+            $key        = _osci_tk_figure_asset_label($asset);
+            $item_path  = isset($item['asset_reference']) ? $path . $i . '/' . $item['asset_reference'] : $_GET['q'];
+
+            $attributes = array(
+                'attributes' => array(
+                    'class' => array('button', 'asset-options', 'ctools-use-modal'),
+                ),
+                'query' => array('options' => isset($item['options']) ? $item['options'] : ''),
+            );
+			
+			$figureElement[] = array(
+				'#type' 			=> 'fieldset',
+				'#attributes' 		=> array(
+					'class'			=> array('figure-wrapper')
+				),
+				'#weight' 			=> $itemDelta,
+				'#tree' 			=> true,
+				'figure_preview' 	=> array(
+					'#markup' => '<figure class="figure_reference_preview">&nbsp;</figure>',
+				),
+				'figure_id' => array(
+					'#markup' => '<div class="figure_identifier" data-delta="' . $i . '" data-figId="' . $figId . '"><label>Wiki Syntax:</label> <span>[figure:' . $figId . ']</span> </div>'
+				),
+				'options' => array(
+					'#type' => 'hidden',
+					'#value' => isset($item['options']) ? $item['options'] : '',
+					'#attributes' => array('class' => 'figure_options'),
+				),
+				'asset_reference' => array(
+					'#title'                => t('Asset Reference'),
+					'#description'          => t('Type the identifier of the media asset that this figure should display.'),
+					'#type'                 => 'textfield',
+					'#autocomplete_path'    => 'ajax/figure/' . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $field['field_name'],
+					'#attributes'			=> array('class' => array('figure_reference_field')),
+					'#default_value'        => $key,
+                    '#element_validate'     => array('osci_tk_figure_reference_validate'),
+				),
+                'asset_options' => array(
+                    '#type' => 'item',
+                    '#markup' => l('Asset Options', $item_path, $attributes),
+                ),
+				'number_template' => array(
+					'#title' 				=> t('Number Template'),
+					'#description' 			=> t('The template to use for generating the figure number. (cat# will be replaced with the catalog number, fig# will be replaced with the figure number)'),
+					'#type' 				=> 'textfield',
+					'#default_value' 		=> isset($item['number_template']) ? $item['number_template'] : 'Fig. cat#.fig#',
+				),
+				'caption' => array(
+					'#title' 				=> t('Caption'),
+					'#description' 			=> t('The caption text to associate with this figure'),
+					'#type' 				=> 'textarea',
+					'#default_value' 		=> isset($item['caption']) ? $item['caption'] : '',
+					'#rows' 				=> 5
+				),
+				'position' => array(
+					'#title' 				=> t('Position'),
+					'#description' 			=> t('A hint on how to place the figure on a page.'),
+					'#type' 				=> 'select',
+					'#default_value' 		=> isset($item['position']) ? $item['position'] : 'n',
+					'#options' 				=> array(
+						't' 	=> 'top',
+						'b' 	=> 'bottom',
+						'tl' 	=> 'top left',
+						'tr' 	=> 'top right',
+						'bl' 	=> 'bottom left',
+						'br' 	=> 'bottom right',
+						'p' 	=> 'full page',
+						'n' 	=> 'none'
+					)
+				),
+				'columns' => array(
+					'#title' 				=> t('Columns'),
+					'#type' 				=> 'textfield',
+					'#default_value' 		=> isset($item['columns']) ? $item['columns'] : '50%',
+					'#description' 			=> t('A hint of how many columns the figure should span on a page. This can be either a number (1 or greater) or a percentage (0%-100%).')
+				)
+			);
+		}
+	}
+
+	$figureElement['add_more'] = array(
+		'#type' => 'submit',
+		'#name' => 'figure_add_more',
+		'#value' => t('Add another figure'),
+		'#attributes' => array('class' => array('field-add-more-submit')),
+		'#limit_validation_errors' => array(),
+		'#submit' => array('figure_add_more_submit'),
+		'#ajax' => array(
+			'callback' 	=> 'figure_add_more_js',
+			'wrapper' 	=> 'figures-container',
+			'effect' 	=> 'fade',
+			'method' 	=> 'replace'
+		),
+		'#weight' => -100
+	);
+	return $element + $figureElement;
+}
+
+/**
+ * Validate figure reference form element
+ */
+function osci_tk_figure_reference_validate($element, &$form_state, $form) {
+    if (!empty($element['#value'])) {
+        // Move post variables into formstate
+        foreach($_POST[$element['#parents'][0]]['und'] as $delta => $value) {
+            $form_state['values'][$element['#parents'][0]]['und'][$delta]['options'] = $value['options'];
+        }
+
+        if (preg_match("/.+\[(\d+)\]/", $element['#value'], $matches)) {
+            form_set_value($element, $matches[1], $form_state);
+        } else {
+            form_set_error($element['#name'], 'Invalid asset reference');
+        }
+    }
+}
+
+function figure_add_more_submit($form, &$form_state)
+{
+	$form_state['field']['field_figure'][LANGUAGE_NONE]['items_count']++;
+	$form_state['rebuild'] = true;
+}
+
+function figure_add_more_js($form, $form_state)
+{
+	return $form['field_figure'];
+}
+
+function osci_tk_figure_form_alter(&$form, &$form_state, $form_id)
+{
+	if (strpos($form_id, '_node_form') !== false)
+	{
+		if (isset($form['field_data'])) {
+			$form['field_data']['#attributes']['style'] = array('display:none');
+		}
+
+		array_unshift($form['actions']['submit']['#submit'], 'osci_tk_figure_node_submit');
+	}
+}
+
+function osci_tk_figure_node_submit($form, &$form_state)
+{
+	list($replaceIds, $newIds) = _osci_tk_figure_node_get_replace_ids($form, $form_state);
+
+	if (count($replaceIds))
+	{
+		foreach($form_state['values'] as $k => $v)
+		{
+			if (is_array($v) && isset($v[LANGUAGE_NONE]))
+			{
+				foreach($v[LANGUAGE_NONE] as $delta => $value)
+				{
+					if (isset($form_state['values'][$k][LANGUAGE_NONE][$delta]['value']))
+					{
+						$form_state['values'][$k][LANGUAGE_NONE][$delta]['value'] =
+							str_replace($replaceIds, $newIds, $form_state['values'][$k][LANGUAGE_NONE][$delta]['value']);
+					}
+				}
+			}
+		}
+	}
+}
+
+function _osci_tk_figure_node_get_replace_ids($form, &$form_state)
+{
+	$offset = 0;
+	$replaceIds = array();
+	$newIds = array();
+
+	//update figure references for renumbering if one deleted
+	if (isset($form_state['values']['field_figure']))
+	{
+		$figureTemplate = '[figure:';
+		foreach($form_state['values']['field_figure'][LANGUAGE_NONE] as $k => $v)
+		{
+			if ($k === 'add_more')
+			{
+				continue;
+			}
+
+			$figId = _osci_tk_figure_create_id($form_state['values']['nid'], $k);
+			if (empty($v['asset_reference']) || !is_numeric($v['asset_reference']))
+			{
+				$offset++;
+				$replaceIds[] = $figureTemplate . $figId . ']';
+				$newIds[] = '';
+			}
+			else if ($offset > 0)
+			{
+				$replaceIds[] = $figureTemplate . $figId . ']';
+				$newFigId = _osci_tk_figure_create_id($form_state['values']['nid'], $k - $offset);
+				$newIds[] = $figureTemplate . $newFigId . ']';
+			}
+		}
+	}
+
+	return array($replaceIds, $newIds);
+}
+
+
+function osci_tk_figure_node_view($node, $view_mode, $langcode) {
+
+  if (($node->type == 'section') && ($view_mode == 'full')) {
+
+    // Add the authoring figure preview UI
+    drupal_add_library('system', 'ui.dialog');
+    drupal_add_js(drupal_get_path('module', 'osci_tk_figure') . '/js/figure_preview.js');
+
+  }
+
+}
+
+function osci_tk_figure_osci_tk_image_types()
+{
+	$types = array();
+
+	$types[] = array(
+		'title'			=> 'Body Copy Authoring - Figure Preview',
+		'variable'		=> 'osci_tk_image_style_figure_preview',
+		'description'	=> 'Thumbnail used to preview a figure while editing body copy'
+	);
+	$types[] = array(
+		'title'			=> 'Body Copy - Figure Thumbnail',
+		'variable'		=> 'osci_tk_image_style_figure_thumbnail',
+		'description'	=> 'Thumbnail used represent a figure'
+	);
+	$types[] = array(
+		'title'			=> 'Body Copy - Figure 256',
+		'variable'		=> 'osci_tk_image_style_figure_256',
+		'description'	=> 'A small version of a figure image'
+	);
+	$types[] = array(
+		'title'			=> 'Body Copy - Figure 512',
+		'variable'		=> 'osci_tk_image_style_figure_512',
+		'description'	=> 'A medium version of a figure image'
+	);
+	$types[] = array(
+		'title'			=> 'Body Copy - Figure 1024',
+		'variable'		=> 'osci_tk_image_style_figure_1024',
+		'description'	=> 'A large version of a figure image'
+	);
+	$types[] = array(
+		'title'			=> 'Body Copy - Print',
+		'variable'		=> 'osci_tk_image_style_print',
+		'description'	=> 'A version of a image for printing'
+	);
+
+	return $types;
+}
+
+function _osci_tk_figure_process_number_template($figure)
+{
+	$numberTemplate = str_replace(
+		array('fig#', 'cat#.'),
+		array(((int)$figure['delta']) + 1, ''),
+		$figure['number_template']
+	);
+
+	return $numberTemplate;
+}
+
+function _osci_tk_figure_create_id($nid, $delta)
+{
+	return 'fig-' . $nid . '-' . $delta;
+}
+
+function _osci_tk_figure_asset_label($asset) {
+    return (is_object($asset)) ? $asset->title . ' [' . $asset->nid . ']' : '';
+}
+
+function osci_tk_figure_asset_options_form($form, &$form_state) {
+    $form['submit'] = array(
+        '#type'     => 'submit',
+        '#value'    => t('Submit'),
+    );
+
+    $form['#submit'][] = 'osci_tk_figure_asset_options_form_submit';
+
+    return $form;
+}
+
+function osci_tk_figure_asset_options_form_submit(&$form, &$form_state) {
+    $ignore = array(
+        'form_id',
+        'form_build_id',
+        'form_token',
+        'submit',
+        'op',
+    );
+
+    foreach ($form_state['values'] as $key => $val) {
+        if (in_array($key, $ignore)) continue;
+
+        $options[$key] = $val;
+    }
+
+    $form_state['figure_options'] = json_encode($options);
+dpm($form_state);
+}
