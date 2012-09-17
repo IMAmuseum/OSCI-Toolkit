@@ -313,6 +313,11 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
  */
 function osci_tk_figure_reference_validate($element, &$form_state, $form) {
     if (!empty($element['#value'])) {
+        // Move post variables into formstate
+        foreach($_POST[$element['#parents'][0]]['und'] as $delta => $value) {
+            $form_state['values'][$element['#parents'][0]]['und'][$delta]['options'] = $value['options'];
+        }
+
         if (preg_match("/.+\[(\d+)\]/", $element['#value'], $matches)) {
             form_set_value($element, $matches[1], $form_state);
         } else {
@@ -501,4 +506,5 @@ function osci_tk_figure_asset_options_form_submit(&$form, &$form_state) {
     }
 
     $form_state['figure_options'] = json_encode($options);
+dpm($form_state);
 }

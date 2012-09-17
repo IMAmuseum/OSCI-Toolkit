@@ -111,7 +111,6 @@ function osci_tk_figure_asset_options($field, $delta, $node) {
     module_load_include('inc', 'osci_tk_figure', 'osci_tk_figure.assets');
     ctools_include('modal');
 
-dpm($_GET['options']);
     $form_state = array(
         'ajax'          => TRUE,
         'title'         => t($node->title . ' Asset Options'),
