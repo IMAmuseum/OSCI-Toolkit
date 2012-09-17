@@ -346,7 +346,7 @@ function osci_tk_epub_render($nid, $pubNid = null)
 	if ($vid || !isset($_GET['revision']))
 	{
 		$node = node_load($nid, $vid);
-		$output = _osci_tk_epub_generate_content_document($node, false, $dev);
+		$output = _osci_tk_epub_generate_content_document($node, false, $pubNid, $dev);
 	} else {
 		return drupal_not_found();
 	}
@@ -357,7 +357,7 @@ function osci_tk_epub_render($nid, $pubNid = null)
 	drupal_exit();
 }
 
-function _osci_tk_epub_generate_content_document($node, $forExport = false, $noCache = false)
+function _osci_tk_epub_generate_content_document($node, $forExport = false, $pubNid = null, $noCache = false)
 {
 	global $osci_tk_placed_figures, $osci_tk_epub_for_export;
 
@@ -407,7 +407,7 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $noC
 		}
 	}
 
-	$css = _osci_tk_epub_get_book_css($node, $forExport);
+	$css = _osci_tk_epub_get_book_css($node, $pubNid, $forExport);
 
 	drupal_static_reset('drupal_add_css');
 	if ($css)
@@ -1137,19 +1137,25 @@ function _osci_tk_epub_navigation_generate_index($node, $forExport = False, $noC
 
 // }
 
-function _osci_tk_epub_get_book_css($node, $forExport = false)
+function _osci_tk_epub_get_book_css($node, $pubNid = null, $forExport = false)
 {
-	$book = null;
+	$publication = null;
 	$css = null;
 
-	if (isset($node->book))
-	{
-		$book = node_load($node->book['bid']);
+	if ($pubNid === null) {
+		$pubData = osci_tk_nodetree_get_data_for_nid($node->nid);
+		if ($pubData) {
+			$pubNid = $pubData[0]['rootNid'];
+		}
 	}
 
-	if ($book && isset($book->field_osci_tk_css) && $book->field_osci_tk_css['und'][0])
+	if ($pubNid) {
+		$publication = node_load($pubNid);
+	}
+
+	if ($publication && isset($publication->field_osci_tk_css) && $publication->field_osci_tk_css['und'][0])
 	{
-		$css = _osci_tk_epub_asset_process_uri($book->field_osci_tk_css['und'][0]['uri'], $forExport);
+		$css = _osci_tk_epub_asset_process_uri($publication->field_osci_tk_css['und'][0]['uri'], $forExport);
 	}
 
 	return $css;
