@@ -808,11 +808,16 @@ function _osci_tk_epub_package_build_data($pubNode, &$data, $revTime) {
 				)
 		);
 
+		$title = $node->title;
+		if (isset($node->field_osci_tk_title) && isset($node->field_osci_tk_title['und'][0]['value'])) {
+			$title = $node->field_osci_tk_title['und'][0]['value'];
+		}
+
 		$data['content_nids'][] = array(
 			'nid' => $node->nid,
 			'filename' => _osci_tk_epub_node_content_filename($node->nid),
 			'url' => _osci_tk_epub_node_content_url($node->nid, $revTime, $pubNode->nid),
-			'title' => $node->title
+			'title' => $title
 		);
 
 		if (isset($node->field_figure['und'])) {
