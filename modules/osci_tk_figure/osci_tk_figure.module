@@ -30,9 +30,9 @@ function osci_tk_figure_menu()
         'file'              => 'osci_tk_figure.pages.inc',
     );
 
-    $items['ajax/figure/asset-options/%/%/%node'] = array(
+    $items['ajax/figure/asset-options/%node/%/%/%node'] = array(
         'page callback'     => 'osci_tk_figure_asset_options',
-        'page arguments'    => array(3, 4, 5),
+        'page arguments'    => array(3, 4, 5, 6),
         'access arguments'  => array('access content'),
         'type'              => MENU_CALLBACK,
         'file'              => 'osci_tk_figure.pages.inc',
@@ -201,7 +201,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 		);
 
 		$max = $form_state['field'][$field['field_name']][LANGUAGE_NONE]['items_count'];
-        $path = 'ajax/figure/asset-options/' . $field['field_name'] . '/';
+        $path = 'ajax/figure/asset-options/' . $form['nid']['#value'] . '/' . $field['field_name'] . '/';
         drupal_add_js(array('figureAjaxPath' => $path), 'setting');
 
 		for($i = 0; $i < $max; $i++)
@@ -211,7 +211,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 			$figId      = _osci_tk_figure_create_id($form['nid']['#value'], $itemDelta);
             $asset      = isset($item['asset_reference']) ? node_load($item['asset_reference']) : '';
             $key        = _osci_tk_figure_asset_label($asset);
-            $item_path  = isset($item['asset_reference']) ? $path . $i . '/' . $item['asset_reference'] : $_GET['q'];
+            $item_path  = isset($item['asset_reference']) ? $path . $i . '/' . $item['asset_reference'] : '';
 
             $attributes = array(
                 'attributes' => array(
@@ -506,5 +506,4 @@ function osci_tk_figure_asset_options_form_submit(&$form, &$form_state) {
     }
 
     $form_state['figure_options'] = json_encode($options);
-dpm($form_state);
 }

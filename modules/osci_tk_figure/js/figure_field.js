@@ -31,21 +31,38 @@
          */
 		// live events for the figure fields
         $('.figure_reference_field').live({
-	        'change': function(event) {
+	        'blur': function(event) {
 	        	setTimeout( function() {
-                    currentVal = findReferenceVal(event.target);
-	            	if (currentVal == parseInt(currentVal, 10)) {
-	            		// remove figure options and get new preview
-                        var parentField = $(event.target).parents('.fieldset-wrapper');
-	            		parentField.find('.figure_options').val("");
+                    var parentField = $(event.target).parents('.fieldset-wrapper');
+                    var currentNid = findReferenceVal(event.target);
+                    var idx = parentField.find('.figure_identifier').data('delta');
 
-                        // Update the options callback
-                        var idx = parentField.find('.figure_identifier').data('delta');
-                        var href = Drupal.settings.basePath + Drupal.settings.figureAjaxPath + idx + '/' + currentVal;
-                        parentField.find('a.asset-options').attr('href', href);
+                    // Update "asset options" url callback
+                    var url = Drupal.settings.basePath + 
+                        Drupal.settings.figureAjaxPath +
+                        idx + '/' +
+                        currentNid;
+                    var oldUrl = parentField.find('.form-type-item a').attr('href');
+                    parentField.find('a.asset-options').attr('href', url); 
 
-	            		getPreviewDiv(currentVal, event.target);
-	            	}
+                    // Drupal doesnt like it when we just swap out a link
+                    // So we need to update the ajax object so everyone is happy
+                    Drupal.ajax[oldUrl].url = url;
+                    Drupal.ajax[oldUrl].selector = url;
+                    Drupal.ajax[url] = Drupal.ajax[oldUrl];
+                    Drupal.ajax[url].options.url = url;
+                    Drupal.ajax[oldUrl] = null;
+
+                    // Update wiki text
+                    wikiId = 'fig-' + currentNid + '-' + idx;
+                    syntax = '[figure:' + wikiId + ']';
+                    parentField.find('.figure_identifier').data('figid', wikiId);
+                    parentField.find('.figure_identifier span').html(syntax);
+
+	            	// remove figure options and get new preview
+	            	parentField.find('.figure_options').val("");
+
+	            	getPreviewDiv(currentNid, event.target);
 	        	}, 500);
 	        }
         });
