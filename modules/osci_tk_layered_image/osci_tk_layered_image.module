@@ -508,14 +508,16 @@ function _osci_tk_layered_image_get_svg_attr($file_path) {
 	$xml = simplexml_load_file($file_path);
 	if (is_object($xml)) {
 		$xmlAttr = (array) $xml->attributes();
-		$viewBox = explode(' ', $xmlAttr['@attributes']['viewbox']);
-		$attr->width = $viewBox[2] - $viewBox[0];
-		$attr->height = $viewBox[3] - $viewBox[1];
+		dpm($xmlAttr, 'xmlAttr');
+		if (isset($xmlAttr['@attributes']['viewBox'])) {
+			$viewBox = explode(' ', $xmlAttr['@attributes']['viewBox']);
+			$attr->width = (int) $viewBox[2] - $viewBox[0];
+			$attr->height = (int) $viewBox[3] - $viewBox[1];
+			return $attr;
+		}
 	}
-	else {
-		$attr->width = 0;
-		$attr->height = 0;
-	}
+	$attr->width = 0;
+	$attr->height = 0;
 	return $attr;
 }
 
