@@ -18,13 +18,13 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
         '#title'    => t('Reader Options'),
     );
 
-    $form['reader_options']['disable_interactions'] = array(
+    $form['reader_options']['disable_interaction'] = array(
         '#type'             => 'checkbox',
         '#title'            => t('Disable Interaction'),
         '#default_value'    => $form_state['options']->disable_interactions,
     );
 
-    $form['reader_options']['disable_annotation_selection'] = array(
+    $form['reader_options']['disable_annotation'] = array(
         '#type'             => 'checkbox',
         '#title'            => t('Disable Annotation Selection'),
         '#default_value'    => $form_state['options']->disable_annotation_selection,
