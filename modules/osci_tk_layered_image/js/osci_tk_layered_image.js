@@ -89,8 +89,8 @@ var LayeredImage = function(container) { // container should be a html element
 	// provide defaults if options not set
 	if (!this.figureOptions) {
 		this.figureOptions = {
-			interaction: true,
-			annotation: true,
+			disable_interaction: false,
+			disable_annotation: false,
 			sliderPosition: 0
 		};
 	}
@@ -433,7 +433,7 @@ LayeredImage.prototype.createUI = function() {
 	var $ = this.$, CA = this, fullscreenClass, currentLayer;
 
 	// hook up polymap drag interaction
-	if (this.figureOptions.interaction || this.figureOptions.editing) {
+	if (!this.figureOptions.disable_interaction || this.figureOptions.editing) {
 		this.map
 			.add(this.polymaps.drag())
 			.add(this.polymaps.wheel())
@@ -505,7 +505,7 @@ LayeredImage.prototype.createUI = function() {
 	.bind('click', function(event) {
 		CA.reset();
 	});
-	if (this.figureOptions.interaction || this.figureOptions.editing) {
+	if (!this.figureOptions.disable_interaction || this.figureOptions.editing) {
 		this.ui.reset.appendTo(this.ui.controlbar);
 	}
 
@@ -515,7 +515,7 @@ LayeredImage.prototype.createUI = function() {
 			.bind('click', function(event) {
 				CA.toggleAnnotationSelector();
 			});
-		if (this.figureOptions.annotation || this.figureOptions.editing) {
+		if (!this.figureOptions.disable_annotation || this.figureOptions.editing) {
 			this.ui.annotation.appendTo(this.ui.controlbar);
 		}
 	}
@@ -546,7 +546,7 @@ LayeredImage.prototype.createUI = function() {
 				layeredImage: this
 			}, this.toggleLayerSelector);
 		}
-		if (this.figureOptions.interaction || this.figureOptions.editing) {
+		if (!this.figureOptions.disable_interaction || this.figureOptions.editing) {
 			this.ui.controlbar
 				.append(this.ui.layerSelector2)
 				.append(this.ui.layerSelector1);
@@ -572,7 +572,7 @@ LayeredImage.prototype.createUI = function() {
 		})
 		.appendTo(this.ui.sliderContainer);
 		
-		if (this.figureOptions.interaction || this.figureOptions.editing) {
+		if (!this.figureOptions.disable_interaction || this.figureOptions.editing) {
 			this.ui.layerSelector2.after(this.ui.sliderContainer);
 		}
 		// restore preset if available
@@ -620,14 +620,14 @@ LayeredImage.prototype.createUI = function() {
 		CA.map.zoom(newVal);
 	})
 	.appendTo(this.ui.zoom);
-	if (this.figureOptions.interaction || this.figureOptions.editing) {
+	if (!this.figureOptions.disable_interaction || this.figureOptions.editing) {
 		this.ui.zoom.appendTo(this.container);
 	}
 
 	// viewfinder control
 	this.ui.viewfinder = $('<div class="ca-ui-viewfinder viewfinder-closed"></div>');
 	
-	if (this.figureOptions.interaction || this.figureOptions.editing) {
+	if (!this.figureOptions.disable_interaction || this.figureOptions.editing) {
 		this.ui.viewfinder.appendTo(this.container);
 	}
 	
@@ -1374,7 +1374,7 @@ LayeredImage.prototype.showAnnotationPresets = function() {
 				if (this.annotationLayers[j].layer_id == presetLayerId) {
 					this.repaintLayer(this.annotationLayers[j]);
 					
-					if (this.figureOptions.annotation || this.figureOptions.editing) {
+					if (!this.figureOptions.disable_annotation || this.figureOptions.editing) {
 						this.addLegendItem(this.annotationLayers[j]);
 					}
 					break;

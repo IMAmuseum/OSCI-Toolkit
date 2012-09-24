@@ -624,7 +624,7 @@ function _osci_tk_epub_generate_package_document($node, $revTime, $forExport = f
 	}
 
 	//CSS
-	if (isset($node->field_osci_tk_css) && $node->field_osci_tk_css['und'][0])
+	if (isset($node->field_osci_tk_css['und'][0]))
 	{
 		$arguments['manifest'][] = array(
 			'id' => 'css',
