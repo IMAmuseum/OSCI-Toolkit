@@ -1,0 +1,3 @@
+.ui-tabs .ui-state-disabled {
+    display: none; /* disabled tabs don't show up */
+}
