@@ -73,7 +73,14 @@
 			//remove the tab
 			var tabs = $this.parents(".fieldset-tabs");
 			var currentTab = tabs.tabs( "option", "selected" );
-			//tabs.tabs("remove", currentTab);
+			var numTabs = tabs.tabs("length");
+			if (currentTab < (numTabs - 1)) {
+				tabs.tabs("select", currentTab + 1);
+			} else {
+				tabs.tabs("select", currentTab - 1);
+			}
+
+			tabs.tabs("disable", currentTab);
 		});
 
 		// for the figure reference fields already populated on page load

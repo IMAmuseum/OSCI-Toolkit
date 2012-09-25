@@ -175,6 +175,7 @@ function theme_osci_tk_fieldset_tabs($variables)
 {
 	drupal_add_library('system', 'ui.tabs');
 	drupal_add_js(drupal_get_path('module','osci_tk_utility') . '/js/fieldset_tabs.js');
+	drupal_add_css(drupal_get_path('module','osci_tk_utility') . '/css/osci_tk_utility.css');
 
 	$element = $variables['element'];
 
