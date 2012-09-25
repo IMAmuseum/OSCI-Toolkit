@@ -285,15 +285,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 					'#type' 				=> 'textfield',
 					'#default_value' 		=> isset($item['columns']) ? $item['columns'] : '50%',
 					'#description' 			=> t('A hint of how many columns the figure should span on a page. This can be either a number (1 or greater) or a percentage (0%-100%).')
-				),
-				'remove_figure' => array(
-					'#type' => 'item',
-					'#markup' => l('Remove Figure', '#', array(
-						'attributes' => array(
-							'class' => array('button', 'remove-figure')
-						)
-					)),
-				),
+				)
 			);
 		}
 	}
@@ -313,6 +305,17 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 		),
 		'#weight' => -100
 	);
+
+	$figureElement['remove_item'] = array(
+		'#type' => 'item',
+		'#markup' => l('Remove Figure', '#', array(
+			'attributes' => array(
+				'class' => array('button', 'remove-figure')
+			)
+		)),
+		'#weight' => -99
+	);
+
 	return $element + $figureElement;
 }
 

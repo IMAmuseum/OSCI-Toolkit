@@ -183,20 +183,17 @@ function theme_osci_tk_fieldset_tabs($variables)
 	$childElements = element_children($element);
 	$addAnother = null;
 	$numAdd = null;
+	$remove = null;
 	$output = '';
 
-	foreach($childElements as $key)
-	{
-		if ($key === 'add_more')
-		{
+	foreach($childElements as $key) {
+		if ($key === 'add_more') {
 			$addAnother = &$element[$key];
-		}
-		else if ($key === 'num_add')
-		{
+		} else if ($key === 'num_add') {
 			$numAdd = &$element[$key];
-		}
-		else
-		{
+		} else if ($key === 'remove_item') {
+			$remove = &$element[$key];
+		} else {
 			$items[] = &$element[$key];
 		}
 	}
@@ -213,6 +210,11 @@ function theme_osci_tk_fieldset_tabs($variables)
 	if ($addAnother)
 	{
 		$output .= drupal_render($addAnother);
+	}
+
+	if ($remove)
+	{
+		$output .= drupal_render($remove);
 	}
 
 	if ($numAdd)
@@ -239,11 +241,14 @@ function osci_tk_utility_form_alter(&$form, &$form_state, $form_id)
 
 		if (isset($form['field_footnote']))
 		{
+			drupal_add_js(drupal_get_path('module','osci_tk_utility') . '/js/osci_tk_footnotes.js');
+
 			$form['field_footnote'][LANGUAGE_NONE]['#theme'] = 'osci_tk_fieldset_tabs';
 			unset($form['field_footnote'][LANGUAGE_NONE][$form['field_footnote'][LANGUAGE_NONE]['#max_delta']]);
 			$form['field_footnote'][LANGUAGE_NONE]['#max_delta']--;
 
 			$form['field_footnote'][LANGUAGE_NONE]['add_more']['#submit'] = array('osci_tk_add_more_footnote_submit');
+			$form['field_footnote'][LANGUAGE_NONE]['add_more']['#value'] = t('Add another footnote');
 			$form['field_footnote'][LANGUAGE_NONE]['add_more']['#ajax']['callback'] = 'osci_tk_add_more_footnote_ajax';
 			$form['field_footnote'][LANGUAGE_NONE]['num_add'] = array(
 				'#type' => 'hidden',
@@ -261,6 +266,16 @@ function osci_tk_utility_form_alter(&$form, &$form_state, $form_id)
 					$form['field_footnote'][LANGUAGE_NONE][$key]['#prefix'] = '<div class="footnote_identifier" data-fnId="' . $fnId . '">' . $key . ' <span>[footnoteref:' . $fnId . ']</span></div>';
 				}
 			}
+
+			$form['field_footnote'][LANGUAGE_NONE]['remove_item'] = array(
+				'#type' => 'item',
+				'#markup' => l('Remove Footnote', '#', array(
+					'attributes' => array(
+						'class' => array('button', 'remove-footnote')
+					)
+				)),
+				'#weight' => -99
+			);
 		}
 	}
 }

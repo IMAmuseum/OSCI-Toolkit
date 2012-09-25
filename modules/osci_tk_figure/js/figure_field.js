@@ -68,11 +68,14 @@
 		$(document).delegate(".remove-figure", "click", function(e) {
 			e.preventDefault();
 			var $this = $(this);
-			//remove the asset reference so drupal will remove on save
-			$this.parents(".figure-wrapper").find(".figure_reference_field").val("");
-			//remove the tab
-			var tabs = $this.parents(".fieldset-tabs");
+
+			var tabs = $this.parent().siblings(".fieldset-tabs");
 			var currentTab = tabs.tabs( "option", "selected" );
+
+			//remove the asset reference so drupal will remove on save
+			$('#edit-field-figure-und-' + currentTab).find(".figure_reference_field").val("");
+
+			//disable the tab
 			var numTabs = tabs.tabs("length");
 			if (currentTab < (numTabs - 1)) {
 				tabs.tabs("select", currentTab + 1);
@@ -85,7 +88,7 @@
 
 		// for the figure reference fields already populated on page load
 		$('.figure_reference_field').each(function() {
-			nid = findReferenceVal(this);
+			var nid = findReferenceVal(this);
 			getPreviewDiv(nid, this);
 		});
 	});
