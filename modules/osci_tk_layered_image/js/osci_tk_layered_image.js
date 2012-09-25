@@ -61,7 +61,7 @@ var LayeredImage = function(container) { // container should be a html element
 	else return false;
 
 	// turn the element into a jQuery object
-	this.container = $(container);
+	this.container = window.$(container);
 
 	// ensure we have something to work on
 	if (this.container.length < 1) {
@@ -109,7 +109,7 @@ var LayeredImage = function(container) { // container should be a html element
 	var layerContainer = this.container.find('.layered_image-layers');
 	var layerItems = layerContainer.find('li');
 	for (i=0, count = layerItems.length; i < count; i++) {
-		var layerMarkup = $(layerItems[i]);
+		var layerMarkup = window.$(layerItems[i]);
 		this.layers.push(layerMarkup.data());
 	}
 	layerContainer.remove();
@@ -172,7 +172,7 @@ var LayeredImage = function(container) { // container should be a html element
 			
 			if (secondLayer) {
 				this.createLayer(secondLayer);
-				$('#' + secondLayer.id).css('opacity', 0);
+				window.$('#' + secondLayer.id).css('opacity', 0);
 			}
 			
 			usedPresetLayers = true;
@@ -184,7 +184,7 @@ var LayeredImage = function(container) { // container should be a html element
 		this.createLayer(this.baseLayers[0]);
 		if (this.baseLayers[1]) {
 			this.createLayer(this.baseLayers[1]);
-			$('#' + this.baseLayers[1].id).css('opacity', 0);
+			window.$('#' + this.baseLayers[1].id).css('opacity', 0);
 		}
 	}
 	
@@ -526,54 +526,46 @@ LayeredImage.prototype.createUI = function() {
 	if (baseLayers.length > 1) {
 		this.settings.currentLayer2 = baseLayers[1];
 
-		// layer selectors
-		this.ui.layerSelector1 = $('<div class="ca-ui-layer"></div>')
-		.html('<div class="ca-ui-right-arrow"></div><span>'+this.settings.currentLayer1.title+'</span>');
-		this.ui.layerSelector2 = $('<div class="ca-ui-layer"></div>')
-		.html('<div class="ca-ui-right-arrow"></div><span>'+this.settings.currentLayer2.title+'</span>');
+		// layer selector
+		this.ui.layerSelector = $('<div class="ca-ui-layer-selector"></div>');
 
 		// only provide selectable layers if there are at least three
 		if (this.baseLayers.length > 2) {
-			this.ui.layerSelector1
+			this.ui.layerSelector
 			.bind('click', {
-				layerControlNum: 1,
-				layeredImage: this
-			}, this.toggleLayerSelector);
-			
-			this.ui.layerSelector2
-			.bind('click', {
-				layerControlNum: 2,
 				layeredImage: this
 			}, this.toggleLayerSelector);
 		}
 		if (!this.figureOptions.disable_interaction || this.figureOptions.editing) {
-			this.ui.controlbar
-				.append(this.ui.layerSelector2)
-				.append(this.ui.layerSelector1);
+			this.ui.controlbar.append(this.ui.layerSelector);
 		}
 
 		// opacity slider
 		this.ui.sliderContainer = $('<div class="ca-ui-layer-slider-container"></div>');
+		this.ui.sliderLayerText = $('<div class="ca-ui-layer-slider-layer-text"></div>')
+			.text(this.settings.currentLayer1.title + " - " + this.settings.currentLayer2.title)
+			.appendTo(this.ui.sliderContainer);
 		this.ui.slider = $('<div class="ca-ui-layer-slider"></div>')
-		.slider({
-			slide: function(event, ui) {
-				// set the opacity of layers
-				// var primaryOpacity = (100 - ui.value) / 100;
-				var secondaryOpacity = ui.value / 100;
-				// $('#'+CA.settings.currentLayer1.id).css('opacity', primaryOpacity);
-				$('#'+CA.settings.currentLayer2.id).css('opacity', secondaryOpacity);
-				CA.refreshViewfinderOpacity(secondaryOpacity);
-			},
-			change: function(event, ui) {
-				var secondaryOpacity = ui.value / 100;
-				$('#'+CA.settings.currentLayer2.id).css('opacity', secondaryOpacity);
-				CA.refreshViewfinderOpacity(secondaryOpacity);
-			}
-		})
-		.appendTo(this.ui.sliderContainer);
+			.slider({
+				slide: function(event, ui) {
+					// set the opacity of layers
+					// var primaryOpacity = (100 - ui.value) / 100;
+					var secondaryOpacity = ui.value / 100;
+					// $('#'+CA.settings.currentLayer1.id).css('opacity', primaryOpacity);
+					$('#'+CA.settings.currentLayer2.id).css('opacity', secondaryOpacity);
+					CA.refreshViewfinderOpacity(secondaryOpacity);
+				},
+				change: function(event, ui) {
+					var secondaryOpacity = ui.value / 100;
+					$('#'+CA.settings.currentLayer2.id).css('opacity', secondaryOpacity);
+					CA.refreshViewfinderOpacity(secondaryOpacity);
+				}
+			})
+			.appendTo(this.ui.sliderContainer);
 		
 		if (!this.figureOptions.disable_interaction || this.figureOptions.editing) {
-			this.ui.layerSelector2.after(this.ui.sliderContainer);
+			this.ui.sliderContainer.appendTo(this.ui.controlbar);
+			this.ui.layerSelector.after(this.ui.sliderContainer);
 		}
 		// restore preset if available
 		if (this.figureOptions.sliderPosition !== undefined) {
@@ -637,27 +629,17 @@ LayeredImage.prototype.createUI = function() {
 			CA.ui.viewfinder.empty().css('height', '');
 			CA.ui.viewfinder.removeClass('viewfinder-open').addClass('viewfinder-closed');
 			CA.ui.viewfinderViewport = null;
-			
-			//move legend back up if visible
-			CA.positionLegend();
 		}
 		else {
 			// open
 			CA.ui.viewfinder.removeClass('viewfinder-closed').addClass('viewfinder-open');
-			
-			//move legend down
-			CA.positionLegend();
-			
 			CA.refreshViewfinder();
 		}
 	});
 	
 	// store references to the control elements, so they can be manipulated as a collection
-	this.ui.controls = [this.ui.controlbar, this.ui.zoom, this.ui.viewfinder, this.ui.currentPopup, this.ui.annotation];
+	this.ui.controls = [this.ui.controlbar, this.ui.zoom, this.ui.viewfinder, this.ui.currentPopup, this.ui.annotation, this.ui.layerSelector];
 	
-	/*  DISABLED FOR DEBUGGING - CODE BELOW WORKS .. sometimes
-	 *
-	 */
 	// configure events to show/hide controls
 	this.container.bind('mousemove', function(event) {
 		var container = CA.container;
@@ -682,8 +664,8 @@ LayeredImage.prototype.createUI = function() {
 		CA.ui.controlsTimeout = setTimeout(function() {
 			var date = new Date();
 			// check if the mouse is over a control, if it is, don't hide
-			if (container.attr('data-controls') == 'true' 
-				&& (date.getTime() - container.attr('data-controls-time')) >= 1750) {
+			if (container.attr('data-controls') == 'true' &&
+				(date.getTime() - container.attr('data-controls-time')) >= 1750) {
 				
 				if (container.attr('data-controls-lock') != 'true') {
 					container.attr('data-controls', 'false');
@@ -734,7 +716,7 @@ LayeredImage.prototype.reset = function() {
 	CA.ui.zoomSlider.slider('value', CA.map.zoom());
 
 	// reset initial slider position
-	if (CA.figureOptions.sliderPosition != undefined) {
+	if (CA.figureOptions.sliderPosition !== undefined) {
 		if (CA.ui.slider) {
 			CA.ui.slider.slider('value', CA.figureOptions.sliderPosition);
 		}
@@ -774,7 +756,7 @@ LayeredImage.prototype.reset = function() {
 	}
 
 	// reset annotation layer visibility
-	CA.showAnnotationPresets();  
+	CA.showAnnotationPresets();
 };
 
 
@@ -795,7 +777,7 @@ LayeredImage.prototype.refreshViewfinder = function() {
 		this.ui.viewfinderLayer2 = $('<div class="ca-ui-viewfinderLayer viewfinderLayer2"></div>');
 		$('<img />').attr('src', thumbUrl2).appendTo(this.ui.viewfinderLayer2);
 		this.ui.viewfinder.append(this.ui.viewfinderLayer2);
-		// set opacity to match 
+		// set opacity to match
 		this.ui.viewfinderLayer2.css('opacity', this.ui.slider.slider("value") / 100);
 	}
 	
@@ -823,7 +805,7 @@ LayeredImage.prototype.refreshViewfinderViewport = function() {
 		if (!this.ui.viewfinderViewport) {
 			this.ui.viewfinderViewport = $('<div class="ca-ui-viewfinder-viewport">&nbsp;</div>').appendTo(this.ui.viewfinder);
 
-			if (this.settings.viewPortBorderWidth == undefined) {
+			if (this.settings.viewPortBorderWidth === undefined) {
 				this.settings.viewPortBorderWidth = parseInt(this.ui.viewfinderViewport.css("border-left-width"), 10);
 			}
 		}
@@ -865,7 +847,7 @@ LayeredImage.prototype.fullscreen = function(reset) {
 	var CA = this;
 
 	// create a parent container that spans the full screen
-	var modal = $('<div class="ca-ui-fullscreen-modal"></div>').appendTo(document.body);;
+	var modal = $('<div class="ca-ui-fullscreen-modal"></div>').appendTo(document.body);
 	// if the modal background is clicked, close the fullscreen mode
 	modal.bind('click', function(event) {
 		if ($(event.target).hasClass('ca-ui-fullscreen-modal')) {
@@ -881,9 +863,9 @@ LayeredImage.prototype.fullscreen = function(reset) {
 		height: Math.round(modalHeight * 0.9) + 'px',
 		top:	Math.round(modalHeight * 0.05) + 'px',
 		width:	Math.round(modalWidth * 0.9) + 'px',
-		left: 	Math.round(modalWidth * 0.05) + 'px'
+		left:	Math.round(modalWidth * 0.05) + 'px'
 	});
-	// retrieve the original markup for this LayeredImage and 
+	// retrieve the original markup for this LayeredImage and
 	// remap the IDs of the asset and its layers
 	var markup = $(this.settings.originalMarkup);
 	markup.attr('id', markup.attr('id') + '-fullscreen');
@@ -901,7 +883,7 @@ LayeredImage.prototype.fullscreen = function(reset) {
 		swLat: extents[0].lat,
 		neLon: extents[1].lon,
 		neLat: extents[1].lat
-	}
+	};
 	
 	var figureWrapper = $('<figure></figure>')
 		.attr('data-options', JSON.stringify(this.figureOptions))
@@ -944,9 +926,6 @@ LayeredImage.prototype.resizeControlBar = function()
 		
 	//if controlbar is wider than asset width resize it
 	if (controlBarWidth > maxWidth) {
-//        var staticWidths = this.ui.annotation.outerWidth(true) + this.ui.fullscreen.outerWidth(true) + this.ui.reset.outerWidth(true),
-//            adjustableWidth = maxWidth - staticWidths;
-			
 		this.ui.controlbar.css({
 			'max-width' : maxWidth + 'px'
 		});
@@ -965,107 +944,73 @@ LayeredImage.prototype.toggleLayerSelector = function(event) {
 	var $ = jQuery;
 	var CA = event.data.layeredImage;
 	var layerSelector = $(this);
-	var layerControlNum = event.data.layerControlNum;
-	var layerControlOther = (layerControlNum == 1) ? 2 : 1;
-	var layerSelectorPopup = 'layerSelector'+layerControlNum+'Popup';
-	var currentLayer = CA.settings['currentLayer'+layerControlNum];
-	var otherLayer = CA.settings['currentLayer'+layerControlOther];
+	// var layerControlNum = event.data.layerControlNum;
+	// var layerControlOther = (layerControlNum == 1) ? 2 : 1;
+	// var layerSelectorPopup = 'layerSelectorPopup';
+	// var currentLayer = CA.settings['currentLayer'+layerControlNum];
+	var currentLayer1 = CA.settings['currentLayer1'];
+	var currentLayer2 = CA.settings['currentLayer2'];
+	// var otherLayer = CA.settings['currentLayer'+layerControlOther];
 	
 	// if visible already, remove and set state
-	if (CA.ui.currentPopup && CA.ui.currentPopup == CA.ui[layerSelectorPopup]) {
+	if (CA.ui.currentPopup && CA.ui.currentPopup == CA.ui['layerSelectorPopup']) {
 		CA.clearPopups();
 	}
 	else {
 		// check that the other popup is closed
 		CA.clearPopups();
 
-		// get the position of the selector's top right corner - this is where to bind the popup
-		var parentOffset = layerSelector.offsetParent().position(),
-			elOffset = layerSelector.position(),
-			elWidth = 0,
-			totalWidth = 0,
-			totalHeight = layerSelector.offsetParent().parent().height(),
-			right = 0,
-			left = 0,
-			bottom = totalHeight - parentOffset.top - elOffset.top;
-			
-		if (layerControlNum == 1) {
-			//position left side for control 1
-			left = parentOffset.left + elOffset.left;
-		} else {
-			//position right side for control 2
-			elWidth = layerSelector.outerWidth();
-			totalWidth = layerSelector.offsetParent().parent().width();
-			right = totalWidth - parentOffset.left - elOffset.left - elWidth;
-		}
+		// set an active class on the button to change appearance
+		layerSelector.addClass('active');
 
-		// create a layer list, not including the current selected layer
-		var layerList = $('<ul></ul>');
-		var numLayers = 0;
-		for (var i=0, count = CA.baseLayers.length; i < count; i++) {
+		// create a button row for each layer
+		rows = $('<div class="ca-ui-layer-selector-rows"></div>');
+		for (var i = 0; i < CA.baseLayers.length; i++) {
 			var baseLayer = CA.baseLayers[i];
-			// only add the layer to the selectable list if the layer isn't
-			// the current selection on either selector
-			if (baseLayer.layer_num != currentLayer.layer_num && baseLayer.layer_num != otherLayer.layer_num) {
-				if (numLayers > 0) {
-					layerList.append('<hr />');
-				}
-				numLayers++;
-				// create the list item and bind it
-				var listItem = $('<li>'+baseLayer.title+'</li>')
-				.bind('click', {
-					layerControlNum : layerControlNum,
-					newLayer: baseLayer, 
-					currentLayer: currentLayer,
-					CA: CA
-				}, 
-				function(event) {
-					var CA = event.data.CA;
-					var $ = CA.$;
-					// the layer to switch to
-					var newLayer = event.data.newLayer;
-					// the control's current layer
-					var currentLayer = event.data.currentLayer;
-					// the control number, 1 or 2
-					var layerControlNum = event.data.layerControlNum;
-
-					// toggle the layer on (zero indexed)
-					CA.createLayer(newLayer);
-					// remove the current layer
-					CA.removeLayer(currentLayer);
-					if (layerControlNum == 2) {
-						// set the opacity according to slider
-						var sliderVal = CA.ui.slider.slider('value');
-						var opacity = sliderVal / 100;
-						$('#'+ newLayer.id)
-						.css('opacity', opacity);
-					}
-					// update the settings layer state
-					CA.settings['currentLayer'+layerControlNum] = newLayer;
-					// realign layers
-					CA.realignLayers();
-					// update the text on the control
-					$('span', CA.ui['layerSelector'+layerControlNum]).html(newLayer.title);
-					// remove the popup
-					CA.settings['layerSelector'+layerControlNum+'Visible'] = false;
-					CA.clearPopups();
-					CA.container.attr('data-controls-lock', 'false');
-				}).appendTo(layerList);
+			rowLayerButton1 = $('<div class="ca-ui-layer-selector-row-button1"><div class="ca-ui-layer-selector-button"></div></div>')
+				.attr('data-layer_index', i);
+			rowTitle = $('<div class="ca-ui-layer-selector-row-title"><span>' + baseLayer.title + '</span></div>');
+			rowLayerButton2 = $('<div class="ca-ui-layer-selector-row-button2"><div class="ca-ui-layer-selector-button"></div></div>')
+				.attr('data-layer_index', i);
+			
+			// indicate current layers
+			if (baseLayer == CA.settings.currentLayer1) {
+				rowLayerButton1
+					.find('.ca-ui-layer-selector-button')
+					.first()
+					.addClass('active');
 			}
+			if (baseLayer == CA.settings.currentLayer2) {
+				rowLayerButton2
+					.find('.ca-ui-layer-selector-button')
+					.first()
+					.addClass('active');
+			}
+
+			// bind button events
+			rowLayerButton1.bind('click', {CA: CA, layerNum: 1}, CA.layerSelect);
+			rowLayerButton2.bind('click', {CA: CA, layerNum: 2}, CA.layerSelect);
+
+			// assemble
+			row = $('<div class="ca-ui-layer-selector-row"></div>')
+				.append(rowLayerButton1)
+				.append(rowTitle)
+				.append(rowLayerButton2);
+			rows.append(row);
 		}
-		
+
+		// figure out where to place the popup
+		var bottom = parseInt(CA.ui.controlbar.css('bottom'), 10) + CA.ui.controlbar.height();
+		var left = CA.ui.controlbar.position().left;
+		var width = CA.ui.sliderContainer.outerWidth() + layerSelector.outerWidth();
 		var cssParams = {
-			bottom : bottom
+			bottom : bottom + 'px',
+			left: left + 'px',
+			width: width + 'px'
 		};
-		
-		if (layerControlNum == 1) {
-			cssParams.left = left;
-		} else {
-			cssParams.right = right;
-		}
 
 		// create the popup
-		CA.ui[layerSelectorPopup] = $('<div class="ca-ui-layer-selector-popup"></div>')
+		CA.ui.layerSelectorPopup = $('<div class="ca-ui-layer-selector-popup"></div>')
 		.css(cssParams)
 		.bind('mouseenter', function() {
 			CA.container.attr('data-controls-lock', 'true');
@@ -1073,9 +1018,9 @@ LayeredImage.prototype.toggleLayerSelector = function(event) {
 		.bind('mouseleave', function() {
 			CA.container.attr('data-controls-lock', 'false');
 		})
-		.append(layerList)
+		.append(rows)
 		.appendTo(CA.container);
-		CA.ui.currentPopup = CA.ui[layerSelectorPopup];
+		CA.ui.currentPopup = CA.ui.layerSelectorPopup;
 	}
 };
 
@@ -1108,11 +1053,11 @@ LayeredImage.prototype.toggleAnnotationSelector = function() {
 		// create the annotation selector box
 		this.settings.annotationSelectorVisible = true;
 		this.ui.annotationSelector = $('<div class="ca-ui-annotation-selector"></div>')
-		.css({
-			right: right, 
-			bottom: bottom
-		});
-		$('<div class="title">Annotations</div><hr>').appendTo(this.ui.annotationSelector);
+			.css({
+				right: right,
+				bottom: bottom
+			});
+		$('<div class="title">Annotations</div>').appendTo(this.ui.annotationSelector);
 		this.ui.annotationSelectorList = $('<ul class="ca-ui-annotation-selector-list"></ul>');
 		for (var i=0, count = this.annotationLayers.length; i < count; i++) {
 			var layerData = this.annotationLayers[i];
@@ -1120,43 +1065,15 @@ LayeredImage.prototype.toggleAnnotationSelector = function() {
 			// add list item for annotation layer
 			var layerItem = $('<li></li>')
 			.bind('click', {
-				layerData: layerData
-			}, function(event) {
-				var layerData = event.data.layerData;
-				// toggle the layer on
-				CA.toggleLayer(layerData);
-				// fill the status box according to layer's visibility state
-				var layerItemBox = $(this).find('.ca-ui-annotation-selector-item-box');
-				if (layerData.visible) {
-					layerItemBox.removeClass('empty').addClass('filled');
-					// if this is an annotation, use the selected color, and show  layer in legend
-					if (layerData.annotation && layerData.type == 'svg') {
-						var bgColor = layerData.color || '#fff';
-						layerItemBox.css('background-color', '#' + bgColor);
-						CA.addLegendItem(layerData);
-					}
-				}
-				else {
-					layerItemBox.removeClass('filled').addClass('empty');
-					// if annotation, reset the elements background color to fall back to stylesheet
-					// and remove layer from legend
-					if (layerData.annotation && layerData.type == 'svg') {
-						layerItemBox.css('background-color', '');
-						CA.removeLegendItem(layerData);
-					}
-				}
-			});
+				layerData: layerData,
+				CA: CA
+			}, CA.annotationLayerClick);
 			var layerItemBox = $('<div class="ca-ui-annotation-selector-item-box"></div>')
 			.addClass(layerData.visible ? 'filled' : 'empty');
+			
 			// add the custom layer color if applicable
 			if (layerData.visible && layerData.annotation) {
 				layerItemBox.css('background-color', '#'+layerData.color);
-			}
-			
-			
-			// add horizontal divider if there will be more than one entry after appending this one
-			if (this.ui.annotationSelectorList.children().length > 0) {
-				this.ui.annotationSelectorList.append('<hr />');
 			}
 
 			// append the layerItem
@@ -1170,16 +1087,42 @@ LayeredImage.prototype.toggleAnnotationSelector = function() {
 		this.ui.annotationSelector
 		.bind('mouseenter', function() {
 			CA.container.attr('data-controls-lock', 'true');
-		 })
-		 .bind('mouseleave', function() {
+		})
+		.bind('mouseleave', function() {
 			CA.container.attr('data-controls-lock', 'false');
-		 })
+		})
 		.append(this.ui.annotationSelectorList)
 		.appendTo(this.container);
 		this.ui.currentPopup = this.ui.annotationSelector;
 	}
 };
 
+LayeredImage.prototype.annotationLayerClick = function(event) {
+	var layerData = event.data.layerData;
+	var CA = event.data.CA;
+	// toggle the layer on
+	CA.toggleLayer(layerData);
+	// fill the status box according to layer's visibility state
+	var layerItemBox = $(this).find('.ca-ui-annotation-selector-item-box');
+	if (layerData.visible) {
+		layerItemBox.removeClass('empty').addClass('filled');
+		// if this is an annotation, use the selected color, and show  layer in legend
+		if (layerData.annotation && layerData.type == 'svg') {
+			var bgColor = layerData.color || '#fff';
+			layerItemBox.css('background-color', '#' + bgColor);
+			CA.addLegendItem(layerData);
+		}
+	}
+	else {
+		layerItemBox.removeClass('filled').addClass('empty');
+		// if annotation, reset the elements background color to fall back to stylesheet
+		// and remove layer from legend
+		if (layerData.annotation && layerData.type == 'svg') {
+			layerItemBox.css('background-color', '');
+			CA.removeLegendItem(layerData);
+		}
+	}
+};
 
 LayeredImage.prototype.resetZoomRange = function(zoomMin) {
 	// set the zoom range
@@ -1202,7 +1145,7 @@ LayeredImage.prototype.resetZoomRange = function(zoomMin) {
 	// set the range of the ui slider to match
 	this.ui.zoomSlider.slider('option', 'min', zoomMin);
 	this.ui.zoomSlider.slider('option', 'max', zoomMax);
-}
+};
 
 
 LayeredImage.prototype.getZoomLevels = function(width, height) {
@@ -1215,17 +1158,16 @@ LayeredImage.prototype.getZoomLevels = function(width, height) {
 		height = height / 2;
 	}
 	return zoomLevels;
-}
+};
 
 
 LayeredImage.prototype.getScale = function(zoom_levels, zoom) {
 	return Math.pow(2, zoom_levels - zoom);
-}
+};
 
 
 LayeredImage.prototype.realignLayers = function() {
-	var $ = this.$
-	, i, count;
+	var $ = this.$, i, count;
 	
 	// grab the layers out of the dom
 	var map = this.container.find('svg.map');
@@ -1253,12 +1195,11 @@ LayeredImage.prototype.realignLayers = function() {
 
 LayeredImage.prototype.clearPopups = function() {
 	var CA = this;
-	
 	if (this.ui.currentPopup) {
 		this.ui.currentPopup.fadeOut(400, function() {
-			CA.ui.currentPopup.remove();
-			CA.ui.currentPopup = false;
+			$(this).remove();
 		});
+		this.ui.currentPopup = false;
 	}
 	if (this.ui.controls) {
 		$.each(this.ui.controls, function() {
@@ -1281,29 +1222,11 @@ LayeredImage.prototype.toggleControls = function(duration) {
    
 };
 
-//move the legend so it does not overlap any other controls
-LayeredImage.prototype.positionLegend = function()
-{
-	// This function used to ensure the viewport and legend didn't overlap.
-	// this is not a concern in this implementation, as the controls are not stacked
-
-	// if (this.ui.legendItemsCount)
-	// {
-	// 	var viewfinderHeight = parseInt(this.ui.viewfinder.outerHeight(), 10),
-	// 	viewfinderTop = parseInt(this.ui.viewfinder.css('top'), 10);
-
-	// 	this.ui.legend.css({
-	// 	top : (viewfinderTop + viewfinderHeight + 4) + 'px'
-	// 	});
-	// }
-};
-
-
 LayeredImage.prototype.addLegendItem = function(layerData) {
 	var $ = this.$;
 	
 	// only show if there is color data
-	if (!layerData.color || layerData.color == '') {
+	if (!layerData.color || layerData.color === '') {
 		return;
 	}
 	
@@ -1328,8 +1251,6 @@ LayeredImage.prototype.addLegendItem = function(layerData) {
 		.prependTo(legendItem);
 	
 	this.ui.legendItemsCount++;
-	
-	this.positionLegend();
 };
 
 
@@ -1341,10 +1262,10 @@ LayeredImage.prototype.removeLegendItem = function(layerData) {
 		var legendItems = this.ui.legend.find('ul').children();
 		// find the item with the matching layer num and remove it
 		legendItems.each(function() {
-		   if ($(this).attr('data-layer_num') == layerData.layer_num) {
-			   $(this).remove();
-			   CA.ui.legendItemsCount--;
-		   } 
+			if ($(this).attr('data-layer_num') == layerData.layer_num) {
+				$(this).remove();
+				CA.ui.legendItemsCount--;
+			}
 		});
 
 		// if the legend is empty, remove it
@@ -1361,7 +1282,7 @@ LayeredImage.prototype.removeLegendItem = function(layerData) {
 	}
 };
 
-// toggle on any annotation layer that's configured from the figure options 
+// toggle on any annotation layer that's configured from the figure options
 LayeredImage.prototype.showAnnotationPresets = function() {
 	for (var j=0, layerCount = this.annotationLayers.length; j < layerCount; j++) {
 		this.removeLayer(this.annotationLayers[j]);
@@ -1382,7 +1303,7 @@ LayeredImage.prototype.showAnnotationPresets = function() {
 			}
 		}
 	}
-}
+};
 
 LayeredImage.prototype.getVisibleBaseLayers = function() {
 	var i, count,
@@ -1396,7 +1317,7 @@ LayeredImage.prototype.getVisibleBaseLayers = function() {
 	}
 	
 	return layers;
-}
+};
 
 LayeredImage.prototype.getVisibleBaseLayerIds = function() {
 	var i, count,
@@ -1410,7 +1331,7 @@ LayeredImage.prototype.getVisibleBaseLayerIds = function() {
 	}
 	
 	return layers;
-}
+};
 
 
 LayeredImage.prototype.getVisibleAnnotationIds = function() {
@@ -1425,18 +1346,18 @@ LayeredImage.prototype.getVisibleAnnotationIds = function() {
 	}
 	
 	return annotations;
-}
+};
 
 
 LayeredImage.prototype.getExtents = function() {
 	var extents = this.map.extent();
-	return { 
-		swLon: extents[0].lon, 
-		swLat: extents[0].lat, 
-		neLon: extents[1].lon, 
-		neLat: extents[1].lat 
+	return {
+		swLon: extents[0].lon,
+		swLat: extents[0].lat,
+		neLon: extents[1].lon,
+		neLat: extents[1].lat
 	};
-}
+};
 
 
 LayeredImage.prototype.setExtents = function(extents) {
@@ -1445,7 +1366,7 @@ LayeredImage.prototype.setExtents = function(extents) {
 	if (this.ui.zoomSlider) {
 		this.ui.zoomSlider.slider('value', this.map.zoom());
 	}
-}
+};
 
 
 LayeredImage.prototype.getSliderPosition = function() {
@@ -1455,7 +1376,7 @@ LayeredImage.prototype.getSliderPosition = function() {
 	else {
 		return 0;
 	}
-}
+};
 
 
 LayeredImage.prototype.getLayerById = function(id) {
@@ -1465,7 +1386,50 @@ LayeredImage.prototype.getLayerById = function(id) {
 		}
 	}
 	return false;
-}
+};
+
+LayeredImage.prototype.layerSelect = function(event) {
+	var CA = event.data.CA;
+	var layerNum = event.data.layerNum;
+	var layerIndex = parseInt($(this).attr('data-layer_index'), 10);
+
+	// if this button is already active do nothing
+	var button = $(this).find('.ca-ui-layer-selector-button');
+	if (button.hasClass('active')) {
+		return;
+	}
+
+	// if this button is already selected on the other side, do nothing
+	var otherNum = (layerNum == 1) ? 2: 1;
+	var otherSideButton = CA.ui.layerSelectorPopup
+		.find('.ca-ui-layer-selector-row-button' + otherNum + '[data-layer_index="' + layerIndex + '"] .ca-ui-layer-selector-button');
+	if (otherSideButton.hasClass('active')) {
+		return;
+	}
+
+	// switch the old layer with the new
+	CA.removeLayer(CA.settings['currentLayer' + layerNum]);
+	CA.createLayer(CA.baseLayers[layerIndex]);
+	CA.settings['currentLayer' + layerNum] = CA.baseLayers[layerIndex];
+	if (layerNum == 2) {
+		// set the opacity according to slider
+		var sliderVal = CA.ui.slider.slider('value');
+		var opacity = sliderVal / 100;
+		$('#'+ CA.settings.currentLayer2.id).css('opacity', opacity);
+	}
+
+	// update button display
+	CA.ui.layerSelectorPopup
+		.find('.ca-ui-layer-selector-row-button' + layerNum + ' .ca-ui-layer-selector-button')
+		.removeClass('active');
+	button.addClass('active');
+
+	// update slider layer text
+	CA.ui.sliderLayerText.text(CA.settings.currentLayer1.title + ' - ' + CA.settings.currentLayer2.title);
+
+	// realign layers
+	CA.realignLayers();
+};
 
 function outerHTML(node){
 	// if IE, Chrome take the internal method otherwise build one
@@ -1480,15 +1444,6 @@ function outerHTML(node){
 }
 
 window.liCollection = new LICollection();
-
-// auto load any layered images 
-// had to comment out due to double parsing in reader
-//window.addEventListener('load', function() {
-//    var assets = jQuery('.conservation-asset').not('.noload');
-//    for(var i=0, count = assets.length; i < count; i++) {
-//        new LayeredImage(assets[i]);
-//    }
-//}, false);
 
 // update the viewfinder if an asset is being dragged
 function liMousemove(e) {
