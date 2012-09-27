@@ -22,7 +22,11 @@
 
 	function findReferenceVal(obj) {
 		var val = $(obj).val().match(/.+\[(\d+)\]/);
-		return val[1];
+		if (val !== null) {
+			return val[1];
+		} else {
+			return val;
+		}
 	}
 
 	$(document).ready(function() {
@@ -89,7 +93,9 @@
 		// for the figure reference fields already populated on page load
 		$('.figure_reference_field').each(function() {
 			var nid = findReferenceVal(this);
-			getPreviewDiv(nid, this);
+			if (nid !== null) {
+				getPreviewDiv(nid, this);
+			}
 		});
 	});
 
