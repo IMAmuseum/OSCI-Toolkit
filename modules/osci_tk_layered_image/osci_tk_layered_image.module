@@ -7,7 +7,7 @@ function osci_tk_layered_image_init() {
 	drupal_add_js(libraries_get_path('polymaps') . '/polymaps.js');
 	// layered_image Assets
 	drupal_add_js(drupal_get_path('module', 'osci_tk_layered_image') . '/js/osci_tk_layered_image.js');
-	drupal_add_css(drupal_get_path('module', 'osci_tk_layered_image') . '/css/osci_tk_layered_image.css');
+	drupal_add_css(drupal_get_path('module', 'osci_tk_layered_image') . '/css/layered_image.css');
 }
 
 
@@ -187,22 +187,6 @@ SCRIPT;
 			}
 		}
 	}
-	// if ($form_id == 'iip_asset_node_form') {
-	//     // hide the image field, and the attributes field
-	//     // we populate it automatically from the IIP server
-	//     $form['field_image']['#attributes']['style'] = "display:none;";
-	//     $form['field_ptiff_attr']['#attributes']['style'] = "display:none;";
-
-	//     // add the callback to grab the image after submission
-	//     array_unshift($form['#validate'], '_osci_tk_layered_image_get_ptiff_image');
-	//     array_unshift($form['#validate'], '_osci_tk_layered_image_get_ptiff_attr');
-	//     // get the options from the drupal variable
-	//     $hosts = variable_get('osci_layered_image_iip_hosts', array());
-	//     $form['field_iip_server']['und']['#options'] = array();
-	//     foreach ($hosts as $host) {
-	//         $form['field_iip_server']['und']['#options'][$host['name']] = $host['name'];
-	//     }
-	// }
 }
 
 function osci_tk_layered_image_node_presave($node) {
