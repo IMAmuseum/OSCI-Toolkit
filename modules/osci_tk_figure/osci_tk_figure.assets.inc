@@ -6,11 +6,21 @@ function osci_tk_figure_asset_iip_asset_options_form($form, &$form_state) {
 }
 
 function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
+    $figureOptionsObj = $form_state;
+    $figureOptions = htmlentities(json_encode($form_state['options']));
+    $layeredImageHtml = _osci_tk_layered_image_get_layered_image_html($form_state['node']->nid);
+    preg_match('/id="([a-z0-9-]+)"/', $layeredImageHtml, $matches);
+    dpm($matches, 'matches');
 
     $form['initial_frame'] = array(
         '#title'    => t('Set Initial Frame'),
         '#type'     => 'item',
-        '#markup'   => t('TODO: Custom widget for setting frame'),
+        '#markup'   => "<figure style=\"position: relative; margin-top: 20px; width: 400px; height:400px;\" "
+            ."data-options=\"$figureOptions\">"
+            . _osci_tk_layered_image_get_layered_image_html($form_state['node']->nid) 
+            . "</figure>"
+            . "<script>var li = jQuery('#osci-tk-figure-asset-layered-image-options-form .layered_image-asset').first();"
+            . "new LayeredImage(li);</script>",
     );
 
     $form['reader_options'] = array(
