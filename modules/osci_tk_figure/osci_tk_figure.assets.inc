@@ -29,13 +29,15 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 	$form['reader_options']['disable_interaction'] = array(
 		'#type'             => 'checkbox',
 		'#title'            => t('Disable Interaction'),
-		'#default_value'    => $form_state['options']->disable_interactions,
+		'#default_value'    => isset($form_state['options']->disable_interactions)
+			? $form_state['options']->disable_interactions : false,
 	);
 
 	$form['reader_options']['disable_annotation'] = array(
 		'#type'             => 'checkbox',
 		'#title'            => t('Disable Annotation Selection'),
-		'#default_value'    => $form_state['options']->disable_annotation_selection,
+		'#default_value'    => isset($form_state['options']->disable_annotation_selection)
+			? $form_state['options']->disable_annotation_selection : false,
 	);
 
 	$form['reader_options']['thumbnail'] = array(
@@ -79,21 +81,18 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 	$form['submit']['#suffix'] = "<script>"
 		. "var form = jQuery('#osci-tk-figure-asset-layered-image-options-form');"
 		. "form.find('input[type=\"submit\"]').bind('click', function(event) {"
-		. "    console.log(window.LIEditingImage.getExtents(), 'event');"
 		. "    var extents = window.LIEditingImage.getExtents();"
 		. "    var baseLayerPreset = window.LIEditingImage.getVisibleBaseLayerIds();"
 		. "    var annotationPreset = window.LIEditingImage.getVisibleAnnotationIds();"
 		. "    var sliderPosition = window.LIEditingImage.getSliderPosition();"
-		. "    console.log(baseLayerPreset);"
 		. "    form.find('input[name=\"swLon\"]').val(extents.swLon);"
 		. "    form.find('input[name=\"swLat\"]').val(extents.swLat);"
 		. "    form.find('input[name=\"neLon\"]').val(extents.neLon);"
 		. "    form.find('input[name=\"neLat\"]').val(extents.neLat);"
-		. "    form.find('input[name=\"annotationPreset\"]').val(annotationPreset);"
-		. "    form.find('input[name=\"baseLayerPreset\"]').val(baseLayerPreset);"
+		. "    form.find('input[name=\"annotationPreset\"]').val(JSON.stringify(annotationPreset));"
+		. "    form.find('input[name=\"baseLayerPreset\"]').val(JSON.stringify(baseLayerPreset));"
 		. "    form.find('input[name=\"sliderPosition\"]').val(sliderPosition);"
 		. "});</script>";
-	dpm($form, 'form');
 
 	return $form;
 }
