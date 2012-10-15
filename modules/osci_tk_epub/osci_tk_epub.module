@@ -1161,7 +1161,7 @@ function _osci_tk_epub_get_book_css($node, $pubNid = null, $forExport = false)
 		$publication = node_load($pubNid);
 	}
 
-	if ($publication && isset($publication->field_osci_tk_css) && $publication->field_osci_tk_css['und'][0])
+	if ($publication && isset($publication->field_osci_tk_css) && isset($publication->field_osci_tk_css['und']))
 	{
 		$css = _osci_tk_epub_asset_process_uri($publication->field_osci_tk_css['und'][0]['uri'], $forExport);
 	}
@@ -1330,7 +1330,7 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
 
 	$first = true;
 	foreach($toc as $item) {
-		
+
 		$vid = _osci_tk_epub_get_revision_id($item['nid']);
 		$section_node = node_load($item['nid'], $vid);
 		if (!$first) {
