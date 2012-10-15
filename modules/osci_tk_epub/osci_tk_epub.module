@@ -1308,6 +1308,8 @@ function _osci_tk_epub_get_revision_id($nid)
 
 function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
 
+	drupal_add_css(drupal_get_path('module', 'osci_tk_epub'), 'print.css');
+
 	$node = node_load($nid);
 
 	if ($node->type !== 'publication') return null;
@@ -1326,15 +1328,37 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
 
 	$content = '<h1>' . $node->title . '</h1>';
 
+	$first = true;
 	foreach($toc as $item) {
+		
 		$vid = _osci_tk_epub_get_revision_id($item['nid']);
 		$section_node = node_load($item['nid'], $vid);
-		$content .= _osci_tk_epub_generate_content_document($section_node, false);
+		if (!$first) {
+			$content .= "<div class='section-separator'>&nbsp</div>";
+		}
+		$section_content = _osci_tk_epub_generate_content_document($section_node, false);
+
+		$matches = array();
+		preg_match_all('/<section([^>]*)>(.+)<\/section>/msU', $section_content, $matches);
+		foreach($matches[0] as $section) {
+			$content .= $section;
+		}
+
+		$first = false;		
+
 	}
 
 	//return $content; // For use in development
 
-	print $content;
+	$pub_css = _osci_tk_epub_get_book_css(null, $nid, false);
+
+	print '<html><head>';
+	if ($pub_css) {
+		print "<link rel='stylesheet' href='" . url($pub_css) . "' />";
+	}
+	print "<link rel='stylesheet' href='" . url(drupal_get_path('module', 'osci_tk_epub') . '/css/print.css') . "' />";	
+	print '</head><body>' . $content . '</body>';
+	print '</html>';
 	exit();
 
 }
