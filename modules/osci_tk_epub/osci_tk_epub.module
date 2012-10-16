@@ -309,6 +309,14 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
 				'metadata' => array()
 			)
 		),
+		'osci_tk_epub_print' => array(
+			'template' => 'templates/osci_tk_epub_print',
+			'variables' => array(
+				'content' => '',
+				'css_urls' => array(),
+				'publication' => null
+			)
+		),
 		'field__osci_tk_epub_field' => array(
 			'template' => 'templates/osci_tk_epub_field',
 			'variables' => array()
@@ -1332,7 +1340,7 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
 
 	$toc = _osci_tk_get_flattened_nodetree_toc($node, $revTime);
 
-	$content = '<h1>' . $node->title . '</h1>';
+	$content = '';
 
 	$first = true;
 	foreach($toc as $item) {
@@ -1372,13 +1380,18 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
 
 	$pub_css = _osci_tk_epub_get_book_css(null, $nid, false);
 
-	print '<html><head>';
+	$css_urls = array();
 	if ($pub_css) {
-		print "<link rel='stylesheet' href='" . url($pub_css) . "' />";
-	}
-	print "<link rel='stylesheet' href='" . url(drupal_get_path('module', 'osci_tk_epub') . '/css/print.css') . "' />";	
-	print '</head><body>' . $content . '</body>';
-	print '</html>';
+		$css_urls[] = url($pub_css);
+	}	
+	$css_urls[] = url(drupal_get_path('module', 'osci_tk_epub') . '/css/print.css');
+
+	print theme('osci_tk_epub_print', array(
+		'content' => $content,
+		'css_urls' => $css_urls,
+		'publication' => $node
+	));
+
 	exit();
 
 }
