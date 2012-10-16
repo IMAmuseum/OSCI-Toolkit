@@ -1308,8 +1308,6 @@ function _osci_tk_epub_get_revision_id($nid)
 
 function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
 
-	drupal_add_css(drupal_get_path('module', 'osci_tk_epub'), 'print.css');
-
 	$node = node_load($nid);
 
 	if ($node->type !== 'publication') return null;
@@ -1322,6 +1320,14 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
 		if (!is_null($output)) {
 			return $output;
 		}
+	}
+
+	// Functions for use by preg_replace_callback transformations
+	function footnote_reference($matches) {
+		return '<sup>[' . (intval($matches[1]) + 1) . ']</sup>';
+	}
+	function footnote_numbering($matches) {
+		return $matches[0] . "<span class='number'>" . (intval($matches[2]) + 1) . ")</span> ";
 	}
 
 	$toc = _osci_tk_get_flattened_nodetree_toc($node, $revTime);
@@ -1338,6 +1344,20 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
 		}
 		$section_content = _osci_tk_epub_generate_content_document($section_node, false);
 
+		$section_content = preg_replace_callback(
+			'/\[footnote:fn-[0-9]+-([0-9]+)\]/', 
+			'footnote_reference', 
+			$section_content
+		);
+
+		$section_content = preg_replace_callback(
+			"/<aside epub:type([^>]*)?fn-[0-9]+-([0-9]+)[^>]*>\s*<p>/",
+			'footnote_numbering', 
+			$section_content
+		);		
+
+		// This is the full content document, including <html>, <head>, and <body>
+		// We want to extract the <section> portion
 		$matches = array();
 		preg_match_all('/<section([^>]*)>(.+)<\/section>/msU', $section_content, $matches);
 		foreach($matches[0] as $section) {
