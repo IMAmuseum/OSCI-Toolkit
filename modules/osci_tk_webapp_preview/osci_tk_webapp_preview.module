@@ -1,0 +1,92 @@
+<?php
+
+function osci_tk_webapp_preview_menu() {
+
+	// $items['admin/tap/webapp'] = array(
+	//     'title'             => 'Web App',
+	//     'page callback'     => 'drupal_get_form',
+	//     'page arguments'    => array('tap_webapp_admin_form'),
+	//     'access arguments'  => array('administer tap'),
+	//     'type'              => MENU_LOCAL_TASK,
+	//     'file'              => 'tap_webapp.admin.inc',
+	// );
+
+	$items['node/%node/web-app'] = array(
+		'title'             => 'OSCI Toolkit Web-App Preview',
+		'page callback'     => 'osci_tk_webapp_preview',
+		'page arguments'    => array(1),
+		'access arguments'  => array('access content'),
+		'type'              => MENU_LOCAL_TASK
+	);
+
+	return $items;
+}
+
+function osci_tk_webapp_preview_theme() {
+
+	$module_path = url('', array('absolute' => TRUE)) . drupal_get_path('module', 'osci_tk_webapp_preview');
+	$webapp_version = '0.1.0';
+	$osci_tk_version = '0.1.0';
+
+	return array(
+		'osci_tk_webapp_preview' => array(
+			'variables' => array(
+				'package_path' => NULL,
+				'section_id' => null,
+				'webapp_css_path' => "$module_path/OSCI-Toolkit-$webapp_version/css/OSCI-Toolkit-$osci_tk_version.min.css",
+				'webapp_css_dependencies_path' => "$module_path/OSCI-Toolkit-$webapp_version/css/OSCI-Toolkit-$osci_tk_version-dependencies.min.css",
+				'webapp_js_dependencies_path' => "$module_path/OSCI-Toolkit-$webapp_version/js/OSCI-Toolkit-$osci_tk_version-dependencies.min.js",
+				'webapp_js_path' => "$module_path/OSCI-Toolkit-$webapp_version/js/OSCI-Toolkit-$osci_tk_version.min.js"
+			),
+			'template'  => 'templates/osci-tk-webapp-preview',
+		),
+	);
+}
+
+function osci_tk_webapp_preview($node) {
+
+	$pubNid = $node->nid;
+	$treeData = osci_tk_nodetree_get_data_for_nid($node->nid);
+	if (count($treeData) && isset($treeData[0]['rootNid'])) {
+		$pubNid = $treeData[0]['rootNid'];
+	}
+
+    $packageUri = url('api/epub/' . $pubNid . '/package.opf');
+
+    print theme('osci_tk_webapp_preview', array(
+    	'package_path' => $packageUri,
+    	'section_id' => ($pubNid === $node->nid) ? null : $node->nid
+    ));
+
+    drupal_exit();
+}
+
+// function tap_webapp_preprocess_tap_webapp_preview(&$vars) {
+
+//     if (($default_theme = variable_get('tap_webapp_default_theme', null)) !== null) {
+//         $file = file_load($default_theme);
+//         if (!empty($file)) {
+//             $vars['webapp_default_theme'] = file_create_url($file->uri);
+//         }
+//     }
+
+//     $navbar_labels = array(
+//         'tourstoplist' => t('Menu'),
+//         'tourkeypad' => t('Keypad'),
+//         'tourmap' => t('Map')
+//     );
+
+//     $default_navbar_items = variable_get('tap_webapp_navbar_items', array(
+//         'tourstoplist' => 'tourstoplist',
+//         'tourkeypad' => 'tourkeypad',
+//         'tourmap' => 'tourmap'
+//     ));
+
+//     foreach ($default_navbar_items as $key => $val) {
+//         $vars['default_navbar_items'][] = array(
+//             'endpoint' => $key,
+//             'label' => $navbar_labels[$key]
+//         );
+//     }
+
+// }
