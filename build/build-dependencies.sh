@@ -37,6 +37,9 @@ then
     mkdir ./src
 fi
 
+# store current directory
+cpath=`pwd`
+
 echo
 
 #
@@ -170,5 +173,15 @@ fi
 rm -rf $1/sites/all/libraries/jquery-tmpl/*
 cp -r ./src/jquery-jquery-tmpl-484cee9/* $1/sites/all/libraries/jquery-tmpl
 echo
+
+#
+# Create module symlinks
+#
+echo "Creating module symlinks..."
+mkdir -p $1/sites/default/modules
+cd $1/sites/default/modules
+ln -s ../OSCI-Toolkit/modules/* .
+cd $cpath
+
 
 echo "Finished"
