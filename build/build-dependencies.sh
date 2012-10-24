@@ -181,7 +181,7 @@ echo "Ensuring contrib module dependencies"
 if [ ! -d $1/sites/all/modules/features ]; then
     echo " - downloading Features module"
     curl -s -L -O http://ftp.drupal.org/files/projects/features-7.x-1.0.zip
-    unzip -o -q features-7.x-1.0.tar.gz -d src
+    unzip -o -q features-7.x-1.0.zip -d src
     rm features-7.x-1.0.zip
     mv src/features $1/sites/all/modules/
 fi
