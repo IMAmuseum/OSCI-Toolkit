@@ -47,11 +47,7 @@
 
                     // Drupal doesnt like it when we just swap out a link
                     // So we need to update the ajax object so everyone is happy
-                    Drupal.ajax[oldUrl].url = url;
-                    Drupal.ajax[oldUrl].selector = url;
-                    Drupal.ajax[url] = Drupal.ajax[oldUrl];
-                    Drupal.ajax[url].options.url = url;
-                    Drupal.ajax[oldUrl] = null;
+                    updateAjaxUrl(url, oldUrl);
 
                     // Update wiki text
                     wikiId = 'fig-' + currentNid + '-' + idx;
@@ -75,3 +71,11 @@
     });
 
 })(jQuery);
+
+function updateAjaxUrl(url, oldUrl) {
+    Drupal.ajax[oldUrl].url = url;
+    Drupal.ajax[oldUrl].selector = url;
+    Drupal.ajax[url] = Drupal.ajax[oldUrl];
+    Drupal.ajax[url].options.url = url;
+    Drupal.ajax[oldUrl] = null;
+}
