@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 function osci_tk_nodetree_menu()
 {
@@ -19,7 +19,7 @@ function osci_tk_nodetree_theme() {
 	$themes = array();
 	$themes['osci_tk_nodetree_table_form'] = array(
 		'arguments' => array('form' => NULL),
-		'render element' => 'form'	
+		'render element' => 'form'
 	);
 	return $themes;
 }
@@ -30,7 +30,7 @@ function osci_tk_nodetree_field_info() {
 		'label' => 'Node Tree',
 		'description' => 'Stores a hierarchial tree of references to other nodes',
 		'default_widget' => 'nodetree_nodetree_form',
-		'default_formatter' => 'nodetree_default'	
+		'default_formatter' => 'nodetree_default'
 	);
 	return $fields;
 }
@@ -60,8 +60,8 @@ function osci_tk_nodetree_field_widget_info() {
 		'field types' => array('osci_tk_nodetree'),
 		'behaviors' => array(
 			'multiple values' => FIELD_BEHAVIOR_CUSTOM,
-			'default value' => FIELD_BEHAVIOR_DEFAULT		
-		)	
+			'default value' => FIELD_BEHAVIOR_DEFAULT
+		)
 	);
 	return $info;
 }
@@ -82,60 +82,70 @@ function osci_tk_nodetree_field_presave($entity_type, $entity, $field, $instance
  		}
  		$items = osci_tk_nodetree_sort_nodetree($items);
 	}
-	
+
 }
 
 function osci_tk_nodetree_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
 	if ($instance['widget']['type'] === 'nodetree_nodetree_form') {
 		$max = $form_state['field'][$field['field_name']][LANGUAGE_NONE]['items_count'] + 1;
-		
+
+		$maxWeight = 0;
 		for ($i = 0; $i < $max; $i++) {
 			$element[$i]['target_nid'] = array(
-					'#type' => 'textfield',
-					'#title' => 'Section',
-					'#autocomplete_path' => 'ajax/nodetree/'  . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $field['field_name'],
-					'#value_callback' => 'osci_tk_nodetree_autocomplete_value',
-					'#attributes' => array('class' => array('target-field')),
-					'#default_value' => isset($items[$i]['target_nid']) ? 
-						osci_tk_nodetree_autocomplete_default($items[$i]['target_nid']) : ''
+				'#type' => 'textfield',
+				'#title' => 'Section',
+				'#autocomplete_path' => 'ajax/nodetree/'  . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $field['field_name'],
+				'#value_callback' => 'osci_tk_nodetree_autocomplete_value',
+				'#attributes' => array('class' => array('target-field')),
+				'#default_value' => isset($items[$i]['target_nid']) ?
+					osci_tk_nodetree_autocomplete_default($items[$i]['target_nid']) : ''
 			);
 			$element[$i]['parent_nid'] = array(
-					'#type' => 'textfield',
-					'#title' => 'Parent Node',
-					'#size' => 5,
-					'#attributes' => array('class' => array('parent-field')),
-					'#default_value' => isset($items[$i]['parent_nid']) ? $items[$i]['parent_nid'] : ''
+				'#type' => 'textfield',
+				'#title' => 'Parent Node',
+				'#size' => 5,
+				'#attributes' => array('class' => array('parent-field')),
+				'#default_value' => isset($items[$i]['parent_nid']) ? $items[$i]['parent_nid'] : ''
 			);
+
+			if (isset($items[$i]['weight']) && $items[$i]['weight'] > $maxWeight) {
+				$maxWeight = $items[$i]['weight'];
+			}
+
+			if (!isset($items[$i]['weight']) || $items[$i]['weight'] === $maxWeight) {
+				$maxWeight++;
+			}
+
 			$element[$i]['weight'] = array(
-					'#type' => 'textfield',
-					'#title' => 'Weight',
-					'#size' => 5,
-					'#attributes' => array('class' => array('weight-field')),
-					'#default_value' => isset($items[$i]['weight']) ? $items[$i]['weight'] : 0
+				'#type' => 'textfield',
+				'#title' => 'Weight',
+				'#size' => 5,
+				'#attributes' => array('class' => array('weight-field')),
+				'#default_value' => isset($items[$i]['weight']) ? $items[$i]['weight'] : $maxWeight
 			);
 			$element[$i]['depth'] = array(
-					'#type' => 'textfield',
-					'#title' => 'Depth',
-					'#size' => 5,
-					'#attributes' => array('class' => array('depth-field')),
-					'#default_value' => isset($items[$i]['depth']) ? $items[$i]['depth'] : 0
+				'#type' => 'textfield',
+				'#title' => 'Depth',
+				'#size' => 5,
+				'#attributes' => array('class' => array('depth-field')),
+				'#default_value' => isset($items[$i]['depth']) ? $items[$i]['depth'] : 0
 			);
 		}
-		
+
 		$element['add_more'] = array(
-				'#type' => 'submit',
-				'#name' => 'nodetree_add_more',
-				'#value' => t('Add another section'),
-				'#attributes' => array('class' => array('field-add-more-submit')),
-				'#limit_validation_errors' => array(),
-				'#submit' => array('osci_tk_nodetree_add_more_submit'),
-				'#ajax' => array(
-						'callback' 	=> 'osci_tk_nodetree_add_more_js',
-						'wrapper' 	=> 'nodetree-wrapper',
-						'effect' 	=> 'fade',
-						'method' 	=> 'replace'
-				),
-				'#weight' => 100
+			'#type' => 'submit',
+			'#name' => 'nodetree_add_more',
+			'#value' => t('Add another section'),
+			'#attributes' => array('class' => array('field-add-more-submit')),
+			'#limit_validation_errors' => array(),
+			'#submit' => array('osci_tk_nodetree_add_more_submit'),
+			'#ajax' => array(
+				'callback' 	=> 'osci_tk_nodetree_add_more_js',
+				'wrapper' 	=> 'nodetree-wrapper',
+				'effect' 	=> 'fade',
+				'method' 	=> 'replace'
+			),
+			'#weight' => 100
 		);
 		$element['#theme'] = 'osci_tk_nodetree_table_form';
 	}
@@ -165,7 +175,7 @@ function theme_osci_tk_nodetree_table_form($variables) {
 			$rows[] = $row;
 		}
 	}
-	
+
 	// add tabledrag functionality
 	drupal_add_tabledrag('nodetree_table', 'match', 'parent', 'parent-field', 'parent-field', 'target-field', TRUE);
 	drupal_add_tabledrag('nodetree_table', 'order', 'self', 'weight-field');
@@ -177,7 +187,7 @@ function theme_osci_tk_nodetree_table_form($variables) {
 		'rows' => $rows,
 		'attributes' => array('id' => 'nodetree_table')
 	));
-	
+
 	$output .= drupal_render($form['add_more']);
 	$output .= '</div>';
 	return $output;
@@ -245,11 +255,11 @@ function osci_tk_nodetree_field_formatter_view($entity_type, $entity, $field, $i
 		'#theme' => 'item_list',
 		'#items' => array()
 	);
-	
+
 	if ($display['type'] === 'nodetree_default') {
 		$element['#items'] = osci_tk_node_tree_to_renderable_array($items);
 	}
-	
+
 	return $element;
 }
 
@@ -298,8 +308,8 @@ function osci_tk_nodetree_autocomplete($entityType, $bundle, $fieldName, $query)
         ->execute();
 
     $response = array();
-	
-	foreach($results as $result) 
+
+	foreach($results as $result)
 	{
 		$response["[nid:{$result->nid}] {$result->title}"] = $result->title;
 	}
@@ -334,13 +344,13 @@ function osci_tk_nodetree_field_widget_settings_form($field, $instance)
 	if ($widget['type'] === 'nodetree_nodetree_form')
 	{
 		$form['osci_tk_content_types'] = array(
-				'#type' => 'checkboxes',
-				'#title' => t('Content types that can be referenced'),
-				'#description' => t('The available content types that can be added to this field.'),
-				'#default_value' => isset($settings['osci_tk_content_types']) ? $settings['osci_tk_content_types'] : array("section"),
-				'#required' => TRUE,
-				'#mulitple' => true,
-				'#options' => array_map('check_plain', node_type_get_names())
+			'#type' => 'checkboxes',
+			'#title' => t('Content types that can be referenced'),
+			'#description' => t('The available content types that can be added to this field.'),
+			'#default_value' => isset($settings['osci_tk_content_types']) ? $settings['osci_tk_content_types'] : array("section"),
+			'#required' => TRUE,
+			'#mulitple' => true,
+			'#options' => array_map('check_plain', node_type_get_names())
 		);
 	}
 
@@ -353,7 +363,7 @@ function osci_tk_nodetree_get_data_for_nid($nid) {
 	foreach($fields as $field) {
 		$tableName = 'field_data_' . $field['field_name'];
 		$treeNodes = db_query("SELECT * FROM {" . $tableName . "} WHERE entity_id IN (SELECT entity_id FROM {" . $tableName . "} WHERE field_nodetree_target_nid = :nid) order by entity_id, delta", array(':nid' => $nid), array('fetch' => PDO::FETCH_ASSOC));
-		
+
 		$prevRootNid = null;
 		$prevNid = null;
 		$next = false;
@@ -361,9 +371,9 @@ function osci_tk_nodetree_get_data_for_nid($nid) {
 			if ($prevRootNid === $treeNode['entity_id'] && $next) {
 				$nodeTreeData[count($nodeTreeData) - 1]['nextNid'] = $treeNode['field_nodetree_target_nid'];
 				$next = false;
-			} 
+			}
 
-			if ($prevRootNid === $treeNode['entity_id'] && 
+			if ($prevRootNid === $treeNode['entity_id'] &&
 				isset($nodeTreeData[count($nodeTreeData) - 1]) &&
 				$nodeTreeData[count($nodeTreeData) - 1]['nid'] === $treeNode['field_nodetree_parent_nid']) {
 				$nodeTreeData[count($nodeTreeData) - 1]['children'][] = $treeNode['field_nodetree_target_nid'];
@@ -478,7 +488,7 @@ function osci_tk_nodetree_block_view($delta = '') {
 						'type' => "ul",
 						'attributes' => array()
 					));
-				} 
+				}
 			}
 
 			break;

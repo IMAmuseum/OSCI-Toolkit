@@ -1,29 +1,32 @@
 ( function($) {
 	function figureReferenceDialog(editor) {
 		var buttons = [ CKEDITOR.dialog.okButton, CKEDITOR.dialog.cancelButton ];
-		var figures = $('.figure_identifier');
-		var items = [];
-		
-		figures.each(function(idx) {
-			var $this = $(this);
-			items.push([(idx) + ' (' + $this.data("figId") + ')', $this.data("figId")]);
-		});
-		items.push(['New Figure', 'new']);
-		
+
 		var elements = [{
 			type:           'select',
 			id:             'figureId',
-			items:          items,
+			items:          [],
 			label:          'Select a figure',
-			labelLayout:    'horizontal'
+			labelLayout:    'horizontal',
+			setup:          function(){
+				var figures = $('.figure_identifier');
+				var selectElement = $('#' + this.getInputElement().$.id).get(0);
+				selectElement.options = [];
+
+				figures.each(function(idx) {
+					var $this = $(this);
+					selectElement.options[idx] = new Option((idx) + ' (' + $this.data("figId") + ')', $this.data("figId"));
+				});
+				selectElement.options[selectElement.options.length] = new Option('New Figure', 'new');
+			}
 		}];
-		
+
 		var contents = [{
 			id:             'figure',
 			label:          'Add figure',
 			elements:       elements
 		}];
-		
+
 		return {
 			title:          'Add a figure reference',
 			minWidth:       400,
@@ -31,7 +34,10 @@
 			buttons:        buttons,
 			resizable:      'none',
 			contents:       contents,
-			onOk:           figureReferenceOk
+			onOk:           figureReferenceOk,
+			onShow:         function(){
+				this.setupContent();
+			}
 		};
 	}
 
@@ -40,7 +46,7 @@
 			dialog = CKEDITOR.dialog.getCurrent(),
 			figureId = dialog.getValueOf('figure', 'figureId'),
 			replace;
-	
+
 		if (figureId == 'new') {
 			// create new figure tab
 			$('input[id^="edit-field-figure-und-add-more"]').trigger('mousedown');
@@ -69,7 +75,7 @@
 			editor.insertText('[figureref:' + replace + ']');
 		}
 	}
-	
+
 	CKEDITOR.dialog.add('figure_reference', function(editor) {
 		return figureReferenceDialog(editor);
 	});

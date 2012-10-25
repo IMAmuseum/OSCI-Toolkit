@@ -21,24 +21,21 @@
 				var numFootnotes = window.osci_tk_new_footnotes ? window.osci_tk_new_footnotes.length : 0;
 				if (numFootnotes)
 				{
-					var footnoteContainers = $(".field-name-field-footnote").find(".fieldset-tab-content"),
-						updateContainerNum = footnoteContainers.length;
+					var footnoteContainer = $(".field-name-field-footnote").find(".fieldset-tab-content").filter(':last'),
+						footnoteData = window.osci_tk_new_footnotes.shift();
 
-					for (var i = numFootnotes - 1; i >= 0; i--)
-					{
-						updateContainerNum--;
-						var updateId = $(footnoteContainers[updateContainerNum]).find("textarea").attr("id");
-						if (CKEDITOR.instances[updateId]) {
-							CKEDITOR.instances[updateId].setData(window.osci_tk_new_footnotes[i].content);
-						} else {
-							$(footnoteContainers[updateContainerNum]).find("textarea").html(window.osci_tk_new_footnotes[i].content);
-						}
+					var updateId = footnoteContainer.find("textarea").attr("id");
+					if (CKEDITOR.instances[updateId]) {
+						CKEDITOR.instances[updateId].setData(footnoteData.content);
+					} else {
+						footnoteContainer.find("textarea").html(footnoteData.content);
 					}
 
-					window.osci_tk_new_footnotes = null;
+					if (window.osci_tk_new_footnotes.length) {
+						var addAnother = $(".field-name-field-footnote").find("input.field-add-more-submit");
+						addAnother.trigger("mousedown");
+					}
 				}
-
-				$("[name='field_footnote[und][num_add]']").val(1);
 			}
 		});
 	});
@@ -92,9 +89,7 @@
 			var numFootnotes = footnotes.length;
 			if (numFootnotes)
 			{
-				$("[name='field_footnote[und][num_add]']").val(numFootnotes);
 				window.osci_tk_new_footnotes = footnotes;
-
 				var addAnother = $(".field-name-field-footnote").find("input.field-add-more-submit");
 				addAnother.trigger("mousedown");
 

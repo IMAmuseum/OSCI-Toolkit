@@ -78,7 +78,7 @@ function osci_tk_filters_filter_info() {
         'tips callback'     => '_filter_figure_reference_tips',
         'cache'             => false
     );
-    
+
     $filters['osci_tk_cross_link'] = array(
         'title'             => t('Cross Link filter'),
         'description'       => t('Allow cross content linking within a book'),
@@ -137,7 +137,7 @@ function _filter_settings() {}
  */
 function _filter_footnote($text, $filter, $format) {
 	global $osci_tk_view_mode;
-	
+
 	$osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'full';
     $theme = 'osci_tk_footnote_link__' . $osci_tk_view_mode;
 
@@ -169,7 +169,7 @@ function _filter_footnote_tips() {
  *
  */
 
-function _filter_figure($text, $filter, $format) 
+function _filter_figure($text, $filter, $format)
 {
 	global $osci_tk_view_mode, $osci_tk_placed_figures, $osci_tk_epub_for_export;
 
@@ -182,7 +182,7 @@ function _filter_figure($text, $filter, $format)
     $regex = '/<p>(\[figure:fig-\d+-\d+\])<\/p>/i';
     $matches = array();
     preg_match_all($regex, $text, $matches);
-    foreach ($matches[0] as $index => $match) 
+    foreach ($matches[0] as $index => $match)
     {
         $filtered = str_replace($match, $matches[1][$index], $filtered);
     }
@@ -201,6 +201,7 @@ function _filter_figure($text, $filter, $format)
         if ($section_node) {
             if (isset($section_node->field_figure['und'][$fig_index])) {
                 $figure = $section_node->field_figure['und'][$fig_index];
+                $aspect = module_invoke_all('osci_tk_figure_aspect', $figure);
                 $figureNode = node_load($figure['asset_reference']);
                 $osci_tk_placed_figures[] = $fig_index;
                 $figure['delta'] = $fig_index;
@@ -208,7 +209,7 @@ function _filter_figure($text, $filter, $format)
                 $figure['number_template'] = _osci_tk_figure_process_number_template($figure);
                 $figure['export'] = $osci_tk_epub_for_export;
                 $figure['type'] = $figureNode->type;
-                $figure['aspect'] = array_pop(module_invoke_all('osci_tk_figure_aspect', $figure));
+                $figure['aspect'] = is_array($aspect) ? array_pop($aspect) : null;
 
                 $markup = theme($theme, array(
                     'item' => $figure
@@ -232,7 +233,7 @@ function _filter_figure_tips() {
  *
  */
 
-function _filter_figure_reference($text, $filter, $format) 
+function _filter_figure_reference($text, $filter, $format)
 {
     global $osci_tk_view_mode, $osci_tk_placed_figures;
 
@@ -255,7 +256,7 @@ function _filter_figure_reference($text, $filter, $format)
                 $figure = $section_node->field_figure['und'][$fig_index];
                 $figure['delta'] = $fig_index;
                 $markup = theme($theme, array(
-                    'section'   => $section_node, 
+                    'section'   => $section_node,
                     'figure'    => $section_node->field_figure['und'][$fig_index],
                     'fig_index' => $fig_index,
                     'fig_id'    => _osci_tk_figure_create_id($section_id, $fig_index),
@@ -293,7 +294,7 @@ function _osci_tk_filter_process_args($text) {
     if (isset($temp[0])) {
         $data['id'] = $temp[0];
     }
-    
+
     if (isset($temp[1])) {
         $args = explode(',', $temp[1]);
 
@@ -318,46 +319,28 @@ function _osci_tk_filter_process_args($text) {
  * Process callback for filter
  */
 function _filter_cross_link($text, $filter, $format) {
-	global $osci_tk_view_mode;
-	
-	$osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
-	$result = module_invoke_all('osci_tk_filter_cross_link_' . $osci_tk_view_mode, $text, $filter, $format);
-	return is_array($result) && count($result) ? $result[0] : $text;
+    $regex = '/\[link:(\d+)[^\]]*\]/i';
+    $replace = preg_replace_callback($regex, '_process_cross_link', $text);
+    return $replace;
 }
-
-function osci_tk_filters_osci_tk_filter_cross_link_default($text, $filter, $format)
-{
-    $regex = '/\[link:(.*?)\]/i';
-
-    return preg_replace_callback($regex, '_process_cross_link', $text);
-}
-
 /**
  * Regex replace callback
  */
 function _process_cross_link($text) {
     if (empty($text[1])) return $text[0];
-    $args = _osci_tk_filter_process_args($text[1]);
-
-    $nid = $args['id'];
-    $url = url("node/{$nid}/reader");
-    $linkText = isset($args['args']['text']) ? $args['args']['text'] : "Link " . $nid;
-    
-    $query = "";
-    if (isset($args['args']['paragraph'])) {
-        $query = "#para-" . $args['args']['paragraph'];
+    preg_match_all('/(\w+)=([\w\s]*)/', $text[0], $matches);
+    for ($i = 0; $i < count($matches[1]); $i++) {
+        $args[$matches[1][$i]] = $matches[2][$i];
     }
-    
-    if (isset($args['args']['section'])) {
-        $query = '#field_' . $args['args']['section'] . '_anchor';
+    $nid = $text[1];
+    $url = "#section/{$nid}";
+    if (isset($args['paragraph'])) {
+        $url .= "/p-{$args['paragraph']}";
     }
+    $linkText = isset($args['text']) ? $args['text'] : "link";
     
-    if ($query) {
-        $url = url("node/{$nid}/reader", array('fragment' => substr($query, 1)));
-        $query = "data-query=\"$query\"";
-    }
-
-    return "<a href=\"{$url}\" class=\"cross-link\" target=\"_blank\" data-nid=\"{$nid}\" {$query}>{$linkText}</a>";
+    $replace =  "<a href=\"{$url}\" class=\"cross-link\" target=\"_blank\" data-nid=\"{$nid}\">{$linkText}</a>";
+    return $replace;
 }
 
 /**
@@ -376,7 +359,7 @@ function _filter_cross_link_tips() {
 /**
  * Process callback for filter
  */
-function _filter_clean_content($text, $filter, $format) 
+function _filter_clean_content($text, $filter, $format)
 {
     $convertChars = array(
         '&quot;','&amp;','&apos;','&lt;','&gt;','&nbsp;','&iexcl;','&cent;','&pound;','&curren;','&yen;','&brvbar;','&sect;','&uml;','&copy;',

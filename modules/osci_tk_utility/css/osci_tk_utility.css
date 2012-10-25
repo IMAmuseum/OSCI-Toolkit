@@ -1,0 +1,7 @@
+.ui-tabs .ui-state-disabled {
+    display: none; /* disabled tabs don't show up */
+}
+
+#edit-field-figure-und-remove-item, #edit-field-footnote-und-remove-item {
+	display: inline;
+}

@@ -175,6 +175,7 @@ function theme_osci_tk_fieldset_tabs($variables)
 {
 	drupal_add_library('system', 'ui.tabs');
 	drupal_add_js(drupal_get_path('module','osci_tk_utility') . '/js/fieldset_tabs.js');
+	drupal_add_css(drupal_get_path('module','osci_tk_utility') . '/css/osci_tk_utility.css');
 
 	$element = $variables['element'];
 
@@ -182,20 +183,17 @@ function theme_osci_tk_fieldset_tabs($variables)
 	$childElements = element_children($element);
 	$addAnother = null;
 	$numAdd = null;
+	$remove = null;
 	$output = '';
 
-	foreach($childElements as $key)
-	{
-		if ($key === 'add_more')
-		{
+	foreach($childElements as $key) {
+		if ($key === 'add_more') {
 			$addAnother = &$element[$key];
-		}
-		else if ($key === 'num_add')
-		{
+		} else if ($key === 'num_add') {
 			$numAdd = &$element[$key];
-		}
-		else
-		{
+		} else if ($key === 'remove_item') {
+			$remove = &$element[$key];
+		} else {
 			$items[] = &$element[$key];
 		}
 	}
@@ -212,6 +210,11 @@ function theme_osci_tk_fieldset_tabs($variables)
 	if ($addAnother)
 	{
 		$output .= drupal_render($addAnother);
+	}
+
+	if ($remove)
+	{
+		$output .= drupal_render($remove);
 	}
 
 	if ($numAdd)
@@ -238,17 +241,13 @@ function osci_tk_utility_form_alter(&$form, &$form_state, $form_id)
 
 		if (isset($form['field_footnote']))
 		{
+			drupal_add_js(drupal_get_path('module','osci_tk_utility') . '/js/osci_tk_footnotes.js');
+
 			$form['field_footnote'][LANGUAGE_NONE]['#theme'] = 'osci_tk_fieldset_tabs';
 			unset($form['field_footnote'][LANGUAGE_NONE][$form['field_footnote'][LANGUAGE_NONE]['#max_delta']]);
 			$form['field_footnote'][LANGUAGE_NONE]['#max_delta']--;
 
-			$form['field_footnote'][LANGUAGE_NONE]['add_more']['#submit'] = array('osci_tk_add_more_footnote_submit');
-			$form['field_footnote'][LANGUAGE_NONE]['add_more']['#ajax']['callback'] = 'osci_tk_add_more_footnote_ajax';
-			$form['field_footnote'][LANGUAGE_NONE]['num_add'] = array(
-				'#type' => 'hidden',
-				'#default_value' => 1,
-				'#weight' => -100
-			);
+			$form['field_footnote'][LANGUAGE_NONE]['add_more']['#value'] = t('Add another footnote');
 
 			$childElements = element_children($form['field_footnote'][LANGUAGE_NONE]);
 			foreach($childElements as $key)
@@ -260,6 +259,16 @@ function osci_tk_utility_form_alter(&$form, &$form_state, $form_id)
 					$form['field_footnote'][LANGUAGE_NONE][$key]['#prefix'] = '<div class="footnote_identifier" data-fnId="' . $fnId . '">' . $key . ' <span>[footnoteref:' . $fnId . ']</span></div>';
 				}
 			}
+
+			$form['field_footnote'][LANGUAGE_NONE]['remove_item'] = array(
+				'#type' => 'item',
+				'#markup' => l('Remove Footnote', '#', array(
+					'attributes' => array(
+						'class' => array('button', 'remove-footnote')
+					)
+				)),
+				'#weight' => -99
+			);
 		}
 	}
 }
@@ -320,49 +329,6 @@ function _osci_tk_utility_node_submit($form, &$form_state)
 			}
 		}
 	}
-}
-
-function osci_tk_add_more_footnote_submit($form, &$form_state)
-{
-	$button = $form_state['triggering_element'];
-
-	// Go one level up in the form, to the widgets container.
-	$element = drupal_array_get_nested_value($form, array_slice($button['#array_parents'], 0, -1));
-	$field_name = $element['#field_name'];
-	$langcode = $element['#language'];
-	$parents = $element['#field_parents'];
-
-	// Increment the items count.
-	$field_state = field_form_get_state($parents, $field_name, $langcode, $form_state);
-	$field_state['items_count'] = $field_state['items_count'] + $form_state['values']['field_footnote']['und']['num_add'];
-	field_form_set_state($parents, $field_name, $langcode, $form_state, $field_state);
-
-	$form_state['rebuild'] = TRUE;
-}
-
-function osci_tk_add_more_footnote_ajax($form, $form_state)
-{
-	$button = $form_state['triggering_element'];
-
-	// Go one level up in the form, to the widgets container.
-	$element = drupal_array_get_nested_value($form, array_slice($button['#array_parents'], 0, -1));
-	$field_name = $element['#field_name'];
-	$langcode = $element['#language'];
-	$parents = $element['#field_parents'];
-
-	$field_state = field_form_get_state($parents, $field_name, $langcode, $form_state);
-
-	$field = $field_state['field'];
-	if ($field['cardinality'] != FIELD_CARDINALITY_UNLIMITED) {
-		return;
-	}
-
-	// Add a DIV around the delta receiving the Ajax effect.
-	$delta = $element['#max_delta'];
-	$element[$delta]['#prefix'] = '<div class="ajax-new-content">' . (isset($element[$delta]['#prefix']) ? $element[$delta]['#prefix'] : '');
-	$element[$delta]['#suffix'] = (isset($element[$delta]['#suffix']) ? $element[$delta]['#suffix'] : '') . '</div>';
-
-	return $element;
 }
 
 /**
