@@ -201,13 +201,8 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 		);
 
 		$max = $form_state['field'][$field['field_name']][LANGUAGE_NONE]['items_count'];
-<<<<<<< HEAD
-        $path = 'ajax/figure/asset-options/' . $field['field_name'] . '/';
-        drupal_add_js(array('figureAjaxPath' => $path), 'setting');
-=======
 		$path = 'ajax/figure/asset-options/' . $form['nid']['#value'] . '/' . $field['field_name'] . '/';
 		drupal_add_js(array('figureAjaxPath' => $path), 'setting');
->>>>>>> 1a5102080f2ad00870722dbdfa2062b079ff6dda
 
 		for($i = 0; $i < $max; $i++)
 		{
