@@ -213,6 +213,13 @@ if [ ! -d $1/sites/all/modules/wysiwyg ]; then
     rm wysiwyg-7.x-2.2.zip
     mv src/wysiwyg $1/sites/all/modules/
 fi
+if [ ! -d $1/sites/all/modules/ctools ]; then
+    echo " - downloading CTools module"
+    curl -s -L -O http://ftp.drupal.org/files/projects/ctools-7.x-1.2.zip
+    unzip -o -q ctools-7.x-1.2.zip -d src
+    rm ctools-7.x-1.2.zip
+    mv src/ctools $1/sites/all/modules/
+fi
 echo
 
 echo "Finished"
