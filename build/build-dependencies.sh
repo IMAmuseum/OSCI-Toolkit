@@ -220,6 +220,13 @@ if [ ! -d $1/sites/all/modules/ctools ]; then
     rm ctools-7.x-1.2.zip
     mv src/ctools $1/sites/all/modules/
 fi
+if [ ! -d $1/sites/all/modules/apachesolr ]; then
+    echo " - downloading ApacheSolr module"
+    curl -s -L -O http://ftp.drupal.org/files/projects/apachesolr-7.x-1.1.zip
+    unzip -o -q apachesolr-7.x-1.1.zip -d src
+    rm apachesolr-7.x-1.1.zip
+    mv src/apachesolr $1/sites/all/modules/
+fi
 echo
 
 echo "Finished"
