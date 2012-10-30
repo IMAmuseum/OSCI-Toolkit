@@ -14,14 +14,13 @@ function osci_tk_layered_image_init() {
 function osci_tk_layered_image_menu() {
 	$items = array();
 
-	$items['layered_image-demo'] = array(
-		'title'             => t('layered_image Demo'),
-		'page callback'     => 'osci_tk_layered_image_demo',
-		'access arguments'  => array('access content'),
-	);
+	// $items['layered_image-demo'] = array(
+	// 	'title'             => t('layered_image Demo'),
+	// 	'page callback'     => 'osci_tk_layered_image_demo',
+	// 	'access arguments'  => array('access content'),
+	// 	'type'              => MENU_CALLBACK
+	// );
 
-   
-	
 	$items['layered_image/is-svg-asset'] = array(
 		'title'             => t('SVG Asset Callback'),
 		'page callback'     => 'osci_tk_layered_image_is_svg_asset',

@@ -6,15 +6,16 @@ function osci_tk_users_menu() {
 	$items['api/users'] = array(
 		'title'			 	=> t('Process a user request'),
 		'page callback'	 	=> 'osci_tk_users_request',
-		'access callback'	=> TRUE
+		'access callback'	=> TRUE,
+		'type'              => MENU_CALLBACK
 	);
 
-	$items['api/users/demo'] = array(
-		'title'			 	=> t('Demonstrate User API'),
-		'page callback'		=> 'drupal_get_form',
-		'page arguments' 	=> array('osci_tk_users_demo'),
-		'access callback'	=> TRUE
-	);
+	// $items['api/users/demo'] = array(
+	// 	'title'			 	=> t('Demonstrate User API'),
+	// 	'page callback'		=> 'drupal_get_form',
+	// 	'page arguments' 	=> array('osci_tk_users_demo'),
+	// 	'access callback'	=> TRUE
+	// );
 
 	return $items;
 }
