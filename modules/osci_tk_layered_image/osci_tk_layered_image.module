@@ -5,9 +5,12 @@ function osci_tk_layered_image_init() {
 	drupal_add_library('system', 'ui.slider');
 	// Polymaps
 	drupal_add_js(libraries_get_path('polymaps') . '/polymaps.js');
+
+	$libPath = libraries_get_path('OSCI-Toolkit-Frontend');
+
 	// layered_image Assets
-	drupal_add_js(drupal_get_path('module', 'osci_tk_layered_image') . '/js/osci_tk_layered_image.js');
-	drupal_add_css(drupal_get_path('module', 'osci_tk_layered_image') . '/css/layered_image.css');
+	drupal_add_js("$libPath/js/oscitk/osci_tk_layered_image.js");
+	drupal_add_css("$libPath/css/layered_image.css");
 }
 
 
@@ -35,7 +38,7 @@ function osci_tk_layered_image_menu() {
 		'access arguments'  => array('access content'),
 		'type'              => MENU_CALLBACK
 	);
-	
+
 	$items['layered_image/%/data.json'] = array(
 		'title'				=> t('Get layered_image asset data in json format'),
 		'page callback'		=> 'osci_tk_layered_image_get_json',
@@ -43,14 +46,14 @@ function osci_tk_layered_image_menu() {
 		'access arguments'	=> array('access content'),
 		'type'				=> MENU_CALLBACK
 	);
-	
+
 	return $items;
 }
 
 function osci_tk_layered_image_demo() {
 	$nodes = variable_get('osci_tk_layered_image_demo_nodes', array());
 	$ret = "";
-	
+
 	foreach ($nodes as $nid) {
 		$node = node_load($nid);
 		// build layered_image asset div
@@ -77,7 +80,7 @@ function osci_tk_layered_image_form_alter(&$form, &$form_state, $form_id) {
 
 		// add the color picker javascript
 		drupal_add_js(libraries_get_path('jscolor') . '/jscolor.js');
-		
+
 		// add the annotation flag checkbox
 		foreach ($form['field_assets']['und'] as $key => $value) {
 			if (is_numeric($key)) {
@@ -115,9 +118,9 @@ function osci_tk_layered_image_form_alter(&$form, &$form_state, $form_id) {
 					'#default_value'    => $default,
 					'#weight'           => 99
 				);
-				
+
 				// COLOR SELECTION
-				// should be hidden and only exposed when an svg node is 
+				// should be hidden and only exposed when an svg node is
 				// selected and annotation flag is set
 				$default = '';
 				if (isset($form_state['node']->field_assets['und'][$key]['color'])) {
@@ -140,10 +143,10 @@ function osci_tk_layered_image_form_alter(&$form, &$form_state, $form_id) {
 				if ($annotationState) {
 					unset($form['field_assets']['und'][$key]['color']['#attributes']['disabled']);
 				}
-							  
+
 				// add a bit of markup/script to automate the color picker
-				global $base_url; 
-				$script = 
+				global $base_url;
+				$script =
 <<<SCRIPT
 <script>
 	jQuery(function(jQuery) {
@@ -192,7 +195,7 @@ function osci_tk_layered_image_node_presave($node) {
 	if ($node->type == 'layered_image') {
 		// get the aspect ratio for this layered_image asset
 		$node->field_aspect_ratio['und'][0]['value'] = _osci_tk_layered_image_get_layered_image_aspect($node);
-		
+
 		// form the serialized field_data
 		$data = array();
 		// grab the flags from each asset
@@ -231,14 +234,14 @@ function osci_tk_layered_image_node_load($nodes, $types) {
 			// get the attributes and attach to the node
 			$attr = _osci_tk_layered_image_get_svg_attr(drupal_realpath($node->field_svg['und'][0]['uri']));
 			$node->field_svg['und'][0]['width'] = $attr->width;
-			$node->field_svg['und'][0]['height'] = $attr->height; 
+			$node->field_svg['und'][0]['height'] = $attr->height;
 		}
 	}
 }
 
 
 function osci_tk_layered_image_theme() {
-  
+
 	return array(
 		'osci_tk_layered_image_figure_formatter' => array(
 			'template'	=> 'templates/osci_tk_layered_image_figure_formatter',
@@ -246,9 +249,9 @@ function osci_tk_layered_image_theme() {
 			'variables' => array(
 				'item'	=> array()
 			),
-		),		
+		),
 	);
-  
+
 }
 
 
@@ -295,7 +298,7 @@ function osci_tk_layered_image_osci_tk_image_types() {
 		'variable'		=> 'osci_tk_image_style_layered_image_thumbnail',
 		'description'	=> 'Thumnail used to represent a layered_image asset'
 	);
-	
+
 	return $types;
 }
 
@@ -371,7 +374,7 @@ function _osci_tk_layered_image_get_ptiff_attr($form, &$form_state) {
 	}
 }
 
-// turns an iip host name into an iip host url by comparing with 
+// turns an iip host name into an iip host url by comparing with
 // the list of hosts stored in the admin setting
 function _osci_tk_layered_image_iip_host_url($host_name) {
 	$avail_hosts = variable_get('osci_tk_layered_image_iip_hosts');
@@ -388,7 +391,7 @@ function _osci_tk_layered_image_get_layered_image_html($nid) {
 		return;
 	$node = node_load($nid);
 	$thumbStyle = variable_get('osci_tk_image_style_layered_image_thumbnail', 'osci_tk_default');
-	
+
 	// create a unique id for this layered_image asset
 	$id = "layered_image-asset-" . preg_replace('/\./', '', ((string) microtime(TRUE)));
 
@@ -454,7 +457,7 @@ function _osci_tk_layered_image_get_layered_image_html($nid) {
 			$data['height'] = $size[1];
 			$data['thumb'] = image_style_url($thumbStyle, $layer_node->field_image['und'][0]['uri']);
 		}
-		
+
 		// set the svg specific values
 		if ($data['type'] == 'svg') {
 			$data['svg_path'] = file_create_url($layer_node->field_svg['und'][0]['uri']);
@@ -506,13 +509,13 @@ function _osci_tk_layered_image_get_svg_attr($file_path) {
 
 function _osci_tk_layered_image_get_layered_image_aspect($node) {
 	if (!$node) return 1;
-	
+
 	// get the max bounds in pixels of all the layers in this asset
 	$width = $height = 0;
-	
+
 	foreach ($node->field_assets['und'] as $asset_pointer) {
 		$asset = node_load($asset_pointer['nid']);
-		
+
 		if ($asset->type == "image_asset") {
 			// get the dimensions of the image
 			$size = getimagesize(drupal_realpath($asset->field_image['und'][0]['uri']));
@@ -525,7 +528,7 @@ function _osci_tk_layered_image_get_layered_image_aspect($node) {
 				}
 			}
 		}
-		
+
 		if ($asset->type == "iip_asset") {
 			$data = unserialize($asset->field_ptiff_attr['und'][0]['value']);
 			if ($data['width'] > $width) {
@@ -535,7 +538,7 @@ function _osci_tk_layered_image_get_layered_image_aspect($node) {
 				$height = $data['height'];
 			}
 		}
-		
+
 		if ($asset->type == "svg_asset") {
 			if ($asset->field_svg['und'][0]['width'] > $width) {
 				$width = $asset->field_svg['und'][0]['width'];
@@ -553,20 +556,20 @@ function _osci_tk_layered_image_get_layered_image_aspect($node) {
 function osci_tk_layered_image_get_json($nid)
 {
 	$ret = new stdClass();
-	
+
 	$node = node_load($nid);
-	
-	switch($node->type) 
+
+	switch($node->type)
 	{
 		case 'iip_asset':
 		case 'svg_asset':
 		case 'image_asset':
 			$node->field_assets['und'][0]['nid'] = $node->nid;
 	}
-	
+
 	$ret->content = _osci_tk_layered_image_get_layered_image_html($nid);
 	$ret->aspect  = _osci_tk_layered_image_get_layered_image_aspect($node);
-	
+
 	return drupal_json_output($ret);
 }
 
@@ -574,7 +577,7 @@ function osci_tk_layered_image_get_json($nid)
 /**
  * Retrieve the figure preview thumbnail and callback function for iip_assets
  * @param array $node
- * @return array 
+ * @return array
  */
 function osci_tk_layered_image_osci_tk_figure_preview_iip_asset($node)
 {
@@ -584,7 +587,7 @@ function osci_tk_layered_image_osci_tk_figure_preview_iip_asset($node)
 /**
  * Retrieve the figure preview thumbnail and callback function for svg_assets
  * @param array $node
- * @return array 
+ * @return array
  */
 function osci_tk_layered_image_osci_tk_figure_preview_svg_asset($node)
 {
@@ -594,7 +597,7 @@ function osci_tk_layered_image_osci_tk_figure_preview_svg_asset($node)
 /**
  * Retrieve the figure preview thumbnail and callback function for image_assets
  * @param array $node
- * @return array 
+ * @return array
  */
 function osci_tk_layered_image_osci_tk_figure_preview_image_asset($node)
 {
@@ -604,7 +607,7 @@ function osci_tk_layered_image_osci_tk_figure_preview_image_asset($node)
 /**
  * Retrieve the figure preview thumbnail and callback function for layered_image_assets
  * @param array $node
- * @return array 
+ * @return array
  */
 function osci_tk_layered_image_osci_tk_figure_preview_layered_image_asset($node)
 {
@@ -613,14 +616,14 @@ function osci_tk_layered_image_osci_tk_figure_preview_layered_image_asset($node)
 		// there is a representative image, return it in a div
 		$return['image_uri'] = $node->field_image['und'][0]['uri'];
 	}
-	
+
 	$return['callback'] = 'osci_tk_layered_image_preview';
-	
+
 	return $return;
 }
 
 /**
- * Load the javascript necessary for the figure options 
+ * Load the javascript necessary for the figure options
  */
 function osci_tk_layered_image_osci_tk_figure_preview_add_callback_js_layered_image_asset()
 {
@@ -632,7 +635,7 @@ function osci_tk_layered_image_osci_tk_figure_content($args) {
 		$args['item']['export'] = false;
 	}
 
-	$asset = node_load($args['item']['asset_reference']); 
+	$asset = node_load($args['item']['asset_reference']);
 	switch($asset->type) {
 		case 'layered_image':
 			global $base_url;
