@@ -24,8 +24,9 @@ function osci_tk_webapp_preview_menu() {
 
 function osci_tk_webapp_preview_theme() {
 
-	$module_path = url('', array('absolute' => TRUE)) . drupal_get_path('module', 'osci_tk_webapp_preview');
-	$webapp_version = '0.1.0';
+	global $base_path;
+
+	$libPath = $base_path . libraries_get_path('OSCI-Toolkit-Frontend');
 	$osci_tk_version = '0.1.0';
 
 	return array(
@@ -33,10 +34,10 @@ function osci_tk_webapp_preview_theme() {
 			'variables' => array(
 				'package_path' => NULL,
 				'section_id' => null,
-				'webapp_css_path' => "$module_path/OSCI-Toolkit-$webapp_version/css/OSCI-Toolkit-$osci_tk_version.min.css",
-				'webapp_css_dependencies_path' => "$module_path/OSCI-Toolkit-$webapp_version/css/OSCI-Toolkit-$osci_tk_version-dependencies.min.css",
-				'webapp_js_dependencies_path' => "$module_path/OSCI-Toolkit-$webapp_version/js/OSCI-Toolkit-$osci_tk_version-dependencies.min.js",
-				'webapp_js_path' => "$module_path/OSCI-Toolkit-$webapp_version/js/OSCI-Toolkit-$osci_tk_version.min.js"
+				'webapp_css_path' => "$libPath/dist/css/OSCI-Toolkit-$osci_tk_version.min.css",
+				'webapp_css_dependencies_path' => "$libPath/dist/css/OSCI-Toolkit-$osci_tk_version-dependencies.min.css",
+				'webapp_js_dependencies_path' => "$libPath/dist/js/OSCI-Toolkit-$osci_tk_version-dependencies.min.js",
+				'webapp_js_path' => "$libPath/dist/js/OSCI-Toolkit-$osci_tk_version.min.js"
 			),
 			'template'  => 'templates/osci-tk-webapp-preview',
 		),

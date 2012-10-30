@@ -8,35 +8,35 @@ function osci_tk_figure_menu()
 		'title'             => 'Figure search',
 		'page callback'     => 'osci_tk_figure_reference',
 		'page arguments'	=> array(2,3,4),
-        'access arguments'  => array('access content'),
-        'type'              => MENU_CALLBACK,
-        'file'              => 'osci_tk_figure.pages.inc',
-    );
+		'access arguments'  => array('access content'),
+		'type'              => MENU_CALLBACK,
+		'file'              => 'osci_tk_figure.pages.inc',
+	);
 
-    $items['ajax/figurepreview/%node'] = array(
-        'title'             => 'Figure preview',
-        'page callback'     => 'osci_tk_figure_preview',
-    	'page arguments'	=> array(2),
-        'access arguments'  => array('access content'),
-        'type'              => MENU_CALLBACK,
-        'file'              => 'osci_tk_figure.pages.inc',
-    );
+	$items['ajax/figurepreview/%node'] = array(
+		'title'             => 'Figure preview',
+		'page callback'     => 'osci_tk_figure_preview',
+		'page arguments'	=> array(2),
+		'access arguments'  => array('access content'),
+		'type'              => MENU_CALLBACK,
+		'file'              => 'osci_tk_figure.pages.inc',
+	);
 
-   	$items['ajax/figurethumb/save'] = array(
-        'title'             => 'Save Figure Thumbnail',
-        'page callback'     => 'osci_tk_figure_thumb_save',
-        'access arguments'  => array('access content'),
-        'type'              => MENU_CALLBACK,
-        'file'              => 'osci_tk_figure.pages.inc',
-    );
+	$items['ajax/figurethumb/save'] = array(
+		'title'             => 'Save Figure Thumbnail',
+		'page callback'     => 'osci_tk_figure_thumb_save',
+		'access arguments'  => array('access content'),
+		'type'              => MENU_CALLBACK,
+		'file'              => 'osci_tk_figure.pages.inc',
+	);
 
-    $items['ajax/figure/asset-options/%/%/%node'] = array(
-        'page callback'     => 'osci_tk_figure_asset_options',
-        'page arguments'    => array(3, 4, 5),
-        'access arguments'  => array('access content'),
-        'type'              => MENU_CALLBACK,
-        'file'              => 'osci_tk_figure.pages.inc',
-    );
+	$items['ajax/figure/asset-options/%node/%/%/%node'] = array(
+		'page callback'     => 'osci_tk_figure_asset_options',
+		'page arguments'    => array(3, 4, 5, 6),
+		'access arguments'  => array('access content'),
+		'type'              => MENU_CALLBACK,
+		'file'              => 'osci_tk_figure.pages.inc',
+	);
 
 	return $items;
 }
