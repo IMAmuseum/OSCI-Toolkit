@@ -14,6 +14,7 @@ fi
 # test for index.php - to ensure a drupal directory
 if [ ! -f $1/index.php ]; then
     echo "Error: This doesn't look like a Drupal install (no index.php)"
+    echo $1/index.php
     echo
     usage
     exit
@@ -39,6 +40,19 @@ cpath=`pwd`
 echo
 
 #
+# Gathering OSCI-Toolkit-Frontend
+#
+echo "Downloading OSCI-Toolkit-Frontend"
+cd $1/sites/default
+git clone http://github.com/IMAmuseum/OSCI-Toolkit-Frontend.git
+cd $1
+ln -s sites/default/OSCI-Toolkit-Frontend frontend
+cd $1/sites/all/libraries
+ln -s ../../default/OSCI-Toolkit-Frontend
+cd $cpath
+echo
+
+#
 # Polymaps
 #
 echo "Downloading and extracting polymaps..."
@@ -46,8 +60,9 @@ curl -s -k -L -o polymaps-2.5.0.tgz https://github.com/simplegeo/polymaps/tarbal
 tar -xz -C src -f polymaps-2.5.0.tgz
 rm polymaps-2.5.0.tgz
 rm ./src/simplegeo-polymaps-13ae25d/polymaps.min.js
+echo `pwd`
 cp ./src/simplegeo-polymaps-13ae25d/polymaps.js ./src/simplegeo-polymaps-13ae25d/polymaps.js.prepatch
-patch ./src/simplegeo-polymaps-13ae25d/polymaps.js polymaps.js.patch
+patch ./src/simplegeo-polymaps-13ae25d/polymaps.js ./polymaps.js.patch
 echo "Copying to Drupal libraries..."
 if [ ! -d $1/sites/all/libraries/polymaps ]; then
     mkdir -p $1/sites/all/libraries/polymaps
