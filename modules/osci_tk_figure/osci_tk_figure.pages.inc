@@ -107,17 +107,18 @@ function osci_tk_figure_thumb_save() {
 /**
  * ajax callback for asset options
  */
-function osci_tk_figure_asset_options($field, $delta, $node) {
+function osci_tk_figure_asset_options($parent_node, $field, $delta, $node) {
     module_load_include('inc', 'osci_tk_figure', 'osci_tk_figure.assets');
     ctools_include('modal');
 
+    $options = json_decode($parent_node->{$field}['und'][$delta]['options']);
     $form_state = array(
         'ajax'          => TRUE,
         'title'         => t($node->title . ' Asset Options'),
         'field'         => $field,
         'delta'         => $delta,
         'node'          => $node,
-        'options'       => json_decode($_GET['options']),
+        'options'       => $options,
     );
 
     $form_id = 'osci_tk_figure_asset_' . $node->type . '_options_form';
@@ -133,12 +134,9 @@ function osci_tk_figure_asset_options($field, $delta, $node) {
     if ($form_state['executed']) {
         $field_id = $field . '[und][' . $delta . '][options]';
         $encoded_options = addcslashes($form_state['figure_options'], '"');
-        $href_id    = '#edit-' . str_replace('_', '-', $field) . '-und-' . $delta . '-asset-options .asset-options';
-        $href       = $_GET['q'] . '?options=' . htmlspecialchars($form_state['figure_options']);
         $script = "
 <script>
 jQuery('input[name=\"$field_id\"]').attr('value', '$encoded_options');
-jQuery('$href_id').attr('href', '$href');
 </script>";
 
         $output[] = ajax_command_append('#content', $script);
