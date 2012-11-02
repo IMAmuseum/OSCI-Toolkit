@@ -33,7 +33,6 @@
 		/**************************************************
 		 * Figure Preview
 		 */
-		// live events for the figure fields
 		$(document).delegate(".figure_reference_field", "blur", function(event) {
 			setTimeout( function() {
 				var parentField = $(event.target).parents('.fieldset-wrapper');
@@ -100,3 +99,11 @@
 	});
 
 })(jQuery);
+
+function updateAjaxUrl(url, oldUrl) {
+    Drupal.ajax[oldUrl].url = url;
+    Drupal.ajax[oldUrl].selector = url;
+    Drupal.ajax[url] = Drupal.ajax[oldUrl];
+    Drupal.ajax[url].options.url = url;
+    Drupal.ajax[oldUrl] = null;
+}

@@ -1,1 +1,1 @@
-../../../../OSCI-Toolkit-Frontend/js/external/osci_tk_layered_image.js
+../../../../OSCI-Toolkit-Frontend/js/oscitk/osci_tk_layered_image.js

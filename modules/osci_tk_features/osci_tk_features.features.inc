@@ -73,18 +73,10 @@ function osci_tk_features_image_default_styles() {
  */
 function osci_tk_features_node_info() {
   $items = array(
-    'conservation_asset' => array(
-      'name' => t('Conservation Asset'),
-      'base' => 'node_content',
-      'description' => t('A collection of other assets pulled together in a multi-layer display'),
-      'has_title' => '1',
-      'title_label' => t('Title'),
-      'help' => '',
-    ),
     'iip_asset' => array(
       'name' => t('IIP Asset'),
       'base' => 'node_content',
-      'description' => t('An IIP based image used in a Conservation Asset'),
+      'description' => t('An IIP based image used in a publication'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',
@@ -92,7 +84,7 @@ function osci_tk_features_node_info() {
     'image_asset' => array(
       'name' => t('Image Asset'),
       'base' => 'node_content',
-      'description' => t('An Image used in a Conservation Asset'),
+      'description' => t('An Image used as a figure in a publication'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',
@@ -100,7 +92,7 @@ function osci_tk_features_node_info() {
     'layered_image' => array(
       'name' => t('Layered Image'),
       'base' => 'node_content',
-      'description' => '',
+      'description' => 'An interactive figure type that combines assets into layers',
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',
@@ -108,7 +100,7 @@ function osci_tk_features_node_info() {
     'note' => array(
       'name' => t('Note'),
       'base' => 'node_content',
-      'description' => '',
+      'description' => 'User Notes',
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',
@@ -116,7 +108,7 @@ function osci_tk_features_node_info() {
     'publication' => array(
       'name' => t('Publication'),
       'base' => 'node_content',
-      'description' => '',
+      'description' => 'The root of a publication. Used to store publication information and the publication content heirarchy',
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',
@@ -124,7 +116,7 @@ function osci_tk_features_node_info() {
     'section' => array(
       'name' => t('Section'),
       'base' => 'node_content',
-      'description' => t('A section of a book'),
+      'description' => t('A section of content for a publication'),
       'has_title' => '1',
       'title_label' => t('Administrative Title'),
       'help' => '',
@@ -132,7 +124,7 @@ function osci_tk_features_node_info() {
     'svg_asset' => array(
       'name' => t('SVG Asset'),
       'base' => 'node_content',
-      'description' => t('A Scalable Vector Graphic'),
+      'description' => t('A Scalable Vector Graphic for use in a layered image'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',

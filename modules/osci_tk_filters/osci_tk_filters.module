@@ -201,6 +201,7 @@ function _filter_figure($text, $filter, $format)
         if ($section_node) {
             if (isset($section_node->field_figure['und'][$fig_index])) {
                 $figure = $section_node->field_figure['und'][$fig_index];
+                $aspect = module_invoke_all('osci_tk_figure_aspect', $figure);
                 $figureNode = node_load($figure['asset_reference']);
                 $osci_tk_placed_figures[] = $fig_index;
                 $figure['delta'] = $fig_index;
@@ -208,7 +209,7 @@ function _filter_figure($text, $filter, $format)
                 $figure['number_template'] = _osci_tk_figure_process_number_template($figure);
                 $figure['export'] = $osci_tk_epub_for_export;
                 $figure['type'] = $figureNode->type;
-                $figure['aspect'] = array_pop(module_invoke_all('osci_tk_figure_aspect', $figure));
+                $figure['aspect'] = is_array($aspect) ? array_pop($aspect) : null;
 
                 $markup = theme($theme, array(
                     'item' => $figure
@@ -318,46 +319,28 @@ function _osci_tk_filter_process_args($text) {
  * Process callback for filter
  */
 function _filter_cross_link($text, $filter, $format) {
-	global $osci_tk_view_mode;
-
-	$osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
-	$result = module_invoke_all('osci_tk_filter_cross_link_' . $osci_tk_view_mode, $text, $filter, $format);
-	return is_array($result) && count($result) ? $result[0] : $text;
+    $regex = '/\[link:(\d+)[^\]]*\]/i';
+    $replace = preg_replace_callback($regex, '_process_cross_link', $text);
+    return $replace;
 }
-
-function osci_tk_filters_osci_tk_filter_cross_link_default($text, $filter, $format)
-{
-    $regex = '/\[link:(.*?)\]/i';
-
-    return preg_replace_callback($regex, '_process_cross_link', $text);
-}
-
 /**
  * Regex replace callback
  */
 function _process_cross_link($text) {
     if (empty($text[1])) return $text[0];
-    $args = _osci_tk_filter_process_args($text[1]);
-
-    $nid = $args['id'];
-    $url = url("node/{$nid}/reader");
-    $linkText = isset($args['args']['text']) ? $args['args']['text'] : "Link " . $nid;
-
-    $query = "";
-    if (isset($args['args']['paragraph'])) {
-        $query = "#para-" . $args['args']['paragraph'];
+    preg_match_all('/(\w+)=([\w\s]*)/', $text[0], $matches);
+    for ($i = 0; $i < count($matches[1]); $i++) {
+        $args[$matches[1][$i]] = $matches[2][$i];
     }
-
-    if (isset($args['args']['section'])) {
-        $query = '#field_' . $args['args']['section'] . '_anchor';
+    $nid = $text[1];
+    $url = "#section/{$nid}";
+    if (isset($args['paragraph'])) {
+        $url .= "/p-{$args['paragraph']}";
     }
-
-    if ($query) {
-        $url = url("node/{$nid}/reader", array('fragment' => substr($query, 1)));
-        $query = "data-query=\"$query\"";
-    }
-
-    return "<a href=\"{$url}\" class=\"cross-link\" target=\"_blank\" data-nid=\"{$nid}\" {$query}>{$linkText}</a>";
+    $linkText = isset($args['text']) ? $args['text'] : "link";
+    
+    $replace =  "<a href=\"{$url}\" class=\"cross-link\" target=\"_blank\" data-nid=\"{$nid}\">{$linkText}</a>";
+    return $replace;
 }
 
 /**
