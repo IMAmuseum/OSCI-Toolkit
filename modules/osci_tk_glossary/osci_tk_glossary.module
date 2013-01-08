@@ -1,0 +1,317 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function osci_tk_glossary_menu() {
+    $items = array();
+
+    $items['api/epub/%node/glossary.xhtml'] = array(
+        'title' => 'Glossary',
+        'page callback' => 'osci_tk_glossary_render',
+        'page arguments' => array(2),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function osci_tk_glossary_theme() {
+    return array(
+        'osci_tk_glossary_document' => array(
+            'variables' => array(
+                'vocabularies'  => array()
+            ),
+            'template'  => 'templates/osci_tk_glossary_document',
+            'file'      => 'osci_tk_glossary.templates.inc',
+        ),
+    );
+}
+
+/**
+ * [osci_tk_glossary_render description]
+ * @param  [type] $node [description]
+ * @return [type]       [description]
+ */
+function osci_tk_glossary_render($node) {
+    $vocabularies = _osci_tk_glossary_retrieve_glossaries($node);
+
+    header('Content-Type: application/xhtml+xml');
+    print theme('osci_tk_glossary_document', array('vocabularies' => $vocabularies));
+    drupal_exit();
+}
+
+/**
+ * Implementation of hook_filter_info
+ */
+function osci_tk_glossary_filter_info() {
+    $filters = array();
+
+    // Footnotes
+    $filters['osci_tk_glossary_terms'] = array(
+        'title'             => t('Glossary term filter'),
+        'description'       => t('Add references to glossary terms in content'),
+        'process callback'  => 'osci_tk_glossary_filter',
+        'settings callback' => 'osci_tk_glossary_filter_settings',
+        'tips callback'     => 'osci_tk_glossary_filter_tips',
+        'cache'             => false
+    );
+    return $filters;
+}
+
+/**
+ * Process callback for glossary term filter
+ */
+function osci_tk_glossary_filter($text, $filter, $format) {
+    if (!is_numeric(arg(2))) return $text;
+
+    global $current_tree;
+
+    $publication = node_load(arg(2));
+
+    $vocabulary = _osci_tk_glossary_retrieve_glossaries($publication);
+
+    foreach ($vocabulary as $vocab_id) {
+        $tree = taxonomy_get_tree($vocab_id);
+        foreach ($tree as $leaf) {
+            $current_tree = $leaf;
+            $text = preg_replace_callback('/' . $leaf->name . '\b/i', '_osci_tk_glossary_parse_term', $text);
+        }
+    }
+
+    return $text;
+}
+
+/**
+ * Callback for parsing glossary terms
+ */
+function _osci_tk_glossary_parse_term($match) {
+    global $current_tree;
+
+    return l($match[0], '', array(
+        'fragment' => 'osci_glossary_term_' . $current_tree->tid,
+        'attributes' => array(
+            'class' => array('glossary-term'),
+        ),
+    ));
+}
+
+/**
+ * Filter settings
+ */
+function osci_tk_glossary_filter_settings() {}
+
+/**
+ * Tooltip funcion
+ */
+function osci_tk_glossary_filter_tips() {
+    return null;
+}
+
+/**
+ * Implements hook_osci_tk_package_document_alter().
+ */
+function osci_tk_glossary_osci_tk_package_document_alter(&$arguments, $data, $node) {
+    $arguments['manifest'][] = array(
+        'id'            => 'glossary',
+        'href'          => url('api/epub/' . $node->nid . '/glossary.xhtml', array('absolute' => TRUE)),
+        'media-type'    => 'application/xhtml+xml',
+    );
+}
+
+/**
+ * Implements hook_field_info().
+ */
+function osci_tk_glossary_field_info() {
+    return array(
+        'vocabulary_reference' => array(
+            'label' => t('Vocabulary Reference'),
+            'description' => t('This field stores the ID of a referenced vocabulary as an integer value.'),
+            'default_widget' => 'options_select',
+            'default_formatter' => 'vocabulary_reference_default',
+        ), 
+    );
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function osci_tk_glossary_field_is_empty($item, $field) {
+    return empty($item['vocab_id']);
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function osci_tk_glossary_field_formatter_info() {
+    return array(
+        'vocabulary_reference_default' => array(
+            'label' => t('Plain Text'),
+            'field types' => array('vocabulary_reference'),
+        ),
+    );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function osci_tk_glossary_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+    $settings = $display['settings'];
+    $content = array();
+
+    switch ($display['type']) {
+        case 'vocabulary_reference_default':
+            foreach ($items as $delta => $item) {
+                $query = db_select('taxonomy_vocabulary', 'tv');
+                $query->fields('tv', array('name'));
+                $query->condition('vid', $item['vocab_id']);
+                $result = $query->execute();
+
+                $content[$delta]['#prefix'] = '<span class="vocabulary-reference">';
+                $content[$delta]['#markup'] = $result->fetchField();
+                $content[$delta]['#prefix'] = '</span>';  
+            }
+            break;
+    }
+    return $content;
+}
+
+/**
+ * Implements hook_field_widget_info_alter().
+ */
+function osci_tk_glossary_field_widget_info_alter(&$info) {
+    $info['options_select']['field types'][] = 'vocabulary_reference';
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function osci_tk_glossary_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+    return $element;
+}
+
+/**
+ * Implements hook_options_list().
+ */
+function osci_tk_glossary_options_list($field) {
+    $options = array();
+
+    $query = db_select('taxonomy_vocabulary', 'tv');
+    $query->fields('tv', array('vid', 'name'));
+    $results = $query->execute();
+
+    foreach ($results as $result) {
+        $options[$result->vid] = $result->name;
+    }
+
+    return $options;
+}
+
+/**
+ * Implements hook_taxonomy_vocabulary_delete().
+ */
+function osci_tk_glossary_entity_delete($entity, $type) {
+    list($entity_id, , ) = entity_extract_ids($type, $entity);
+    $conditions = array('type' => 'vocabulary_reference');
+    $include_additional = array('include_inactive' => TRUE);
+    $fields = field_read_fields($conditions, $include_additional);
+
+    $references = array();
+    foreach ($fields as $field) {
+        if ('taxonomy_vocabulary' == $type) {
+            $query = new EntityFieldQuery();
+
+            // Select on the entity id in the target_id column.
+            $query->fieldCondition($field, 'vocab_id', $entity_id);
+            $results = $query->execute();
+
+            // Loop through the found entity types and ids.
+            foreach ($results as $referencing_type => $entities) {
+                if (!isset($references[$referencing_type]['ids'])) {
+                    $references[$referencing_type]['ids'] = array();
+                }
+            
+                $references[$referencing_type]['fields'][$field['field_name']] = $field['field_name'];
+                $references[$referencing_type]['ids'] += array_keys($entities);
+            }
+        }
+    }
+
+    foreach ($references as $referencing_type => $data) {
+        osci_tk_glossary_vocabulary_dereference($entity_id, $referencing_type, $data['ids'], $data['fields'], 40);
+    }
+}
+
+/**
+ * Dereferences vocabulary references
+ */
+function osci_tk_glossary_vocabulary_dereference($entity_id, $entity_type, $ids, $fields, $threshold = NULL) {
+    if (!empty($ids)) {
+        $threshold = $threshold ? $threshold : variable_get('queue_bulk_threshold', 20);
+        // Split large datasets into smaller subsets for processing.
+        if (count($ids) > $threshold) {
+            $subsets = array_chunk($ids, $threshold);
+            $ids = array_shift($subsets);
+            foreach ($subsets as $subset) {
+                DrupalQueue::get('osci_tk_glossary_workers', TRUE)
+                    ->createItem(array('callback' => 'osci_tk_glossary_vocabulary_dereference', 'arguments' => array($entity_id, $entity_type, $subset, $fields)));
+            }
+        }
+  
+        $referencing_entities = entity_load($entity_type, $ids);
+        foreach ($referencing_entities as $referencing_entity) {
+            foreach ($fields as $field_name) {
+                foreach ($referencing_entity->{$field_name} as $language => $items) {
+                    foreach($items as $delta => $value) {
+                        if ($value['vocab_id'] == $entity_id) {
+                            unset($referencing_entity->{$field_name}[$language][$delta]);
+                        }
+                    }
+                }
+            }
+            entity_save($entity_type, $referencing_entity);
+        }
+        return count($ids);
+    }
+    return 0;
+}
+
+/**
+ * Runs a simple job queue worker.
+ */
+function osci_tk_glossary_queue_worker($data) {
+    return call_user_func_array($data['callback'], $data['arguments']);
+}
+
+/**
+ * Implements hook_cron_queue_info().
+ */
+function osci_tk_glossary_cron_queue_info() {
+    $queues['osci_tk_glossary_workers'] = array(
+        'worker callback' => 'osci_tk_glossary_queue_worker',
+        'time' => 30,
+        'reliable' => TRUE,
+    );
+    return $queues;
+}
+
+function _osci_tk_glossary_retrieve_glossaries($node) {
+    $vocabulary = array();
+
+    $fields = field_info_instances('node', 'publication');
+    foreach ($fields as $field) {
+        $field_info = field_info_field($field['field_name']);
+        if ($field_info['type'] == 'vocabulary_reference') {
+            if (!empty($node->{$field['field_name']}['und'])) {
+                foreach ($node->{$field['field_name']}['und'] as $glossary) {
+                    $vocabulary[] = $glossary['vocab_id'];
+                }
+            }
+        }
+    }
+
+    return array_unique($vocabulary);
+}

@@ -705,6 +705,7 @@ function _osci_tk_epub_generate_package_document($node, $revTime, $forExport = f
 	}
 
 	// TODO: Additional stuff for the manifest (figures, etc.)
+	drupal_alter('osci_tk_package_document', $arguments, $data, $node);
 
 	$output = theme('epub_package', $arguments);
 

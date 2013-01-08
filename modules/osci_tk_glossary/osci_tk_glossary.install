@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * Implements hook_field_schema().
+ */
+function osci_tk_glossary_field_schema($field) {
+    $columns = array(
+        'vocab_id' => array(
+            'type'     => 'int',
+            'unsigned' => TRUE,
+            'not null' => FALSE,
+        ),
+    );
+    return array(
+        'columns' => $columns,
+        'indexes' => array('vocab_id' => array('vocab_id')),
+    );
+}
