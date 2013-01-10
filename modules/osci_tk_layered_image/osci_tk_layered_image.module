@@ -47,6 +47,13 @@ function osci_tk_layered_image_menu() {
 		'type'				=> MENU_CALLBACK
 	);
 
+	$items['admin/config/system/iip'] = array(
+		'title'             => t('IIP Settings'),
+		'page callback'     => 'drupal_get_form',
+		'page arguments'    => array('osci_tk_layered_image_iip_admin_form'),
+		'access arguments'  => array('administer site configuration'),
+	);
+
 	return $items;
 }
 
@@ -71,6 +78,22 @@ function osci_tk_layered_image_form_alter(&$form, &$form_state, $form_id) {
 	if ($form_id == 'field_ui_field_edit_form') {
 		if ($form['#field']['field_name'] == 'field_assets') {
 			$form['field']['settings']['referenceable_types']['#disabled'] = FALSE;
+		}
+	}
+	if ($form_id == 'iip_asset_node_form') {
+		// hide the image field, and the attributes field
+		// we populate it automatically from the IIP server
+		$form['field_image']['#attributes']['style'] = "display:none;";
+		$form['field_ptiff_attr']['#attributes']['style'] = "display:none;";
+
+		// add the callback to grab the image after submission
+		array_unshift($form['#validate'], '_osci_tk_layered_image_get_ptiff_image');
+		array_unshift($form['#validate'], '_osci_tk_layered_image_get_ptiff_attr');
+		// get the options from the drupal variable
+		$hosts = variable_get('osci_tk_layered_image_iip_hosts', array());
+		$form['field_iip_server']['und']['#options'] = array();
+		foreach ($hosts as $host) {
+			$form['field_iip_server']['und']['#options'][$host['name']] = $host['name'];
 		}
 	}
 
@@ -644,4 +667,43 @@ function osci_tk_layered_image_osci_tk_figure_content($args) {
 			$args['item']['content_url'] = $base_url.'/api/epub/'.$matches[1].'/'.$args['item']['delta'].'/figure.xhtml';
 		return theme('osci_tk_layered_image_figure_formatter', array('item' => $args['item']));
 	}
+}
+
+function osci_tk_layered_image_iip_admin_form($form, &$form_state) {
+	// form the text area default value
+	$hosts = variable_get('osci_tk_layered_image_iip_hosts', array());
+	$hosts_field = '';
+	foreach ($hosts as $host) {
+		$hosts_field = $hosts_field . $host['name'] . '|' . $host['url'] . "\n";
+	}
+	$form = array();
+	
+	$form['osci_tk_layered_image_iip_hosts'] = array(
+			'#type'				=> 'textarea',
+			'#title'			=> 'IIP Hosts',
+			'#description'		=> 'A keyed list of IIP servers. One per line, in name|url format',
+			'#default_value'	=> $hosts_field
+	);
+	
+	$form['#submit'][] = 'osci_tk_layered_image_iip_admin_form_submit';
+	
+	return system_settings_form($form);
+}
+
+function osci_tk_layered_image_iip_admin_form_submit($form, &$form_state) {
+	$value_text = $form_state['values']['osci_tk_layered_image_iip_hosts'];
+	// break apart the lines
+	$value_lines = explode("\n", $value_text);
+	$values = array();
+	foreach ($value_lines as $line) {
+		$split = explode('|', $line);
+		if ($split[0] && $split[1]) {
+			$val_arr = array();
+			$val_arr['name'] = trim($split[0]);
+			$val_arr['url'] = trim($split[1]);
+			$values[] = $val_arr;
+		}
+		
+	}
+	$form_state['values']['osci_tk_layered_image_iip_hosts'] = $values;
 }
