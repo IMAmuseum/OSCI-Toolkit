@@ -38,7 +38,6 @@ function osci_tk_glossary_theme() {
  */
 function osci_tk_glossary_render($node) {
     $vocabularies = _osci_tk_glossary_retrieve_glossaries($node);
-
     header('Content-Type: application/xhtml+xml');
     print theme('osci_tk_glossary_document', array('vocabularies' => $vocabularies));
     drupal_exit();
@@ -54,9 +53,9 @@ function osci_tk_glossary_filter_info() {
     $filters['osci_tk_glossary_terms'] = array(
         'title'             => t('Glossary term filter'),
         'description'       => t('Add references to glossary terms in content'),
-        'process callback'  => 'osci_tk_glossary_filter',
-        'settings callback' => 'osci_tk_glossary_filter_settings',
-        'tips callback'     => 'osci_tk_glossary_filter_tips',
+        'process callback'  => '_osci_tk_glossary_filter',
+        'settings callback' => '_osci_tk_glossary_filter_settings',
+        'tips callback'     => '_osci_tk_glossary_filter_tips',
         'cache'             => false
     );
     return $filters;
@@ -65,7 +64,7 @@ function osci_tk_glossary_filter_info() {
 /**
  * Process callback for glossary term filter
  */
-function osci_tk_glossary_filter($text, $filter, $format) {
+function _osci_tk_glossary_filter($text, $filter, $format) {
     if (!is_numeric(arg(2))) return $text;
 
     global $current_tree;
@@ -90,24 +89,18 @@ function osci_tk_glossary_filter($text, $filter, $format) {
  */
 function _osci_tk_glossary_parse_term($match) {
     global $current_tree;
-
-    return l($match[0], '', array(
-        'fragment' => 'osci_glossary_term_' . $current_tree->tid,
-        'attributes' => array(
-            'class' => array('glossary-term'),
-        ),
-    ));
+    return '<a href="#" class="glossary-term" data-tid="' . $current_tree->tid . '">' . $match[0] . '</a>';
 }
 
 /**
  * Filter settings
  */
-function osci_tk_glossary_filter_settings() {}
+function _osci_tk_glossary_filter_settings() {}
 
 /**
  * Tooltip funcion
  */
-function osci_tk_glossary_filter_tips() {
+function _osci_tk_glossary_filter_tips() {
     return null;
 }
 

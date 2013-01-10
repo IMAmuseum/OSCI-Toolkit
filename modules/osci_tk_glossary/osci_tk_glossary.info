@@ -3,5 +3,3 @@ description = "Provides glossary capabilities to the OSCI ToolKit"
 package = "OSCI ToolKit"
 core = "7.x"
 version = "1.0"
-
-files[] = osci_tk_glossary.field.inc

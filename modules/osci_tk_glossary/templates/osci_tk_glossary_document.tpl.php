@@ -1,6 +1,6 @@
 <dl>
-<?php foreach ($terms as $term => $definition): ?>
-	<td><?php print $term; ?></td>
-	<dd><?php print $definition; ?></dd>
+<?php foreach ($terms as $name => $term): ?>
+	<td data-tid="<?php print $term['term_id']; ?>"><dfn><?php print $name; ?></dfn></td>
+	<dd><?php print $term['definition']; ?></dd>
 <?php endforeach; ?>
 </dl>
