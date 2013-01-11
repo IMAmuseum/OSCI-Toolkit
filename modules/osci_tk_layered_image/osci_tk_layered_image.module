@@ -342,77 +342,8 @@ function osci_tk_layered_image_is_svg_asset() {
 	print json_encode($response);
 }
 
-
-// called as a form verification callback
-// retrieves the full image from the iip server and saves it to the node as the static image
-function _osci_tk_layered_image_get_ptiff_image($form, &$form_state) {
-	$iip_host = _osci_tk_layered_image_iip_host_url($form_state['values']['field_iip_server']['und'][0]['value']);
-	$command = "?FIF={$form_state['values']['field_ptiff_path']['und'][0]['value']}&CVT=jpeg";
-	$curl = curl_init($iip_host . $command);
-	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-	$output = curl_exec($curl);
-	// Save the file with the new Drupal 7 File API
-	$fo = file_save_data($output, "public://iip_thumbs/iip_image_node_" . $form_state['node']->nid . ".jpg", FILE_EXISTS_REPLACE);
-	if ($fo && getimagesize($fo->uri)) {
-		$form_state['values']['field_image']['und'][0] = (array) $fo;
-	} else {
-		if ($fo)
-			file_delete($fo);
-		form_set_error('field_ptiff_path', 'Could not retrieve an image thumbnail.  Please check the path and server');
-	}
-}
-
-
-// called as a form verification callback
-// retrieves the image attributes from the iip server and saves it serialized in field_ptiff_attr
-function _osci_tk_layered_image_get_ptiff_attr($form, &$form_state) {
-	// gather the server url and the ptiff path
-	$iip_srv_url = _osci_tk_layered_image_iip_host_url($form_state['values']['field_iip_server']['und'][0]['value']);
-	$ptiff_path = $form_state['values']['field_ptiff_path']['und'][0]['value'];
-
-	// Get image data as a text response from the IIP server
-	// Must supply the fif parameter
-	$url = "{$iip_srv_url}?FIF={$ptiff_path}&OBJ=Basic-info";
-	$curl = curl_init($url);
-	curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-	$res = curl_exec($curl);
-	if ($res != false && !stristr($res, 'error')) {
-		// Parse the image maximum dimensions and the number of zoom layers
-		preg_match('/Max-size:(\d+) (\d+)/', $res, $matches);
-		$iw = $matches[1];
-		$ih = $matches[2];
-		preg_match('/Resolution-number:(\d+)/', $res, $matches);
-		$zl = $matches[1];
-
-		// Craft our attributes array
-		$attr = array(
-			'width' => $iw,
-			'height' => $ih,
-			'zoom_levels' => $zl,
-		);
-		// place attributes into proper field, serialized
-		$form_state['values']['field_ptiff_attr']['und'][0]['value'] = serialize($attr);
-	} else {
-		form_set_error('field_ptiff_path', 'Could not retrieve image information.  Please check path and server');
-	}
-}
-
-// turns an iip host name into an iip host url by comparing with
-// the list of hosts stored in the admin setting
-function _osci_tk_layered_image_iip_host_url($host_name) {
-	$avail_hosts = variable_get('osci_tk_layered_image_iip_hosts');
-	// find the host url
-	foreach ($avail_hosts as $host) {
-		if ($host['name'] == $host_name) {
-			return $host['url'];
-		}
-	}
-}
-
-function _osci_tk_layered_image_get_layered_image_html($nid) {
-	if (!is_numeric($nid))
-		return;
-	$node = node_load($nid);
+// implements HOOK_figure_html_NODETYPE
+function osci_tk_layered_image_figure_html_layered_image($node) {
 	$thumbStyle = variable_get('osci_tk_image_style_layered_image_thumbnail', 'osci_tk_default');
 
 	// create a unique id for this layered_image asset
@@ -501,13 +432,90 @@ function _osci_tk_layered_image_get_layered_image_html($nid) {
 	}
 
 	$ret =    '<div class="layered_image-asset" data-aspect="'._osci_tk_layered_image_get_layered_image_aspect($node)
-			. '" data-collapsed="true" data-nid="'.$nid.'" id="'.$id.'">'
+			. '" data-collapsed="true" data-nid="'.(isset($node->nid) ? $node->nid : 0).'" id="'.$id.'">'
 			. '<ul class="layered_image-layers" style="display:none;">'
 			. $layers
 			. '</ul>'
 			. '</div>';
 
 	return $ret;
+}
+
+// implements HOOK_figure_html_NODETYPE
+function osci_tk_layered_image_figure_html_iip_asset($node) {
+	$limage = new stdClass();
+	$limage->type = 'layered_image';
+	$limage->language = LANGUAGE_NONE;
+	node_object_prepare($limage);
+	$limage->field_assets['und'][0]['nid'] = $node->nid;
+	return osci_tk_layered_image_figure_html_layered_image($limage);
+}
+
+
+// called as a form verification callback
+// retrieves the full image from the iip server and saves it to the node as the static image
+function _osci_tk_layered_image_get_ptiff_image($form, &$form_state) {
+	$iip_host = _osci_tk_layered_image_iip_host_url($form_state['values']['field_iip_server']['und'][0]['value']);
+	$command = "?FIF={$form_state['values']['field_ptiff_path']['und'][0]['value']}&CVT=jpeg";
+	$curl = curl_init($iip_host . $command);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	$output = curl_exec($curl);
+	// Save the file with the new Drupal 7 File API
+	$fo = file_save_data($output, "public://iip_thumbs/iip_image_node_" . $form_state['node']->nid . ".jpg", FILE_EXISTS_REPLACE);
+	if ($fo && getimagesize($fo->uri)) {
+		$form_state['values']['field_image']['und'][0] = (array) $fo;
+	} else {
+		if ($fo)
+			file_delete($fo);
+		form_set_error('field_ptiff_path', 'Could not retrieve an image thumbnail.  Please check the path and server');
+	}
+}
+
+
+// called as a form verification callback
+// retrieves the image attributes from the iip server and saves it serialized in field_ptiff_attr
+function _osci_tk_layered_image_get_ptiff_attr($form, &$form_state) {
+	// gather the server url and the ptiff path
+	$iip_srv_url = _osci_tk_layered_image_iip_host_url($form_state['values']['field_iip_server']['und'][0]['value']);
+	$ptiff_path = $form_state['values']['field_ptiff_path']['und'][0]['value'];
+
+	// Get image data as a text response from the IIP server
+	// Must supply the fif parameter
+	$url = "{$iip_srv_url}?FIF={$ptiff_path}&OBJ=Basic-info";
+	$curl = curl_init($url);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+	$res = curl_exec($curl);
+	if ($res != false && !stristr($res, 'error')) {
+		// Parse the image maximum dimensions and the number of zoom layers
+		preg_match('/Max-size:(\d+) (\d+)/', $res, $matches);
+		$iw = $matches[1];
+		$ih = $matches[2];
+		preg_match('/Resolution-number:(\d+)/', $res, $matches);
+		$zl = $matches[1];
+
+		// Craft our attributes array
+		$attr = array(
+			'width' => $iw,
+			'height' => $ih,
+			'zoom_levels' => $zl,
+		);
+		// place attributes into proper field, serialized
+		$form_state['values']['field_ptiff_attr']['und'][0]['value'] = serialize($attr);
+	} else {
+		form_set_error('field_ptiff_path', 'Could not retrieve image information.  Please check path and server');
+	}
+}
+
+// turns an iip host name into an iip host url by comparing with
+// the list of hosts stored in the admin setting
+function _osci_tk_layered_image_iip_host_url($host_name) {
+	$avail_hosts = variable_get('osci_tk_layered_image_iip_hosts');
+	// find the host url
+	foreach ($avail_hosts as $host) {
+		if ($host['name'] == $host_name) {
+			return $host['url'];
+		}
+	}
 }
 
 
@@ -660,12 +668,13 @@ function osci_tk_layered_image_osci_tk_figure_content($args) {
 
 	$asset = node_load($args['item']['asset_reference']);
 	switch($asset->type) {
+		case 'iip_asset':
 		case 'layered_image':
 			global $base_url;
 			// parse the section id from the figure identifier
 			preg_match('/fig-(\d+)-/', $args['item']['fig_id'], $matches);
 			$args['item']['content_url'] = $base_url.'/api/epub/'.$matches[1].'/'.$args['item']['delta'].'/figure.xhtml';
-		return theme('osci_tk_layered_image_figure_formatter', array('item' => $args['item']));
+			return theme('osci_tk_layered_image_figure_formatter', array('item' => $args['item']));
 	}
 }
 
@@ -707,3 +716,4 @@ function osci_tk_layered_image_iip_admin_form_submit($form, &$form_state) {
 	}
 	$form_state['values']['osci_tk_layered_image_iip_hosts'] = $values;
 }
+
