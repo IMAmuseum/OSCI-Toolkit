@@ -520,14 +520,12 @@ function _osci_tk_epub_generate_figure_document($node, $index, $noCache = false,
 		}
 	}
 	$figNode = node_load($node->field_figure['und'][$index]['asset_reference']);
-	dpm($figNode, 'figNode');
 
 	// invoke HOOK_figure_html_NODETYPE
 	$hook = 'figure_html_' . $figNode->type;
 	$return = module_invoke_all($hook, $figNode);
 	if (isset($return[0])) {
 		$content = $return[0];
-		dpm($content, $hook.' invoked');
 	}
 	else {
 		$view = node_view($node, 'epub');
