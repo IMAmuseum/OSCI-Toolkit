@@ -67,7 +67,7 @@ function osci_tk_glossary_filter_info() {
 function _osci_tk_glossary_filter($text, $filter, $format) {
     if (!is_numeric(arg(2))) return $text;
 
-    global $current_tree;
+    global $osci_tk_glossary_current_tree;
 
     $publication = node_load(arg(2));
 
@@ -76,7 +76,7 @@ function _osci_tk_glossary_filter($text, $filter, $format) {
     foreach ($vocabulary as $vocab_id) {
         $tree = taxonomy_get_tree($vocab_id);
         foreach ($tree as $leaf) {
-            $current_tree = $leaf;
+            $osci_tk_glossary_current_tree = $leaf;
             $text = preg_replace_callback('/' . $leaf->name . '\b/i', '_osci_tk_glossary_parse_term', $text);
         }
     }
@@ -88,8 +88,9 @@ function _osci_tk_glossary_filter($text, $filter, $format) {
  * Callback for parsing glossary terms
  */
 function _osci_tk_glossary_parse_term($match) {
-    global $current_tree;
-    return '<a href="#" class="glossary-term" data-tid="' . $current_tree->tid . '">' . $match[0] . '</a>';
+    global $osci_tk_glossary_current_tree;
+    
+    return '<a href="#" class="glossary-term" data-tid="' . $osci_tk_glossary_current_tree->tid . '">' . $match[0] . '</a>';
 }
 
 /**
