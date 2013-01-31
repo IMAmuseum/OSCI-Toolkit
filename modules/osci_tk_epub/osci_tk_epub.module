@@ -503,6 +503,7 @@ function osci_tk_epub_render_figure_content_document($nid, $index) {
 	if ($dev) return $output;
 
 	//header('Content-type: application/oebps-package+xml');
+	dpm($output, 'output');
 	print $output;
 	drupal_exit();
 }
@@ -519,8 +520,12 @@ function _osci_tk_epub_generate_figure_document($node, $index, $noCache = false,
 		}
 	}
 	$figNode = node_load($node->field_figure['und'][$index]['asset_reference']);
-	if ($figNode->type === "layered_image") {
-		$content = _osci_tk_layered_image_get_layered_image_html($figNode->nid);
+
+	// invoke HOOK_figure_html_NODETYPE
+	$hook = 'figure_html_' . $figNode->type;
+	$return = module_invoke_all($hook, $figNode);
+	if (isset($return[0])) {
+		$content = $return[0];
 	}
 	else {
 		$view = node_view($node, 'epub');
