@@ -503,7 +503,6 @@ function osci_tk_epub_render_figure_content_document($nid, $index) {
 	if ($dev) return $output;
 
 	//header('Content-type: application/oebps-package+xml');
-	dpm($output, 'output');
 	print $output;
 	drupal_exit();
 }
