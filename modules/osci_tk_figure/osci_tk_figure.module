@@ -522,3 +522,16 @@ function osci_tk_figure_asset_options_form_submit(&$form, &$form_state) {
 
 	$form_state['figure_options'] = json_encode($options);
 }
+
+// return thumbnails for figures
+function osci_tk_layered_image_osci_tk_figure_thumbnail($args) {
+	$asset = node_load($args['item']['asset_reference']);
+	// first attempt on field_asset_thumbnail
+	if (isset($asset->field_asset_thumbnail['und'][0]['uri'])) {
+		return file_create_url($asset->field_asset_thumbnail['und'][0]['uri']);
+	}
+	if (isset($asset->field_image['und'][0]['uri'])) {
+		return file_create_url($asset->field_image['und'][0]['uri']);
+	}
+	return '';
+}

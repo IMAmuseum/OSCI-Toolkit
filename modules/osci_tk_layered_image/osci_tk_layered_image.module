@@ -448,6 +448,9 @@ function osci_tk_layered_image_figure_html_iip_asset($node) {
 	$limage->language = LANGUAGE_NONE;
 	node_object_prepare($limage);
 	$limage->field_assets['und'][0]['nid'] = $node->nid;
+	if (isset($node->field_image)) {
+		$limage->field_image = $node->field_image;
+	}
 	return osci_tk_layered_image_figure_html_layered_image($limage);
 }
 
@@ -670,6 +673,7 @@ function osci_tk_layered_image_osci_tk_figure_content($args) {
 	switch($asset->type) {
 		case 'iip_asset':
 		case 'layered_image':
+			//dpm($args, 'args');die();
 			global $base_url;
 			// parse the section id from the figure identifier
 			preg_match('/fig-(\d+)-/', $args['item']['fig_id'], $matches);
