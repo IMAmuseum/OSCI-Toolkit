@@ -1,0 +1,36 @@
+<?php
+
+/**
+ *  @file
+ *  Media: Nuxeo provides a stream wrapper and formatters for photos provided
+ *  by Nuxeo, available at http://nuxeo.com/.
+ */
+
+/**
+ * Implement hook_menu().
+ */
+function media_nuxeo_menu() {
+    $items = array();
+    $items['admin/config/media/media_nuxeo'] = array(
+        'title' => 'Nuxeo settings',
+        'description' => 'Configure required settings for Media: Nuxeo.',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('media_nuxeo_settings_form'),
+        'access arguments' => array('configure nuxeo'),
+        'file' => 'includes/media_nuxeo.admin.inc',
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_media_internet_providers();
+ */
+function media_nuxeo_media_internet_providers() {
+    $path = drupal_get_path('module', 'media_nuxeo');
+    return array(
+        'MediaInternetNuxeoHandler' => array(
+            'title' => 'nuxeo',
+            'image' => $path . '/images/stream-nuxeo.png'
+        ),
+    );
+}

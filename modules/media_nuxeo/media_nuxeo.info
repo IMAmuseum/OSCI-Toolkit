@@ -1,0 +1,10 @@
+
+name = Media: Nuxeo
+description = Integrates images with Media.
+package = "Media"
+core = 7.x
+dependencies[] = media
+dependencies[] = media_internet
+files[] = media_nuxeo.module
+files[] = includes/media_nuxeo.admin.inc
+files[] = includes/MediaInternetNuxeoHandler.inc

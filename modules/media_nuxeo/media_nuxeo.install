@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Media: Nuxeo module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function media_nuxeo_install() {
+	return array();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function media_nuxeo_uninstall() {
+	variable_del('media_nuxeo__url');
+	variable_del('media_nuxeo__login');
+	variable_del('media_nuxeo__password');
+}
