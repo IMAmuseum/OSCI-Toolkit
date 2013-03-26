@@ -764,8 +764,8 @@ function _osci_tk_get_flattened_nodetree_toc($node, $revTime) {
 
 	// allow modification of the ToC
 	$result = module_invoke_all('alter_epub_toc', $toc);
-	if (is_array($result) && count($result) > 0) {
-		$toc = $result[0];
+    if ($result) {
+        $toc = $result;
 	}
 
 	return $toc;
