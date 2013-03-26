@@ -1,19 +1,27 @@
 (function($) {
 
 	function getPreviewDiv(id, target) {
+        if (id == null) return;
+
 		// retrieve options
 		var options = $.parseJSON($(target).parents(".fieldset-wrapper:first").find('.figure_options').val());
+
 
 		// send nid to server to fetch preview
 		$.get(Drupal.settings.basePath + 'ajax/figurepreview/' + id,
 			function (data) {
 				var dest = $(target).parents(".fieldset-wrapper:first").find('.figure_reference_preview');
-				dest.html(data.div);
+
+                if (data.show_asset_options) {
+                    $(target).parents(".fieldset-wrapper:first").find('.asset-options').show();
+                } else {
+                    $(target).parents(".fieldset-wrapper:first").find('.asset-options').hide();
+                }
 
 				// replace the image with the preview url if it's in the options
 				if (options !== null && options.previewUrl) {
 					dest.find('img:first').attr('src', options.previewUrl);
-				}
+                }
 			},
 			"json"
 		);
@@ -28,6 +36,14 @@
 			return val;
 		}
 	}
+
+    function updateAjaxUrl(url, oldUrl) {
+        Drupal.ajax[oldUrl].url = url;
+        Drupal.ajax[oldUrl].selector = url;
+        Drupal.ajax[url] = Drupal.ajax[oldUrl];
+        Drupal.ajax[url].options.url = url;
+        Drupal.ajax[oldUrl] = null;
+    }
 
 	$(document).ready(function() {
 		/**************************************************
@@ -49,11 +65,7 @@
 
 				// Drupal doesnt like it when we just swap out a link
 				// So we need to update the ajax object so everyone is happy
-				Drupal.ajax[oldUrl].url = url;
-				Drupal.ajax[oldUrl].selector = url;
-				Drupal.ajax[url] = Drupal.ajax[oldUrl];
-				Drupal.ajax[url].options.url = url;
-				Drupal.ajax[oldUrl] = null;
+                updateAjaxUrl(url, oldUrl);
 
 				// Update wiki text
 				var wikiId = 'fig-' + currentNid + '-' + idx;
@@ -89,21 +101,21 @@
 			tabs.tabs("disable", currentTab);
 		});
 
-		// for the figure reference fields already populated on page load
-		$('.figure_reference_field').each(function() {
-			var nid = findReferenceVal(this);
-			if (nid !== null) {
-				getPreviewDiv(nid, this);
-			}
-		});
 	});
+
+    Drupal.behaviors.osciFigures = {
+        attach: function() {
+            $('.asset-options').hide();
+            // for the figure reference fields already populated on page load
+            $('.figure_reference_field').each(function() {
+                var nid = findReferenceVal(this);
+                if (nid !== null) {
+                    getPreviewDiv(nid, this);
+                }   
+            }); 
+        }
+    }
+
 
 })(jQuery);
 
-function updateAjaxUrl(url, oldUrl) {
-    Drupal.ajax[oldUrl].url = url;
-    Drupal.ajax[oldUrl].selector = url;
-    Drupal.ajax[url] = Drupal.ajax[oldUrl];
-    Drupal.ajax[url].options.url = url;
-    Drupal.ajax[oldUrl] = null;
-}

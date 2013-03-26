@@ -57,7 +57,17 @@ function osci_tk_figure_preview($node) {
     } else {
         $ret->div = '<div class="preview_image">No Preview Available</div>';
     }   
-    
+
+    // Determine if this type has any options
+    module_load_include('inc', 'osci_tk_figure', 'osci_tk_figure.assets');
+    $count = 0;
+    $form_id = 'osci_tk_figure_asset_' . $node->type . '_options_form';
+    if (function_exists($form_id)) {
+        $form = call_user_func($form_id);
+    }
+    $count = count($form);
+    $ret->show_asset_options = ($count > 2) ? TRUE : FALSE;
+
     //Add the js callback name to the return
     $ret->callback = $results['callback'];
     $ret->nid = $nid;
@@ -126,7 +136,6 @@ function osci_tk_figure_asset_options($parent_node, $field, $delta, $node) {
     // Throw an error if nothing has been implemented for this node type
     if (!function_exists($form_id)) {
         drupal_set_message('Asset options have not been defined for this node type. See osci_tk_figure.api.php for more information', 'error');
-        return;
     }
 
     $output = ctools_modal_form_wrapper($form_id, $form_state);
