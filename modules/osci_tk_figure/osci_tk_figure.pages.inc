@@ -121,7 +121,8 @@ function osci_tk_figure_asset_options($parent_node, $field, $delta, $node) {
     module_load_include('inc', 'osci_tk_figure', 'osci_tk_figure.assets');
     ctools_include('modal');
 
-    $options = json_decode($parent_node->{$field}['und'][$delta]['options']);
+    //$options = json_decode($parent_node->{$field}['und'][$delta]['options']);
+    $options = json_decode($_GET['options']);
     $form_state = array(
         'ajax'          => TRUE,
         'title'         => t($node->title . ' Asset Options'),
@@ -142,10 +143,16 @@ function osci_tk_figure_asset_options($parent_node, $field, $delta, $node) {
 
     if ($form_state['executed']) {
         $field_id = $field . '[und][' . $delta . '][options]';
+        $link_id = 'edit-' . str_replace('_', '-', $field) . '-und-' . $delta . '-asset-options';
         $encoded_options = addcslashes($form_state['figure_options'], '"');
         $script = "
 <script>
 jQuery('input[name=\"$field_id\"]').attr('value', '$encoded_options');
+var oldUrl = jQuery('#$link_id .asset-options').attr('href');
+var href = oldUrl.split('?');
+var url = href[0] + '?options=$encoded_options';
+updateAjaxUrl(url, oldUrl);
+jQuery('#$link_id .asset-options').attr('href', url);
 </script>";
 
         $output[] = ajax_command_append('#content', $script);

@@ -6,9 +6,19 @@ function osci_tk_figure_asset_iip_asset_options_form($form, &$form_state) {
 }
 
 function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
-	$figureOptionsObj = $form_state;
-	$figureOptions = htmlentities(json_encode($form_state['options']));
-	$layeredImageHtml = _osci_tk_layered_image_get_layered_image_html($form_state['node']->nid);
+    $figureOptionsObj = $form_state;
+    $figureOptions = htmlentities($_GET['options']);
+    $node = node_load(arg(6));
+
+    // Trick the asset options and exit before this function fails miserably
+    // there is probably a better way to do this
+    if (!$node) {
+        $form['option'] = array('#type' => 'item');
+        return osci_tk_figure_asset_options_form($form, $form_state);
+    }
+
+    $index = arg(5);
+    $layeredImageHtml = _osci_tk_epub_generate_figure_document($node, $index, FALSE, time());
 
 	$form['initial_frame'] = array(
 		'#title'    => t('Set Initial Frame'),
@@ -43,7 +53,7 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 	$form['reader_options']['thumbnail'] = array(
 		'#type'             => 'file',
 		'#title'            => 'Thumbnail Image',
-		'#default_value'    => $form_state['options']->thumbnail,
+		'#default_value'    => isset($form_state['options']->thumbnail) ? $form_state['options']->thumbnail : '',
 	);
 
 	// figure options queried from layered image preview

@@ -518,7 +518,12 @@ function _osci_tk_epub_generate_figure_document($node, $index, $noCache = false,
 			return $output;
 		}
 	}
-	$figNode = node_load($node->field_figure['und'][$index]['asset_reference']);
+
+    if (isset($node->field_figure['und'])) {
+	    $figNode = node_load($node->field_figure['und'][$index]['asset_reference']);
+    } else {
+        $figNode = $node;
+    }
 
 	// invoke HOOK_figure_html_NODETYPE
 	$hook = 'figure_html_' . $figNode->type;
@@ -759,8 +764,8 @@ function _osci_tk_get_flattened_nodetree_toc($node, $revTime) {
 
 	// allow modification of the ToC
 	$result = module_invoke_all('alter_epub_toc', $toc);
-	if ($result) {
-		$toc = $result;
+	if (is_array($result) && count($result) > 0) {
+		$toc = $result[0];
 	}
 
 	return $toc;

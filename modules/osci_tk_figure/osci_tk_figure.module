@@ -217,7 +217,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 				'attributes' => array(
 					'class' => array('button', 'asset-options', 'ctools-use-modal'),
 				),
-				'query' => array('options' => isset($item['options']) ? $item['options'] : ''),
+				'query' => array('options' => isset($item['options']) ? $item['options'] : '{}'),
 			);
 
 			$figureElement[] = array(
@@ -235,7 +235,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 				),
 				'options' => array(
 					'#type' => 'hidden',
-					'#value' => isset($item['options']) ? $item['options'] : '',
+					'#default_value' => isset($item['options']) ? $item['options'] : '{}',
 					'#attributes' => array('class' => 'figure_options'),
 				),
 				'asset_reference' => array(

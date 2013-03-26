@@ -2,7 +2,11 @@
 
 function osci_tk_layered_image_preprocess_osci_tk_layered_image_figure_formatter(&$vars) {
 
-    $asset = node_load($vars['item']['asset_reference']);
+    if (isset($vars['node'])) {
+        $asset = $vars['node'];
+    } else {
+        $asset = node_load($vars['item']['asset_reference']);
+    }
 
     switch($asset->type) {
       case 'layered_image':

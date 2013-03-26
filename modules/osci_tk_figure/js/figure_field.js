@@ -6,7 +6,6 @@
 		// retrieve options
 		var options = $.parseJSON($(target).parents(".fieldset-wrapper:first").find('.figure_options').val());
 
-
 		// send nid to server to fetch preview
 		$.get(Drupal.settings.basePath + 'ajax/figurepreview/' + id,
 			function (data) {
@@ -37,14 +36,6 @@
 		}
 	}
 
-    function updateAjaxUrl(url, oldUrl) {
-        Drupal.ajax[oldUrl].url = url;
-        Drupal.ajax[oldUrl].selector = url;
-        Drupal.ajax[url] = Drupal.ajax[oldUrl];
-        Drupal.ajax[url].options.url = url;
-        Drupal.ajax[oldUrl] = null;
-    }
-
 	$(document).ready(function() {
 		/**************************************************
 		 * Figure Preview
@@ -59,7 +50,9 @@
 				var url = Drupal.settings.basePath +
 					Drupal.settings.figureAjaxPath +
 					idx + '/' +
-					currentNid;
+					currentNid +
+                    '?options=' +
+                    $('[name="field_figure[und][' + idx + '][options]"]').val();
 				var oldUrl = parentField.find('.form-type-item a').attr('href');
 				parentField.find('a.asset-options').attr('href', url);
 
@@ -119,3 +112,10 @@
 
 })(jQuery);
 
+var updateAjaxUrl = function(url, oldUrl) {
+    Drupal.ajax[oldUrl].url = url;
+    Drupal.ajax[oldUrl].selector = url;
+    Drupal.ajax[url] = Drupal.ajax[oldUrl];
+    Drupal.ajax[url].options.url = url;
+    Drupal.ajax[oldUrl] = null;
+} 
