@@ -90,7 +90,7 @@ function _osci_tk_glossary_filter($text, $filter, $format) {
 function _osci_tk_glossary_parse_term($match) {
     global $osci_tk_glossary_current_tree;
     
-    return '<a href="#" class="glossary-term" data-tid="' . $osci_tk_glossary_current_tree->tid . '">' . $match[0] . '</a>';
+    return '<a class="glossary-term" data-tid="' . $osci_tk_glossary_current_tree->tid . '">' . $match[0] . '</a>';
 }
 
 /**
