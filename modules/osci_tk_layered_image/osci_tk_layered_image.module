@@ -228,20 +228,24 @@ function osci_tk_layered_image_node_presave($node) {
 }
 
 function osci_tk_layered_image_node_insert($node) {
-	if (!isset($node->ptiff_image_processed)) {
-		_osci_tk_layered_image_get_ptiff_image($node);
-	}
-	if (!isset($node->ptiff_attr_processed)) {
-		_osci_tk_layered_image_get_ptiff_attr($node);
+	if ($node->type === 'layered_image') {
+		if (!isset($node->ptiff_image_processed)) {
+			_osci_tk_layered_image_get_ptiff_image($node);
+		}
+		if (!isset($node->ptiff_attr_processed)) {
+			_osci_tk_layered_image_get_ptiff_attr($node);
+		}
 	}
 }
 
 function osci_tk_layered_image_node_update($node) {
-	if (!isset($node->ptiff_image_processed)) {
-		_osci_tk_layered_image_get_ptiff_image($node);
-	}
-	if (!isset($node->ptiff_attr_processed)) {
-		_osci_tk_layered_image_get_ptiff_attr($node);
+	if ($node->type === 'layered_image') {
+		if (!isset($node->ptiff_image_processed)) {
+			_osci_tk_layered_image_get_ptiff_image($node);
+		}
+		if (!isset($node->ptiff_attr_processed)) {
+			_osci_tk_layered_image_get_ptiff_attr($node);
+		}
 	}
 }
 
