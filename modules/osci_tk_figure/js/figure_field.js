@@ -60,12 +60,6 @@
 				// So we need to update the ajax object so everyone is happy
                 updateAjaxUrl(url, oldUrl);
 
-				// Update wiki text
-				var wikiId = 'fig-' + currentNid + '-' + idx;
-				var syntax = '[figure:' + wikiId + ']';
-				parentField.find('.figure_identifier').data('figid', wikiId);
-				parentField.find('.figure_identifier span').html(syntax);
-
 				// remove figure options and get new preview
 				parentField.find('.figure_options').val("");
 
