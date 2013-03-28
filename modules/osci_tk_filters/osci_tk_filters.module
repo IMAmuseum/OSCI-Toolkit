@@ -328,7 +328,7 @@ function _filter_cross_link($text, $filter, $format) {
  */
 function _process_cross_link($text) {
     if (empty($text[1])) return $text[0];
-    preg_match_all('/(\w+)=([\w\s\/.]*)/', $text[0], $matches);
+    preg_match_all('/(\w+)=([\w\s\/.\-\"\/(\/)]*)/', $text[0], $matches);
     for ($i = 0; $i < count($matches[1]); $i++) {
         $args[$matches[1][$i]] = $matches[2][$i];
     }
