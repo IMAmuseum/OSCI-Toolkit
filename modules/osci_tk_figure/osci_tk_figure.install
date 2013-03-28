@@ -15,10 +15,14 @@ function osci_tk_figure_field_schema($field)
                 'length' => 255,
                 'not null' => false
             ),
-            'caption' => array(
+            'value' => array(
                 'type' => 'text',
                 'size' => 'big',
                 'not null' => false
+            ), 
+            'format' => array(
+                'type' => 'varchar',
+                'length' => 255,
             ),
             'position' => array(
                 'type' => 'varchar',
@@ -41,4 +45,11 @@ function osci_tk_figure_field_schema($field)
     return array('columns' => $columns);
 }
 
-?>
+function osci_tk_figure_update_7003(&$sandbox) {
+    $field['type'] = 'osci_tk_figure';
+    $schema = osci_tk_figure_field_schema($field);
+    db_change_field('field_data_field_figure', 'field_figure_caption', 'field_figure_value', $schema['columns']['value']); 
+    db_add_field('field_data_field_figure', 'field_figure_format', $schema['columns']['format']);
+    db_change_field('field_revision_field_figure', 'field_figure_caption', 'field_figure_value', $schema['columns']['value']);
+    db_add_field('field_revision_field_figure', 'field_figure_format', $schema['columns']['format']); 
+}

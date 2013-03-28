@@ -260,8 +260,8 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 				'caption' => array(
 					'#title' 				=> t('Caption'),
 					'#description' 			=> t('The caption text to associate with this figure'),
-					'#type' 				=> 'textarea',
-					'#default_value' 		=> isset($item['caption']) ? $item['caption'] : '',
+					'#type' 				=> 'text_format',
+					'#default_value' 		=> isset($item['value']) ? $item['value'] : '',
 					'#rows' 				=> 5
 				),
 				'position' => array(
@@ -338,6 +338,19 @@ function osci_tk_figure_reference_validate($element, &$form_state, $form) {
 			form_set_error($element['#name'], 'Invalid asset reference');
 		}
 	}
+}
+
+/**
+ * Implements hook_field_presave
+ */
+function osci_tk_figure_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
+    if ($field['type'] != 'osci_tk_figure')  return;
+    
+    foreach($items as $delta => $item) {
+        $items[$delta]['value'] = $item['caption']['value'];
+        $items[$delta]['format'] = $item['caption']['format'];
+        unset($items[$delta]['caption']);
+    }
 }
 
 function figure_add_more_submit($form, &$form_state)
