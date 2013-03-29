@@ -18,8 +18,8 @@
                 }
 
 				// replace the image with the preview url if it's in the options
-				if (options !== null && options.previewUrl) {
-					dest.find('img:first').attr('src', options.previewUrl);
+				if (data.div !== null) {
+					dest.html(data.div);
                 }
 			},
 			"json"
