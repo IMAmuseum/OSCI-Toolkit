@@ -8,7 +8,7 @@
 	<title>OSCI TK Web</title>
 
 	<?php print drupal_get_css(); ?>
-	<?php print drupal_get_js(); ?>
+	<?php print drupal_get_js('header', NULL, true); ?>
 
     <script>
 		jQuery(function() {
