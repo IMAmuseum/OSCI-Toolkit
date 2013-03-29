@@ -1,5 +1,13 @@
 <?php
 
+function osci_tk_utility_permission() {
+    return array(
+        'administer osci toolkit' => array(
+            'title'         => t('Administer OSCI Toolkit'),
+            'description'   => t('Perform administration tasks for OSCI Toolkit'),
+        ),
+    );
+}
 
 /**
  * Create the content for a figure based on the asset type

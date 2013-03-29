@@ -7,51 +7,31 @@
 
 	<title>OSCI TK Web</title>
 
-	<link rel="stylesheet" href="<?php print $webapp_css_dependencies_path; ?>" />
-	<link rel="stylesheet" href="<?php print $webapp_css_path; ?>" />
-
-	<?php if (!empty($webapp_default_theme)): ?>
-	<link rel="stylesheet" href="<?php print $webapp_default_theme; ?>" />
-	<?php endif; ?>
-
-    <script type='text/javascript' src="<?php print $webapp_js_dependencies_path; ?>"></script>
-    <script type='text/javascript' src="<?php print $webapp_js_path; ?>"></script>
+	<?php print drupal_get_css(); ?>
+	<?php print drupal_get_js(); ?>
 
     <script>
 		jQuery(function() {
 			app.bootstrap({
 				packageUrl: '<?php print $package_path; ?>',
 				templateUrls: [
-					'js/oscitk/templates/'
+					'js/oscitk/templates/',
+					'<?php print $templatePath; ?>'
 				],
 				endpoints: {
-					'OsciTkNotes': '/api/notes/',
-					'OsciTkNote': '/api/notes/',
-					'OsciTkSearch': '/api/search/',
-					'OsciTkOpenSearch': '/api/opensearch/',
-					'OsciTkAccount': '/api/users/',
-					'OsciTkCitation': '/api/citations/'
+					<?php 
+					$first = true; foreach($endpoints as $k => $v) { 
+						if (!$first) {
+							print ",";
+						}
+						print "'" . $k . "','" . $v . "'";
+						$first = false;
+					} ?>
 				},
-				toolbarItems: [
-					{view: 'Toc', text: 'ToC'},
-					{view: 'Notes', text: 'Notes'},
-					{view: 'Figures', text:' Figures'},
-					{view: 'Search', text: 'Search'},
-					{view: 'Font', text: 'Font'},
-					{view: 'Account', text: 'Account'}
-				],
-				sectionView: 'MultiColumnSection',
-				sectionViewOptions: {
-					minColumnWidth : 200,
-					maxColumnWidth : 300,
-					gutterWidth : 40,
-					minLinesPerColumn : 5,
-					defaultLineHeight: 16
-				},
-				paragraphControls: {
-					'toggleNoteDialog': 'note',
-					'toggleCiteDialog': 'cite'
-				}
+				toolbarItems: [<?php print $toolbarItems; ?>],
+				sectionView: '<?php print $sectionView; ?>',
+				sectionViewOptions: <?php print $sectionViewOptions; ?>,
+				paragraphControls: <?php print $paragraphControls; ?>
 			});
 
             app.zotero.init();
