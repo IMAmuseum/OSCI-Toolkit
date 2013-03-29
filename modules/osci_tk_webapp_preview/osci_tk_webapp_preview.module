@@ -43,7 +43,7 @@ function osci_tk_webapp_preview_theme() {
 					'OsciTkAccount' => variable_get('osci_tk_webapp_account_endpoint', ''),
 					'OsciTkCitation' => variable_get('osci_tk_webapp_citation_endpoint', ''),
 				),
-				'templatePath' => $basePath . 'js/oscitk/templates/', 
+				'templatePath' => '/' . $basePath . 'js/oscitk/templates/', 
 				'customTemplatePath' => variable_get('osci_tk_webapp_template_path', ''),
 				'toolbarItems' => variable_get('osci_tk_webapp_toolbar_items', ''),
 				'sectionView' => variable_get('osci_tk_webapp_section_view', ''),
