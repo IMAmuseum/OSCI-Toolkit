@@ -61,8 +61,8 @@ function osci_tk_webapp_admin_form($form, &$form_state) {
     );
 
     $form['osci_tk_webapp_section_view_options'] = array(
-        '#type'             => 'textfield',
-        '#title'            => t('Web-App Section View'),
+        '#type'             => 'textarea',
+        '#title'            => t('Web-App Section View Options'),
         '#default_value'    => variable_get('osci_tk_webapp_section_view_options', "{minColumnWidth : 200,maxColumnWidth : 300,gutterWidth : 40,minLinesPerColumn : 5,defaultLineHeight: 16}")
     );
 
