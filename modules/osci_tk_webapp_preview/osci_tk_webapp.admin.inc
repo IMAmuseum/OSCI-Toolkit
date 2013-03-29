@@ -72,7 +72,7 @@ function osci_tk_webapp_admin_form($form, &$form_state) {
         '#default_value'    => variable_get('osci_tk_webapp_paragraph_controls', "{'toggleNoteDialog': 'note','toggleCiteDialog': 'cite'}")
     );
 
-    $form['#submit'][] = 'tap_webapp_admin_form_submit';
+    $form['#submit'][] = 'osci_tk_webapp_admin_form_submit';
 
     return system_settings_form($form, $form_state);
 
