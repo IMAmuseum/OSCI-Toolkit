@@ -156,9 +156,6 @@ function osci_tk_webapp_preview($node) {
     unset($javascript['settings']);
     unset($javascript['misc/drupal.js']);
 
-    $css = &drupal_static('drupal_add_css', array());
-dd($css);
-
     print theme('osci_tk_webapp_preview', array(
     	'package_path' => $packageUri,
     	'section_id' => ($pubNid === $node->nid) ? null : $node->nid
