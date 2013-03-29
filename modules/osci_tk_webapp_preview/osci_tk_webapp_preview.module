@@ -34,7 +34,6 @@ function osci_tk_webapp_preview_theme() {
 
 	$basePath = variable_get('osci_tk_webapp_base_path', '');
 	//Add the JS files
-	drupal_add_js($basePath . );
 	drupal_add_js($basePath . "js/external/json2.js");
 	drupal_add_js($basePath . "js/external/jquery-1.7.1.js");
 	drupal_add_js($basePath . "js/external/jquery.qtip.js");
