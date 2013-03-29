@@ -49,7 +49,7 @@ function osci_tk_webapp_admin_form($form, &$form_state) {
     );
 
     $form['osci_tk_webapp_toolbar_items'] = array(
-        '#type'             => 'textfield',
+        '#type'             => 'textarea',
         '#title'            => t('Web-App Toolbar Items'),
         '#default_value'    => variable_get('osci_tk_webapp_toolbar_items', "{view: 'Toc', text: 'ToC'},{view: 'Notes', text: 'Notes'},{view: 'Figures', text:' Figures'},{view: 'Glossary', text: 'Glossary'},{view: 'Search', text: 'Search'},{view: 'Font', text: 'Font'},{view: 'Account', text: 'Account'}")
     );
@@ -67,7 +67,7 @@ function osci_tk_webapp_admin_form($form, &$form_state) {
     );
 
     $form['osci_tk_webapp_paragraph_controls'] = array(
-        '#type'             => 'textfield',
+        '#type'             => 'textarea',
         '#title'            => t('Web-App Section View'),
         '#default_value'    => variable_get('osci_tk_webapp_paragraph_controls', "{'toggleNoteDialog': 'note','toggleCiteDialog': 'cite'}")
     );

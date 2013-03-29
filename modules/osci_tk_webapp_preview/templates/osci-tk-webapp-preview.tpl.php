@@ -15,7 +15,7 @@
 			app.bootstrap({
 				packageUrl: '<?php print $package_path; ?>',
 				templateUrls: [
-					'js/oscitk/templates/',
+					<?php print strlen($customTemplatePath) ? "'" . $customTemplatePath . "'," : ''; ?>
 					'<?php print $templatePath; ?>'
 				],
 				endpoints: {
