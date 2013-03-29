@@ -24,7 +24,7 @@
 						if (!$first) {
 							print ",";
 						}
-						print "'" . $k . "','" . $v . "'";
+						print "'" . $k . "': '" . $v . "'";
 						$first = false;
 					} ?>
 				},
