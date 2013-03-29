@@ -20,7 +20,7 @@
 				],
 				endpoints: {
 					<?php 
-					$first = true; foreach($endpoints as $k => $v) { 
+					$first = true; foreach($endPoints as $k => $v) { 
 						if (!$first) {
 							print ",";
 						}
