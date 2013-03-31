@@ -24,11 +24,6 @@ function osci_tk_webapp_preview_menu() {
 
 function osci_tk_webapp_preview_theme() {
 
-	global $base_path;
-
-	$libPath = $base_path . libraries_get_path('OSCI-Toolkit-Frontend');
-	$osci_tk_version = '0.1.0';
-
 	$basePath = variable_get('osci_tk_webapp_base_path', '');
 
 	return array(
@@ -36,6 +31,8 @@ function osci_tk_webapp_preview_theme() {
 			'variables' => array(
 				'package_path' => NULL,
 				'section_id' => null,
+				'js' => array(),
+				'css' => array(),
 				'endPoints' => array(
 					'OsciTkNote' => variable_get('osci_tk_webapp_note_endpoint', ''),
 					'OsciTkSearch' => variable_get('osci_tk_webapp_search_endpoint', ''),
@@ -70,95 +67,94 @@ function osci_tk_webapp_preview($node) {
 
 	$basePath = variable_get('osci_tk_webapp_base_path', '');
 	//Add the JS files
-	drupal_add_js($basePath . "js/external/json2.js");
-	drupal_add_js($basePath . "js/external/jquery-1.7.1.js");
-	drupal_add_js($basePath . "js/external/jquery.qtip.js");
-	drupal_add_js($basePath . "js/external/underscore-1.4.3.js");
-	drupal_add_js($basePath . "js/external/backbone.js");
-	drupal_add_js($basePath . "js/external/backbone-super.js");
-	drupal_add_js($basePath . "js/external/fancybox/jquery.fancybox.js");
-	drupal_add_js($basePath . "js/external/polymaps.min.js");
-	drupal_add_js($basePath . "js/external/jquery-ui-1.8.23.custom.min.js");
-	drupal_add_js($basePath . "js/oscitk/osci_tk_layered_image.js");
-	drupal_add_js($basePath . "js/oscitk/OsciTk.js");
-	drupal_add_js($basePath . "js/oscitk/TemplateManager.js");
-	drupal_add_js($basePath . "js/oscitk/models/BaseModel.js");
-	drupal_add_js($basePath . "js/oscitk/models/ConfigModel.js");
-	drupal_add_js($basePath . "js/oscitk/models/PackageModel.js");
-	drupal_add_js($basePath . "js/oscitk/models/FigureModel.js");
-	drupal_add_js($basePath . "js/oscitk/models/FootnoteModel.js");
-	drupal_add_js($basePath . "js/oscitk/models/NavigationItemModel.js");
-	drupal_add_js($basePath . "js/oscitk/models/NoteModel.js");
-	drupal_add_js($basePath . "js/oscitk/models/SearchResultModel.js");
-	drupal_add_js($basePath . "js/oscitk/models/AccountModel.js");
-	drupal_add_js($basePath . "js/oscitk/models/PageModel.js");
-	drupal_add_js($basePath . "js/oscitk/models/SectionModel.js");
-	drupal_add_js($basePath . "js/oscitk/models/GlossaryTermModel.js");
-	drupal_add_js($basePath . "js/oscitk/collections/BaseCollection.js");
-	drupal_add_js($basePath . "js/oscitk/collections/FiguresCollection.js");
-	drupal_add_js($basePath . "js/oscitk/collections/NavigationItemsCollection.js");
-	drupal_add_js($basePath . "js/oscitk/collections/FootnotesCollection.js");
-	drupal_add_js($basePath . "js/oscitk/collections/NotesCollection.js");
-	drupal_add_js($basePath . "js/oscitk/collections/PagesCollection.js");
-	drupal_add_js($basePath . "js/oscitk/collections/SearchResultsCollection.js");
-	drupal_add_js($basePath . "js/oscitk/collections/GlossaryTermsCollection.js");
-	drupal_add_js($basePath . "js/oscitk/views/BaseView.js");
-	drupal_add_js($basePath . "js/oscitk/views/AppView.js");
-	drupal_add_js($basePath . "js/oscitk/views/SectionView.js");
-	drupal_add_js($basePath . "js/oscitk/views/PageView.js");
-	drupal_add_js($basePath . "js/oscitk/views/MultiColumnSectionView.js");
-	drupal_add_js($basePath . "js/oscitk/views/MultiColumnPageView.js");
-	drupal_add_js($basePath . "js/oscitk/views/MultiColumnFigureView.js");
-	drupal_add_js($basePath . "js/oscitk/views/MultiColumnFigureImageView.js");
-	drupal_add_js($basePath . "js/oscitk/views/MultiColumnFigureLayeredImageView.js");
-	drupal_add_js($basePath . "js/oscitk/views/TitleView.js");
-	drupal_add_js($basePath . "js/oscitk/views/ToolbarView.js");
-	drupal_add_js($basePath . "js/oscitk/views/ToolbarItemView.js");
-	drupal_add_js($basePath . "js/oscitk/views/NavigationView.js");
-	drupal_add_js($basePath . "js/oscitk/views/SearchView.js");
-	drupal_add_js($basePath . "js/oscitk/views/NotesView.js");
-	drupal_add_js($basePath . "js/oscitk/views/InlineNotesView.js");
-	drupal_add_js($basePath . "js/oscitk/views/CitationView.js");
-	drupal_add_js($basePath . "js/oscitk/views/FootnotesView.js");
-	drupal_add_js($basePath . "js/oscitk/views/FiguresView.js");
-	drupal_add_js($basePath . "js/oscitk/views/GlossaryView.js");
-	drupal_add_js($basePath . "js/oscitk/views/GlossaryTooltipView.js");
-	drupal_add_js($basePath . "js/oscitk/views/TocView.js");
-	drupal_add_js($basePath . "js/oscitk/views/AccountView.js");
-	drupal_add_js($basePath . "js/oscitk/views/FontView.js");
-	drupal_add_js($basePath . "js/oscitk/views/ParagraphControlsView.js");
-	drupal_add_js($basePath . "js/oscitk/Router.js");
-	drupal_add_js($basePath . "js/oscitk/helper.js");
-	drupal_add_js($basePath . "js/appBootstrap.js");
-	drupal_add_js($basePath . "js/oscitk/zotero.js");
+	$js = array();
+	$js[] = $basePath . "js/external/json2.js";
+	$js[] = $basePath . "js/external/jquery-1.7.1.js";
+	$js[] = $basePath . "js/external/jquery.qtip.js";
+	$js[] = $basePath . "js/external/underscore-1.4.3.js";
+	$js[] = $basePath . "js/external/backbone.js";
+	$js[] = $basePath . "js/external/backbone-super.js";
+	$js[] = $basePath . "js/external/fancybox/jquery.fancybox.js";
+	$js[] = $basePath . "js/external/polymaps.min.js";
+	$js[] = $basePath . "js/external/jquery-ui-1.8.23.custom.min.js";
+	$js[] = $basePath . "js/oscitk/osci_tk_layered_image.js";
+	$js[] = $basePath . "js/oscitk/OsciTk.js";
+	$js[] = $basePath . "js/oscitk/TemplateManager.js";
+	$js[] = $basePath . "js/oscitk/models/BaseModel.js";
+	$js[] = $basePath . "js/oscitk/models/ConfigModel.js";
+	$js[] = $basePath . "js/oscitk/models/PackageModel.js";
+	$js[] = $basePath . "js/oscitk/models/FigureModel.js";
+	$js[] = $basePath . "js/oscitk/models/FootnoteModel.js";
+	$js[] = $basePath . "js/oscitk/models/NavigationItemModel.js";
+	$js[] = $basePath . "js/oscitk/models/NoteModel.js";
+	$js[] = $basePath . "js/oscitk/models/SearchResultModel.js";
+	$js[] = $basePath . "js/oscitk/models/AccountModel.js";
+	$js[] = $basePath . "js/oscitk/models/PageModel.js";
+	$js[] = $basePath . "js/oscitk/models/SectionModel.js";
+	$js[] = $basePath . "js/oscitk/models/GlossaryTermModel.js";
+	$js[] = $basePath . "js/oscitk/collections/BaseCollection.js";
+	$js[] = $basePath . "js/oscitk/collections/FiguresCollection.js";
+	$js[] = $basePath . "js/oscitk/collections/NavigationItemsCollection.js";
+	$js[] = $basePath . "js/oscitk/collections/FootnotesCollection.js";
+	$js[] = $basePath . "js/oscitk/collections/NotesCollection.js";
+	$js[] = $basePath . "js/oscitk/collections/PagesCollection.js";
+	$js[] = $basePath . "js/oscitk/collections/SearchResultsCollection.js";
+	$js[] = $basePath . "js/oscitk/collections/GlossaryTermsCollection.js";
+	$js[] = $basePath . "js/oscitk/views/BaseView.js";
+	$js[] = $basePath . "js/oscitk/views/AppView.js";
+	$js[] = $basePath . "js/oscitk/views/SectionView.js";
+	$js[] = $basePath . "js/oscitk/views/PageView.js";
+	$js[] = $basePath . "js/oscitk/views/MultiColumnSectionView.js";
+	$js[] = $basePath . "js/oscitk/views/MultiColumnPageView.js";
+	$js[] = $basePath . "js/oscitk/views/MultiColumnFigureView.js";
+	$js[] = $basePath . "js/oscitk/views/MultiColumnFigureImageView.js";
+	$js[] = $basePath . "js/oscitk/views/MultiColumnFigureLayeredImageView.js";
+	$js[] = $basePath . "js/oscitk/views/TitleView.js";
+	$js[] = $basePath . "js/oscitk/views/ToolbarView.js";
+	$js[] = $basePath . "js/oscitk/views/ToolbarItemView.js";
+	$js[] = $basePath . "js/oscitk/views/NavigationView.js";
+	$js[] = $basePath . "js/oscitk/views/SearchView.js";
+	$js[] = $basePath . "js/oscitk/views/NotesView.js";
+	$js[] = $basePath . "js/oscitk/views/InlineNotesView.js";
+	$js[] = $basePath . "js/oscitk/views/CitationView.js";
+	$js[] = $basePath . "js/oscitk/views/FootnotesView.js";
+	$js[] = $basePath . "js/oscitk/views/FiguresView.js";
+	$js[] = $basePath . "js/oscitk/views/GlossaryView.js";
+	$js[] = $basePath . "js/oscitk/views/GlossaryTooltipView.js";
+	$js[] = $basePath . "js/oscitk/views/TocView.js";
+	$js[] = $basePath . "js/oscitk/views/AccountView.js";
+	$js[] = $basePath . "js/oscitk/views/FontView.js";
+	$js[] = $basePath . "js/oscitk/views/ParagraphControlsView.js";
+	$js[] = $basePath . "js/oscitk/Router.js";
+	$js[] = $basePath . "js/oscitk/helper.js";
+	$js[] = $basePath . "js/appBootstrap.js";
+	$js[] = $basePath . "js/oscitk/zotero.js";
 
 	//Add the CSS files
-	drupal_add_css($basePath . "js/external/jquery-ui.custom.css");
-	drupal_add_css($basePath . "js/external/jquery.qtip.css");
-	drupal_add_css($basePath . "js/external/fancybox/jquery.fancybox.css");
-	drupal_add_css($basePath . "css/common.css");
-	drupal_add_css($basePath . "css/toolbar.css");
-	drupal_add_css($basePath . "css/section.css");
-	drupal_add_css($basePath . "css/multiColumnSection.css");
-	drupal_add_css($basePath . "css/search.css");
-	drupal_add_css($basePath . "css/navigation.css");
-	drupal_add_css($basePath . "css/notes.css");
-	drupal_add_css($basePath . "css/glossary.css");
-	drupal_add_css($basePath . "css/layered_image.css");
-	drupal_add_css($basePath . "css/citation.css");
-	drupal_add_css($basePath . "css/themeNight.css");
-	drupal_add_css($basePath . "css/themeSepia.css");
+	$css = array();
+	$css[] = $basePath . "js/external/jquery-ui.custom.css";
+	$css[] = $basePath . "js/external/jquery.qtip.css";
+	$css[] = $basePath . "js/external/fancybox/jquery.fancybox.css";
+	$css[] = $basePath . "css/common.css";
+	$css[] = $basePath . "css/toolbar.css";
+	$css[] = $basePath . "css/section.css";
+	$css[] = $basePath . "css/multiColumnSection.css";
+	$css[] = $basePath . "css/search.css";
+	$css[] = $basePath . "css/navigation.css";
+	$css[] = $basePath . "css/notes.css";
+	$css[] = $basePath . "css/glossary.css";
+	$css[] = $basePath . "css/layered_image.css";
+	$css[] = $basePath . "css/citation.css";
+	$css[] = $basePath . "css/themeNight.css";
+	$css[] = $basePath . "css/themeSepia.css";
 
-	module_invoke_all("osci_tk_webapp_custom");
-
-    // Remove stock drupal js
-    $javascript = &drupal_static('drupal_add_js', array());
-    unset($javascript['settings']);
-    unset($javascript['misc/drupal.js']);
+	drupal_alter("osci_tk_webapp_custom", $js, $css);
 
     print theme('osci_tk_webapp_preview', array(
     	'package_path' => $packageUri,
-    	'section_id' => ($pubNid === $node->nid) ? null : $node->nid
+    	'section_id' => ($pubNid === $node->nid) ? null : $node->nid,
+    	'js' => $js,
+    	'css' => $css
     ));
 
     drupal_exit();

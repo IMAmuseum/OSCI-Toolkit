@@ -7,8 +7,13 @@
 
 	<title>OSCI TK Web</title>
 
-	<?php print drupal_get_css(null, true); ?>
-	<?php print drupal_get_js('header', NULL, true); ?>
+	<?php foreach($css as $cssPath): ?>
+	<link href="<?php print $cssPath; ?>" rel="stylesheet" type="text/css" media="all">
+	<?php endforeach; ?>
+
+	<?php foreach($js as $jsPath): ?>
+	<script src="<?php print $jsPath; ?>" type="text/javascript"></script>
+	<?php endforeach; ?>
 
     <script>
 		jQuery(function() {
