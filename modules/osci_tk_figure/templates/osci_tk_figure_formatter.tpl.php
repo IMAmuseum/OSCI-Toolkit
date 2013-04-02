@@ -8,5 +8,5 @@
 		}
 	?>
 	<div class='figure_content'><?php print $figure_content ?></div>
-	<figcaption><?php print $item['number_template'] . ' ' . check_markup($item['value'], $item['format']); ?></figcaption>
+	<figcaption><div><span class="figure_number"><?php print $item['number_template'] . '</span> ' . check_markup($item['value'], $item['format']); ?></div></figcaption>
 </figure>
