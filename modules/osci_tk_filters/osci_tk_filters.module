@@ -146,7 +146,7 @@ function _filter_footnote($text, $filter, $format) {
     foreach ($matches[0] as $index => $match) {
         $replace = theme($theme, array(
             'footnote_id'       => $matches[1][$index],
-            'footnote_index'    => $matches[2][$index]
+            'footnote_index'    => $matches[2][$index] + 1
         ));
         $filtered = str_replace($match, $replace, $filtered);
     }
