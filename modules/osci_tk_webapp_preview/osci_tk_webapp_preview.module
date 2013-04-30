@@ -69,9 +69,9 @@ function osci_tk_webapp_preview($node) {
 	//Add the JS files
 	$js = array();
 	$js[] = $basePath . "js/external/json2.js";
-	$js[] = $basePath . "js/external/jquery-1.7.1.js";
+	$js[] = $basePath . "js/external/jquery.js";
 	$js[] = $basePath . "js/external/jquery.qtip.js";
-	$js[] = $basePath . "js/external/underscore-1.4.3.js";
+	$js[] = $basePath . "js/external/underscore.js";
 	$js[] = $basePath . "js/external/backbone.js";
 	$js[] = $basePath . "js/external/backbone-super.js";
 	$js[] = $basePath . "js/external/fancybox/jquery.fancybox.js";
