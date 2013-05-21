@@ -706,6 +706,18 @@ function osci_tk_layered_image_osci_tk_figure_content($args) {
 	}
 }
 
+function osci_tk_layered_image_osci_tk_figure_formatter_alter(&$vars) {
+	if ($vars['item']['type'] === 'iip_asset') {
+		$asset = node_load($vars['item']['asset_reference']);
+		$attrs = unserialize($asset->field_ptiff_attr['und'][0]['value']);
+		$vars['item']['aspect'] = (int) $attrs['width'] / (int) $attrs['height'];
+	}
+	if ($vars['item']['type'] === 'layered_image') {
+		$asset = node_load($vars['item']['asset_reference']);
+		$vars['item']['aspect'] = $asset->field_aspect_ratio['und'][0]['value'];
+	}
+}
+
 function osci_tk_layered_image_iip_admin_form($form, &$form_state) {
 	// form the text area default value
 	$hosts = variable_get('osci_tk_layered_image_iip_hosts', array());
