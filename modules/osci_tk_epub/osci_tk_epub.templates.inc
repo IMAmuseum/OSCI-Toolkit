@@ -85,11 +85,11 @@ function theme_osci_tk_epub_navigation_generate_toc_item_list(&$vars) {
 
         $link = $vars['for_export'] ? $leaf['filename'] : $leaf['url'];
 
-        $attrs = "data-section_id='{$leaf['nid']}'";
-        $attrs .= " data-subtitle='{$leaf['subtitle']}'";
-        $attrs .= " data-timestamp='{$leaf['timestamp']}'";
-        $attrs .= " data-thumbnail='{$leaf['thumbnail']}'";
-        $output .= "<a href='{$link}' {$attrs}>{$leaf['title']}</a>";
+        $attrs = "data-section_id=\"{$leaf['nid']}\"";
+        $attrs .= " data-subtitle=\"{$leaf['subtitle']}\"";
+        $attrs .= " data-timestamp=\"{$leaf['timestamp']}\"";
+        $attrs .= " data-thumbnail=\"{$leaf['thumbnail']}\"";
+        $output .= "<a href=\"{$link}\" {$attrs}>{$leaf['title']}</a>";
 
         $flag = true;
     }    
