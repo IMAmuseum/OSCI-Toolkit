@@ -7,7 +7,7 @@ function osci_tk_glossary_preprocess_osci_tk_glossary_document(&$vars) {
 		foreach ($tree as $leaf) {
 			$vars['terms'][$leaf->name] = array(
 				'term_id' => $leaf->tid,
-				'definition' => $leaf->description,
+				'definition' => check_markup($leaf->description, $leaf->format),
 			);
 		}
     }
