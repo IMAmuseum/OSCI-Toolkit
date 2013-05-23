@@ -716,6 +716,15 @@ function osci_tk_layered_image_osci_tk_figure_formatter_alter(&$vars) {
 		$asset = node_load($vars['item']['asset_reference']);
 		$vars['item']['aspect'] = $asset->field_aspect_ratio['und'][0]['value'];
 	}
+	// correct the public url scheme for previewUri in figure options
+	if (isset($vars['item']['options'])) {
+		$opts = json_decode($vars['item']['options']);
+		if (isset($opts->previewUri)) {
+			$opts->previewUri = file_create_url($opts->previewUri);
+			$vars['item']['options'] = json_encode($opts);
+			dd($vars, 'args');
+		}
+	}
 }
 
 function osci_tk_layered_image_iip_admin_form($form, &$form_state) {
