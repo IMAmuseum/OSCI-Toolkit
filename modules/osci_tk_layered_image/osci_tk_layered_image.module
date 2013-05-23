@@ -722,7 +722,7 @@ function osci_tk_layered_image_osci_tk_figure_formatter_alter(&$vars) {
 		if (isset($opts->previewUri)) {
 			$opts->previewUri = file_create_url($opts->previewUri);
 			$vars['item']['options'] = json_encode($opts);
-			dd($vars, 'args');
+			$vars['item']['thumbnail'] = $opts->previewUri;
 		}
 	}
 }
