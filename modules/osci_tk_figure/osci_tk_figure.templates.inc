@@ -1,14 +1,8 @@
 <?php 
 
 function osci_tk_figure_preprocess_osci_tk_figure_formatter(&$vars) {
-
 	drupal_add_css(drupal_get_path('module', 'osci_tk_figure') . '/css/figure_field.css');
 
-    if (isset($vars['node'])) {
-        $asset = $vars['node'];
-    } else {
-	    $asset = node_load($vars['item']['asset_reference']);
-    }
 	$thumbnail = module_invoke_all('osci_tk_figure_thumbnail', array('item' => $vars['item']));
   	$vars['item']['thumbnail'] = array_pop($thumbnail);	
 
