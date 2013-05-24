@@ -52,7 +52,7 @@ function osci_tk_figure_theme()
 			),
 		),
 		'field__field_figure' => array(
-			'template' => 'templates/field__field_figure',
+			'template'  => 'templates/field__field_figure',
 			'variables' => array()
 		)
 	);
@@ -86,6 +86,8 @@ function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $ins
 {
 	global $osci_tk_placed_figures;
 
+	$osci_tk_placed_figures = is_array($osci_tk_placed_figures) ? $osci_tk_placed_figures : array();
+
 	$element = array();
 	switch($display['type'])
 	{
@@ -93,8 +95,7 @@ function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $ins
 			foreach($items as $delta => $item)
 			{
 				//if figure placed inline do not output it again
-				if (is_array($osci_tk_placed_figures) && in_array($delta, $osci_tk_placed_figures))
-				{
+				if (is_array($osci_tk_placed_figures) && in_array($delta, $osci_tk_placed_figures)) {
 					continue;
 				}
 

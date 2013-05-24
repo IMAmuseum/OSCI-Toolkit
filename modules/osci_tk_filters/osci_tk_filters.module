@@ -173,6 +173,7 @@ function _filter_figure($text, $filter, $format)
 
 	$osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
     $osci_tk_epub_for_export = isset($osci_tk_epub_for_export) ? $osci_tk_epub_for_export : false;
+    $osci_tk_placed_figures = is_array($osci_tk_placed_figures) ? $osci_tk_placed_figures : array();
 
     $theme = 'osci_tk_figure_formatter__' . $osci_tk_view_mode;
     $filtered = $text;
@@ -180,40 +181,65 @@ function _filter_figure($text, $filter, $format)
     $regex = '/<p>(\[figure:fig-\d+-\d+\])<\/p>/i';
     $matches = array();
     preg_match_all($regex, $text, $matches);
-    foreach ($matches[0] as $index => $match)
-    {
+    foreach ($matches[0] as $index => $match) {
         $filtered = str_replace($match, $matches[1][$index], $filtered);
     }
 
     //place these figures inline without reference
     $regex = '/\[figure:(fig-(\d+)-(\d+))\]/i';
     $matches = array();
-    $osci_tk_placed_figures = is_array($osci_tk_placed_figures) ? $osci_tk_placed_figures : array();
+    $figureData = array();
+    $section_node;
+    $figure = null;
+    
     preg_match_all($regex, $filtered, $matches);
+
     foreach ($matches[0] as $index => $match) {
         $args = _osci_tk_filter_process_args($matches[1][$index]);
         $section_id = $matches[2][$index];
         $fig_index = $matches[3][$index];
-        $section_node = node_load($section_id);
 
-        if ($section_node) {
-            if (isset($section_node->field_figure['und'][$fig_index])) {
-                $figure = $section_node->field_figure['und'][$fig_index];
-                $aspect = module_invoke_all('osci_tk_figure_aspect', $figure);
-                $figureNode = node_load($figure['asset_reference']);
-                $osci_tk_placed_figures[] = $fig_index;
-                $figure['delta'] = $fig_index;
-                $figure['fig_id'] = _osci_tk_figure_create_id($section_id, $fig_index);
-                $figure['number_template'] = _osci_tk_figure_process_number_template($figure);
-                $figure['export'] = $osci_tk_epub_for_export;
-                $figure['type'] = $figureNode->type;
-                $figure['aspect'] = is_array($aspect) ? array_pop($aspect) : null;
+        if (array_key_exists($fig_index, $osci_tk_placed_figures)) {
+            $osci_tk_placed_figures[$fig_index]['count']++;
+            $figureData = $osci_tk_placed_figures[$fig_index];
+            $section_node = node_load($figureData['section_id'], null, true);
+            $figure = isset($section_node->field_figure['und']) ? $section_node->field_figure['und'][$fig_index] : $section_node->field_figure[$fig_index];
+        } else {
+            $section_node = node_load($section_id);
 
-                $markup = theme($theme, array(
-                    'item' => $figure
-                ));
-                $filtered = str_replace($match, $markup, $filtered);
+            if ($section_node) {
+                if (isset($section_node->field_figure['und'][$fig_index])) {
+                    $figure = $section_node->field_figure['und'][$fig_index];
+                    $aspect = module_invoke_all('osci_tk_figure_aspect', $figure);
+                    $figureNode = node_load($figure['asset_reference']);
+                    $figure['delta'] = count($osci_tk_placed_figures);
+
+                    $figureData = array(
+                        'section_id' => $section_id,
+                        'fig_index' => $fig_index,
+                        'count' => 1,
+                        'delta' => count($osci_tk_placed_figures),
+                        'fig_id' => _osci_tk_figure_create_id($section_id, $fig_index),
+                        'fig_text' => _osci_tk_figure_process_number_template($figure),
+                        'number_template' => _osci_tk_figure_process_number_template($figure),
+                        'export' => $osci_tk_epub_for_export,
+                        'type' => $figureNode->type,
+                        'aspect' => is_array($aspect) ? array_pop($aspect) : null
+                    );
+                    $osci_tk_placed_figures[$fig_index] = $figureData;
+                }
             }
+        }
+
+        if ($figure) {
+            $figure = array_merge($figure, $figureData);
+
+            $markup = theme($theme, array(
+                'item' => $figure,
+                'section' => $section_node,
+                'figure' => $figure
+            ));
+            $filtered = str_replace($match, $markup, $filtered);
         }
     }
 
@@ -233,36 +259,58 @@ function _filter_figure_tips() {
 
 function _filter_figure_reference($text, $filter, $format)
 {
-    global $osci_tk_view_mode, $osci_tk_placed_figures;
+    global $osci_tk_placed_figures, $osci_tk_view_mode;
 
-    $osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'default';
+    $osci_tk_view_mode = isset($osci_tk_view_mode) ? $osci_tk_view_mode : 'Default';
+    $osci_tk_placed_figures = is_array($osci_tk_placed_figures) ? $osci_tk_placed_figures : array();
 
     $filtered = $text;
 
     //place a figure reference for these figures
     $theme = 'osci_tk_figure_link__' . $osci_tk_view_mode;
     $regex = '/\[figureref:(fig-(\d+)-(\d+))\]/i';
+
+    $figureData = array();
     $matches = array();
+    $section_node;
+    $figure;
+
     preg_match_all($regex, $text, $matches);
     foreach ($matches[0] as $index => $match) {
         $args = _osci_tk_filter_process_args($matches[1][$index]);
         $section_id = $matches[2][$index];
         $fig_index = $matches[3][$index];
-        $section_node = node_load($section_id);
-        if ($section_node) {
-            if (isset($section_node->field_figure['und'][$fig_index])) {
-                $figure = $section_node->field_figure['und'][$fig_index];
-                $figure['delta'] = $fig_index;
-                $markup = theme($theme, array(
-                    'section'   => $section_node,
-                    'figure'    => $section_node->field_figure['und'][$fig_index],
-                    'fig_index' => $fig_index,
-                    'fig_id'    => _osci_tk_figure_create_id($section_id, $fig_index),
-                    'fig_text'  => _osci_tk_figure_process_number_template($figure)
-                ));
-                $filtered = str_replace($match, $markup, $filtered);
+
+        if (array_key_exists($fig_index, $osci_tk_placed_figures)) {
+            $osci_tk_placed_figures[$fig_index]['count']++;
+            $figureData = $osci_tk_placed_figures[$fig_index];
+            $section_node = node_load($figureData['section_id'], null, true);
+            $figure = isset($section_node->field_figure['und']) ? $section_node->field_figure['und'][$fig_index] : $section_node->field_figure[$fig_index];
+            $figure['delta'] = $figureData['delta'];
+        } else {
+            $section_node = node_load($section_id, null, true);
+            if ($section_node) {
+                if (isset($section_node->field_figure['und'][$fig_index])) {
+                    $figure = $figure = isset($section_node->field_figure['und']) ? $section_node->field_figure['und'][$fig_index] : $section_node->field_figure[$fig_index];
+                    $figure['delta'] = count($osci_tk_placed_figures);
+                    $figureData = array(
+                        'section_id' => $section_id,
+                        'fig_index' => $fig_index,
+                        'count' => 1,
+                        'delta' => $figure['delta'],
+                        'fig_id' => _osci_tk_figure_create_id($section_id, $fig_index),
+                        'fig_text' => _osci_tk_figure_process_number_template($figure)
+                    );
+                    $osci_tk_placed_figures[$fig_index] = $figureData;
+                }
             }
         }
+        
+        $figureData['section'] = $section_node;
+        $figureData['figure'] = $figure;
+
+        $markup = theme($theme, $figureData);
+        $filtered = str_replace($match, $markup, $filtered);
     }
 
     return $filtered;

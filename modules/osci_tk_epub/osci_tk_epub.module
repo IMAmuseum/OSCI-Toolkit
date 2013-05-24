@@ -375,7 +375,7 @@ function osci_tk_epub_render($nid, $pubNid = null)
 
 	if ($vid || !isset($_GET['revision']))
 	{
-		$node = node_load($nid, $vid);
+		$node = node_load($nid, $vid, true);
 		$output = _osci_tk_epub_generate_content_document($node, false, $pubNid, $dev);
 	} else {
 		return drupal_not_found();
@@ -418,21 +418,6 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $pub
 					$view[$key]['#items'][$k]['fn_id'] = 'fn-' . $node->nid . '-' . $i;
 					$i++;
 				}
-				break;
-
-			case 'field_figure':
-				$items = element_children($element);
-				foreach($items as $delta)
-				{
-					$view[$key][$delta]['#item']['export'] = $forExport;
-
-					//if figure placed inline do not output it again
-					if (is_array($osci_tk_placed_figures) && in_array($delta, $osci_tk_placed_figures))
-					{
-						//unset($view[$key][$delta]);
-					}
-				}
-
 				break;
 		}
 	}
