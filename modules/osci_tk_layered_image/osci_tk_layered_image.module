@@ -173,10 +173,8 @@ function osci_tk_layered_image_form_alter(&$form, &$form_state, $form_id) {
 		var $ = jQuery;
 		var togglePicker = function() {
 			var checkBox = $(this);
-			console.log(checkBox);
 			if($(this).attr("checked")) {
 				var inputText = $('#edit-field-assets-und-{$key}-nid').val();
-				console.log(inputText, 'inputtext');
 				var matches = inputText.match(/\[nid:(\d+)\]/);
 				if (matches[1]) {
 					var nid = parseInt(matches[1]);
