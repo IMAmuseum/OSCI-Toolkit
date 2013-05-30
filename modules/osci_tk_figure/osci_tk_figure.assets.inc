@@ -1,8 +1,7 @@
 <?php
 
 function osci_tk_figure_asset_iip_asset_options_form($form, &$form_state) {
-
-	return osci_tk_figure_asset_options_form($form, $form_state); 
+	return osci_tk_figure_asset_layered_image_options_form($form, &$form_state);
 }
 
 function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
@@ -27,7 +26,7 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 			."data-options=\"$figureOptions\">"
 			. $layeredImageHtml 
 			. "</figure>"
-			. "<script>var li = jQuery('#osci-tk-figure-asset-layered-image-options-form .layered_image-asset').first();"
+			. "<script>var li = jQuery('form[id$=\"-options-form\"] .layered_image-asset').first();"
 			. "window.LIEditingImage = new LayeredImage(li);</script>",
 	);
 
@@ -89,7 +88,7 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 	$form['#submit'][] = 'osci_tk_figure_asset_layered_image_options_form_submit';
 	$form = osci_tk_figure_asset_options_form($form, $form_state);
 	$form['submit']['#suffix'] = "<script>"
-		. "var form = jQuery('#osci-tk-figure-asset-layered-image-options-form');"
+		. "var form = jQuery('form[id$=\"-options-form\"]');"
 		. "form.find('input[type=\"submit\"]').bind('click', function(event) {"
 		. "    var extents = window.LIEditingImage.getExtents();"
 		. "    var baseLayerPreset = window.LIEditingImage.getVisibleBaseLayerIds();"
