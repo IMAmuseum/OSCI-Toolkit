@@ -61,7 +61,6 @@ function osci_tk_notes_request() {
 										'tags' 			=> $_POST['tags']
 									)
 								));
-								// dpm($note, 'note');
 								drupal_exit();
 							}
 						}
