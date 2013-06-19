@@ -226,7 +226,7 @@ function osci_tk_layered_image_node_presave($node) {
 }
 
 function osci_tk_layered_image_node_insert($node) {
-	if ($node->type === 'layered_image') {
+	if ($node->type === 'iip_asset') {
 		if (!isset($node->ptiff_image_processed)) {
 			_osci_tk_layered_image_get_ptiff_image($node);
 		}
@@ -237,7 +237,7 @@ function osci_tk_layered_image_node_insert($node) {
 }
 
 function osci_tk_layered_image_node_update($node) {
-	if ($node->type === 'layered_image') {
+	if ($node->type === 'iip_asset') {
 		if (!isset($node->ptiff_image_processed)) {
 			_osci_tk_layered_image_get_ptiff_image($node);
 		}
