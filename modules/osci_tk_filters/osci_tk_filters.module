@@ -220,8 +220,8 @@ function _filter_figure($text, $filter, $format)
                         'count' => 1,
                         'delta' => count($osci_tk_placed_figures),
                         'fig_id' => _osci_tk_figure_create_id($section_id, $fig_index),
-                        'fig_text' => _osci_tk_figure_process_number_template($figure),
-                        'number_template' => _osci_tk_figure_process_number_template($figure),
+                        'fig_text' => _osci_tk_figure_process_number_template($figure, $section_id),
+                        'number_template' => _osci_tk_figure_process_number_template($figure, $section_id),
                         'export' => $osci_tk_epub_for_export,
                         'type' => $figureNode->type,
                         'aspect' => is_array($aspect) ? array_pop($aspect) : null
@@ -299,7 +299,7 @@ function _filter_figure_reference($text, $filter, $format)
                         'count' => 1,
                         'delta' => $figure['delta'],
                         'fig_id' => _osci_tk_figure_create_id($section_id, $fig_index),
-                        'fig_text' => _osci_tk_figure_process_number_template($figure)
+                        'fig_text' => _osci_tk_figure_process_number_template($figure, $section_id)
                     );
                     $osci_tk_placed_figures[$fig_index] = $figureData;
                 }
