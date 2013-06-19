@@ -17,26 +17,26 @@ function osci_tk_utility_osci_tk_figure_content($args) {
   $asset = node_load($args['item']['asset_reference']);
 
   if (!isset($args['item']['export'])) {
-	  $args['item']['export'] = false;
+      $args['item']['export'] = false;
   }
 
   switch($asset->type) {
-  	//TODO: video & audio were simple tests to make sure this worked... should probably be moved somewhere else
+    //TODO: video & audio were simple tests to make sure this worked... should probably be moved somewhere else
     case 'video_asset':
-	  $src = _osci_tk_epub_asset_process_uri($asset->field_video_file['und'][0]['uri'], $args['item']['export']);
+      $src = _osci_tk_epub_asset_process_uri($asset->field_video_file['und'][0]['uri'], $args['item']['export']);
       return '<video controls="controls"><source src="' . $src . '" type="' . $asset->field_video_file['und'][0]['filemime'] . '" /></video>';
       break;
     case 'audio_asset':
-	  $src = _osci_tk_epub_asset_process_uri($asset->field_audio_file['und'][0]['uri'], $args['item']['export']);
+      $src = _osci_tk_epub_asset_process_uri($asset->field_audio_file['und'][0]['uri'], $args['item']['export']);
       return '<audio controls="controls" preload="auto" autobuffer="autobuffer"><source src="' . $src . '" type="' . $asset->field_audio_file['und'][0]['filemime'] . '" /></audio>';
       break;
     case 'image_asset':
-	  $src = _osci_tk_epub_asset_process_uri($asset->field_image['und'][0]['uri'], $args['item']['export']);
-	  return '<img src="' . $src . '" />';
-	  break;
-	case 'html_asset':
-	  return drupal_render(field_view_field('node', $asset, 'body', 'epub'));
-	  break;
+      $src = _osci_tk_epub_asset_process_uri($asset->field_image['und'][0]['uri'], $args['item']['export']);
+      return '<img src="' . $src . '" />';
+      break;
+    case 'html_asset':
+      return drupal_render(field_view_field('node', $asset, 'body', 'epub'));
+      break;
   }
 }
 
@@ -46,38 +46,38 @@ function osci_tk_utility_osci_tk_figure_content($args) {
  */
 function osci_tk_utility_osci_tk_figure_thumbnail($args) {
 
-	// TODO: Determine if a thumbnail was set on the figure first
+    // TODO: Determine if a thumbnail was set on the figure first
 
-	$asset = node_load($args['item']['asset_reference']);
+    $asset = node_load($args['item']['asset_reference']);
 
-	if (!isset($args['item']['export'])) {
-		$args['item']['export'] = false;
-	}
+    if (!isset($args['item']['export'])) {
+        $args['item']['export'] = false;
+    }
 
-	if (property_exists($asset, 'field_asset_thumbnail') && isset($asset->field_asset_thumbnail['und'][0]['uri'])) {
-		$src = _osci_tk_epub_asset_process_uri(
-			$asset->field_asset_thumbnail['und'][0]['uri'],
-			$args['item']['export']
-		);
-		return "<img class='thumbnail' src='$src' />";
-	}
+    if (property_exists($asset, 'field_asset_thumbnail') && isset($asset->field_asset_thumbnail['und'][0]['uri'])) {
+        $src = _osci_tk_epub_asset_process_uri(
+            $asset->field_asset_thumbnail['und'][0]['uri'],
+            $args['item']['export']
+        );
+        return "<img class='thumbnail' src='$src' />";
+    }
 
 }
 
 
 function osci_tk_utility_osci_tk_figure_aspect($figure)
 {
-	$asset = node_load($figure['asset_reference']);
-	$aspect = 1;
+    $asset = node_load($figure['asset_reference']);
+    $aspect = 1;
 
-	switch($asset->type)
-	{
-		case 'image_asset':
-			$aspect = $asset->field_image['und'][0]['width'] / $asset->field_image['und'][0]['height'];
-			break;
-	}
+    switch($asset->type)
+    {
+        case 'image_asset':
+            $aspect = $asset->field_image['und'][0]['width'] / $asset->field_image['und'][0]['height'];
+            break;
+    }
 
-	return $aspect;
+    return $aspect;
 }
 
 /**
@@ -86,8 +86,8 @@ function osci_tk_utility_osci_tk_figure_aspect($figure)
 function osci_tk_utility_osci_tk_figure_resources($figure) {
 
   $result = array(
-  	'items' => array(),
-  	'content_doc_media_type' => null
+    'items' => array(),
+    'content_doc_media_type' => null
   );
 
   $asset = node_load($figure['asset_reference']);
@@ -97,7 +97,7 @@ function osci_tk_utility_osci_tk_figure_resources($figure) {
     case 'video_asset':
       // Leave the content doc media type as null to indicate there is none
       $item = array(
-      	'media-type' => $asset->field_video_file['und'][0]['filemime'],
+        'media-type' => $asset->field_video_file['und'][0]['filemime'],
         'uri' => $asset->field_video_file['und'][0]['uri'],
       );
       $result['items'][] = $item;
@@ -105,7 +105,7 @@ function osci_tk_utility_osci_tk_figure_resources($figure) {
     case 'audio_asset':
       // Leave the content doc media type as null to indicate there is none
       $item = array(
-      	'media-type' => $asset->field_audio_file['und'][0]['filemime'],
+        'media-type' => $asset->field_audio_file['und'][0]['filemime'],
         'uri' => $asset->field_audio_file['und'][0]['uri'],
       );
       $result['items'][] = $item;
@@ -119,11 +119,11 @@ function osci_tk_utility_osci_tk_figure_resources($figure) {
       // TODO: add files?
       return $result;
     case 'image_asset':
-	  $item = array(
-		'media-type' => $asset->field_image['und'][0]['filemime'],
-		'uri' => $asset->field_image['und'][0]['uri']
-	  );
-	  $result['items'][] = $item;
+      $item = array(
+        'media-type' => $asset->field_image['und'][0]['filemime'],
+        'uri' => $asset->field_image['und'][0]['uri']
+      );
+      $result['items'][] = $item;
       // TODO: add files?
       return $result;
     case 'svg_asset':
@@ -143,11 +143,11 @@ function osci_tk_utility_osci_tk_figure_resources($figure) {
  */
 function osci_tk_utility_theme()
 {
-	return array(
-		'osci_tk_fieldset_tabs' => array(
-			'render element' => 'element'
-		)
-	);
+    return array(
+        'osci_tk_fieldset_tabs' => array(
+            'render element' => 'element'
+        )
+    );
 }
 
 /**
@@ -159,8 +159,8 @@ function osci_tk_utility_theme()
  */
 //function node_content_view($node, $view_mode, $langcode)
 //{
-//	$node->view_mode = $view_mode;
-//	return $node;
+//  $node->view_mode = $view_mode;
+//  return $node;
 //}
 
 /**
@@ -170,8 +170,8 @@ function osci_tk_utility_theme()
  */
 function osci_tk_utility_preprocess_node(&$variables, $hook)
 {
-	$variables['theme_hook_suggestions'][] = 'node__' . $variables['view_mode'] . '__' . $variables['type'];
-	$variables['theme_hook_suggestions'][] = 'node__' . $variables['view_mode'];
+    $variables['theme_hook_suggestions'][] = 'node__' . $variables['view_mode'] . '__' . $variables['type'];
+    $variables['theme_hook_suggestions'][] = 'node__' . $variables['view_mode'];
 }
 
 /**
@@ -181,104 +181,104 @@ function osci_tk_utility_preprocess_node(&$variables, $hook)
  */
 function theme_osci_tk_fieldset_tabs($variables)
 {
-	drupal_add_library('system', 'ui.tabs');
-	drupal_add_js(drupal_get_path('module','osci_tk_utility') . '/js/fieldset_tabs.js');
-	drupal_add_css(drupal_get_path('module','osci_tk_utility') . '/css/osci_tk_utility.css');
+    drupal_add_library('system', 'ui.tabs');
+    drupal_add_js(drupal_get_path('module','osci_tk_utility') . '/js/fieldset_tabs.js');
+    drupal_add_css(drupal_get_path('module','osci_tk_utility') . '/css/osci_tk_utility.css');
 
-	$element = $variables['element'];
+    $element = $variables['element'];
 
-	$items = array();
-	$childElements = element_children($element);
-	$addAnother = null;
-	$numAdd = null;
-	$remove = null;
-	$output = '';
+    $items = array();
+    $childElements = element_children($element);
+    $addAnother = null;
+    $numAdd = null;
+    $remove = null;
+    $output = '';
 
-	foreach($childElements as $key) {
-		if ($key === 'add_more') {
-			$addAnother = &$element[$key];
-		} else if ($key === 'num_add') {
-			$numAdd = &$element[$key];
-		} else if ($key === 'remove_item') {
-			$remove = &$element[$key];
-		} else {
-			$items[] = &$element[$key];
-		}
-	}
+    foreach($childElements as $key) {
+        if ($key === 'add_more') {
+            $addAnother = &$element[$key];
+        } else if ($key === 'num_add') {
+            $numAdd = &$element[$key];
+        } else if ($key === 'remove_item') {
+            $remove = &$element[$key];
+        } else {
+            $items[] = &$element[$key];
+        }
+    }
 
-	$tabHtml = '';
-	$itemHtml = '';
-	foreach($items as $item)
-	{
-		$id = 'fieldset-tab-' . $item['#id'];
-		$itemHtml .= '<div id="' . $id . '" class="fieldset-tab-content">' . drupal_render($item) . '</div>';
-		$tabHtml .= '<li><a href="#' . $id . '">' . $item['#weight'] . '</a>';
-	}
+    $tabHtml = '';
+    $itemHtml = '';
+    foreach($items as $item)
+    {
+        $id = 'fieldset-tab-' . $item['#id'];
+        $itemHtml .= '<div id="' . $id . '" class="fieldset-tab-content">' . drupal_render($item) . '</div>';
+        $tabHtml .= '<li><a href="#' . $id . '">' . $item['#weight'] . '</a>';
+    }
 
-	if ($addAnother)
-	{
-		$output .= drupal_render($addAnother);
-	}
+    if ($addAnother)
+    {
+        $output .= drupal_render($addAnother);
+    }
 
-	if ($remove)
-	{
-		$output .= drupal_render($remove);
-	}
+    if ($remove)
+    {
+        $output .= drupal_render($remove);
+    }
 
-	if ($numAdd)
-	{
-		$output .= drupal_render($numAdd);
-	}
+    if ($numAdd)
+    {
+        $output .= drupal_render($numAdd);
+    }
 
-	$output .= '<div id="fieldset-tabs-' . $element['#field_name'] . '" class="fieldset-tabs">';
-	$output .= '<ul>' . $tabHtml . '</ul>';
-	$output .= $itemHtml;
-	$output .= '</div>';
+    $output .= '<div id="fieldset-tabs-' . $element['#field_name'] . '" class="fieldset-tabs">';
+    $output .= '<ul>' . $tabHtml . '</ul>';
+    $output .= $itemHtml;
+    $output .= '</div>';
 
-	return $output;
+    return $output;
 }
 
 function osci_tk_utility_form_alter(&$form, &$form_state, $form_id)
 {
-	if (strpos($form_id, '_node_form') !== false)
-	{
-		if (isset($form['field_footnote']))
-		{
-			array_unshift($form['actions']['submit']['#submit'], '_osci_tk_utility_node_submit');
-		}
+    if (strpos($form_id, '_node_form') !== false)
+    {
+        if (isset($form['field_footnote']))
+        {
+            array_unshift($form['actions']['submit']['#submit'], '_osci_tk_utility_node_submit');
+        }
 
-		if (isset($form['field_footnote']))
-		{
-			drupal_add_js(drupal_get_path('module','osci_tk_utility') . '/js/osci_tk_footnotes.js');
+        if (isset($form['field_footnote']))
+        {
+            drupal_add_js(drupal_get_path('module','osci_tk_utility') . '/js/osci_tk_footnotes.js');
 
-			$form['field_footnote'][LANGUAGE_NONE]['#theme'] = 'osci_tk_fieldset_tabs';
-			unset($form['field_footnote'][LANGUAGE_NONE][$form['field_footnote'][LANGUAGE_NONE]['#max_delta']]);
-			$form['field_footnote'][LANGUAGE_NONE]['#max_delta']--;
+            $form['field_footnote'][LANGUAGE_NONE]['#theme'] = 'osci_tk_fieldset_tabs';
+            unset($form['field_footnote'][LANGUAGE_NONE][$form['field_footnote'][LANGUAGE_NONE]['#max_delta']]);
+            $form['field_footnote'][LANGUAGE_NONE]['#max_delta']--;
 
-			$form['field_footnote'][LANGUAGE_NONE]['add_more']['#value'] = t('Add another footnote');
+            $form['field_footnote'][LANGUAGE_NONE]['add_more']['#value'] = t('Add another footnote');
 
-			$childElements = element_children($form['field_footnote'][LANGUAGE_NONE]);
-			foreach($childElements as $key)
-			{
-				if (isset($form['field_footnote'][LANGUAGE_NONE][$key]['_weight']))
-				{
-					$form['field_footnote'][LANGUAGE_NONE][$key]['_weight']['#type'] = 'hidden';
-					$fnId = 'fn-'. $form['nid']['#value'] . '-' . $key;
-					$form['field_footnote'][LANGUAGE_NONE][$key]['#prefix'] = '<div class="footnote_identifier" data-fnId="' . $fnId . '">' . $key . ' <span>[footnoteref:' . $fnId . ']</span></div>';
-				}
-			}
+            $childElements = element_children($form['field_footnote'][LANGUAGE_NONE]);
+            foreach($childElements as $key)
+            {
+                if (isset($form['field_footnote'][LANGUAGE_NONE][$key]['_weight']))
+                {
+                    $form['field_footnote'][LANGUAGE_NONE][$key]['_weight']['#type'] = 'hidden';
+                    $fnId = 'fn-'. $form['nid']['#value'] . '-' . $key;
+                    $form['field_footnote'][LANGUAGE_NONE][$key]['#prefix'] = '<div class="footnote_identifier" data-fnId="' . $fnId . '">' . $key . ' <span>[footnoteref:' . $fnId . ']</span></div>';
+                }
+            }
 
-			$form['field_footnote'][LANGUAGE_NONE]['remove_item'] = array(
-				'#type' => 'item',
-				'#markup' => l('Remove Footnote', '#', array(
-					'attributes' => array(
-						'class' => array('button', 'remove-footnote')
-					)
-				)),
-				'#weight' => -99
-			);
-		}
-	}
+            $form['field_footnote'][LANGUAGE_NONE]['remove_item'] = array(
+                '#type' => 'item',
+                '#markup' => l('Remove Footnote', '#', array(
+                    'attributes' => array(
+                        'class' => array('button', 'remove-footnote')
+                    )
+                )),
+                '#weight' => -99
+            );
+        }
+    }
 }
 
 /**
@@ -288,55 +288,55 @@ function osci_tk_utility_form_alter(&$form, &$form_state, $form_id)
  */
 function _osci_tk_utility_node_submit($form, &$form_state)
 {
-	$offset = 0;
-	$replaceIds = array();
-	$newIds = array();
+    $offset = 0;
+    $replaceIds = array();
+    $newIds = array();
 
-	//update footnote references for renumbering if one deleted
-	if (isset($form_state['values']['field_footnote']))
-	{
-		//remove hidden field so that drupal saves this field correctly
-		unset($form_state['values']['field_footnote'][LANGUAGE_NONE]['num_add']);
+    //update footnote references for renumbering if one deleted
+    if (isset($form_state['values']['field_footnote']))
+    {
+        //remove hidden field so that drupal saves this field correctly
+        unset($form_state['values']['field_footnote'][LANGUAGE_NONE]['num_add']);
 
-		$footnoteTemplate = '[footnoteref:fn-' . $form_state['values']['nid'] . '-';
-		foreach($form_state['values']['field_footnote'][LANGUAGE_NONE] as $k => $v)
-		{
-			if ($k === 'add_more')
-			{
-				continue;
-			}
+        $footnoteTemplate = '[footnoteref:fn-' . $form_state['values']['nid'] . '-';
+        foreach($form_state['values']['field_footnote'][LANGUAGE_NONE] as $k => $v)
+        {
+            if ($k === 'add_more')
+            {
+                continue;
+            }
 
-			if (!strlen(trim($v['value'])))
-			{
-				$offset++;
-				$replaceIds[] = $footnoteTemplate . $k . ']';
-				$newIds[] = '';
-			}
-			else if ($offset > 0)
-			{
-				$replaceIds[] = $footnoteTemplate . $k . ']';
-				$newIds[] = $footnoteTemplate . ($k - $offset) . ']';
-			}
-		}
-	}
+            if (!strlen(trim($v['value'])))
+            {
+                $offset++;
+                $replaceIds[] = $footnoteTemplate . $k . ']';
+                $newIds[] = '';
+            }
+            else if ($offset > 0)
+            {
+                $replaceIds[] = $footnoteTemplate . $k . ']';
+                $newIds[] = $footnoteTemplate . ($k - $offset) . ']';
+            }
+        }
+    }
 
-	if (count($replaceIds))
-	{
-		foreach($form_state['values'] as $k => $v)
-		{
-			if (is_array($v) && isset($v[LANGUAGE_NONE]))
-			{
-				foreach($v[LANGUAGE_NONE] as $delta => $value)
-				{
-					if (isset($form_state['values'][$k][LANGUAGE_NONE][$delta]['value']))
-					{
-						$form_state['values'][$k][LANGUAGE_NONE][$delta]['value'] =
-							str_replace($replaceIds, $newIds, $form_state['values'][$k][LANGUAGE_NONE][$delta]['value']);
-					}
-				}
-			}
-		}
-	}
+    if (count($replaceIds))
+    {
+        foreach($form_state['values'] as $k => $v)
+        {
+            if (is_array($v) && isset($v[LANGUAGE_NONE]))
+            {
+                foreach($v[LANGUAGE_NONE] as $delta => $value)
+                {
+                    if (isset($form_state['values'][$k][LANGUAGE_NONE][$delta]['value']))
+                    {
+                        $form_state['values'][$k][LANGUAGE_NONE][$delta]['value'] =
+                            str_replace($replaceIds, $newIds, $form_state['values'][$k][LANGUAGE_NONE][$delta]['value']);
+                    }
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -347,64 +347,64 @@ function _osci_tk_utility_node_submit($form, &$form_state)
  */
 function _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time = null)
 {
-	// if no timestamp provided, use current time
-	if ($time === null) {
-		$time = time();
-	}
-	$vid = null;
+    // if no timestamp provided, use current time
+    if ($time === null) {
+        $time = time();
+    }
+    $vid = null;
 
-	// determine if this node was even created at time requested
-	$valid = db_select('node', 'n')
-		->fields('n', array('nid', 'created'))
-		->condition('nid', $nid, '=')
-		->condition('created', $time, '<=')
-		->range(0, 1)
+    // determine if this node was even created at time requested
+    $valid = db_select('node', 'n')
+        ->fields('n', array('nid', 'created'))
+        ->condition('nid', $nid, '=')
+        ->condition('created', $time, '<=')
+        ->range(0, 1)
         ->execute()
         ->fetchAssoc();
 
-	// if not return null
+    // if not return null
     if (!$valid) {
-    	return null;
+        return null;
     }
 
     // if using workbench moderation, and moderation is enabled for this content type, then revisioning
     // works a little differently
-	if (module_exists('workbench_moderation')) {
-		$where = 'n.nid = :nid AND n.stamp <= :stamp AND (n.from_state = "published" OR n.state = "published")';
+    if (module_exists('workbench_moderation')) {
+        $where = 'n.nid = :nid AND n.stamp <= :stamp AND (n.from_state = "published" OR n.state = "published")';
 
-		$results = db_select('workbench_moderation_node_history', 'n')
-	        ->fields('n', array('nid', 'vid', 'state'))
-	        ->where($where, array(
-	        	':nid' => $nid,
-	        	':stamp' => $time
-	        ))
-	        ->orderBy('stamp', 'DESC')
-	        ->range(0, 1)
-	        ->execute()
-	        ->fetchAssoc();
+        $results = db_select('workbench_moderation_node_history', 'n')
+            ->fields('n', array('nid', 'vid', 'state'))
+            ->where($where, array(
+                ':nid' => $nid,
+                ':stamp' => $time
+            ))
+            ->orderBy('stamp', 'DESC')
+            ->range(0, 1)
+            ->execute()
+            ->fetchAssoc();
 
-	    if ($results) {
-			$vid = $results['vid'];
-	    }
-	}
-	// otherwise use standard Drupal revisioning
-	else {
-		$results = db_select('node_revision', 'n')
-	        ->fields('n', array('nid', 'vid', 'status'))
-	        ->condition('nid', $nid)
-	        ->condition('timestamp', $time, '<=')
-	        ->orderBy('timestamp', 'DESC')
-	        ->range(0, 1)
-	        ->execute()
-	        ->fetchAssoc();
+        if ($results) {
+            $vid = $results['vid'];
+        }
+    }
+    // otherwise use standard Drupal revisioning
+    else {
+        $results = db_select('node_revision', 'n')
+            ->fields('n', array('nid', 'vid', 'status'))
+            ->condition('nid', $nid)
+            ->condition('timestamp', $time, '<=')
+            ->orderBy('timestamp', 'DESC')
+            ->range(0, 1)
+            ->execute()
+            ->fetchAssoc();
 
-	    if ($results) {
-	    	$vid = $results['vid'];
-	    }
-	}
+        if ($results) {
+            $vid = $results['vid'];
+        }
+    }
 
-	// return revision id
-	return $vid;
+    // return revision id
+    return $vid;
 }
 
 /**
@@ -413,124 +413,124 @@ function _osci_tk_utility_retrieve_revision_id_by_timestamp($nid, $time = null)
  */
 
 function osci_tk_utility_field_info() {
-	return array(
-			'identifier' => array(
-					'label' 			=> t('Identifier'),
-					'description' 		=> t('Provides the ability to specify a type and value for identifier information'),
-					'default_widget' 	=> 'identifier_widget',
-					'default_formatter' => 'identifier_formatter'
-			)
-	);
+    return array(
+            'identifier' => array(
+                    'label'             => t('Identifier'),
+                    'description'       => t('Provides the ability to specify a type and value for identifier information'),
+                    'default_widget'    => 'identifier_widget',
+                    'default_formatter' => 'identifier_formatter'
+            )
+    );
 }
 
 function osci_tk_utility_field_formatter_info() {
-	return array(
-			'identifier_default' => array(
-					'label'         => t('Identifier Default'),
-					'field types'   => array('identifier'),
-			)
-	);
+    return array(
+            'identifier_default' => array(
+                    'label'         => t('Identifier Default'),
+                    'field types'   => array('identifier'),
+            )
+    );
 }
 
 function osci_tk_utility_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
-	$element = array();
-	switch ($display['type']) {
-		case 'identifier_default':
-			foreach ($items as $item) {
-				$element[] = array(
-					'#type' => 'item',
-					'#title' => 'Identifier',
-					'#markup' => "{$item['identifier_type']}: {$item['identifier']}"
-				);
-			}
-			break;
-	}
-	return $element;
+    $element = array();
+    switch ($display['type']) {
+        case 'identifier_default':
+            foreach ($items as $item) {
+                $element[] = array(
+                    '#type' => 'item',
+                    '#title' => 'Identifier',
+                    '#markup' => "{$item['identifier_type']}: {$item['identifier']}"
+                );
+            }
+            break;
+    }
+    return $element;
 }
 
 function osci_tk_utility_field_widget_info()
 {
-	return array(
-			'identifier_widget' => array(
-					'label' => t('Identifier'),
-					'field types' => array('identifier'),
-					'settings' => array(),
-					'behaviors' => array(
-							'default value' => FIELD_BEHAVIOR_DEFAULT,
-							'multiple values' => FIELD_BEHAVIOR_CUSTOM
-					)
-			)
-	);
+    return array(
+            'identifier_widget' => array(
+                    'label' => t('Identifier'),
+                    'field types' => array('identifier'),
+                    'settings' => array(),
+                    'behaviors' => array(
+                            'default value' => FIELD_BEHAVIOR_DEFAULT,
+                            'multiple values' => FIELD_BEHAVIOR_CUSTOM
+                    )
+            )
+    );
 }
 
 function osci_tk_utility_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
-	if ($instance['widget']['type'] === 'identifier_widget') {
-		$el = array(
-				'#type' => 'fieldset',
-				'#prefix' => '<div id="identifiers-container">',
-				'#suffix' => '</div>'
-		);
-		$max = $form_state['field'][$field['field_name']][LANGUAGE_NONE]['items_count'];
+    if ($instance['widget']['type'] === 'identifier_widget') {
+        $el = array(
+                '#type' => 'fieldset',
+                '#prefix' => '<div id="identifiers-container">',
+                '#suffix' => '</div>'
+        );
+        $max = $form_state['field'][$field['field_name']][LANGUAGE_NONE]['items_count'];
 
-		for($i = 0; $i < $max; $i++) {
-			$itemDelta = $i;
-			$item = isset($items[$itemDelta]) ? $items[$itemDelta]: array();
+        for($i = 0; $i < $max; $i++) {
+            $itemDelta = $i;
+            $item = isset($items[$itemDelta]) ? $items[$itemDelta]: array();
 
-			$el[] = array(
-					'identifier_type' => array(
-							'#type'    => 'select',
-							'#title'   => 'Identifier Type',
-							'#options' => array(
-									'isbn' => 'ISBN',
-									'doi'  => 'DOI',
-									'uuid' => 'UUID'
-							),
-							'#default_value' => isset($item['identifier_type']) ? $item['identifier_type'] : ''
-					),
-					'identifier' => array(
-							'#type' => 'textfield',
-							'#title' => 'Identifier',
-							'#default_value' => isset($item['identifier']) ? $item['identifier'] : ''
-					)
-			);
-		}
-		$el['add_more'] = array(
-				'#type' => 'submit',
-				'#name' => 'osci_tk_utility_add_more',
-				'#value' => t('Add another identifier'),
-				'#attributes' => array('class' => array('field-add-more-submit')),
-				'#limit_validation_errors' => array(),
-				'#submit' => array('osci_tk_utility_add_more_submit'),
-				'#ajax' => array(
-						'callback' 	=> 'osci_tk_utility_add_more_js',
-						'wrapper' 	=> 'identifiers-container',
-						'effect' 	=> 'fade',
-						'method' 	=> 'replace'
-				),
-				'#weight' => 100
-		);
+            $el[] = array(
+                    'identifier_type' => array(
+                            '#type'    => 'select',
+                            '#title'   => 'Identifier Type',
+                            '#options' => array(
+                                    'isbn' => 'ISBN',
+                                    'doi'  => 'DOI',
+                                    'uuid' => 'UUID'
+                            ),
+                            '#default_value' => isset($item['identifier_type']) ? $item['identifier_type'] : ''
+                    ),
+                    'identifier' => array(
+                            '#type' => 'textfield',
+                            '#title' => 'Identifier',
+                            '#default_value' => isset($item['identifier']) ? $item['identifier'] : ''
+                    )
+            );
+        }
+        $el['add_more'] = array(
+                '#type' => 'submit',
+                '#name' => 'osci_tk_utility_add_more',
+                '#value' => t('Add another identifier'),
+                '#attributes' => array('class' => array('field-add-more-submit')),
+                '#limit_validation_errors' => array(),
+                '#submit' => array('osci_tk_utility_add_more_submit'),
+                '#ajax' => array(
+                        'callback'  => 'osci_tk_utility_add_more_js',
+                        'wrapper'   => 'identifiers-container',
+                        'effect'    => 'fade',
+                        'method'    => 'replace'
+                ),
+                '#weight' => 100
+        );
 
-	}
-	$element = $element + $el;
-	return $element;
+    }
+    $element = $element + $el;
+    return $element;
 }
 
 function osci_tk_utility_field_is_empty($item, $field) {
-	if ($field['type'] === 'identifier') {
-		if (empty($item['identifier'])) return TRUE;
-	}
-	return FALSE;
+    if ($field['type'] === 'identifier') {
+        if (empty($item['identifier'])) return TRUE;
+    }
+    return FALSE;
 }
 
 function osci_tk_utility_add_more_submit($form, &$form_state)
 {
-	$fieldName = $form_state['clicked_button']['#parents'][0];
-	$form_state['field'][$fieldName][LANGUAGE_NONE]['items_count']++;
-	$form_state['rebuild'] = true;
+    $fieldName = $form_state['clicked_button']['#parents'][0];
+    $form_state['field'][$fieldName][LANGUAGE_NONE]['items_count']++;
+    $form_state['rebuild'] = true;
 }
 
 function osci_tk_utility_add_more_js($form, $form_state)
 {
-	$fieldName = $form_state['clicked_button']['#parents'][0];
-	return $form[$fieldName];
+    $fieldName = $form_state['clicked_button']['#parents'][0];
+    return $form[$fieldName];
 }
