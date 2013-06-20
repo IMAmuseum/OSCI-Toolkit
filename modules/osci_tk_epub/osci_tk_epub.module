@@ -1326,6 +1326,6 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
 		'publication' => $node
 	));
 
-	exit();
+	drupal_exit();
 
 }
