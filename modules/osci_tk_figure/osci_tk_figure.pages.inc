@@ -2,7 +2,6 @@
 
 function osci_tk_figure_reference($entity_type, $bundle, $field_name, $queryString = '') 
 {
-    $field = field_info_field($field_name);
     $instance = field_info_instance($entity_type, $field_name, $bundle);
     
     $types = $instance['widget']['settings']['osci_tk_figure_types'];

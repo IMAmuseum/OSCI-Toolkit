@@ -5,7 +5,6 @@ function osci_tk_figure_asset_iip_asset_options_form($form, &$form_state) {
 }
 
 function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
-    $figureOptionsObj = $form_state;
     $figureOptions = htmlentities($_GET['options']);
     $node = node_load(arg(6));
 

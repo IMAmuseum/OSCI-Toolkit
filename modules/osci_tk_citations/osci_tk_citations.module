@@ -53,7 +53,7 @@ function osci_tk_citations_request() {
 		//Get the Creator from section if set
 		if (isset($section->field_osci_tk_creator) && isset($section->field_osci_tk_creator['und'])) {
 			$citationData['creator'] = array();
-			foreach($section->field_osci_tk_creator['und'] as $k => $v) {
+			foreach($section->field_osci_tk_creator['und'] as $v) {
 				$citationData['creator'][] = $v['value'];
 			}
 		}
@@ -84,7 +84,6 @@ function osci_tk_citations_request() {
 }
 
 function osci_tk_citations_demo() {
-	global $user;
 	drupal_add_js(drupal_get_path('module', 'osci_tk_citations') . '/js/demo.js');
 
 	$form = array();
