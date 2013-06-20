@@ -226,7 +226,7 @@ function osci_tk_epub_publish_figure_document($epubFile, $figure, &$context)
 			$context['results']['files'][] = $fileName;
 		}
 
-		foreach($figure['resources'] as $index => $item)
+		foreach($figure['resources'] as $item)
 		{
 			$fileName = 'OEBPS/' . _osci_tk_epub_asset_process_uri($item['uri'], true);
 			$epub->addFile(drupal_realpath($item['uri']), $fileName);

@@ -410,7 +410,6 @@ function osci_tk_nodetree_get_data_for_nid($nid) {
  * @return bool     Whether or not the entity is part of a nodetree
  */
 function osci_tk_nodetree_entity_is_tree($nid) {
-	$nodeTreeData = array();
 	$query = db_select('field_config', 'fc')
 		->fields('fc', array('field_name'))
 		->condition('type', 'osci_tk_nodetree', '=');

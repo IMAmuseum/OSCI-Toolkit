@@ -128,7 +128,6 @@ function osci_tk_users_request() {
 }
 
 function osci_tk_users_demo() {
-	global $user;
 	drupal_add_js(drupal_get_path('module', 'osci_tk_users') . '/js/demo.js');
 
 	$form = array();

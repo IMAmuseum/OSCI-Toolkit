@@ -264,7 +264,6 @@ function _osci_tk_search_get_path_hierarchy($entity, ApacheSolrDocument $documen
 	// iterate through all fields
 	foreach($trees as $tree) {
 		$root_nid = $tree['rootNid'];
-		$counter = 1;
 		$current_tree = $tree;
 		$hierachy = array($entity->nid);
 
@@ -285,7 +284,6 @@ function _osci_tk_search_get_path_hierarchy($entity, ApacheSolrDocument $documen
 		} while (!empty($current_tree) && $current_tree['parentNid'] != $root_nid);
 
 		$current_path = '';
-		$current_hierachy_path = '';
 
 		// buld paths and add to document
 		foreach($hierachy as $key => $nid) {
