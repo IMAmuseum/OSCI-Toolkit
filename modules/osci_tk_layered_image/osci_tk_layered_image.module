@@ -178,11 +178,9 @@ function osci_tk_layered_image_form_alter(&$form, &$form_state, $form_id) {
 				var matches = inputText.match(/\[nid:(\d+)\]/);
 				if (matches[1]) {
 					var nid = parseInt(matches[1]);
-					console.log(nid, 'nid');
 				} else return;
 				// send a request to drupal and determine if this is svg or not
 				$.post('{$base_url}/layered_image/is-svg-asset', {nid: nid}, function(data) {
-					console.log(data, 'data');
 					if (data.is_svg_asset) {
 						$("#edit-field-assets-und-{$key}-color").parent().css("display", "block");
 					}
