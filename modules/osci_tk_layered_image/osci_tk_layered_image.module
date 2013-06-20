@@ -215,7 +215,7 @@ function osci_tk_layered_image_node_presave($node) {
 		// form the serialized field_data
 		$data = array();
 		// grab the flags from each asset
-		foreach ($node->field_assets['und'] as $key => $value) {
+		foreach ($node->field_assets['und'] as $value) {
 			$data[] = $value;
 		}
 		$serialized_data = serialize($data);
