@@ -24,6 +24,7 @@ function osci_tk_webapp_preview_menu() {
 
 function osci_tk_webapp_preview_theme() {
 
+	global $base_url;
 	$basePath = variable_get('osci_tk_webapp_base_path', '');
 
 	return array(
@@ -45,7 +46,9 @@ function osci_tk_webapp_preview_theme() {
 				'toolbarItems' => variable_get('osci_tk_webapp_toolbar_items', ''),
 				'sectionView' => variable_get('osci_tk_webapp_section_view', ''),
 				'sectionViewOptions' => variable_get('osci_tk_webapp_section_view_options', ''),
-				'paragraphControls' => variable_get('osci_tk_webapp_paragraph_controls','')
+				'paragraphControls' => variable_get('osci_tk_webapp_paragraph_controls',''),
+				'basePath' => $basePath,
+				'baseUrl' => $base_url
 			),
 			'template'  => 'templates/osci-tk-webapp-preview',
 		),
