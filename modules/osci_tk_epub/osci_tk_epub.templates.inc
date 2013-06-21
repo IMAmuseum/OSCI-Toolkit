@@ -58,9 +58,7 @@ function osci_tk_epub_preprocess_epub_package(&$vars)
 
 function osci_tk_epub_preprocess_osci_tk_epub_section(&$vars)
 {
-	$exploded = explode('_', $vars['item']['field_name']);
-	$vars['field_name'] = array_pop($exploded);
-
+	$vars['field_name'] = str_replace("field_", "", $vars['item']['field_name']);
 	$vars['content'] = check_markup($vars['item']['value'], $vars['item']['format']);
 }
 
