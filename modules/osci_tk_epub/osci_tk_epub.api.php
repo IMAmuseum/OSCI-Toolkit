@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * osci_tk_epub.api.php
+ */
 
 /**
  * Invoked in osci_tk_epub.module to allow additional content to be added
