@@ -11,6 +11,6 @@ jQuery(document).ready(function() {
 	figure.appendTo('body');
 	
 	// initialize the conservation asset
-	new ConservationAsset($('.conservation-asset')[0]);
+	var conservationAssets = new ConservationAsset($('.conservation-asset')[0]);
 	
 });

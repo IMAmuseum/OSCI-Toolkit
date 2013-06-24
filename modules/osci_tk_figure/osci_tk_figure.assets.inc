@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * osci_tk_figure.assets.inc
+ */
 
 function osci_tk_figure_asset_iip_asset_options_form($form, &$form_state) {
 	return osci_tk_figure_asset_layered_image_options_form($form, &$form_state);

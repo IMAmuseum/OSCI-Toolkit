@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * osci_tk_figures.pages.inc
+ */
 
 function osci_tk_figure_reference($entity_type, $bundle, $field_name, $queryString = '') 
 {
@@ -135,7 +139,7 @@ function osci_tk_figure_asset_options($parent_node, $field, $delta, $node) {
 
     // Throw an error if nothing has been implemented for this node type
     if (!function_exists($form_id)) {
-        drupal_set_message('Asset options have not been defined for this node type. See osci_tk_figure.api.php for more information', 'error');
+        drupal_set_message(t('Asset options have not been defined for this node type. See osci_tk_figure.api.php for more information'), 'error');
     }
 
     $output = ctools_modal_form_wrapper($form_id, $form_state);

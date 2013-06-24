@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * osci_tk_epub.publish.inc
+ */
 
 function osci_tk_epub_publish_form($form, &$form_state, $nid)
 {
@@ -20,7 +24,7 @@ function osci_tk_epub_publish_form_submit($form, &$form_state)
 {
 	// Check for presense of zip extension
     if (!class_exists('ZipArchive')) {
-        drupal_set_message("You must install the php zip extension to publish.", 'error');
+        drupal_set_message(t("You must install the php zip extension to publish."), 'error');
         return;
     }
 
@@ -268,7 +272,7 @@ function _osci_tk_epub_zip_init($path, $flag = ZIPARCHIVE::CHECKCONS) {
 	$path = drupal_realpath($path);
 
     if ($zip->open($path, $flag) !== TRUE) {
-        drupal_set_message("Could not use file $path", 'error');
+        drupal_set_message(t("Could not use file $path"), 'error');
         return FALSE;
     }
 

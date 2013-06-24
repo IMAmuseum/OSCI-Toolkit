@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * osci_tk_epub.template.inc
+ */
 
 function osci_tk_epub_preprocess_epub_package(&$vars)
 {

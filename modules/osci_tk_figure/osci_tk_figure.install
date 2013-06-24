@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * osci_tk_figure.install
+ */
 
 function osci_tk_figure_field_schema($field)
 {
