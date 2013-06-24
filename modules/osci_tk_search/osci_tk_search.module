@@ -401,7 +401,7 @@ function _osci_tk_search_create_figure_documents($entity, $entity_doc, $env_id, 
 		unset($document->path);
 
 		$document->id = $fid;
-		$document->content = trim($item['caption']);
+		$document->content = trim($item['value']);
 		$document->teaser = truncate_utf8($document->content, 300, TRUE);
 		$document->ss_figure_id = $fid;
 		$document->im_publication_id = $publications;
