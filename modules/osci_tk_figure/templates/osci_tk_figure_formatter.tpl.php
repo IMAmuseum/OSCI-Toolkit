@@ -1,4 +1,4 @@
-<figure id="<?php print $item['fig_id']; ?>" title="<?php print $item['number_template']?>" data-position="<?php print $item['position']; ?>" data-columns="<?php print $item['columns']; ?>" data-figure_type="<?php print $item['type']; ?>" data-aspect="<?php print $item['aspect']; ?>" data-options="<?php print htmlspecialchars($item['options']); ?>" data-order="<?php print $item['delta']; ?>">
+<figure id="<?php print $item['fig_id']; ?>" title="<?php print $item['number_template']?>" data-position="<?php print $item['position']; ?>" data-columns="<?php print $item['columns']; ?>" data-figure_type="<?php print $item['type']; ?>" data-aspect="<?php print $item['aspect']; ?>" data-options="<?php print htmlspecialchars($item['options']); ?>" data-order="<?php print $item['delta']; ?>" data-count="<?php print $item['count']; ?>">
 	<?php 
 		if (isset($item['thumbnail'])) {
 			print $item['thumbnail'];

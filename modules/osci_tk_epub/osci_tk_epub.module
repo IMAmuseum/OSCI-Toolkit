@@ -114,7 +114,6 @@ function osci_tk_epub_url_outbound_alter(&$path, $options, $original_path) {
 		$newPath = "api/epub";
 
 		$parts = count($pathParts);
-		$lookupPath = array();
 		$endOffset = 1;
 
 		//for figures do not lookup the figure index as a nid
@@ -389,7 +388,7 @@ function osci_tk_epub_render($nid, $pubNid = null)
 
 function _osci_tk_epub_generate_content_document($node, $forExport = false, $pubNid = null, $noCache = false)
 {
-	global $osci_tk_placed_figures, $osci_tk_epub_for_export;
+	global $osci_tk_epub_for_export;
 
 	$osci_tk_epub_for_export = $forExport;
 
@@ -1326,6 +1325,6 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
 		'publication' => $node
 	));
 
-	exit();
+	drupal_exit();
 
 }

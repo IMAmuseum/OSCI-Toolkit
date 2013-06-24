@@ -58,9 +58,7 @@ function osci_tk_epub_preprocess_epub_package(&$vars)
 
 function osci_tk_epub_preprocess_osci_tk_epub_section(&$vars)
 {
-	$exploded = explode('_', $vars['item']['field_name']);
-	$vars['field_name'] = array_pop($exploded);
-
+	$vars['field_name'] = str_replace("field_", "", $vars['item']['field_name']);
 	$vars['content'] = check_markup($vars['item']['value'], $vars['item']['format']);
 }
 
@@ -68,7 +66,7 @@ function theme_osci_tk_epub_navigation_generate_toc_item_list(&$vars) {
     $depth = -1;
     $flag = false;
     $output = '';
-    foreach ($vars['toc'] as $key => $leaf) {
+    foreach ($vars['toc'] as $leaf) {
         while ($leaf['depth'] > $depth) {
             $output .= '<ol><li>';
             $flag = false;
@@ -118,7 +116,6 @@ function theme_osci_tk_epub_navigation_generate_index(&$vars) {
             // if section has figures, include them in index
             if (isset($section->field_figure['und']) && count($section->field_figure['und']) > 0) { 
                 for ($i=0; $i < count($section->field_figure['und']); $i++) {
-                    $figure = $section->field_figure['und'][$i];
                     $link = $vars['for_export'] ? _osci_tk_epub_node_figure_filename($section->nid, $i) : _osci_tk_epub_node_figure_url($section->nid, $i, $vars['rev_time'], $vars['node']->nid);
                     $list .= "<li><a href='{$link}'>{$title}: Fig. {$i}</a></li>";
                 }    

@@ -24,7 +24,6 @@ function osci_tk_notes_menu() {
 
 function osci_tk_notes_request() {
 	global $user;
-	$args = array();
 	if ($user->uid > 0) {
 		if (count($_POST) > 0) {
 			// POST request, insert a note into the db
@@ -61,7 +60,6 @@ function osci_tk_notes_request() {
 										'tags' 			=> $_POST['tags']
 									)
 								));
-								// dpm($note, 'note');
 								drupal_exit();
 							}
 						}
