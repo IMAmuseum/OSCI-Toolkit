@@ -1,4 +1,7 @@
 <?php 
+/**
+ * osci_tk_figure.template.inc
+ */
 
 function osci_tk_figure_preprocess_osci_tk_figure_formatter(&$vars) {
     global $osci_tk_placed_figures;

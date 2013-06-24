@@ -6,9 +6,9 @@ function osci_tk_notes_menu() {
 	$items = array();
 	
 	$items['api/notes'] = array(
-		'title'			 	=> t('Process a note request'),
+		'title'			 	=> 'Process a note request',
 		'page callback'	 	=> 'osci_tk_notes_request',
-		'access callback' 	=> array($user->uid),
+		'access arguments' 	=> array($user->uid),
 		'type'              => MENU_CALLBACK
 	);
 	

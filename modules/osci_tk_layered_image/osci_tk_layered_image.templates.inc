@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * osci_tk_layered_image.template.inc
+ */
 
 function osci_tk_layered_image_preprocess_osci_tk_layered_image_figure_formatter(&$vars) {
 

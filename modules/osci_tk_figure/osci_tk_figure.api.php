@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * osci_tk_figure.api.php
+ */
 
 /**
  * Implements osci_tk_figure_asset_NODE_TYPE_options_form()
