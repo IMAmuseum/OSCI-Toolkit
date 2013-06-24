@@ -25,14 +25,14 @@ function osci_tk_layered_image_menu() {
 	// );
 
 	$items['layered_image/is-svg-asset'] = array(
-		'title'             => t('SVG Asset Callback'),
+		'title'             => 'SVG Asset Callback',
 		'page callback'     => 'osci_tk_layered_image_is_svg_asset',
 		'access arguments'  => array('access content'),
 		'type'              => MENU_CALLBACK
 	);
 
 	$items['layered_image/view/%'] = array(
-		'title'             => t('View a layered_image asset as a standalone figure'),
+		'title'             => 'View a layered_image asset as a standalone figure',
 		'page callback'     => 'osci_tk_layered_image_view',
 		'page arguments'    => array(2),
 		'access arguments'  => array('access content'),
@@ -40,7 +40,7 @@ function osci_tk_layered_image_menu() {
 	);
 
 	$items['layered_image/%/data.json'] = array(
-		'title'				=> t('Get layered_image asset data in json format'),
+		'title'				=> 'Get layered_image asset data in json format',
 		'page callback'		=> 'osci_tk_layered_image_get_json',
 		'page arguments'	=> array(1),
 		'access arguments'	=> array('access content'),
@@ -48,7 +48,7 @@ function osci_tk_layered_image_menu() {
 	);
 
 	$items['admin/config/system/iip'] = array(
-		'title'             => t('IIP Settings'),
+		'title'             => 'IIP Settings',
 		'page callback'     => 'drupal_get_form',
 		'page arguments'    => array('osci_tk_layered_image_iip_admin_form'),
 		'access arguments'  => array('administer site configuration'),
@@ -329,7 +329,10 @@ function osci_tk_layered_image_view($nid)
 
 }
 
-// implements hook_osci_tk_image_types - for osci_tk_features admin settings
+/**
+ * Implements hook_osci_tk_image_types().
+ * for osci_tk_features admin settings
+ */
 function osci_tk_layered_image_osci_tk_image_types() {
 	$types[] = array(
 		'title'			=> 'layered_image Thumbnail',
@@ -357,7 +360,9 @@ function osci_tk_layered_image_is_svg_asset() {
 	print json_encode($response);
 }
 
-// implements HOOK_figure_html_NODETYPE
+/**
+ * Implements HOOK_figure_html_NODETYPE().
+ */
 function osci_tk_layered_image_figure_html_layered_image($node) {
 	$thumbStyle = variable_get('osci_tk_image_style_layered_image_thumbnail', 'osci_tk_default');
 
@@ -488,7 +493,7 @@ function _osci_tk_layered_image_get_ptiff_image($node) {
 		node_save($node);
 	} else {
 		if ($fo) file_delete($fo);
-		drupal_set_message('Could not retrieve an image from the IIP server. Please check the PTIFF path and server.', 'error');
+		drupal_set_message(t('Could not retrieve an image from the IIP server. Please check the PTIFF path and server.'), 'error');
 	}
 }
 
@@ -526,7 +531,7 @@ function _osci_tk_layered_image_get_ptiff_attr($node) {
 		$node->is_new = false;
 		node_save($node);
 	} else {
-		drupal_set_message('Could not retrieve image information from the IIP server.  Please check path and server', 'error');
+		drupal_set_message(t('Could not retrieve image information from the IIP server.  Please check path and server'), 'error');
 	}
 }
 
