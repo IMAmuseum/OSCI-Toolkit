@@ -47,7 +47,7 @@ function osci_tk_features_image_default_styles() {
   $styles['osci_tk_thumbnail_square'] = array(
     'name' => 'osci_tk_thumbnail_square',
     'effects' => array(
-      4 => array(
+      1 => array(
         'label' => 'Scale and crop',
         'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
         'effect callback' => 'image_scale_and_crop_effect',
@@ -57,8 +57,8 @@ function osci_tk_features_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '50',
-          'height' => '50',
+          'width' => '200',
+          'height' => '150',
         ),
         'weight' => '1',
       ),
@@ -73,6 +73,14 @@ function osci_tk_features_image_default_styles() {
  */
 function osci_tk_features_node_info() {
   $items = array(
+    'html_asset' => array(
+      'name' => t('HTML Asset'),
+      'base' => 'node_content',
+      'description' => '',
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
     'iip_asset' => array(
       'name' => t('IIP Asset'),
       'base' => 'node_content',
@@ -92,7 +100,7 @@ function osci_tk_features_node_info() {
     'layered_image' => array(
       'name' => t('Layered Image'),
       'base' => 'node_content',
-      'description' => 'An interactive figure type that combines assets into layers',
+      'description' => t('An interactive figure type that combines assets into layers'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',
@@ -100,7 +108,7 @@ function osci_tk_features_node_info() {
     'note' => array(
       'name' => t('Note'),
       'base' => 'node_content',
-      'description' => 'User Notes',
+      'description' => t('User Notes'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',
@@ -108,7 +116,7 @@ function osci_tk_features_node_info() {
     'publication' => array(
       'name' => t('Publication'),
       'base' => 'node_content',
-      'description' => 'The root of a publication. Used to store publication information and the publication content heirarchy',
+      'description' => t('The root of a publication. Used to store publication information and the publication content heirarchy'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',
