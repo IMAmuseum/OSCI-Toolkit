@@ -65,7 +65,19 @@ function osci_tk_epub_preprocess_osci_tk_epub_section(&$vars)
 	$exploded = explode('_', $vars['item']['field_name']);
 	$vars['field_name'] = array_pop($exploded);
 
-	$vars['content'] = check_markup($vars['item']['value'], $vars['item']['format']);
+    // Handle title and subtitle of a section
+    switch ($vars['field_name']) {
+        case 'title':
+            $vars['content'] = '<h1>' . check_plain($vars['item']['value']) . '</h1>';
+            break;
+        case 'subtitle':
+            $vars['content'] = '<h3>' . check_plain($vars['item']['value']) . '</h3>';
+            break;
+        default:
+	        $vars['content'] = check_markup($vars['item']['value'], $vars['item']['format']);
+            break;
+    }
+
 }
 
 function theme_osci_tk_epub_navigation_generate_toc_item_list(&$vars) {
