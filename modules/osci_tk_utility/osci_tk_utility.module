@@ -35,7 +35,8 @@ function osci_tk_utility_osci_tk_figure_content($args) {
       return '<img src="' . $src . '" />';
       break;
     case 'html_asset':
-      return drupal_render(field_view_field('node', $asset, 'body', 'epub'));
+      $node = field_view_field('node', $asset, 'body', 'epub');
+      return drupal_render($node);
       break;
   }
 }
