@@ -362,7 +362,7 @@ function osci_tk_nodetree_get_data_for_nid($nid) {
 	$fields = db_query("SELECT field_name FROM {field_config} WHERE type = 'osci_tk_nodetree'", array(), array('fetch' => PDO::FETCH_ASSOC));
 	foreach($fields as $field) {
 		$tableName = 'field_data_' . $field['field_name'];
-		$treeNodes = db_query("SELECT * FROM {" . $tableName . "} WHERE entity_id IN (SELECT entity_id FROM {" . $tableName . "} WHERE field_nodetree_target_nid = :nid) order by entity_id, delta", array(':nid' => $nid), array('fetch' => PDO::FETCH_ASSOC));
+		$treeNodes = db_query("SELECT * FROM {" . $tableName . "} WHERE entity_id = (SELECT entity_id FROM {" . $tableName . "} WHERE field_nodetree_target_nid = :nid) order by entity_id, delta", array(':nid' => $nid), array('fetch' => PDO::FETCH_ASSOC));
 
 		$prevRootNid = null;
 		$prevNid = null;
@@ -444,7 +444,6 @@ function osci_tk_nodetree_block_view($delta = '') {
 			$block['subject'] = t('Nodetree Navigation');
 			$block['content'] = '';
 			if ($node = menu_get_object()) {
-
 				$treeData = osci_tk_nodetree_get_data_for_nid($node->nid);
 
 				foreach($treeData as $tree) {
