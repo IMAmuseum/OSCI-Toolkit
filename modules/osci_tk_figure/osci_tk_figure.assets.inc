@@ -5,6 +5,10 @@
  */
 
 function osci_tk_figure_asset_iip_asset_options_form($form, &$form_state) {
+	$attrs = unserialize($form_state['node']->field_ptiff_attr['und'][0]['value']);
+	if (isset($attrs['width']) && isset($attrs['height'])) {
+		$form_state['node']->field_aspect_ratio['und'][0]['value'] = (float) ($attrs['width'] / $attrs['height']);
+	}
 	return osci_tk_figure_asset_layered_image_options_form($form, &$form_state);
 }
 
@@ -21,11 +25,14 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 
     $index = arg(5);
     $layeredImageHtml = _osci_tk_epub_generate_figure_document($node, $index, FALSE, time());
-
+    $aspect = isset($node->field_aspect_ratio['und'][0]['value']) ?
+    	$node->field_aspect_ratio['und'][0]['value'] : 1;
+    $width = 400;
+    $height = (int) ($width / $aspect);
 	$form['initial_frame'] = array(
 		'#title'    => t('Set Initial Frame'),
 		'#type'     => 'item',
-		'#markup'   => "<figure style=\"position: relative; margin-top: 20px; width: 400px; height:400px;\" "
+		'#markup'   => "<figure style=\"position: relative; margin-top: 20px; width: {$width}px; height: {$height}px;\" "
 			."data-options=\"$figureOptions\">"
 			. $layeredImageHtml 
 			. "</figure>"
