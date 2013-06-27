@@ -554,6 +554,13 @@ function _osci_tk_layered_image_get_svg_attr($file_path) {
 	$xml = simplexml_load_file($file_path);
 	if (is_object($xml)) {
 		$xmlAttr = (array) $xml->attributes();
+		// try first to determine size by height and width attributes
+		if (isset($xmlAttr['@attributes']['width']) && isset($xmlAttr['@attributes']['height'])) {
+			$attr->width = (int) $xmlAttr['@attributes']['width'];
+			$attr->height = (int) $xmlAttr['@attributes']['height'];
+			return $attr;
+		}
+		// alternatively, try to get height and width from viewBox
 		if (isset($xmlAttr['@attributes']['viewBox'])) {
 			$viewBox = explode(' ', $xmlAttr['@attributes']['viewBox']);
 			$attr->width = (int) $viewBox[2] - $viewBox[0];
