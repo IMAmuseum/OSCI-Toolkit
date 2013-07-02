@@ -13,7 +13,9 @@ function osci_tk_figure_asset_iip_asset_options_form($form, &$form_state) {
 }
 
 function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
-    $figureOptions = htmlentities($_GET['options']);
+    $figureOptions = json_decode($_GET['options']);
+    $figureOptions->editing = true;
+    $figureOptions = json_encode($figureOptions);
     $node = node_load(arg(6));
 
     // Trick the asset options and exit before this function fails miserably
@@ -33,7 +35,7 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 		'#title'    => t('Set Initial Frame'),
 		'#type'     => 'item',
 		'#markup'   => "<figure style=\"position: relative; margin-top: 20px; width: {$width}px; height: {$height}px;\" "
-			."data-options=\"$figureOptions\">"
+			."data-options=\"" . htmlentities($figureOptions) . "\">"
 			. $layeredImageHtml 
 			. "</figure>"
 			. "<script>var li = jQuery('form[id$=\"-options-form\"] .layered_image-asset').first();"
