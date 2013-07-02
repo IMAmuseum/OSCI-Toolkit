@@ -708,8 +708,8 @@ function osci_tk_layered_image_osci_tk_figure_content($args) {
 		case 'layered_image':
 			global $base_url;
 			// parse the section id from the figure identifier
-			preg_match('/fig-(\d+)-/', $args['item']['fig_id'], $matches);
-			$args['item']['content_url'] = $base_url.'/api/epub/'.$matches[1].'/'.$args['item']['delta'].'/figure.xhtml';
+			preg_match('/fig-(\d+)-(\d+)/', $args['item']['fig_id'], $matches);
+			$args['item']['content_url'] = $base_url.'/api/epub/'.$matches[1].'/'.$matches[2].'/figure.xhtml';
 			return theme('osci_tk_layered_image_figure_formatter', array('item' => $args['item']));
 	}
 }
