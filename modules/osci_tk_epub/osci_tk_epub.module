@@ -415,6 +415,7 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $pub
                 foreach($view[$key]['#items'] as $k => $v)
                 {
                     $view[$key]['#items'][$k]['fn_id'] = 'fn-' . $node->nid . '-' . $i;
+                    $view[$key]['#items'][$k]['value'] = check_markup($view[$key]['#items'][$k]['value'], $view[$key]['#items'][$k]['format']);
                     $i++;
                 }
                 break;
