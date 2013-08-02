@@ -270,12 +270,14 @@ function osci_tk_node_tree_to_renderable_array($tree, $root = null) {
 		if ($item['parent_nid'] == $root) {
 			unset($tree[$k]);
 			$node = node_load($item['target_nid']);
-			$link = l($node->title, "node/" . $node->nid);
-			$editLink = l("edit", "node/" . $node->nid . "/edit");
-			$return[] = array(
-				'data' => '<div>'.$link.' ('.$editLink.')'.'</div>',
-				'children' => osci_tk_node_tree_to_renderable_array($tree, $item['target_nid'])
-			);
+			if ($node) {
+				$link = l($node->title, "node/" . $node->nid);
+				$editLink = l("edit", "node/" . $node->nid . "/edit");
+				$return[] = array(
+					'data' => '<div>'.$link.' ('.$editLink.')'.'</div>',
+					'children' => osci_tk_node_tree_to_renderable_array($tree, $item['target_nid'])
+				);
+			}
 		}
 	}
 
