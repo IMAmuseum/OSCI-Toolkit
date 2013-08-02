@@ -362,12 +362,15 @@ function osci_tk_nodetree_get_data_for_nid($nid) {
 	$fields = db_query("SELECT field_name FROM {field_config} WHERE type = 'osci_tk_nodetree'", array(), array('fetch' => PDO::FETCH_ASSOC));
 	foreach($fields as $field) {
 		$tableName = 'field_data_' . $field['field_name'];
-		$treeNodes = db_query("SELECT * FROM {" . $tableName . "} WHERE entity_id = (SELECT entity_id FROM {" . $tableName . "} WHERE field_nodetree_target_nid = :nid) order by entity_id, delta", array(':nid' => $nid), array('fetch' => PDO::FETCH_ASSOC));
+		$treeNodeIds = db_query("SELECT entity_id FROM {" . $tableName . "} WHERE field_nodetree_target_nid = :nid", array(':nid' => $nid), array('fetch' => PDO::FETCH_ASSOC));
+		// $treeNodes = db_query("SELECT * FROM {" . $tableName . "} WHERE entity_id = (SELECT entity_id FROM {" . $tableName . "} WHERE field_nodetree_target_nid = :nid) order by entity_id, delta", array(':nid' => $nid), array('fetch' => PDO::FETCH_ASSOC));
 
 		$prevRootNid = null;
 		$prevNid = null;
 		$next = false;
-		foreach($treeNodes as $treeNode) {
+		foreach($treeNodeIds as $treeNodeId) {
+			$treeNode = db_query("SELECT * FROM {" . $tableName . "} WHERE entity_id = :nid order by entity_id, delta", array(':nid' => $treeNodeId['entity_id']), array('fetch' => PDO::FETCH_ASSOC));
+
 			if ($prevRootNid === $treeNode['entity_id'] && $next) {
 				$nodeTreeData[count($nodeTreeData) - 1]['nextNid'] = $treeNode['field_nodetree_target_nid'];
 				$next = false;
