@@ -369,39 +369,41 @@ function osci_tk_nodetree_get_data_for_nid($nid) {
 		$prevNid = null;
 		$next = false;
 		foreach($treeNodeIds as $treeNodeId) {
-			$treeNode = db_query("SELECT * FROM {" . $tableName . "} WHERE entity_id = :nid order by entity_id, delta", array(':nid' => $treeNodeId['entity_id']), array('fetch' => PDO::FETCH_ASSOC));
+			$treeNodes = db_query("SELECT * FROM {" . $tableName . "} WHERE entity_id = :nid order by entity_id, delta", array(':nid' => $treeNodeId['entity_id']), array('fetch' => PDO::FETCH_ASSOC));
 
-			if ($prevRootNid === $treeNode['entity_id'] && $next) {
-				$nodeTreeData[count($nodeTreeData) - 1]['nextNid'] = $treeNode['field_nodetree_target_nid'];
-				$next = false;
+			foreach($treeNodes as $treeNode) {
+				if ($prevRootNid === $treeNode['entity_id'] && $next) {
+					$nodeTreeData[count($nodeTreeData) - 1]['nextNid'] = $treeNode['field_nodetree_target_nid'];
+					$next = false;
+				}
+
+				if ($prevRootNid === $treeNode['entity_id'] &&
+					isset($nodeTreeData[count($nodeTreeData) - 1]) &&
+					$nodeTreeData[count($nodeTreeData) - 1]['nid'] === $treeNode['field_nodetree_parent_nid']) {
+					$nodeTreeData[count($nodeTreeData) - 1]['children'][] = $treeNode['field_nodetree_target_nid'];
+				}
+
+				if ($prevRootNid !== $treeNode['entity_id']) {
+					$prevRootNid = null;
+					$prevNid = null;
+					$next = false;
+				}
+
+				if ($treeNode['field_nodetree_target_nid'] === $nid) {
+					$nodeTreeData[] = array(
+						'rootNid' => $treeNode['entity_id'],
+						'parentNid' => $treeNode['field_nodetree_parent_nid'] ? $treeNode['field_nodetree_parent_nid'] : $treeNode['entity_id'],
+						'prevNid' => $prevNid,
+						'nextNid' => null,
+						'nid' => $treeNode['field_nodetree_target_nid'],
+						'children' => array()
+					);
+					$next = true;
+				}
+
+				$prevNid = $treeNode['field_nodetree_target_nid'];
+				$prevRootNid = $treeNode['entity_id'];
 			}
-
-			if ($prevRootNid === $treeNode['entity_id'] &&
-				isset($nodeTreeData[count($nodeTreeData) - 1]) &&
-				$nodeTreeData[count($nodeTreeData) - 1]['nid'] === $treeNode['field_nodetree_parent_nid']) {
-				$nodeTreeData[count($nodeTreeData) - 1]['children'][] = $treeNode['field_nodetree_target_nid'];
-			}
-
-			if ($prevRootNid !== $treeNode['entity_id']) {
-				$prevRootNid = null;
-				$prevNid = null;
-				$next = false;
-			}
-
-			if ($treeNode['field_nodetree_target_nid'] === $nid) {
-				$nodeTreeData[] = array(
-					'rootNid' => $treeNode['entity_id'],
-					'parentNid' => $treeNode['field_nodetree_parent_nid'] ? $treeNode['field_nodetree_parent_nid'] : $treeNode['entity_id'],
-					'prevNid' => $prevNid,
-					'nextNid' => null,
-					'nid' => $treeNode['field_nodetree_target_nid'],
-					'children' => array()
-				);
-				$next = true;
-			}
-
-			$prevNid = $treeNode['field_nodetree_target_nid'];
-			$prevRootNid = $treeNode['entity_id'];
 		}
 	}
 	return $nodeTreeData;
