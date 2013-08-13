@@ -79,7 +79,7 @@ function osci_tk_webapp_preview($node) {
 	$js[] = $basePath . "js/external/backbone-super.js";
 	$js[] = $basePath . "js/external/fancybox/jquery.fancybox.js";
 	$js[] = $basePath . "js/external/polymaps.min.js";
-	$js[] = $basePath . "js/external/jquery-ui-1.8.23.custom.min.js";
+	$js[] = $basePath . "js/external/jquery-ui/jquery-ui.min.js";
 	$js[] = $basePath . "js/oscitk/osci_tk_layered_image.js";
 	$js[] = $basePath . "js/oscitk/OsciTk.js";
 	$js[] = $basePath . "js/oscitk/TemplateManager.js";
@@ -135,7 +135,7 @@ function osci_tk_webapp_preview($node) {
 
 	//Add the CSS files
 	$css = array();
-	$css[] = $basePath . "js/external/jquery-ui.custom.css";
+	$css[] = $basePath . "js/external/jquery-ui/jquery-ui.min.css";
 	$css[] = $basePath . "js/external/jquery.qtip.css";
 	$css[] = $basePath . "js/external/fancybox/jquery.fancybox.css";
 	$css[] = $basePath . "css/common.css";
