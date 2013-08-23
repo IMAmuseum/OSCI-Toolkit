@@ -33,6 +33,7 @@ function osci_tk_citations_request() {
 		$pid = $_GET['publication_id'];
 		$sid = $_GET['section_id'];
 		$eid = $_GET['element_id'];
+		$field = $_GET['field'];
 		$revTime = isset($_GET['revision']) ? $_GET['revision'] : time();
 
 		// load the section node and its book-parent section. if no parent, use itself
@@ -49,6 +50,7 @@ function osci_tk_citations_request() {
 
 		$citationData = _osci_tk_epub_get_book_metadata($publication);
 		unset($citationData['meta']);
+		$citationData['field'] = $field;
 
 		//Get the Creator from section if set
 		if (isset($section->field_osci_tk_creator) && isset($section->field_osci_tk_creator['und'])) {
@@ -70,6 +72,8 @@ function osci_tk_citations_request() {
 		$citationData['element'] = $eid;
 		$citationData['publicationTitle'] = $citationData['title'];
 		$citationData['title'] = $section->title;
+
+		drupal_alter('osci_tk_citation', $citationData, $section, $publication);
 
 		// output the json response
 		print json_encode(array(
