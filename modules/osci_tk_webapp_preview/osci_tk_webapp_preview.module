@@ -171,3 +171,7 @@ function _osci_tk_webapp_preview_access($node) {
 		return false;
 	}
 }
+
+function osci_tk_webapp_preview_nodetree_navigation_link($treeData) {
+	return array(l('WebApp Preview', 'node/' . $treeData['rootNid'] . '/web-app', array('fragment' => 'section/' . $treeData['nid'])));
+}

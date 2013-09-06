@@ -487,6 +487,8 @@ function osci_tk_nodetree_block_view($delta = '') {
 						$items[] = $childItems;
 					}
 
+					$items = array_merge($items, module_invoke_all("nodetree_navigation_link", $tree));
+
 					$block['content'] .= theme_item_list(array(
 						'items' => $items,
 						'title' => $title,
