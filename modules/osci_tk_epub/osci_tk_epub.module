@@ -318,7 +318,7 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
         ),
         'osci_tk_epub_ncx_generate_navmap' => array(
             'variables' => array(
-                'data'          => null, 
+                'data'          => null,
                 'for_export'    => false,
             ),
             'file' => 'osci_tk_epub.templates.inc'
@@ -394,7 +394,7 @@ function _osci_tk_epub_generate_content_document($node, $forExport = false, $pub
 
     /***** Check the cache *****/
     if (!$noCache) {
-        $cache_key = "osci_epub_content_{$node->nid}_{$node->vid}";
+        $cache_key = "osci_epub_content_{$node->nid}_{$node->vid}_{$pubNid}";
         $output = _osci_tk_epub_check_cache($cache_key);
         if (!is_null($output)) {
             return $output;
@@ -1286,16 +1286,16 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
         $section_content = _osci_tk_epub_generate_content_document($section_node, false);
 
         $section_content = preg_replace_callback(
-            '/\[footnote:fn-[0-9]+-([0-9]+)\]/', 
-            'footnote_reference', 
+            '/\[footnote:fn-[0-9]+-([0-9]+)\]/',
+            'footnote_reference',
             $section_content
         );
 
         $section_content = preg_replace_callback(
             "/<aside epub:type([^>]*)?fn-[0-9]+-([0-9]+)[^>]*>\s*<p>/",
-            'footnote_numbering', 
+            'footnote_numbering',
             $section_content
-        );      
+        );
 
         // This is the full content document, including <html>, <head>, and <body>
         // We want to extract the <section> portion
@@ -1305,7 +1305,7 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
             $content .= $section;
         }
 
-        $first = false;     
+        $first = false;
 
     }
 
@@ -1316,7 +1316,7 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
     $css_urls = array();
     if ($pub_css) {
         $css_urls[] = url($pub_css);
-    }   
+    }
     $css_urls[] = url(drupal_get_path('module', 'osci_tk_epub') . '/css/print.css');
 
     print theme('osci_tk_epub_print', array(
