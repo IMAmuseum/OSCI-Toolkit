@@ -474,6 +474,19 @@ function osci_tk_layered_image_figure_html_iip_asset($node) {
 	return osci_tk_layered_image_figure_html_layered_image($limage);
 }
 
+// implements HOOK_figure_html_NODETYPE
+function osci_tk_layered_image_figure_html_image_asset($node) {
+	$limage = new stdClass();
+	$limage->type = 'layered_image';
+	$limage->language = LANGUAGE_NONE;
+	node_object_prepare($limage);
+	$limage->field_assets['und'][0]['nid'] = $node->nid;
+	if (isset($node->field_image)) {
+		$limage->field_image = $node->field_image;
+	}
+	return osci_tk_layered_image_figure_html_layered_image($limage);
+}
+
 // called from osci_tk_layered_image node hooks
 // retrieves the full image from the iip server and saves it to the node as the static image
 function _osci_tk_layered_image_get_ptiff_image($node) {
@@ -693,6 +706,14 @@ function osci_tk_layered_image_osci_tk_figure_preview_layered_image_asset($node)
  * Load the javascript necessary for the figure options
  */
 function osci_tk_layered_image_osci_tk_figure_preview_add_callback_js_layered_image_asset()
+{
+	drupal_add_js(drupal_get_path('module','osci_tk_layered_image') . '/js/osci_tk_layered_image_figure_options.js');
+}
+function osci_tk_layered_image_osci_tk_figure_preview_add_callback_js_iip_asset()
+{
+	drupal_add_js(drupal_get_path('module','osci_tk_layered_image') . '/js/osci_tk_layered_image_figure_options.js');
+}
+function osci_tk_layered_image_osci_tk_figure_preview_add_callback_js_image_asset()
 {
 	drupal_add_js(drupal_get_path('module','osci_tk_layered_image') . '/js/osci_tk_layered_image_figure_options.js');
 }

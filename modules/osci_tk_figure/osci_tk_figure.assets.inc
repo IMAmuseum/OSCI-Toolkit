@@ -12,8 +12,20 @@ function osci_tk_figure_asset_iip_asset_options_form($form, &$form_state) {
 	return osci_tk_figure_asset_layered_image_options_form($form, &$form_state);
 }
 
+function osci_tk_figure_asset_html_asset_options_form($form, &$form_state) {
+
+	return osci_tk_figure_asset_options_form($form, $form_state); 
+}
+
+function osci_tk_figure_asset_image_asset_options_form($form, &$form_state) {
+	if (isset($node->field_image['width']) && isset($node->field_image['height'])) {
+		$form_state['node']->field_aspect_ratio['und'][0]['value'] = (float) ($node->field_image['width'] / $node->field_image['height']);
+	}
+	return osci_tk_figure_asset_layered_image_options_form($form, &$form_state);
+}
+
 function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
-    $figureOptions = json_decode($_GET['options']);
+	$figureOptions = json_decode($_GET['options']);
     $figureOptions->editing = true;
     $node = node_load(arg(6));
 
@@ -126,12 +138,4 @@ function osci_tk_figure_asset_layered_image_options_form_submit($form, &$form_st
 	}
 }
 
-function osci_tk_figure_asset_image_asset_options_form($form, &$form_state) {
 
-	return osci_tk_figure_asset_options_form($form, $form_state); 
-}
-
-function osci_tk_figure_asset_html_asset_options_form($form, &$form_state) {
-
-	return osci_tk_figure_asset_options_form($form, $form_state); 
-}
