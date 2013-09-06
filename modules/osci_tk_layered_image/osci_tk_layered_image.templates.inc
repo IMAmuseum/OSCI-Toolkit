@@ -13,6 +13,7 @@ function osci_tk_layered_image_preprocess_osci_tk_layered_image_figure_formatter
     }
 
     switch($asset->type) {
+      case 'image_asset':
       case 'iip_asset':
       case 'layered_image':
         $vars['media_type'] = 'application/osci-tk-layered_image-figure';

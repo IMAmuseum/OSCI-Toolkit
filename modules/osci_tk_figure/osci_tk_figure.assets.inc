@@ -18,8 +18,10 @@ function osci_tk_figure_asset_html_asset_options_form($form, &$form_state) {
 }
 
 function osci_tk_figure_asset_image_asset_options_form($form, &$form_state) {
-	if (isset($node->field_image['width']) && isset($node->field_image['height'])) {
-		$form_state['node']->field_aspect_ratio['und'][0]['value'] = (float) ($node->field_image['width'] / $node->field_image['height']);
+	$field_image = $form_state['node']->field_image;
+	if (isset($field_image['und'][0]['width']) && isset($field_image['und'][0]['height'])) {
+		$form_state['node']->field_aspect_ratio['und'][0]['value'] = 
+			(float) ($field_image['und'][0]['width'] / $field_image['und'][0]['height']);
 	}
 	return osci_tk_figure_asset_layered_image_options_form($form, &$form_state);
 }

@@ -725,6 +725,7 @@ function osci_tk_layered_image_osci_tk_figure_content($args) {
 
 	$asset = node_load($args['item']['asset_reference']);
 	switch($asset->type) {
+		case 'image_asset':
 		case 'iip_asset':
 		case 'layered_image':
 			global $base_url;
