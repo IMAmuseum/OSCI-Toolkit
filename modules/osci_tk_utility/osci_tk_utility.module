@@ -31,7 +31,8 @@ function osci_tk_utility_osci_tk_figure_content($args) {
       return '<audio controls="controls" preload="auto" autobuffer="autobuffer"><source src="' . $src . '" type="' . $asset->field_audio_file['und'][0]['filemime'] . '" /></audio>';
       break;
     case 'html_asset':
-      return drupal_render(field_view_field('node', $asset, 'body', 'epub'));
+      $node = field_view_field('node', $asset, 'body', 'epub');
+      return drupal_render($node);
       break;
   }
 }
@@ -64,7 +65,7 @@ function osci_tk_utility_osci_tk_figure_thumbnail($args) {
 function osci_tk_utility_osci_tk_figure_aspect($figure)
 {
     $asset = node_load($figure['asset_reference']);
-    $aspect = 1;
+    $aspect = 0;
 
     switch($asset->type)
     {
