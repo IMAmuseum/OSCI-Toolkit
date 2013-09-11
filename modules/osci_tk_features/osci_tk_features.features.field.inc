@@ -10,6 +10,86 @@
 function osci_tk_features_field_default_fields() {
   $fields = array();
 
+  // Exported field: 'node-html_asset-body'.
+  $fields['node-html_asset-body'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(
+        0 => 'node',
+      ),
+      'field_name' => 'body',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(),
+      'translatable' => '0',
+      'type' => 'text_with_summary',
+    ),
+    'field_instance' => array(
+      'bundle' => 'html_asset',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 2,
+        ),
+        'epub' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '0',
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(
+            'trim_length' => 600,
+          ),
+          'type' => 'text_summary_or_trimmed',
+          'weight' => 1,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'body',
+      'label' => 'Body',
+      'required' => FALSE,
+      'settings' => array(
+        'display_summary' => TRUE,
+        'text_processing' => 1,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'module' => 'text',
+        'settings' => array(
+          'rows' => 20,
+          'summary_rows' => 5,
+        ),
+        'type' => 'text_textarea_with_summary',
+        'weight' => -1,
+      ),
+    ),
+  );
+
   // Exported field: 'node-html_asset-field_asset_thumbnail'.
   $fields['node-html_asset-field_asset_thumbnail'] = array(
     'field_config' => array(
@@ -55,7 +135,7 @@ function osci_tk_features_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => 0,
+          'weight' => '0',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1313,9 +1393,21 @@ function osci_tk_features_field_default_fields() {
         'user_register_form' => FALSE,
       ),
       'widget' => array(
-        'active' => 0,
+        'active' => 1,
         'module' => 'osci_tk_nodetree',
-        'settings' => array(),
+        'settings' => array(
+          'osci_tk_content_types' => array(
+            'article' => 0,
+            'iip_asset' => 0,
+            'image_asset' => 0,
+            'layered_image' => 0,
+            'note' => 0,
+            'page' => 0,
+            'publication' => 0,
+            'section' => 'section',
+            'svg_asset' => 0,
+          ),
+        ),
         'type' => 'nodetree_nodetree_form',
         'weight' => '8',
       ),
@@ -1952,11 +2044,11 @@ function osci_tk_features_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '1',
+          'weight' => '3',
         ),
         'epub' => array(
           'label' => 'hidden',
@@ -2017,7 +2109,7 @@ function osci_tk_features_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '4',
+          'weight' => '5',
         ),
         'epub' => array(
           'label' => 'hidden',
@@ -2047,10 +2139,13 @@ function osci_tk_features_field_default_fields() {
           'osci_tk_figure_types' => array(
             'article' => 0,
             'book' => 0,
+            'html_asset' => 'html_asset',
             'iip_asset' => 'iip_asset',
             'image_asset' => 'image_asset',
+            'layered_image' => 0,
             'note' => 0,
             'page' => 0,
+            'publication' => 0,
             'section' => 0,
             'svg_asset' => 'svg_asset',
           ),
@@ -2099,7 +2194,7 @@ function osci_tk_features_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '3',
+          'weight' => '4',
         ),
         'epub' => array(
           'label' => 'hidden',
@@ -2171,7 +2266,7 @@ function osci_tk_features_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'inline',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
@@ -2254,7 +2349,7 @@ function osci_tk_features_field_default_fields() {
             'image_style' => '',
           ),
           'type' => 'image',
-          'weight' => 5,
+          'weight' => '2',
         ),
         'epub' => array(
           'label' => 'above',
@@ -2333,11 +2428,11 @@ function osci_tk_features_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'inline',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 6,
+          'weight' => '1',
         ),
         'epub' => array(
           'label' => 'hidden',
@@ -2546,7 +2641,6 @@ function osci_tk_features_field_default_fields() {
   t('An entity responsible for making the resource available.');
   t('An optional thumbnail to display in reader interfaces');
   t('An optional thumbnail to display in reader interfaces.');
-  t('Aspect Ratio');
   t('Assets');
   t('Body');
   t('Content Id');

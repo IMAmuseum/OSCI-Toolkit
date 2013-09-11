@@ -393,7 +393,7 @@ function _process_cross_link($text) {
  * Tooltip funcion
  */
 function _filter_cross_link_tips() {
-    return t('Insert a Link with [link:Node ID]');
+    return t('Insert a Link with [link:Node ID|text=The text to display]');
 }
 
 /***********************************************************************
