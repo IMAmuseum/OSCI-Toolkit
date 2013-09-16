@@ -497,7 +497,7 @@ function _osci_tk_layered_image_get_ptiff_image($node) {
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 	$output = curl_exec($curl);
 	curl_close($curl);
-	
+
 	// Save the file with the new Drupal 7 File API
 	$fo = file_save_data($output, "public://iip_thumbs/iip_image_node_" . $node->nid . ".jpg", FILE_EXISTS_REPLACE);
 	if ($fo && getimagesize($fo->uri)) {
@@ -746,6 +746,9 @@ function osci_tk_layered_image_osci_tk_figure_formatter_alter(&$vars) {
 		$asset = node_load($vars['item']['asset_reference']);
 		$vars['item']['aspect'] = $asset->field_aspect_ratio['und'][0]['value'];
 	}
+	if ($vars['item']['type'] === 'image_asset') {
+		$vars['item']['type'] = 'layered_image';
+	}
 	// correct the public url scheme for previewUri in figure options
 	if (isset($vars['item']['options'])) {
 		$opts = json_decode($vars['item']['options']);
@@ -765,16 +768,16 @@ function osci_tk_layered_image_iip_admin_form($form, &$form_state) {
 		$hosts_field = $hosts_field . $host['name'] . '|' . $host['url'] . "\n";
 	}
 	$form = array();
-	
+
 	$form['osci_tk_layered_image_iip_hosts'] = array(
 			'#type'				=> 'textarea',
 			'#title'			=> 'IIP Hosts',
 			'#description'		=> 'A keyed list of IIP servers. One per line, in name|url format',
 			'#default_value'	=> $hosts_field
 	);
-	
+
 	$form['#submit'][] = 'osci_tk_layered_image_iip_admin_form_submit';
-	
+
 	return system_settings_form($form);
 }
 
@@ -791,7 +794,7 @@ function osci_tk_layered_image_iip_admin_form_submit($form, &$form_state) {
 			$val_arr['url'] = trim($split[1]);
 			$values[] = $val_arr;
 		}
-		
+
 	}
 	$form_state['values']['osci_tk_layered_image_iip_hosts'] = $values;
 }
