@@ -210,6 +210,7 @@ function osci_tk_search_apachesolr_index_document_build(ApacheSolrDocument $docu
 	if($entity->type === 'note') {
 		$document->addField('ss_content_id', $entity->field_content_id['und'][0]['value']);
 		$document->addField('ss_body', $entity->body['und'][0]['value']);
+		$document->addField('ss_section_id', $entity->field_section['und'][0]['nid']);
 	} else {
 		if(osci_tk_nodetree_entity_is_tree($entity->nid)) {
 			$publications = _osci_tk_search_get_publications($entity);
