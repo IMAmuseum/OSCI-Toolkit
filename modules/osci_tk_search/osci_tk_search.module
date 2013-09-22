@@ -368,7 +368,7 @@ function _osci_tk_search_create_footnote_documents($entity, $entity_doc, $env_id
 		$document->id = $fid;
 		$document->path = $document->path . '/' . $fid;
 		$document->content = trim($item['value']);
-		$document->teaser = truncate_utf8(strip_tags($document->content), 300, TRUE);
+		$document->teaser = truncate_utf8(strip_tags($item['value']), 300, TRUE);
 		$document->ss_footnote_id = $fid;
 		$document->im_publication_id = $publications;
 		$document->ss_section_id = $entity->nid;
