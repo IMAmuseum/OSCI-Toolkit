@@ -334,7 +334,7 @@ function _osci_tk_search_create_paragraph_documents($entity, $entity_doc, $env_i
 		unset($document->path);
 
 		$document->content = trim($content);
-		$document->teaser = truncate_utf8(strip_tags($document->content), 300, TRUE);
+		$document->teaser = substr(strip_tags($document->content), 0, 300);
 		$document->ss_paragraph_id = $pid;
 		$document->ss_section_id = $entity->nid;
 		$document->im_publication_id = $publications;
@@ -368,7 +368,7 @@ function _osci_tk_search_create_footnote_documents($entity, $entity_doc, $env_id
 		$document->id = $fid;
 		$document->path = $document->path . '/' . $fid;
 		$document->content = trim($item['value']);
-		$document->teaser = truncate_utf8(strip_tags($item['value']), 300, TRUE);
+		$document->teaser = substr(strip_tags($item['value']), 0, 300);
 		$document->ss_footnote_id = $fid;
 		$document->im_publication_id = $publications;
 		$document->ss_section_id = $entity->nid;
@@ -402,7 +402,7 @@ function _osci_tk_search_create_figure_documents($entity, $entity_doc, $env_id, 
 
 		$document->id = $fid;
 		$document->content = trim($item['value']);
-		$document->teaser = truncate_utf8(strip_tags($item['value']), 300, TRUE);
+		$document->teaser = substr(strip_tags($item['value']), 0, 300);
 		$document->ss_figure_id = $fid;
 		$document->im_publication_id = $publications;
 		$document->ss_section_id = $entity->nid;
