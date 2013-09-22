@@ -158,7 +158,7 @@ function osci_tk_search_do_query() {
 			$query->addFilter('_query_', '"(bundle:note AND (is_uid:' . $user->uid . '))"');
 		}
 
-		if (filters['type'] == '!notes') {
+		if ($filters['type'] == '!notes') {
 			$query->addFilter('_query_', 'bundle:node OR bundle:paragraph OR bundle:figure OR bundle:footnote');
 		}
 	}
