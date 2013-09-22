@@ -215,6 +215,8 @@ function osci_tk_search_apachesolr_index_document_build(ApacheSolrDocument $docu
 		$document->addField('ss_content_id', $entity->field_content_id['und'][0]['value']);
 		$document->addField('ss_body', $entity->body['und'][0]['value']);
 		$document->addField('ss_section_id', $entity->field_section['und'][0]['nid']);
+		$section = node_load($entity->field_section['und'][0]['nid']);
+		$document->addField('ss_section_title', $section->title);
 		$sectionData = osci_tk_nodetree_get_data_for_nid($entity->field_section['und'][0]['nid']);
 		foreach($sectionData as $tree) {
 			$document->addField('im_publication_id', $tree['rootNid']);
