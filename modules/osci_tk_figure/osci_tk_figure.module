@@ -232,7 +232,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 					'#markup' => '<figure class="figure_reference_preview">&nbsp;</figure>',
 				),
 				'figure_id' => array(
-					'#markup' => '<div class="figure_identifier" data-delta="' . $i . '" data-figId="' . $figId . '"><label>Wiki Syntax:</label> <span>[figure:' . $figId . ']</span> </div>'
+					'#markup' => '<div class="figure_identifier" data-delta="' . $i . '" data-figId="' . $figId . '"><label>Wiki Syntax:</label> <span>[figureref:' . $figId . ']</span> </div>'
 				),
 				'options' => array(
 					'#type' => 'hidden',
@@ -346,7 +346,7 @@ function osci_tk_figure_reference_validate($element, &$form_state, $form) {
  */
 function osci_tk_figure_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
     if ($field['type'] != 'osci_tk_figure')  return;
-    
+
     foreach($items as $delta => $item) {
         $items[$delta]['value'] = $item['caption']['value'];
         $items[$delta]['format'] = $item['caption']['format'];
@@ -411,6 +411,7 @@ function _osci_tk_figure_node_get_replace_ids($form, &$form_state)
 	if (isset($form_state['values']['field_figure']))
 	{
 		$figureTemplate = '[figure:';
+		$figureRefTemplate = '[figureref:';
 		foreach($form_state['values']['field_figure'][LANGUAGE_NONE] as $k => $v)
 		{
 			if ($k === 'add_more')
@@ -423,13 +424,16 @@ function _osci_tk_figure_node_get_replace_ids($form, &$form_state)
 			{
 				$offset++;
 				$replaceIds[] = $figureTemplate . $figId . ']';
+				$replaceIds[] = $figureRefTemplate . $figId . ']';
 				$newIds[] = '';
 			}
 			else if ($offset > 0)
 			{
 				$replaceIds[] = $figureTemplate . $figId . ']';
+				$replaceIds[] = $figureRefTemplate . $figId . ']';
 				$newFigId = _osci_tk_figure_create_id($form_state['values']['nid'], $k - $offset);
 				$newIds[] = $figureTemplate . $newFigId . ']';
+				$newIds[] = $figureRefTemplate . $newFigId . ']';
 			}
 		}
 	}
