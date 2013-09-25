@@ -77,7 +77,7 @@ function _osci_tk_glossary_filter($text, $filter, $format) {
         $tree = taxonomy_get_tree($vocab_id);
         foreach ($tree as $leaf) {
             $osci_tk_glossary_current_tree = $leaf;
-            $text = preg_replace_callback('/' . $leaf->name . '\b/i', '_osci_tk_glossary_parse_term', $text);
+            $text = preg_replace_callback('/' . preg_quote($leaf->name, '/') . '\b/i', '_osci_tk_glossary_parse_term', $text);
         }
     }
 
@@ -89,7 +89,7 @@ function _osci_tk_glossary_filter($text, $filter, $format) {
  */
 function _osci_tk_glossary_parse_term($match) {
     global $osci_tk_glossary_current_tree;
-    
+
     return '<a class="glossary-term" data-tid="' . $osci_tk_glossary_current_tree->tid . '">' . $match[0] . '</a>';
 }
 
@@ -126,7 +126,7 @@ function osci_tk_glossary_field_info() {
             'description' => t('This field stores the ID of a referenced vocabulary as an integer value.'),
             'default_widget' => 'options_select',
             'default_formatter' => 'vocabulary_reference_default',
-        ), 
+        ),
     );
 }
 
@@ -166,7 +166,7 @@ function osci_tk_glossary_field_formatter_view($entity_type, $entity, $field, $i
 
                 $content[$delta]['#prefix'] = '<span class="vocabulary-reference">';
                 $content[$delta]['#markup'] = $result->fetchField();
-                $content[$delta]['#prefix'] = '</span>';  
+                $content[$delta]['#prefix'] = '</span>';
             }
             break;
     }
@@ -227,7 +227,7 @@ function osci_tk_glossary_entity_delete($entity, $type) {
                 if (!isset($references[$referencing_type]['ids'])) {
                     $references[$referencing_type]['ids'] = array();
                 }
-            
+
                 $references[$referencing_type]['fields'][$field['field_name']] = $field['field_name'];
                 $references[$referencing_type]['ids'] += array_keys($entities);
             }
@@ -254,7 +254,7 @@ function osci_tk_glossary_vocabulary_dereference($entity_id, $entity_type, $ids,
                     ->createItem(array('callback' => 'osci_tk_glossary_vocabulary_dereference', 'arguments' => array($entity_id, $entity_type, $subset, $fields)));
             }
         }
-  
+
         $referencing_entities = entity_load($entity_type, $ids);
         foreach ($referencing_entities as $referencing_entity) {
             foreach ($fields as $field_name) {
