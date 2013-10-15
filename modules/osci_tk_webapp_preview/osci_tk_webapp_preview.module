@@ -75,7 +75,7 @@ function osci_tk_webapp_preview($node) {
 	$js[] = $basePath . "js/external/json2.js";
 	$js[] = $basePath . "js/external/jquery.js";
 	$js[] = $basePath . "js/external/jquery.qtip.js";
-	$js[] = $basePath . "js/external/underscore.js";
+	$js[] = $basePath . "js/external/lodash.js";
 	$js[] = $basePath . "js/external/backbone.js";
 	$js[] = $basePath . "js/external/backbone-super.js";
 	$js[] = $basePath . "js/external/fancybox/jquery.fancybox.js";
