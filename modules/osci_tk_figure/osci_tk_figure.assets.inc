@@ -132,11 +132,13 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 }
 
 function osci_tk_figure_asset_layered_image_options_form_submit($form, &$form_state) {
-	// Upload the file and save it
-	$dest       = 'public://';
-	$file = file_save_upload('thumbnail', array(), $dest);
-	if (is_object($file)) {
-		$form_state['values']['thumbnail'] = $file->fid;
+	if (!empty($_FILES['files']['name']['thumbnail'])) {
+		// Upload the file and save it
+		$dest       = 'public://';
+		$file = file_save_upload('thumbnail', array(), $dest);
+		if (is_object($file)) {
+			$form_state['values']['thumbnail'] = $file->fid;
+		}
 	}
 }
 
