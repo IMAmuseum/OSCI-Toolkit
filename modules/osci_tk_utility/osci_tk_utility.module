@@ -275,8 +275,7 @@ function osci_tk_utility_form_alter(&$form, &$form_state, $form_id)
                 '#weight' => -99
             );
         }
-    }
-    if ($form_id === 'section_node_form') {
+
         //add save and edit btn
         $form['actions']['save_edit'] = array(
             '#type' => 'submit',
