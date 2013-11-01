@@ -39,7 +39,11 @@ function osci_tk_glossary_theme() {
 function osci_tk_glossary_render($node) {
     $vocabularies = _osci_tk_glossary_retrieve_glossaries($node);
     header('Content-Type: application/xhtml+xml');
-    print theme('osci_tk_glossary_document', array('vocabularies' => $vocabularies));
+    // give other modules a chance to change the theme function
+    $themeFunc = 'osci_tk_glossary_document';
+    drupal_alter('osci_tk_glossary_document', $themeFunc);
+    // output via theme
+    print theme($themeFunc, array('vocabularies' => $vocabularies));
     drupal_exit();
 }
 
