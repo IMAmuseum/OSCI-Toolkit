@@ -11,6 +11,8 @@ function osci_tk_layered_image_init() {
 	// layered_image Assets
 	drupal_add_js("$libPath/js/oscitk/osci_tk_layered_image.js");
 	drupal_add_css("$libPath/css/layered_image.css");
+
+	drupal_add_js(drupal_get_path("module", "osci_tk_layered_image") . "/js/right-resizable-src.js");
 }
 
 

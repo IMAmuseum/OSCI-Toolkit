@@ -14,13 +14,13 @@ function osci_tk_figure_asset_iip_asset_options_form($form, &$form_state) {
 
 function osci_tk_figure_asset_html_asset_options_form($form, &$form_state) {
 
-	return osci_tk_figure_asset_options_form($form, $form_state); 
+	return osci_tk_figure_asset_options_form($form, $form_state);
 }
 
 function osci_tk_figure_asset_image_asset_options_form($form, &$form_state) {
 	$field_image = $form_state['node']->field_image;
 	if (isset($field_image['und'][0]['width']) && isset($field_image['und'][0]['height'])) {
-		$form_state['node']->field_aspect_ratio['und'][0]['value'] = 
+		$form_state['node']->field_aspect_ratio['und'][0]['value'] =
 			(float) ($field_image['und'][0]['width'] / $field_image['und'][0]['height']);
 	}
 	return osci_tk_figure_asset_layered_image_options_form($form, &$form_state);
@@ -49,9 +49,10 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 		'#type'     => 'item',
 		'#markup'   => "<figure style=\"position: relative; margin-top: 20px; width: {$width}px; height: {$height}px;\" "
 			."data-options=\"" . htmlentities(json_encode($figureOptions)) . "\">"
-			. $layeredImageHtml 
+			. $layeredImageHtml
 			. "</figure>"
-			. "<script>var li = jQuery('form[id$=\"-options-form\"] .layered_image-asset').first();"
+			. "<script>jQuery('form[id$=\"-options-form\"] figure').makeResizable()"
+			. "var li = jQuery('form[id$=\"-options-form\"] .layered_image-asset').first();"
 			. "window.LIEditingImage = new LayeredImage(li);</script>",
 	);
 
