@@ -51,7 +51,7 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 			."data-options=\"" . htmlentities(json_encode($figureOptions)) . "\">"
 			. $layeredImageHtml
 			. "</figure>"
-			. "<script>jQuery('form[id$=\"-options-form\"] figure').makeResizable()"
+			. "<script>jQuery('form[id$=\"-options-form\"] figure').resizable()"
 			. "var li = jQuery('form[id$=\"-options-form\"] .layered_image-asset').first();"
 			. "window.LIEditingImage = new LayeredImage(li);</script>",
 	);
