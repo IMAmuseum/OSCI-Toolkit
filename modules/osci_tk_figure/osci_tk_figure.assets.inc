@@ -52,7 +52,7 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 			. $layeredImageHtml
 			. "</figure>"
 			. "<script>jQuery('form[id$=\"-options-form\"] figure').resizable();"
-			. "jQuery('form[id$=\"-options-form\"] figure').bind( \"resizestop\", function( event, ui ) {window.LIEditingImage.map.resize(); } );"
+			. "jQuery('form[id$=\"-options-form\"] figure').bind( \"resizestop\", function( event, ui ) {window.LIEditingImage.map.resize(); var newAspect = jQuery('.map').width() / jQuery('.map').height(); jQuery('input[name=\"aspect\"]').val(newAspect);} );"
 			. "var li = jQuery('form[id$=\"-options-form\"] .layered_image-asset').first();"
 			. "window.LIEditingImage = new LayeredImage(li);</script>",
 	);
