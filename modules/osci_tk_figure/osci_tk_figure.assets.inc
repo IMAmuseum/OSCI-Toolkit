@@ -113,7 +113,7 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 	);
 	$form['aspect'] = array(
 		'#type' => 'hidden',
-		'#value' => $aspect
+		'#default_value' => $aspect
 	);
 
 	$form['#submit'][] = 'osci_tk_figure_asset_layered_image_options_form_submit';
