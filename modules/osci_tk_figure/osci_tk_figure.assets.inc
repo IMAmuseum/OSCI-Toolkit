@@ -111,11 +111,16 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 		'#type' => 'hidden',
 		'value' => ''
 	);
+	$form['aspect'] = array(
+		'#type' => 'textfield',
+		'#default_value' => $aspect
+	);
 
 	$form['#submit'][] = 'osci_tk_figure_asset_layered_image_options_form_submit';
 	$form = osci_tk_figure_asset_options_form($form, $form_state);
 	$form['submit']['#suffix'] = "<script>"
 		. "var form = jQuery('form[id$=\"-options-form\"]');"
+		. "var newAspect = jQuery('.map').width() / jQuery('.map').height();"
 		. "form.find('input[type=\"submit\"]').bind('click', function(event) {"
 		. "    var extents = window.LIEditingImage.getExtents();"
 		. "    var baseLayerPreset = window.LIEditingImage.getVisibleBaseLayerIds();"
@@ -125,6 +130,7 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 		. "    form.find('input[name=\"swLat\"]').val(extents.swLat);"
 		. "    form.find('input[name=\"neLon\"]').val(extents.neLon);"
 		. "    form.find('input[name=\"neLat\"]').val(extents.neLat);"
+		. "    form.find('input[name=\"aspect\"]').val(newAspect);"
 		. "    form.find('input[name=\"annotationPreset\"]').val(JSON.stringify(annotationPreset));"
 		. "    form.find('input[name=\"baseLayerPreset\"]').val(JSON.stringify(baseLayerPreset));"
 		. "    form.find('input[name=\"sliderPosition\"]').val(sliderPosition);"
