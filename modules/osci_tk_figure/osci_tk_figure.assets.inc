@@ -40,8 +40,11 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
 
     $index = arg(5);
     $layeredImageHtml = _osci_tk_epub_generate_figure_document($node, $index, FALSE, time());
-    $aspect = isset($node->field_aspect_ratio['und'][0]['value']) ?
-    	$node->field_aspect_ratio['und'][0]['value'] : 1;
+    $aspect = isset($figureOptions->aspect) ? $figureOptions->aspect : false;
+    if ($aspect === false) {
+	    $aspect = isset($node->field_aspect_ratio['und'][0]['value']) ?
+	    	$node->field_aspect_ratio['und'][0]['value'] : 1;
+	}
     $width = 400;
     $height = (int) ($width / $aspect);
 	$form['initial_frame'] = array(
