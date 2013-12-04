@@ -503,6 +503,11 @@ function _osci_tk_figure_process_number_template($figure, $sectionNid)
 	);
 	drupal_alter('osci_tk_figure_number_template', $replaceItems, $data);
 
+	if (array_key_exists("complete", $replaceItems)) {
+		$numberTemplate = $replaceItems['complete'];
+		return $numberTemplate;
+	}
+
 	$keys = array_keys($replaceItems);
 	$values = array_values($replaceItems);
 
