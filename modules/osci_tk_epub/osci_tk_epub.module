@@ -1288,7 +1288,7 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
     $content = '';
 
     $first = true;
-    foreach($toc as $item) {
+    foreach($toc[0] as $item) {
 
         $vid = _osci_tk_epub_get_revision_id($item['nid']);
         $section_node = node_load($item['nid'], $vid);
