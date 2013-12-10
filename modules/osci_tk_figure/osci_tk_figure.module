@@ -107,6 +107,7 @@ function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $ins
 				$item['type'] = $figureNode->type;
 				$invoke = module_invoke_all('osci_tk_figure_aspect', $item);
 				$item['aspect'] = array_pop($invoke);
+				$item['section_id'] = $entity->nid;
 
 				$element[$delta] = array(
 					'#theme'	=> 'osci_tk_figure_formatter',
