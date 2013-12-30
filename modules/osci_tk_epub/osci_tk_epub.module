@@ -174,15 +174,15 @@ function osci_tk_epub_node_submit($node, $form, &$form_state)
             // $cache_key = "osci_epub_ncx_{$node->nid}_{$revTime}";
             //
             //
-            cache_clear_all("osci_epub_content_{$tree['nid']}*", 'cache', true);
-            cache_clear_all("osci_epub_package_{$tree['rootNid']}*", 'cache', true);
-            cache_clear_all("osci_epub_toc_{$tree['rootNid']}*", 'cache', true);
-            cache_clear_all("osci_epub_index_{$tree['rootNid']}*", 'cache', true);
-            cache_clear_all("osci_epub_ncx_{$tree['rootNid']}*", 'cache', true);
+            cache_clear_all("osci_epub_content_{$tree['nid']}", 'cache', true);
+            cache_clear_all("osci_epub_package_{$tree['rootNid']*", 'cache', true);
+            cache_clear_all("osci_epub_toc_{$tree['rootNid']}", 'cache', true);
+            cache_clear_all("osci_epub_index_{$tree['rootNid']}", 'cache', true);
+            cache_clear_all("osci_epub_ncx_{$tree['rootNid']}", 'cache', true);
 
             if (isset($node->field_figure['und'])) {
                 foreach ($node->field_figure['und'] as $index => $value) {
-                    cache_clear_all("osci_epub_figure_{$tree['nid']}*", 'cache', true);
+                    cache_clear_all("osci_epub_figure_{$tree['nid']}", 'cache', true);
                 }
             }
         }
