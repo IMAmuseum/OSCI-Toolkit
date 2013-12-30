@@ -556,11 +556,11 @@ function _osci_tk_epub_check_cache($cache_key) {
 
     // Check cache
     if ($cache = cache_get($cache_key)) {
-    $output = $cache->data; // Sets the static variable as well
-    return $output;
-}
+        $output = $cache->data; // Sets the static variable as well
+        return $output;
+    }
 
-return null;
+    return null;
 
 }
 
