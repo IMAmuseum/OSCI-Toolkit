@@ -175,7 +175,7 @@ function osci_tk_epub_node_submit($node, $form, &$form_state)
             //
             //
             cache_clear_all("osci_epub_content_{$tree['nid']}", 'cache', true);
-            cache_clear_all("osci_epub_package_{$tree['rootNid']*", 'cache', true);
+            cache_clear_all("osci_epub_package_{$tree['rootNid']}", 'cache', true);
             cache_clear_all("osci_epub_toc_{$tree['rootNid']}", 'cache', true);
             cache_clear_all("osci_epub_index_{$tree['rootNid']}", 'cache', true);
             cache_clear_all("osci_epub_ncx_{$tree['rootNid']}", 'cache', true);
