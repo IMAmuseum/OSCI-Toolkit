@@ -135,22 +135,24 @@ function osci_tk_webapp_preview($node) {
 	$js[] = $basePath . "js/oscitk/zotero.js";
 
 	//Add the CSS files
+	global $base_url;
+	$baseUrl = $base_url . variable_get('osci_tk_webapp_base_path', '');
 	$css = array();
-	$css[] = $basePath . "js/external/jquery-ui/jquery-ui.min.css";
-	$css[] = $basePath . "js/external/jquery.qtip.css";
-	$css[] = $basePath . "js/external/fancybox/jquery.fancybox.css";
-	$css[] = $basePath . "css/common.css";
-	$css[] = $basePath . "css/toolbar.css";
-	$css[] = $basePath . "css/section.css";
-	$css[] = $basePath . "css/multiColumnSection.css";
-	$css[] = $basePath . "css/search.css";
-	$css[] = $basePath . "css/navigation.css";
-	$css[] = $basePath . "css/notes.css";
-	$css[] = $basePath . "css/glossary.css";
-	$css[] = $basePath . "css/layered_image.css";
-	$css[] = $basePath . "css/citation.css";
-	$css[] = $basePath . "css/themeNight.css";
-	$css[] = $basePath . "css/themeSepia.css";
+	$css[] = $baseUrl . "js/external/jquery-ui/jquery-ui.min.css";
+	$css[] = $baseUrl . "js/external/jquery.qtip.css";
+	$css[] = $baseUrl . "js/external/fancybox/jquery.fancybox.css";
+	$css[] = $baseUrl . "css/common.css";
+	$css[] = $baseUrl . "css/toolbar.css";
+	$css[] = $baseUrl . "css/section.css";
+	$css[] = $baseUrl . "css/multiColumnSection.css";
+	$css[] = $baseUrl . "css/search.css";
+	$css[] = $baseUrl . "css/navigation.css";
+	$css[] = $baseUrl . "css/notes.css";
+	$css[] = $baseUrl . "css/glossary.css";
+	$css[] = $baseUrl . "css/layered_image.css";
+	$css[] = $baseUrl . "css/citation.css";
+	$css[] = $baseUrl . "css/themeNight.css";
+	$css[] = $baseUrl . "css/themeSepia.css";
 
 	drupal_alter("osci_tk_webapp_custom", $js, $css);
 
@@ -162,6 +164,7 @@ function osci_tk_webapp_preview($node) {
 		);
 	}
 	$js = array(file_create_url(drupal_build_js_cache($finalJs)));
+
 	$finalCss = array();
 	foreach($css as $cssFile) {
 		$finalCss[$cssFile] = array(
@@ -170,7 +173,7 @@ function osci_tk_webapp_preview($node) {
 			"type" => "file"
 		);
 	}
-	$css = array(file_create_url(osci_tk_webapp_preview_build_css_cache($finalCss)));
+	$css = array(file_create_url(drupal_build_css_cache($finalCss)));
 
     print theme('osci_tk_webapp_preview', array(
     	'package_path' => $packageUri,
@@ -192,56 +195,4 @@ function _osci_tk_webapp_preview_access($node) {
 
 function osci_tk_webapp_preview_nodetree_navigation_link($treeData) {
 	return array(l('WebApp Preview', 'node/' . $treeData['rootNid'] . '/web-app', array('fragment' => 'section/' . $treeData['nid'])));
-}
-
-//copied from drupal core so we can remove the css background url path issues
-function osci_tk_webapp_preview_build_css_cache($css) {
-  $data = '';
-  $uri = '';
-  $map = variable_get('drupal_css_cache_files', array());
-  // Create a new array so that only the file names are used to create the hash.
-  // This prevents new aggregates from being created unnecessarily.
-  $css_data = array();
-  foreach ($css as $css_file) {
-    $css_data[] = $css_file['data'];
-  }
-  $key = hash('sha256', serialize($css_data));
-  if (isset($map[$key])) {
-    $uri = $map[$key];
-  }
-
-  if (empty($uri) || !file_exists($uri)) {
-    // Build aggregate CSS file.
-    foreach ($css as $stylesheet) {
-      // Only 'file' stylesheets can be aggregated.
-      if ($stylesheet['type'] == 'file') {
-        $data .= drupal_load_stylesheet($stylesheet['data'], TRUE);
-      }
-    }
-
-    // Prefix filename to prevent blocking by firewalls which reject files
-    // starting with "ad*".
-    $filename = 'css_' . drupal_hash_base64($data) . '.css';
-    // Create the css/ within the files folder.
-    $csspath = 'public://css';
-    $uri = $csspath . '/' . $filename;
-    // Create the CSS file.
-    file_prepare_directory($csspath, FILE_CREATE_DIRECTORY);
-    if (!file_exists($uri) && !file_unmanaged_save_data($data, $uri, FILE_EXISTS_REPLACE)) {
-      return FALSE;
-    }
-    // If CSS gzip compression is enabled, clean URLs are enabled (which means
-    // that rewrite rules are working) and the zlib extension is available then
-    // create a gzipped version of this file. This file is served conditionally
-    // to browsers that accept gzip using .htaccess rules.
-    if (variable_get('css_gzip_compression', TRUE) && variable_get('clean_url', 0) && extension_loaded('zlib')) {
-      if (!file_exists($uri . '.gz') && !file_unmanaged_save_data(gzencode($data, 9, FORCE_GZIP), $uri . '.gz', FILE_EXISTS_REPLACE)) {
-        return FALSE;
-      }
-    }
-    // Save the updated map.
-    $map[$key] = $uri;
-    variable_set('drupal_css_cache_files', $map);
-  }
-  return $uri;
 }
