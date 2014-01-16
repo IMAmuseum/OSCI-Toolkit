@@ -170,7 +170,7 @@ function osci_tk_webapp_preview($node) {
 			"type" => "file"
 		);
 	}
-	$css = array(file_create_url(drupal_build_css_cache($finalCss)));
+	$css = array(file_create_url(osci_tk_webapp_preview_build_css_cache($finalCss)));
 
     print theme('osci_tk_webapp_preview', array(
     	'package_path' => $packageUri,
@@ -192,4 +192,56 @@ function _osci_tk_webapp_preview_access($node) {
 
 function osci_tk_webapp_preview_nodetree_navigation_link($treeData) {
 	return array(l('WebApp Preview', 'node/' . $treeData['rootNid'] . '/web-app', array('fragment' => 'section/' . $treeData['nid'])));
+}
+
+//copied from drupal core so we can remove the css background url path issues
+function osci_tk_webapp_preview_build_css_cache($css) {
+  $data = '';
+  $uri = '';
+  $map = variable_get('drupal_css_cache_files', array());
+  // Create a new array so that only the file names are used to create the hash.
+  // This prevents new aggregates from being created unnecessarily.
+  $css_data = array();
+  foreach ($css as $css_file) {
+    $css_data[] = $css_file['data'];
+  }
+  $key = hash('sha256', serialize($css_data));
+  if (isset($map[$key])) {
+    $uri = $map[$key];
+  }
+
+  if (empty($uri) || !file_exists($uri)) {
+    // Build aggregate CSS file.
+    foreach ($css as $stylesheet) {
+      // Only 'file' stylesheets can be aggregated.
+      if ($stylesheet['type'] == 'file') {
+        $data .= drupal_load_stylesheet($stylesheet['data'], TRUE);
+      }
+    }
+
+    // Prefix filename to prevent blocking by firewalls which reject files
+    // starting with "ad*".
+    $filename = 'css_' . drupal_hash_base64($data) . '.css';
+    // Create the css/ within the files folder.
+    $csspath = 'public://css';
+    $uri = $csspath . '/' . $filename;
+    // Create the CSS file.
+    file_prepare_directory($csspath, FILE_CREATE_DIRECTORY);
+    if (!file_exists($uri) && !file_unmanaged_save_data($data, $uri, FILE_EXISTS_REPLACE)) {
+      return FALSE;
+    }
+    // If CSS gzip compression is enabled, clean URLs are enabled (which means
+    // that rewrite rules are working) and the zlib extension is available then
+    // create a gzipped version of this file. This file is served conditionally
+    // to browsers that accept gzip using .htaccess rules.
+    if (variable_get('css_gzip_compression', TRUE) && variable_get('clean_url', 0) && extension_loaded('zlib')) {
+      if (!file_exists($uri . '.gz') && !file_unmanaged_save_data(gzencode($data, 9, FORCE_GZIP), $uri . '.gz', FILE_EXISTS_REPLACE)) {
+        return FALSE;
+      }
+    }
+    // Save the updated map.
+    $map[$key] = $uri;
+    variable_set('drupal_css_cache_files', $map);
+  }
+  return $uri;
 }
