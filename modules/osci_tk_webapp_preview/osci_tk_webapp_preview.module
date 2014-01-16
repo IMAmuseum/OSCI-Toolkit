@@ -135,24 +135,22 @@ function osci_tk_webapp_preview($node) {
 	$js[] = $basePath . "js/oscitk/zotero.js";
 
 	//Add the CSS files
-	global $base_url;
-	$baseUrl = $base_url . variable_get('osci_tk_webapp_base_path', '');
 	$css = array();
-	$css[] = $baseUrl . "js/external/jquery-ui/jquery-ui.min.css";
-	$css[] = $baseUrl . "js/external/jquery.qtip.css";
-	$css[] = $baseUrl . "js/external/fancybox/jquery.fancybox.css";
-	$css[] = $baseUrl . "css/common.css";
-	$css[] = $baseUrl . "css/toolbar.css";
-	$css[] = $baseUrl . "css/section.css";
-	$css[] = $baseUrl . "css/multiColumnSection.css";
-	$css[] = $baseUrl . "css/search.css";
-	$css[] = $baseUrl . "css/navigation.css";
-	$css[] = $baseUrl . "css/notes.css";
-	$css[] = $baseUrl . "css/glossary.css";
-	$css[] = $baseUrl . "css/layered_image.css";
-	$css[] = $baseUrl . "css/citation.css";
-	$css[] = $baseUrl . "css/themeNight.css";
-	$css[] = $baseUrl . "css/themeSepia.css";
+	$css[] = $basePath . "js/external/jquery-ui/jquery-ui.min.css";
+	$css[] = $basePath . "js/external/jquery.qtip.css";
+	$css[] = $basePath . "js/external/fancybox/jquery.fancybox.css";
+	$css[] = $basePath . "css/common.css";
+	$css[] = $basePath . "css/toolbar.css";
+	$css[] = $basePath . "css/section.css";
+	$css[] = $basePath . "css/multiColumnSection.css";
+	$css[] = $basePath . "css/search.css";
+	$css[] = $basePath . "css/navigation.css";
+	$css[] = $basePath . "css/notes.css";
+	$css[] = $basePath . "css/glossary.css";
+	$css[] = $basePath . "css/layered_image.css";
+	$css[] = $basePath . "css/citation.css";
+	$css[] = $basePath . "css/themeNight.css";
+	$css[] = $basePath . "css/themeSepia.css";
 
 	drupal_alter("osci_tk_webapp_custom", $js, $css);
 
