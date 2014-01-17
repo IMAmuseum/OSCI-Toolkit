@@ -66,6 +66,9 @@ function osci_tk_webapp_preview($node) {
 
     $packageUri = url('api/epub/' . $pubNid . '/package.opf');
 
+    drupal_static_reset('drupal_add_js');
+	drupal_static_reset('drupal_add_css');
+
 	$basePath = variable_get('osci_tk_webapp_base_path', '');
 	//Add the JS files
 	$js = array();
