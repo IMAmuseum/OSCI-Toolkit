@@ -69,7 +69,7 @@ function osci_tk_webapp_preview($node) {
     drupal_static_reset('drupal_add_js');
 	drupal_static_reset('drupal_add_css');
 
-	$basePath = variable_get('osci_tk_webapp_base_path', '');
+	$basePath = DRUPAL_ROOT . '/' . variable_get('osci_tk_webapp_base_path', '');
 	//Add the JS files
 	$js = array();
 	$js[] = $basePath . "js/external/json2.js";
@@ -135,22 +135,23 @@ function osci_tk_webapp_preview($node) {
 	$js[] = $basePath . "js/oscitk/zotero.js";
 
 	//Add the CSS files
+	$cssBasePath = variable_get('osci_tk_webapp_base_path', '');
 	$css = array();
-	$css[] = $basePath . "js/external/jquery-ui/jquery-ui.min.css";
-	$css[] = $basePath . "js/external/jquery.qtip.css";
-	$css[] = $basePath . "js/external/fancybox/jquery.fancybox.css";
-	$css[] = $basePath . "css/common.css";
-	$css[] = $basePath . "css/toolbar.css";
-	$css[] = $basePath . "css/section.css";
-	$css[] = $basePath . "css/multiColumnSection.css";
-	$css[] = $basePath . "css/search.css";
-	$css[] = $basePath . "css/navigation.css";
-	$css[] = $basePath . "css/notes.css";
-	$css[] = $basePath . "css/glossary.css";
-	$css[] = $basePath . "css/layered_image.css";
-	$css[] = $basePath . "css/citation.css";
-	$css[] = $basePath . "css/themeNight.css";
-	$css[] = $basePath . "css/themeSepia.css";
+	$css[] = $cssBasePath . "js/external/jquery-ui/jquery-ui.min.css";
+	$css[] = $cssBasePath . "js/external/jquery.qtip.css";
+	$css[] = $cssBasePath . "js/external/fancybox/jquery.fancybox.css";
+	$css[] = $cssBasePath . "css/common.css";
+	$css[] = $cssBasePath . "css/toolbar.css";
+	$css[] = $cssBasePath . "css/section.css";
+	$css[] = $cssBasePath . "css/multiColumnSection.css";
+	$css[] = $cssBasePath . "css/search.css";
+	$css[] = $cssBasePath . "css/navigation.css";
+	$css[] = $cssBasePath . "css/notes.css";
+	$css[] = $cssBasePath . "css/glossary.css";
+	$css[] = $cssBasePath . "css/layered_image.css";
+	$css[] = $cssBasePath . "css/citation.css";
+	$css[] = $cssBasePath . "css/themeNight.css";
+	$css[] = $cssBasePath . "css/themeSepia.css";
 
 	drupal_alter("osci_tk_webapp_custom", $js, $css);
 
