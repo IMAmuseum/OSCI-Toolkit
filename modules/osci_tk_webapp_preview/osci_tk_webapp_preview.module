@@ -136,6 +136,9 @@ function osci_tk_webapp_preview($node) {
 
 	//Add the CSS files
 	$cssBasePath = variable_get('osci_tk_webapp_base_path', '');
+	if (strpos($cssBasePath, "/") === 0) {
+		$cssBasePath = substr($cssBasePath, 1);
+	}
 	$css = array();
 	$css[] = $cssBasePath . "js/external/jquery-ui/jquery-ui.min.css";
 	$css[] = $cssBasePath . "js/external/jquery.qtip.css";
