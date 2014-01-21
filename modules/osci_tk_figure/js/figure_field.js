@@ -1,6 +1,6 @@
 (function($) {
 
-	function getPreviewDiv(id, target) {
+	window.getPreviewDiv = function(id, target) {
         if (id == null) return;
 
 		// retrieve options
@@ -27,7 +27,7 @@
 
 	}
 
-	function findReferenceVal(obj) {
+	window.findReferenceVal = function(obj) {
 		var val = $(obj).val().match(/.+\[(\d+)\]/);
 		if (val !== null) {
 			return val[1];
@@ -90,18 +90,18 @@
 
 	});
 
-    Drupal.behaviors.osciFigures = {
-        attach: function() {
-            $('.asset-options').hide();
-            // for the figure reference fields already populated on page load
-            $('.figure_reference_field').each(function() {
-                var nid = findReferenceVal(this);
-                if (nid !== null) {
-                    getPreviewDiv(nid, this);
-                }   
-            }); 
-        }
-    }
+    // Drupal.behaviors.osciFigures = {
+    //     attach: function() {
+    //         $('.asset-options').hide();
+    //         // for the figure reference fields already populated on page load
+    //         $('.figure_reference_field').each(function() {
+    //             var nid = findReferenceVal(this);
+    //             if (nid !== null) {
+    //                 getPreviewDiv(nid, this);
+    //             }   
+    //         }); 
+    //     }
+    // }
 
 
 })(jQuery);
