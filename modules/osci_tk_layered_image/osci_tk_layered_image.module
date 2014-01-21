@@ -297,7 +297,6 @@ function osci_tk_layered_image_theme() {
 function osci_tk_layered_image_view($nid)
 {
 	drupal_add_library('system', 'ui.slider');
-	drupal_add_js(libraries_get_path('amplify') . '/core/amplify.core.js', 'file');
 	drupal_add_js(drupal_get_path('module', 'osci_layered_image') . '/js/osci_tk_layered_image_view.js', 'file');
 	drupal_add_css(drupal_get_path('module', 'osci_layered_image') . '/css/osci_tk_layered_image_view.css', 'file');
 
@@ -705,19 +704,20 @@ function osci_tk_layered_image_osci_tk_figure_preview_layered_image_asset($node)
 
 /**
  * Load the javascript necessary for the figure options
+ * We are no longer are using this hook for the layered image options
  */
-function osci_tk_layered_image_osci_tk_figure_preview_add_callback_js_layered_image_asset()
-{
-	drupal_add_js(drupal_get_path('module','osci_tk_layered_image') . '/js/osci_tk_layered_image_figure_options.js');
-}
-function osci_tk_layered_image_osci_tk_figure_preview_add_callback_js_iip_asset()
-{
-	drupal_add_js(drupal_get_path('module','osci_tk_layered_image') . '/js/osci_tk_layered_image_figure_options.js');
-}
-function osci_tk_layered_image_osci_tk_figure_preview_add_callback_js_image_asset()
-{
-	drupal_add_js(drupal_get_path('module','osci_tk_layered_image') . '/js/osci_tk_layered_image_figure_options.js');
-}
+// function osci_tk_layered_image_osci_tk_figure_preview_add_callback_js_layered_image_asset()
+// {
+// 	drupal_add_js(drupal_get_path('module','osci_tk_layered_image') . '/js/osci_tk_layered_image_figure_options.js');
+// }
+// function osci_tk_layered_image_osci_tk_figure_preview_add_callback_js_iip_asset()
+// {
+// 	drupal_add_js(drupal_get_path('module','osci_tk_layered_image') . '/js/osci_tk_layered_image_figure_options.js');
+// }
+// function osci_tk_layered_image_osci_tk_figure_preview_add_callback_js_image_asset()
+// {
+// 	drupal_add_js(drupal_get_path('module','osci_tk_layered_image') . '/js/osci_tk_layered_image_figure_options.js');
+// }
 
 function osci_tk_layered_image_osci_tk_figure_content($args) {
 	if (!isset($args['item']['export'])) {
