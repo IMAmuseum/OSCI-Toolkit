@@ -1,5 +1,4 @@
 (function($){
-
     $(document).ready(function(){
         $(".fieldset-tabs").tabs({
             // trigger figure preview when a tab is selected
@@ -9,10 +8,20 @@
                     var referenceField = $(ui.panel).find('.figure_reference_field');
                     var nid = findReferenceVal(referenceField)
                     // fire preview
-                    getPreviewDiv(nid, referenceField);
+                    if (parseInt(nid, 10) > 0) {
+                        getPreviewDiv(nid, referenceField);
+                    }
                 }
             }
         });
+        // grab the preview for the first tab
+        var referenceField = $('#edit-field-figure-und-0-asset-reference');
+        if (referenceField.length > 0) {
+            var nid = findReferenceVal(referenceField);
+            if (parseInt(nid, 10) > 0) {
+                getPreviewDiv(nid, referenceField);
+            }
+        }
     });
 
     $(document).ajaxComplete(function(e, xhr, settings){
@@ -26,5 +35,4 @@
             });
         }
     });
-
 })(jQuery);
