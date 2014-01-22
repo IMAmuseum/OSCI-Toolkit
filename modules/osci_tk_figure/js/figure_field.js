@@ -87,23 +87,7 @@
 
 			tabs.tabs("disable", currentTab);
 		});
-
 	});
-
-    // Drupal.behaviors.osciFigures = {
-    //     attach: function() {
-    //         $('.asset-options').hide();
-    //         // for the figure reference fields already populated on page load
-    //         $('.figure_reference_field').each(function() {
-    //             var nid = findReferenceVal(this);
-    //             if (nid !== null) {
-    //                 getPreviewDiv(nid, this);
-    //             }   
-    //         }); 
-    //     }
-    // }
-
-
 })(jQuery);
 
 var updateAjaxUrl = function(url, oldUrl) {
@@ -112,4 +96,4 @@ var updateAjaxUrl = function(url, oldUrl) {
     Drupal.ajax[url] = Drupal.ajax[oldUrl];
     Drupal.ajax[url].options.url = url;
     Drupal.ajax[oldUrl] = null;
-} 
+}
