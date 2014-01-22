@@ -4,13 +4,13 @@
  * osci_tk_figures.pages.inc
  */
 
-function osci_tk_figure_reference($entity_type, $bundle, $field_name, $queryString = '') 
+function osci_tk_figure_reference($entity_type, $bundle, $field_name, $queryString = '')
 {
     $instance = field_info_instance($entity_type, $field_name, $bundle);
-    
+
     $types = $instance['widget']['settings']['osci_tk_figure_types'];
     $types = array_keys(array_filter($types));
-    
+
     $figs = db_select('node', 'n')
         ->fields('n', array('type', 'title', 'nid'))
         ->condition('type', $types, 'IN')
@@ -20,14 +20,13 @@ function osci_tk_figure_reference($entity_type, $bundle, $field_name, $queryStri
         ->addTag('node_access')
         ->range(0, 100)
         ->execute();
-    
+
     $matches = array();
-    
-    foreach($figs as $result) 
-    {   
+
+    foreach($figs as $result)
+    {
         $matches[_osci_tk_figure_asset_label($result)] = node_type_get_name($result->type) . ' - ' . $result->title;
-    }   
-    
+    }
     return drupal_json_output($matches);
 }
 
@@ -36,14 +35,14 @@ function osci_tk_figure_preview($node) {
     $ret = new stdClass();
     $time = time();
     $ret->time = $time;
-    $ret->div = ''; 
-    
+    $ret->div = '';
+
     //invoke hook per content type to load a preview image and get js callback function name for figure options
     $results = array_merge(
         array('image_uri' => null, 'callback' => null),
         module_invoke_all("osci_tk_figure_preview_" . $node->type, $node)
-    );  
-    
+    );
+
     //Add the image preview to the return
     if ($results['image_uri']) {
         $ret->div = theme_image_style(array(
@@ -55,11 +54,12 @@ function osci_tk_figure_preview($node) {
             'height'        => null,
             'attributes'    => array(
                 'class' => 'preview_image',
-            )   
-        )); 
+                'data-nid' => $node->nid
+            )
+        ));
     } else {
-        $ret->div = '<div class="preview_image">No Preview Available</div>';
-    }   
+        $ret->div = '<div class="preview_image" data-nid="'.$node->nid.'">No Preview Available</div>';
+    }
 
     // Determine if this type has any options
     module_load_include('inc', 'osci_tk_figure', 'osci_tk_figure.assets');
