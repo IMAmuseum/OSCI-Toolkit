@@ -3,6 +3,7 @@
         $(".fieldset-tabs").tabs({
             // trigger figure preview when a tab is selected
             select: function(event, ui) {
+                // ensure this is a figure tab
                 if (ui.panel.id.indexOf("figure") > 0) {
                     // get reference field and asset nid
                     var referenceField = $(ui.panel).find('.figure_reference_field');
