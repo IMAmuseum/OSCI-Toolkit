@@ -1,15 +1,14 @@
 (function($) {
 
-	window.getPreviewDiv = function(id, target) {
+    window.getPreviewDiv = function(id, target) {
         if (id == null) return;
-
-		// retrieve options
-		var options = $.parseJSON($(target).parents(".fieldset-wrapper:first").find('.figure_options').val());
-
-		// send nid to server to fetch preview
-		$.get(Drupal.settings.basePath + 'ajax/figurepreview/' + id,
-			function (data) {
-				var dest = $(target).parents(".fieldset-wrapper:first").find('.figure_reference_preview');
+        // retrieve options
+        var options = $.parseJSON($(target).parents(".fieldset-wrapper:first").find('.figure_options').val());
+        // send nid to server to fetch preview
+        $.get(Drupal.settings.basePath + 'ajax/figurepreview/' + id,
+            function (data) {
+                var container = $(target).parents(".fieldset-wrapper:first");
+                var dest = container.find('.figure_reference_preview');
 
                 if (data.show_asset_options) {
                     $(target).parents(".fieldset-wrapper:first").find('.asset-options').show();
@@ -17,83 +16,102 @@
                     $(target).parents(".fieldset-wrapper:first").find('.asset-options').hide();
                 }
 
-				// replace the image with the preview url if it's in the options
-				if (data.div !== null) {
-					dest.html(data.div);
+                var thumbData = data.div;
+                var customThumb = container.find(".form-managed-file").find("a");
+                if (customThumb.length) {
+                    thumbData = $("<img/>", {
+                        src: customThumb.attr("href")
+                    });
                 }
-			},
-			"json"
-		);
 
-	}
+                // replace the image with the preview url if it's in the options
+                if (data.div !== null) {
+                    dest.html(thumbData);
+                }
+            },
+            "json"
+        );
+    }
 
-	window.findReferenceVal = function(obj) {
-		var val = $(obj).val().match(/.+\[(\d+)\]/);
-		if (val !== null) {
-			return val[1];
-		} else {
-			return val;
-		}
-	}
+    // given a dom text input element, parse out integer from [nid:123] or return whole string
+    window.findReferenceVal = function(obj) {
+        var val = $(obj).val().match(/.+\[(\d+)\]/);
+        if (val !== null) {
+            return val[1];
+        } else {
+            return val;
+        }
+    }
 
-	$(document).ready(function() {
-		/**************************************************
-		 * Figure Preview
-		 */
-		$(document).delegate(".figure_reference_field", "blur", function(event) {
-			setTimeout( function() {
-				var parentField = $(event.target).parents('.fieldset-wrapper');
-				var currentNid = findReferenceVal(event.target);
-				var idx = parentField.find('.figure_identifier').data('delta');
+    $(document).ready(function() {
+        // update figure preview image when asset reference field is changed
+        $(document).delegate(".figure_reference_field", "blur", function(event) {
+            var parentField = $(event.target).parents('.fieldset-wrapper').first();
+            var currentNid = findReferenceVal(event.target);
+            var idx = parentField.find('.figure_identifier').data('delta');
 
-				// Update "asset options" url callback
-				var url = Drupal.settings.basePath +
-					Drupal.settings.figureAjaxPath +
-					idx + '/' +
-					currentNid +
-                    '?options=' +
-                    $('[name="field_figure[und][' + idx + '][options]"]').val();
-				var oldUrl = parentField.find('.form-type-item a').attr('href');
-				parentField.find('a.asset-options').attr('href', url);
+            // remove figure options and get new preview
+            var preview = parentField.find('.preview_image');
+            if (preview.length > 0) {
+                var previewNid = preview.attr('data-nid');
+                if (previewNid != undefined && previewNid != currentNid) {
+                    parentField.find('.figure_options').val("");
+                }
+            }
 
-				// Drupal doesnt like it when we just swap out a link
-				// So we need to update the ajax object so everyone is happy
-                updateAjaxUrl(url, oldUrl);
+            getPreviewDiv(currentNid, event.target);
+        });
+        // remove the figure tab when a figure field instance is removed
+        $(document).delegate(".remove-figure", "click", function(e) {
+            e.preventDefault();
+            var $this = $(this);
 
-				// remove figure options and get new preview
-				parentField.find('.figure_options').val("");
+            var tabs = $this.parent().siblings(".fieldset-tabs");
+            var currentTab = tabs.tabs( "option", "selected" );
 
-				getPreviewDiv(currentNid, event.target);
-			}, 500);
-		});
+            //remove the asset reference so drupal will remove on save
+            $('#edit-field-figure-und-' + currentTab).find(".figure_reference_field").val("");
 
-		$(document).delegate(".remove-figure", "click", function(e) {
-			e.preventDefault();
-			var $this = $(this);
+            //disable the tab
+            var numTabs = tabs.tabs("length");
+            if (currentTab < (numTabs - 1)) {
+                tabs.tabs("select", currentTab + 1);
+            } else {
+                tabs.tabs("select", currentTab - 1);
+            }
 
-			var tabs = $this.parent().siblings(".fieldset-tabs");
-			var currentTab = tabs.tabs( "option", "selected" );
+            tabs.tabs("disable", currentTab);
+        });
 
-			//remove the asset reference so drupal will remove on save
-			$('#edit-field-figure-und-' + currentTab).find(".figure_reference_field").val("");
-
-			//disable the tab
-			var numTabs = tabs.tabs("length");
-			if (currentTab < (numTabs - 1)) {
-				tabs.tabs("select", currentTab + 1);
-			} else {
-				tabs.tabs("select", currentTab - 1);
-			}
-
-			tabs.tabs("disable", currentTab);
-		});
-	});
+        $('a.asset-options').click(function(event) {
+            var basePath, parentNid, delta, assetNid, figureOptions, ajaxUrl, formLoaded,
+                optionsLink = $(this);
+            // don't submit form
+            event.preventDefault();
+            formLoaded = optionsLink.attr('data-formLoaded');
+            if (formLoaded == "0") {
+                // retrieve asset options form content via ajax
+                basePath = Drupal.settings.basePath;
+                parentNid = $(this).attr('data-parent-nid');
+                delta = $(this).attr('data-delta');
+                assetNid = findReferenceVal($(this).parents('.figure-wrapper').find('.figure_reference_field')[0]);
+                figureOptions = $(this).parents('.figure-wrapper').find('.figure_options').val() || '{}';
+                ajaxUrl = basePath + 'ajax/figure/asset-options/' + parentNid + '/' + delta + '/' + assetNid;
+                $.get(ajaxUrl, "options=" + figureOptions, function(data) {
+                    var modalDiv;
+                    optionsLink.attr('data-formLoaded', 1);
+                    // place form content into modal div
+                    modalDiv = $('#asset-options-modal-'+delta);
+                    modalDiv[0].innerHTML = data;
+                    optionsLink.fancybox({
+                        hideOnContentClick: false,
+                        onComplete: function() {
+                            window.renderModal(modalDiv, optionsLink.parents('.figure-wrapper').find('.figure_options'));
+                        }
+                    });
+                    optionsLink.click();
+                });
+            }
+        });
+    });
 })(jQuery);
-
-var updateAjaxUrl = function(url, oldUrl) {
-    Drupal.ajax[oldUrl].url = url;
-    Drupal.ajax[oldUrl].selector = url;
-    Drupal.ajax[url] = Drupal.ajax[oldUrl];
-    Drupal.ajax[url].options.url = url;
-    Drupal.ajax[oldUrl] = null;
-}

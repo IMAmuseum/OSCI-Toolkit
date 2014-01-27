@@ -5,31 +5,31 @@
  */
 
 function osci_tk_figure_asset_iip_asset_options_form($form, &$form_state) {
-	$attrs = unserialize($form_state['node']->field_ptiff_attr['und'][0]['value']);
-	if (isset($attrs['width']) && isset($attrs['height'])) {
-		$form_state['node']->field_aspect_ratio['und'][0]['value'] = (float) ($attrs['width'] / $attrs['height']);
-	}
-	return osci_tk_figure_asset_layered_image_options_form($form, &$form_state);
+    $attrs = unserialize($form_state['node']->field_ptiff_attr['und'][0]['value']);
+    if (isset($attrs['width']) && isset($attrs['height'])) {
+        $form_state['node']->field_aspect_ratio['und'][0]['value'] = (float) ($attrs['width'] / $attrs['height']);
+    }
+    return osci_tk_figure_asset_layered_image_options_form($form, &$form_state);
 }
 
 function osci_tk_figure_asset_html_asset_options_form($form, &$form_state) {
 
-	return osci_tk_figure_asset_options_form($form, $form_state);
+    return osci_tk_figure_asset_options_form($form, $form_state);
 }
 
 function osci_tk_figure_asset_image_asset_options_form($form, &$form_state) {
-	$field_image = $form_state['node']->field_image;
-	if (isset($field_image['und'][0]['width']) && isset($field_image['und'][0]['height'])) {
-		$form_state['node']->field_aspect_ratio['und'][0]['value'] =
-			(float) ($field_image['und'][0]['width'] / $field_image['und'][0]['height']);
-	}
-	return osci_tk_figure_asset_layered_image_options_form($form, &$form_state);
+    $field_image = $form_state['node']->field_image;
+    if (isset($field_image['und'][0]['width']) && isset($field_image['und'][0]['height'])) {
+        $form_state['node']->field_aspect_ratio['und'][0]['value'] =
+            (float) ($field_image['und'][0]['width'] / $field_image['und'][0]['height']);
+    }
+    return osci_tk_figure_asset_layered_image_options_form($form, &$form_state);
 }
 
 function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
-	$figureOptions = json_decode($_GET['options']);
+    $figureOptions = isset($_GET['options']) ? json_decode($_GET['options']) : new stdClass();
     $figureOptions->editing = true;
-    $node = node_load(arg(6));
+    $node = $form_state['node'];
 
     // Trick the asset options and exit before this function fails miserably
     // there is probably a better way to do this
@@ -39,116 +39,105 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
     }
 
     $index = arg(5);
-    $layeredImageHtml = _osci_tk_epub_generate_figure_document($node, $index, FALSE, time());
+
+    // invoke HOOK_figure_html_NODETYPE
+    $hook = 'figure_html_' . $node->type;
+    $return = module_invoke_all($hook, $node);
+    if (isset($return[0])) {
+        $layeredImageHtml = $return[0];
+    }
+    else {
+        $view = node_view($figure, 'epub');
+        $layeredImageHtml = drupal_render($view['field_figure'][$index]);
+    }
+
     $aspect = isset($figureOptions->aspect) ? $figureOptions->aspect : false;
     if ($aspect === false) {
-	    $aspect = isset($node->field_aspect_ratio['und'][0]['value']) ?
-	    	$node->field_aspect_ratio['und'][0]['value'] : 1;
-	}
+        $aspect = isset($node->field_aspect_ratio['und'][0]['value']) ?
+            $node->field_aspect_ratio['und'][0]['value'] : 1;
+    }
     $width = 400;
     $height = (int) ($width / $aspect);
-	$form['initial_frame'] = array(
-		'#title'    => t('Set Initial Frame'),
-		'#type'     => 'item',
-		'#markup'   => "<figure style=\"position: relative; margin-top: 20px; width: {$width}px; height: {$height}px;\" "
-			."data-options=\"" . htmlentities(json_encode($figureOptions)) . "\">"
-			. $layeredImageHtml
-			. "</figure>"
-			. "<script>jQuery('form[id$=\"-options-form\"] figure').resizable();"
-			. "jQuery('form[id$=\"-options-form\"] figure').bind( \"resizestop\", function( event, ui ) {window.LIEditingImage.map.resize(); var newAspect = jQuery('.map').width() / jQuery('.map').height(); jQuery('input[name=\"aspect\"]').val(newAspect);} );"
-			. "var li = jQuery('form[id$=\"-options-form\"] .layered_image-asset').first();"
-			. "window.LIEditingImage = new LayeredImage(li);</script>",
-	);
+    $form['initial_frame'] = array(
+        '#title'    => t('Set Initial Frame'),
+        '#type'     => 'item',
+        '#markup'   => "<figure style=\"position: relative; margin-top: 20px; width: {$width}px; height: {$height}px;\" "
+            ."data-options=\"" . htmlentities(json_encode($figureOptions)) . "\">"
+            . $layeredImageHtml
+            . "</figure>"
+            . "<script> window.renderModal = function(context, input) {
+                var aspect = ".$aspect.";
+                context.find('figure').resizable();
+                context.find('figure').bind( \"resizestop\", function( event, ui ) {
+                    window.LIEditingImage.map.resize();
+                    var newAspect = context.find('.map').width() / context.find('.map').height();
+                    aspect = newAspect;
+                });
+                context.find('figure').bind( \"resizestop\", function( event, ui ) {
+                    window.LIEditingImage.map.resize();
+                    var newAspect = context.find('.map').width() / context.find('.map').height();
+                    context.find('input[name=\"aspect\"]').val(newAspect);
+                });
+                var li = context.find('figure .layered_image-asset').first();
+                window.LIEditingImage = new LayeredImage(li);
+                context.find('input[type=\"submit\"]').bind('click', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    var extents = window.LIEditingImage.getExtents();
+                    var baseLayerPreset = window.LIEditingImage.getVisibleBaseLayerIds();
+                    var annotationPreset = window.LIEditingImage.getVisibleAnnotationIds();
+                    var sliderPosition = window.LIEditingImage.getSliderPosition();
+                    var currentOpts = {
+                        swLon: extents.swLon,
+                        swLat: extents.swLat,
+                        neLon: extents.neLon,
+                        neLat: extents.neLat,
+                        annotationPreset: annotationPreset,
+                        sliderPosition: sliderPosition,
+                        baseLayerPreset: baseLayerPreset,
+                        disable_annotation: context.find('input.disable-annotation').attr('checked'),
+                        disable_interaction: context.find('input.disable-interaction').attr('checked'),
+                        aspect: aspect
+                    };
+                    input.val(JSON.stringify(currentOpts));
+                    input.parents('figure-wrapper').find('a.asset-options').attr('data-formLoaded', 0);
+                    $.fancybox.close();
+                });
+            }
+            </script>"
+    );
+    $form['reader_options'] = array(
+        '#type'     => 'fieldset',
+        '#title'    => t('Reader Options'),
+    );
 
-	$form['reader_options'] = array(
-		'#type'     => 'fieldset',
-		'#title'    => t('Reader Options'),
-	);
+    $di = isset($figureOptions->disable_interaction) ? $figureOptions->disable_interaction : false;
+    $diAttr = array('class' => array('disable-interaction'));
+    if ($di) {
+        $diAttr['checked'] = "checked";
+    }
 
-	$form['reader_options']['disable_interaction'] = array(
-		'#type'             => 'checkbox',
-		'#title'            => t('Disable Interaction'),
-		'#default_value'    => isset($figureOptions->disable_interaction)
-			? $figureOptions->disable_interaction : false,
-	);
+    $da = isset($figureOptions->disable_annotation) ? $figureOptions->disable_annotation : false;
+    $daAttr = array('class' => array('disable-annotation'));
+    if ($da) {
+        $daAttr['checked'] = "checked";
+    }
 
-	$form['reader_options']['disable_annotation'] = array(
-		'#type'             => 'checkbox',
-		'#title'            => t('Disable Annotation Selection'),
-		'#default_value'    => isset($figureOptions->disable_annotation)
-			? $figureOptions->disable_annotation : false,
-	);
+    $form['reader_options']['disable_interaction'] = array(
+        '#type'             => 'checkbox',
+        '#title'            => t('Disable Interaction'),
+        '#default_value'    => $di,
+        '#attributes'       => $diAttr
+    );
 
-	$form['reader_options']['thumbnail'] = array(
-		'#type'             => 'file',
-		'#title'            => 'Thumbnail Image',
-		'#default_value'    => isset($form_state['options']->thumbnail) ? $form_state['options']->thumbnail : '',
-	);
+    $form['reader_options']['disable_annotation'] = array(
+        '#type'             => 'checkbox',
+        '#title'            => t('Disable Annotation Selection'),
+        '#default_value'    => $da,
+        '#attributes'       => $daAttr
+    );
 
-	// figure options queried from layered image preview
-	$form['swLon'] = array(
-		'#type' => 'hidden',
-		'value' => ''
-	);
-	$form['swLat'] = array(
-		'#type' => 'hidden',
-		'value' => ''
-	);
-	$form['neLon'] = array(
-		'#type' => 'hidden',
-		'value' => ''
-	);
-	$form['neLat'] = array(
-		'#type' => 'hidden',
-		'value' => ''
-	);
-	$form['annotationPreset'] = array(
-		'#type' => 'hidden',
-		'value' => ''
-	);
-	$form['baseLayerPreset'] = array(
-		'#type' => 'hidden',
-		'value' => ''
-	);
-	$form['sliderPosition'] = array(
-		'#type' => 'hidden',
-		'value' => ''
-	);
-	$form['aspect'] = array(
-		'#type' => 'hidden',
-		'#default_value' => $aspect
-	);
+    $form = osci_tk_figure_asset_options_form($form, $form_state);
 
-	$form['#submit'][] = 'osci_tk_figure_asset_layered_image_options_form_submit';
-	$form = osci_tk_figure_asset_options_form($form, $form_state);
-	$form['submit']['#suffix'] = "<script>"
-		. "var form = jQuery('form[id$=\"-options-form\"]');"
-		. "form.find('input[type=\"submit\"]').bind('click', function(event) {"
-		. "    var extents = window.LIEditingImage.getExtents();"
-		. "    var baseLayerPreset = window.LIEditingImage.getVisibleBaseLayerIds();"
-		. "    var annotationPreset = window.LIEditingImage.getVisibleAnnotationIds();"
-		. "    var sliderPosition = window.LIEditingImage.getSliderPosition();"
-		. "    form.find('input[name=\"swLon\"]').val(extents.swLon);"
-		. "    form.find('input[name=\"swLat\"]').val(extents.swLat);"
-		. "    form.find('input[name=\"neLon\"]').val(extents.neLon);"
-		. "    form.find('input[name=\"neLat\"]').val(extents.neLat);"
-		. "    form.find('input[name=\"annotationPreset\"]').val(JSON.stringify(annotationPreset));"
-		. "    form.find('input[name=\"baseLayerPreset\"]').val(JSON.stringify(baseLayerPreset));"
-		. "    form.find('input[name=\"sliderPosition\"]').val(sliderPosition);"
-		. "});</script>";
-
-	return $form;
+    return $form;
 }
-
-function osci_tk_figure_asset_layered_image_options_form_submit($form, &$form_state) {
-	if (!empty($_FILES['files']['name']['thumbnail'])) {
-		// Upload the file and save it
-		$dest       = 'public://';
-		$file = file_save_upload('thumbnail', array(), $dest);
-		if (is_object($file)) {
-			$form_state['values']['thumbnail'] = $file->fid;
-		}
-	}
-}
-
-

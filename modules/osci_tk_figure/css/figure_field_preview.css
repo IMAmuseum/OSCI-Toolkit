@@ -1,0 +1,11 @@
+.figure_reference_preview {
+    float: right;
+}
+
+.figure_reference_preview img {
+    max-height: 200px;
+}
+
+.figure_reference_field {
+    max-width: 400px;
+}

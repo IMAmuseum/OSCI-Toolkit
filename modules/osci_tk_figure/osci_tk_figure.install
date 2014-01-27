@@ -42,6 +42,10 @@ function osci_tk_figure_field_schema($field)
                 'type' => 'text',
                 'size' => 'big',
                 'not null' => false
+            ),
+            'custom_thumbnail' => array(
+                'type' => 'int',
+                'not null' => false
             )
         );
     }
@@ -56,4 +60,71 @@ function osci_tk_figure_update_7003(&$sandbox) {
     db_add_field('field_data_field_figure', 'field_figure_format', $schema['columns']['format']);
     db_change_field('field_revision_field_figure', 'field_figure_caption', 'field_figure_value', $schema['columns']['value']);
     db_add_field('field_revision_field_figure', 'field_figure_format', $schema['columns']['format']); 
+}
+
+function osci_tk_figure_update_7005(&$sandbox) {
+    db_add_field(
+        'field_data_field_figure', 
+        'field_figure_custom_thumbnail',
+        array(
+            'type' => 'int',
+            'not null' => false
+        )
+    ); 
+
+    db_add_field(
+        'field_revision_field_figure',
+        'field_figure_custom_thumbnail',
+        array(
+            'type' => 'int',
+            'not null' => false
+        )
+    );
+
+    global $user;
+
+    $figures = db_query("SELECT * FROM {field_data_field_figure}");
+
+    foreach($figures as $figure) {
+        $options = json_decode($figure->field_figure_options);
+        if (isset($options->previewUri) && strlen($options->previewUri) > 0) {
+            $result = db_query("SELECT * FROM {file_managed} WHERE uri = :uri", array(":uri" => $options->previewUri));
+            $file = $result->fetchObject();
+
+            if (empty($file)) {
+                $file = new stdClass;
+                $file->uid = $user->uid;
+                $file->filename = substr($options->previewUri, strrpos($options->previewUri, "/") + 1);
+                $file->uri = $options->previewUri;
+                $file->status = FILE_STATUS_PERMANENT;
+                $file->filemime = 'image/' . substr($file->filename, strrpos($file->filname, ".") + 1);
+                $file = file_save($file);
+            }
+
+            file_usage_add($file, 'osci_tk_figure', $figure->entity_type, $figure->entity_id);
+            unset($options->previewUri);
+            $updatedOptions = json_encode($options);
+            db_query(
+                "UPDATE {field_data_field_figure} SET field_figure_custom_thumbnail = :fid, field_figure_options = :options WHERE entity_id = :entityId AND revision_id = :revId AND delta = :delta",
+                array(
+                    ':entityId' => $figure->entity_id,
+                    ':fid' => $file->fid,
+                    ':revId' => $figure->revision_id,
+                    ':delta' => $figure->delta,
+                    ':options' => $updatedOptions
+                )
+            );
+            db_query(
+                "UPDATE {field_revision_field_figure} SET field_figure_custom_thumbnail = :fid, field_figure_options = :options WHERE entity_id = :entityId AND revision_id = :revId AND delta = :delta",
+                array(
+                    ':entityId' => $figure->entity_id,
+                    ':fid' => $file->fid,
+                    ':revId' => $figure->revision_id,
+                    ':delta' => $figure->delta,
+                    ':options' => $updatedOptions
+                )
+            );
+
+        }
+    }
 }
