@@ -57,6 +57,7 @@ function osci_tk_webapp_preview_theme() {
 }
 
 function osci_tk_webapp_preview($node) {
+    global $base_url;
 
 	$pubNid = $node->nid;
 	$treeData = osci_tk_nodetree_get_data_for_nid($node->nid);
@@ -69,7 +70,15 @@ function osci_tk_webapp_preview($node) {
     drupal_static_reset('drupal_add_js');
 	drupal_static_reset('drupal_add_css');
 
-	$basePath = DRUPAL_ROOT . '/' . variable_get('osci_tk_webapp_base_path', '');
+    $preprocessJs = variable_get("preprocess_js", 1);
+    $preprocessCss = variable_get("preprocess_css", 1);
+
+    if ($preprocessJs) {
+	    $basePath = DRUPAL_ROOT . '/' . variable_get('osci_tk_webapp_base_path', '');
+    } else {
+        $basePath = $base_url . variable_get('osci_tk_webapp_base_path', '');
+    }
+
 	//Add the JS files
 	$js = array();
 	$js[] = $basePath . "js/external/json2.js";
@@ -135,10 +144,15 @@ function osci_tk_webapp_preview($node) {
 	$js[] = $basePath . "js/oscitk/zotero.js";
 
 	//Add the CSS files
-	$cssBasePath = variable_get('osci_tk_webapp_base_path', '');
-	if (strpos($cssBasePath, "/") === 0) {
-		$cssBasePath = substr($cssBasePath, 1);
-	}
+    if ($preprocessCss) {
+        $cssBasePath = variable_get('osci_tk_webapp_base_path', '');
+        if (strpos($cssBasePath, "/") === 0) {
+            $cssBasePath = substr($cssBasePath, 1);
+        }
+    } else {
+        $cssBasePath = $base_url . '/' . variable_get('osci_tk_webapp_base_path', '');
+    }
+
 	$css = array();
 	$css[] = $cssBasePath . "js/external/jquery-ui/jquery-ui.min.css";
 	$css[] = $cssBasePath . "js/external/jquery.qtip.css";
@@ -158,7 +172,7 @@ function osci_tk_webapp_preview($node) {
 
 	drupal_alter("osci_tk_webapp_custom", $js, $css);
 
-	if (variable_get("preprocess_js", 1) == 1) {
+	if ($preprocessJs) {
 		$finalJs = array();
 		foreach($js as $jsFile) {
 			$finalJs[$jsFile] = array(
@@ -169,7 +183,7 @@ function osci_tk_webapp_preview($node) {
 		$js = array(file_create_url(drupal_build_js_cache($finalJs)));
 	}
 
-	if (variable_get("preprocess_css", 1) == 1) {
+	if ($preprocessCss) {
 		$finalCss = array();
 		foreach($css as $cssFile) {
 			$finalCss[$cssFile] = array(
