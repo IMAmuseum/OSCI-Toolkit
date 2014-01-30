@@ -158,24 +158,29 @@ function osci_tk_webapp_preview($node) {
 
 	drupal_alter("osci_tk_webapp_custom", $js, $css);
 
-	$finalJs = array();
-	foreach($js as $jsFile) {
-		$finalJs[$jsFile] = array(
-			"data" => $jsFile,
-			"preprocess" => true
-		);
+	if (variable_get("preprocess_js", 1) == 1) {
+		$finalJs = array();
+		foreach($js as $jsFile) {
+			$finalJs[$jsFile] = array(
+				"data" => $jsFile,
+				"preprocess" => true
+			);
+		}
+		$js = array(file_create_url(drupal_build_js_cache($finalJs)));
 	}
-	$js = array(file_create_url(drupal_build_js_cache($finalJs)));
 
-	$finalCss = array();
-	foreach($css as $cssFile) {
-		$finalCss[$cssFile] = array(
-			"data" => $cssFile,
-			"preprocess" => true,
-			"type" => "file"
-		);
+	if (variable_get("preprocess_css", 1) == 1) {
+		$finalCss = array();
+		foreach($css as $cssFile) {
+			$finalCss[$cssFile] = array(
+				"data" => $cssFile,
+				"preprocess" => true,
+				"type" => "file"
+			);
+		}
+
+		$css = array(file_create_url(drupal_build_css_cache($finalCss)));
 	}
-	$css = array(file_create_url(drupal_build_css_cache($finalCss)));
 
     print theme('osci_tk_webapp_preview', array(
     	'package_path' => $packageUri,
