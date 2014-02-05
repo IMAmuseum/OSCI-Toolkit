@@ -165,3 +165,19 @@ function theme_osci_tk_epub_ncx_generate_navmap(&$vars) {
 
     return $output;
 }
+
+function osci_tk_epub_preprocess_osci_tk_footnote_epub(&$vars) {
+    global $osci_tk_used_footnotes;
+    $items = $vars['items'];
+    $finalItems = array();
+
+    foreach($items as $k => $v) {
+        $fnIndex = array_search($v['fn_id'], $osci_tk_used_footnotes);
+        if ($fnIndex !== false) {
+            $item = $items[$k];
+            $item['footnote_index'] = $fnIndex + 1;
+            $finalItems[] = $item;
+        }
+    }
+    $vars['items'] = $finalItems;
+}

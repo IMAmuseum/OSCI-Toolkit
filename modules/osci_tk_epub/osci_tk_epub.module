@@ -305,6 +305,7 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
             'variables' => array(
                 'items' => array()
             ),
+            'file' => 'osci_tk_epub.templates.inc',
         ),
         'osci_tk_epub_section' => array(
             'template' => 'templates/osci_tk_epub_section',
