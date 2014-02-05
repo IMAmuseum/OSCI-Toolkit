@@ -63,7 +63,7 @@ function osci_tk_epub_preprocess_epub_package(&$vars)
 function osci_tk_epub_preprocess_osci_tk_epub_section(&$vars)
 {
     $exploded = explode('_', $vars['item']['field_name']);
-    $vars['field_name'] = array_pop($exploded);
+    $vars['field_name'] = implode("_", array_slice($exploded, 1));
 
     // Handle title and subtitle of a section
     switch ($vars['field_name']) {
