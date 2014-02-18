@@ -5,9 +5,14 @@
 
 		var tabs = $this.parent().siblings(".fieldset-tabs");
 		var currentTab = tabs.tabs( "option", "selected" );
+        var fieldId = "edit-field-footnote-und-" + currentTab + "-value";
 
 		//remove the asset reference so drupal will remove on save
-		$("#edit-field-footnote-und-" + currentTab + "-value").val("").html("");
+		$("#" + fieldId).val("").html("");
+
+        if (CKEDITOR !== undefined && CKEDITOR.instances[fieldId]) {
+            CKEDITOR.instances[fieldId].setData('');
+        }
 
 		//disable the tab
 		var numTabs = tabs.tabs("length");

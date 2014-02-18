@@ -12,6 +12,13 @@ function osci_tk_notes_menu() {
         'type'              => MENU_CALLBACK
     );
 
+    $items['api/notes/export'] = array(
+        'title'             => 'Export User Notes',
+        'page callback'     => 'osci_tk_notes_export',
+        'access arguments'  => array($user->uid),
+        'type'              => MENU_CALLBACK
+    );
+
     // $items['api/notes/demo'] = array(
     //  'title'             => t('Demonstrate Notes API'),
     //  'page callback'     => 'drupal_get_form',
@@ -22,9 +29,21 @@ function osci_tk_notes_menu() {
     return $items;
 }
 
+function osci_tk_notes_theme($existing, $type, $theme, $path) {
+    return array(
+        'osci_tk_notes_export' => array(
+            'variables' => array(
+                'notes' => array()
+            ),
+            'template' => 'templates/osci_tk_notes_export',
+        )
+    );
+}
+
 function osci_tk_notes_request() {
     global $user;
     if ($user->uid > 0) {
+        dpm($_POST, 'request');
         if (count($_POST) > 0) {
             // POST request, insert a note into the db
             if (isset($_POST['section_id']) && !empty($_POST['section_id'])
@@ -329,4 +348,69 @@ function _osci_tk_notes_extract_tags($note) {
         return $tags;
     }
     return array();
+}
+
+function osci_tk_notes_export() {
+    global $user;
+    if ($user->uid > 0) {
+        $note_nodes = array();
+        $query = db_select('node', 'n');
+        $query->fields('n', array('nid'));
+        $query->condition('n.uid', $user->uid, '=');
+        $query->condition('n.type', 'note', '=');
+
+        $query->join('field_data_body', 'b', 'n.nid = b.entity_id');
+        $query->addField('b', 'body_value', 'body');
+
+        $query->join('field_data_field_section', 's', 'n.nid = s.entity_id');
+        $query->addField('s', 'field_section_nid', 'sid');
+
+        $query->join('field_data_field_content_id', 'p', 'n.nid = p.entity_id');
+        $query->addField('p', 'field_content_id_value', 'pid');
+
+        $query->join('node', 'ns', 's.field_section_nid = ns.nid');
+        $query->addField('ns', 'title', 'section_title');
+
+        $query->join('field_data_field_note_tags', 'ftags', 'n.nid = ftags.entity_id');
+        $query->join('taxonomy_term_data', 'terms', 'terms.tid = ftags.field_note_tags_tid');
+
+        //$query->addField('terms', 'name', 'tag');
+        $query->addExpression('GROUP_CONCAT(terms.name SEPARATOR \', \')', 'tags');
+
+        //$query->orderBy('pub_title', 'DESC')
+        $query->orderBy('section_title', 'DESC')
+              ->orderBy('nid', 'DESC');
+
+        $query->groupBy('nid')
+              ->groupBy('body')
+              ->groupBy('sid')
+              ->groupBy('pid')
+              ->groupBy('section_title');
+
+        $result = $query->execute();
+        foreach ($result as $row) {
+            $treeData = osci_tk_nodetree_get_data_for_nid($row->sid);
+            foreach($treeData as $tree) {
+                if (!isset($note_nodes[$tree['rootNid']])) {
+                    $pubNode = node_load($tree['rootNid']);
+                    $note_nodes[$tree['rootNid']] = array(
+                        'title' => $pubNode->title,
+                        'sections' => array()
+                    );
+                }
+
+                if (!isset($note_nodes[$tree['rootNid']]['sections'][$row->sid])) {
+                    $note_nodes[$tree['rootNid']]['sections'][$row->sid] = array(
+                        'title' => $row->section_title,
+                        'notes' => array()
+                    );
+                }
+
+                $note_nodes[$tree['rootNid']]['sections'][$row->sid]['notes'][] = $row;
+            }
+        }
+
+        print theme("osci_tk_notes_export", array("notes" => $note_nodes));
+        drupal_exit();
+    }
 }
