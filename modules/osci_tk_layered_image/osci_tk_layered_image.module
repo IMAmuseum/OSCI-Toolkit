@@ -10,6 +10,8 @@ function osci_tk_layered_image_init() {
 	$libPath = libraries_get_path('OSCI-Toolkit-Frontend');
 
 	// layered_image Assets
+	drupal_add_js("$libPath/js/external/jquery.qtip.js");
+	drupal_add_css("$libPath/js/external/jquery.qtip.css");
 	drupal_add_js("$libPath/js/oscitk/osci_tk_layered_image.js");
 	drupal_add_css("$libPath/css/layered_image.css");
 }
