@@ -58,7 +58,7 @@
 					clearInterval(interval);
 					replace = $('#fieldset-tab-edit-field-figure-und-' + (tabCount -1))
 						.find('.figure_identifier')
-						.attr('data-figid');
+						.attr('data-figId');
 					editor.insertText('[figure:' + replace + ']');
 					// ensure the figures vert tab is selected
 					$('li.vertical-tab-button').each(function() {
