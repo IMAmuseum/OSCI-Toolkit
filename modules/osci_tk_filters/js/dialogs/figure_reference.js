@@ -15,7 +15,7 @@
 
 				figures.each(function(idx) {
 					var $this = $(this);
-					selectElement.options[idx] = new Option((idx) + ' (' + $this.data("figId") + ')', $this.data("figId"));
+					selectElement.options[idx] = new Option((idx) + ' (' + $this.attr("data-figId") + ')', $this.attr("data-figId"));
 				});
 				selectElement.options[selectElement.options.length] = new Option('New Figure', 'new');
 			}
