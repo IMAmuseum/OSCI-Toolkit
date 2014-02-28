@@ -15,7 +15,7 @@
 
 				figures.each(function(idx) {
 					var $this = $(this);
-					selectElement.options[idx] = new Option((idx) + ' (' + $this.data("figId") + ')', $this.data("figId"));
+					selectElement.options[idx] = new Option((idx) + ' (' + $this.attr("data-figId") + ')', $this.attr("data-figId"));
 				});
 				selectElement.options[selectElement.options.length] = new Option('New Figure', 'new');
 			}
@@ -58,7 +58,7 @@
 					clearInterval(interval);
 					replace = $('#fieldset-tab-edit-field-figure-und-' + (tabCount -1))
 						.find('.figure_identifier')
-						.attr('data-figid');
+						.attr('data-figId');
 					editor.insertText('[figure:' + replace + ']');
 					// ensure the figures vert tab is selected
 					$('li.vertical-tab-button').each(function() {
