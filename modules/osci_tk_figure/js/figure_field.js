@@ -12,8 +12,10 @@
 
                 if (data.show_asset_options) {
                     $(target).parents(".fieldset-wrapper:first").find('.asset-options').show();
+                    $(target).parents(".fieldset-wrapper:first").find('.asset-options-reset').show();
                 } else {
                     $(target).parents(".fieldset-wrapper:first").find('.asset-options').hide();
+                    $(target).parents(".fieldset-wrapper:first").find('.asset-options-reset').hide();
                 }
 
                 var thumbData = data.div;
@@ -88,29 +90,29 @@
                 optionsLink = $(this);
             // don't submit form
             event.preventDefault();
-            formLoaded = optionsLink.attr('data-formLoaded');
-            if (formLoaded == "0") {
-                // retrieve asset options form content via ajax
-                basePath = Drupal.settings.basePath;
-                parentNid = $(this).attr('data-parent-nid');
-                delta = $(this).attr('data-delta');
-                assetNid = findReferenceVal($(this).parents('.figure-wrapper').find('.figure_reference_field')[0]);
-                figureOptions = $(this).parents('.figure-wrapper').find('.figure_options').val() || '{}';
-                ajaxUrl = basePath + 'ajax/figure/asset-options/' + parentNid + '/' + delta + '/' + assetNid;
-                $.get(ajaxUrl, "options=" + figureOptions, function(data) {
-                    var modalDiv;
-                    optionsLink.attr('data-formLoaded', 1);
-                    // place form content into modal div
-                    modalDiv = $('#asset-options-modal-'+delta);
-                    modalDiv[0].innerHTML = data;
-                    optionsLink.fancybox({
-                        hideOnContentClick: false,
-                        onComplete: function() {
-                            window.renderModal(modalDiv, optionsLink.parents('.figure-wrapper').find('.figure_options'));
-                        }
-                    });
-                    optionsLink.click();
+
+            // retrieve asset options form content via ajax
+            basePath = Drupal.settings.basePath;
+            parentNid = $(this).attr('data-parent-nid');
+            delta = $(this).attr('data-delta');
+            assetNid = findReferenceVal($(this).parents('.figure-wrapper').find('.figure_reference_field')[0]);
+            figureOptions = $(this).parents('.figure-wrapper').find('.figure_options').val() || '{}';
+            ajaxUrl = basePath + 'ajax/figure/asset-options/' + parentNid + '/' + delta + '/' + assetNid;
+            $.get(ajaxUrl, "options=" + figureOptions, function(data) {
+                var modalDiv;
+                $.fancybox(data, {
+                    hideOnContentClick: false,
+                    onComplete: function() {
+                        window.renderModal($('#fancybox-content'), optionsLink.parents('.figure-wrapper').find('.figure_options'));
+                    }
                 });
+            });
+        });
+
+        $('a.asset-options-reset').click(function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to reset the options for this figure?')) {
+                $(this).parents('.figure-wrapper').find('.figure_options').val('{}');
             }
         });
     });
