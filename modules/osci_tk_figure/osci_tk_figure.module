@@ -233,7 +233,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
                 ),
                 'asset_options' => array(
                     '#type' => 'item',
-                    '#markup' => '<a href="#asset-options-modal-'.$itemDelta.'" class="asset-options button" data-parent-nid="'.$node->nid.'" data-delta="'.$itemDelta.'" data-formLoaded="0">Asset Options</a><div style="display:none;"><div id="asset-options-modal-'.$itemDelta.'"></div></div>'
+                    '#markup' => '<a href="#asset-options-modal-'.$itemDelta.'" class="asset-options button" data-parent-nid="'.$node->nid.'" data-delta="'.$itemDelta.'">Asset Options</a><a href="#asset-options-reset" class="asset-options-reset button" data-parent-nid="'.$node->nid.'" data-delta="'.$itemDelta.'">Reset Options</a>'
                 ),
                 'custom_thumbnail' => array(
                     '#type' => 'managed_file',
@@ -344,7 +344,7 @@ function osci_tk_figure_field_presave($entity_type, $entity, $field, $instance, 
         $items[$delta]['value'] = $item['caption']['value'];
         $items[$delta]['format'] = $item['caption']['format'];
         unset($items[$delta]['caption']);
- 
+
         if (strlen($items[$delta]['custom_thumbnail']) > 0 && (int)$items[$delta]['custom_thumbnail'] > 0) {
             $file = file_load($items[$delta]['custom_thumbnail']);
             $file->status = FILE_STATUS_PERMANENT;

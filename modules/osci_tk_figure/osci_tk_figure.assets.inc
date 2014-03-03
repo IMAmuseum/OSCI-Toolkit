@@ -57,7 +57,7 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
             $node->field_aspect_ratio['und'][0]['value'] : 1;
     }
     $width = 400;
-    $height = (int) ($width / $aspect);
+    $height = ($width / $aspect);
     $form['initial_frame'] = array(
         '#title'    => t('Set Initial Frame'),
         '#type'     => 'item',
@@ -72,10 +72,6 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
                     window.LIEditingImage.map.resize();
                     var newAspect = context.find('.map').width() / context.find('.map').height();
                     aspect = newAspect;
-                });
-                context.find('figure').bind( \"resizestop\", function( event, ui ) {
-                    window.LIEditingImage.map.resize();
-                    var newAspect = context.find('.map').width() / context.find('.map').height();
                     context.find('input[name=\"aspect\"]').val(newAspect);
                 });
                 var li = context.find('figure .layered_image-asset').first();
