@@ -43,7 +43,6 @@ function osci_tk_notes_theme($existing, $type, $theme, $path) {
 function osci_tk_notes_request() {
     global $user;
     if ($user->uid > 0) {
-        dpm($_POST, 'request');
         if (count($_POST) > 0) {
             // POST request, insert a note into the db
             if (isset($_POST['section_id']) && !empty($_POST['section_id'])
