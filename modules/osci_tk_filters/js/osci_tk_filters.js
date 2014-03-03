@@ -63,7 +63,7 @@
 						content  = data.find('#' + footnote.replace('_', ''));
 
 					content.find("a").remove();
-					content = content.text();
+					content = content.html();
 					if (content !== null)
 					{
 						content = CKEDITOR.cleanWord(content, event.editor);
