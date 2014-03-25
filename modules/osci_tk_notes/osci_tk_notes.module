@@ -8,14 +8,16 @@ function osci_tk_notes_menu() {
     $items['api/notes'] = array(
         'title'             => 'Process a note request',
         'page callback'     => 'osci_tk_notes_request',
-        'access arguments'  => array($user->uid),
+        //'access callback'   => 'user_is_logged_in',
+        'access callback'   => TRUE,
         'type'              => MENU_CALLBACK
     );
 
     $items['api/notes/export'] = array(
         'title'             => 'Export User Notes',
         'page callback'     => 'osci_tk_notes_export',
-        'access arguments'  => array($user->uid),
+        'access callback'   => TRUE,
+        //'access callback'   => 'user_is_logged_in',
         'type'              => MENU_CALLBACK
     );
 
@@ -370,13 +372,11 @@ function osci_tk_notes_export() {
         $query->join('node', 'ns', 's.field_section_nid = ns.nid');
         $query->addField('ns', 'title', 'section_title');
 
-        $query->join('field_data_field_note_tags', 'ftags', 'n.nid = ftags.entity_id');
-        $query->join('taxonomy_term_data', 'terms', 'terms.tid = ftags.field_note_tags_tid');
+        $query->addJoin('LEFT', 'field_data_field_note_tags', 'ftags', 'n.nid = ftags.entity_id');
+        $query->addJoin('LEFT', 'taxonomy_term_data', 'terms', 'terms.tid = ftags.field_note_tags_tid');
 
-        //$query->addField('terms', 'name', 'tag');
         $query->addExpression('GROUP_CONCAT(terms.name SEPARATOR \', \')', 'tags');
 
-        //$query->orderBy('pub_title', 'DESC')
         $query->orderBy('section_title', 'DESC')
               ->orderBy('nid', 'DESC');
 
