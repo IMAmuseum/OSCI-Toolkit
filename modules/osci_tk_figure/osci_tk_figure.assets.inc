@@ -56,7 +56,7 @@ function osci_tk_figure_asset_layered_image_options_form($form, &$form_state) {
         $aspect = isset($node->field_aspect_ratio['und'][0]['value']) ?
             $node->field_aspect_ratio['und'][0]['value'] : 1;
     }
-    $width = 400;
+    $width = 512;
     $height = ($width / $aspect);
     $form['initial_frame'] = array(
         '#title'    => t('Set Initial Frame'),
