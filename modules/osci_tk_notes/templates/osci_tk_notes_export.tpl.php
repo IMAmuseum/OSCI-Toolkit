@@ -22,9 +22,12 @@
                 background-color: #EEE;
                 padding: 20px;
             }
-            .note_tags {
+            .note_meta {
                 margin: 10px 0 0 0;
                 color: #777;
+            }
+            .note_meta * {
+                display: inline;
             }
         </style>
     </head>
@@ -40,9 +43,11 @@
                     <ul>
                     <?php foreach ($section['notes'] as $note) { ?>
                         <li>
-                            <div class="note" data-pid="<?php print $note->pid; ?>">
+                            <div class="note" data-pid="<?php print $note->cid; ?>">
                                 <div class="note_text"><?php print $note->body; ?></div>
-                                <div class="note_tags">Tags: <?php print $note->tags; ?></div>
+                                <div class="note_meta">
+                                    <div class="pnum">p. <?php print $note->pnum; ?></div> | <div class="note_tags">Tags: <?php print $note->tags; ?></div>
+                                </div>
                             </div>
                         </li>
                     <?php } ?>

@@ -77,7 +77,8 @@ function osci_tk_notes_request() {
                                         'section_id'    => $note->field_section['und'][0]['nid'],
                                         'content_id'    => $note->field_content_id['und'][0]['value'],
                                         'note'          => $note->body['und'][0]['value'],
-                                        'tags'          => $_POST['tags']
+                                        'tags'          => $_POST['tags'],
+                                        'paragraph_number' => $note->field_paragraph_number['und'][0]['value']
                                     )
                                 ));
                                 drupal_exit();
@@ -108,6 +109,7 @@ function osci_tk_notes_request() {
                     $note->body['und'][0]['value'] = $_POST['note'];
                     $note->field_section['und'][0]['nid'] = $section->nid;
                     $note->field_content_id['und'][0]['value'] = $_POST['content_id'];
+                    $note->field_paragraph_number['und'][0]['value'] = $_POST['paragraph_number'];
 
                     // support tags
                     $note->field_note_tags['und'] = _osci_tk_notes_extract_tags($note);
@@ -119,7 +121,8 @@ function osci_tk_notes_request() {
                             'note' => $note->body['und'][0]['value'],
                             'section_id' => $note->field_section['und'][0]['nid'],
                             'content_id' => $note->field_content_id['und'][0]['value'],
-                            'tags' =>  $_POST['tags']
+                            'tags' =>  $_POST['tags'],
+                            'paragraph_number' => $note->field_paragraph_number['und'][0]['value']
                         )
                     ));
                     return;
@@ -168,7 +171,8 @@ function osci_tk_notes_request() {
                 $notes[] = array(
                     'id'            => $row->nid,
                     'section_id'    => $row->sid,
-                    'content_id'    => $row->pid,
+                    'content_id'    => $row->cid,
+                    'paragraph_number' => $row->pnum,
                     'note'          => $row->body,
                     'tags'          => $tags
                 );
@@ -196,8 +200,11 @@ function osci_tk_notes_get_section_notes($uid, $sid = NULL, $pid = NULL) {
     $query->join('field_data_field_section', 's', 'n.nid = s.entity_id');
     $query->addField('s', 'field_section_nid', 'sid');
 
-    $query->join('field_data_field_content_id', 'p', 'n.nid = p.entity_id');
-    $query->addField('p', 'field_content_id_value', 'pid');
+    $query->join('field_data_field_content_id', 'c', 'n.nid = c.entity_id');
+    $query->addField('c', 'field_content_id_value', 'cid');
+
+    $query->join('field_data_field_paragraph_number', 'p', 'n.nid = p.entity_id');
+    $query->addField('p', 'field_paragraph_number_value', 'pnum');
 
     if (isset($sid) && !empty($sid)) {
         $query->condition('s.field_section_nid', $sid);
@@ -366,8 +373,11 @@ function osci_tk_notes_export() {
         $query->join('field_data_field_section', 's', 'n.nid = s.entity_id');
         $query->addField('s', 'field_section_nid', 'sid');
 
-        $query->join('field_data_field_content_id', 'p', 'n.nid = p.entity_id');
-        $query->addField('p', 'field_content_id_value', 'pid');
+        $query->join('field_data_field_content_id', 'c', 'n.nid = c.entity_id');
+        $query->addField('c', 'field_content_id_value', 'cid');
+
+        $query->join('field_data_field_paragraph_number', 'p', 'n.nid = p.entity_id');
+        $query->addField('p', 'field_paragraph_number_value', 'pnum');
 
         $query->join('node', 'ns', 's.field_section_nid = ns.nid');
         $query->addField('ns', 'title', 'section_title');
@@ -383,7 +393,7 @@ function osci_tk_notes_export() {
         $query->groupBy('nid')
               ->groupBy('body')
               ->groupBy('sid')
-              ->groupBy('pid')
+              ->groupBy('cid')
               ->groupBy('section_title');
 
         $result = $query->execute();
