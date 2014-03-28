@@ -388,12 +388,11 @@ function osci_tk_notes_export() {
         $query->addExpression('GROUP_CONCAT(terms.name SEPARATOR \', \')', 'tags');
 
         $query->orderBy('section_title', 'DESC')
-              ->orderBy('nid', 'DESC');
+              ->orderBy('pnum', 'ASC');
 
         $query->groupBy('nid')
               ->groupBy('body')
               ->groupBy('sid')
-              ->groupBy('cid')
               ->groupBy('section_title');
 
         $result = $query->execute();
