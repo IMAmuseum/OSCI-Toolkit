@@ -249,7 +249,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
                     '#title'                => t('Number Template'),
                     '#description'          => t('The template to use for generating the figure number. (fig# will be replaced with the figure number)'),
                     '#type'                 => 'textfield',
-                    '#default_value'        => isset($item['number_template']) ? $item['number_template'] : 'Fig. fig#',
+                    '#default_value'        => isset($item['number_template']) ? $item['number_template'] : 'Fig. cat#.fig#',
                 ),
                 'caption' => array(
                     '#title'                => t('Caption'),
