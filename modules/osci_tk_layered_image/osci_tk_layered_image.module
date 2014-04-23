@@ -1,5 +1,5 @@
 <?php
-
+/*test comment*/
 function osci_tk_layered_image_init() {
 	// jQuery tabs
 	drupal_add_library('system', 'ui.slider');
