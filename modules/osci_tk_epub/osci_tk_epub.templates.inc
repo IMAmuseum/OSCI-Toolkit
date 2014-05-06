@@ -179,5 +179,12 @@ function osci_tk_epub_preprocess_osci_tk_footnote_epub(&$vars) {
             $finalItems[] = $item;
         }
     }
+	//sort array by footnote_index
+    function cmp($a, $b) {
+        $footnoteIndex1 = (int)$a['footnote_index'];
+        $footnoteIndex2 = (int)$b['footnote_index'];
+        return $footnoteIndex1 > $footnoteIndex2;
+    }
+    usort($finalItems, "cmp");
     $vars['items'] = $finalItems;
 }
