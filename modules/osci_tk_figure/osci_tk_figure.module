@@ -145,8 +145,15 @@ function osci_tk_figure_field_widget_settings_form($field, $instance)
             '#mulitple' => true,
             '#options' => array_map('check_plain', node_type_get_names())
         );
+		
+		$form['osci_tk_number_template'] = array(
+			'#type'                 => 'textfield',
+			'#title'                => t('Number Template'),
+			'#default_value'		=>  isset($settings['osci_tk_number_template']) ? $settings['osci_tk_number_template'] : 'fig. fig#', //default value for number template field
+			'#description'          => t('The template to use for generating the figure number. (fig# will be replaced with figure numbers accordingly)'),
+			'#required' 			=> TRUE
+		);
     }
-
     return $form;
 }
 
@@ -247,9 +254,10 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
                 ),
                 'number_template' => array(
                     '#title'                => t('Number Template'),
-                    '#description'          => t('The template to use for generating the figure number. (fig# will be replaced with the figure number)'),
+                    '#description'          => t('The template to use for generating the figure number. (fig# will be replaced with figure numbers accordingly)'),
                     '#type'                 => 'textfield',
-                    '#default_value'        => isset($item['number_template']) ? $item['number_template'] : 'Fig. fig#',
+					//default value that has been set in the figures/number template's manage field setting
+					'#default_value'        => 	isset($item['number_template']) ? $item['number_template'] : $instance['widget']['settings']['osci_tk_number_template'],
                 ),
                 'caption' => array(
                     '#title'                => t('Caption'),
