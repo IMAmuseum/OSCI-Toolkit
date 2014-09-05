@@ -741,8 +741,11 @@ function _osci_tk_get_flattened_nodetree_toc($node, $revTime) {
 
         // prepare toc item attributes
         $thumb = null;
+		//for separate reference thumbnail
+		$thumb2 = null;
         if (isset($section->field_section_image['und'][0])) {
             $thumb = image_style_url('osci_tk_thumbnail_square', $section->field_section_image['und'][0]['uri']);
+			$thumb2 = image_style_url('osci_tk_thumbnail_square', $section->field_section_image['und'][0]['uri']);
         }
         $subtitle = null;
         if (isset($section->field_subtitle['und'][0])) {
@@ -761,6 +764,7 @@ function _osci_tk_get_flattened_nodetree_toc($node, $revTime) {
             'url'      => _osci_tk_epub_node_content_url($section->nid, $revTime, $node->nid),
             'filename' => _osci_tk_epub_node_content_filename($section->nid),
             'thumbnail' => $thumb,
+			'thumbnail2' => $thumb2,
             'subtitle'  => $subtitle,
             'depth'  => $node->field_nodetree['und'][$i]['depth']
         );
