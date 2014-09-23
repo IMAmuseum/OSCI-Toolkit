@@ -166,6 +166,13 @@ function theme_osci_tk_epub_ncx_generate_navmap(&$vars) {
     return $output;
 }
 
+//sort array by footnote_index
+function cmp($a, $b) {
+	$footnoteIndex1 = (int)$a['footnote_index'];
+	$footnoteIndex2 = (int)$b['footnote_index'];
+	return $footnoteIndex1 > $footnoteIndex2;
+}
+
 function osci_tk_epub_preprocess_osci_tk_footnote_epub(&$vars) {
     global $osci_tk_used_footnotes;
     $items = $vars['items'];
@@ -178,12 +185,6 @@ function osci_tk_epub_preprocess_osci_tk_footnote_epub(&$vars) {
             $item['footnote_index'] = $fnIndex + 1;
             $finalItems[] = $item;
         }
-    }
-	//sort array by footnote_index
-    function cmp($a, $b) {
-        $footnoteIndex1 = (int)$a['footnote_index'];
-        $footnoteIndex2 = (int)$b['footnote_index'];
-        return $footnoteIndex1 > $footnoteIndex2;
     }
     usort($finalItems, "cmp");
     $vars['items'] = $finalItems;
