@@ -44,7 +44,7 @@ echo
 #
 echo "Downloading OSCI-Toolkit-Frontend"
 cd $1/sites/default
-git clone http://github.com/IMAmuseum/OSCI-Toolkit-Frontend.git
+git clone -v https://github.com/IMAmuseum/OSCI-Toolkit-Frontend.git
 cd $1
 ln -s sites/default/OSCI-Toolkit-Frontend frontend
 cd $cpath
@@ -86,21 +86,6 @@ if [ ! -d $1/sites/all/libraries/jscolor ]; then
 fi
 rm -rf $1/sites/all/libraries/jscolor/*
 cp -r ./src/jscolor/* $1/sites/all/libraries/jscolor
-echo
-
-#
-# Amplify.js
-#
-echo "Downloading and extracting amplify..."
-curl -s -k -L -o amplify-1.1.0.tgz https://github.com/appendto/amplify/tarball/1.1.0
-tar -xz -C src -f amplify-1.1.0.tgz
-rm amplify-1.1.0.tgz
-echo "Copying to Drupal libraries..."
-if [ ! -d $1/sites/all/libraries/amplify ]; then
-    mkdir -p $1/sites/all/libraries/amplify
-fi
-rm -rf $1/sites/all/libraries/amplify/*
-cp -r ./src/appendto-amplify-bede933/* $1/sites/all/libraries/amplify
 echo
 
 #
@@ -153,30 +138,15 @@ echo
 # CKEditor
 #
 echo "Downloading and extracting CKEditor..."
-curl -s -L -O http://download.cksource.com/CKEditor/CKEditor/CKEditor%203.4.2/ckeditor_3.4.2.zip
-unzip -o -q ckeditor_3.4.2.zip -d src
-rm ckeditor_3.4.2.zip
+curl -s -L -O http://download.cksource.com/CKEditor/CKEditor/CKEditor%204.4.1/ckeditor_4.4.1_standard.zip
+unzip -o -q ckeditor_4.4.1_standard.zip -d src
+rm ckeditor_4.4.1_standard.zip
 echo "Copying to Drupal libraries..."
 if [ ! -d $1/sites/all/libraries/ckeditor ]; then
     mkdir -p $1/sites/all/libraries/ckeditor
 fi
 rm -rf $1/sites/all/libraries/ckeditor/*
 cp -r ./src/ckeditor/* $1/sites/all/libraries/ckeditor
-echo
-
-#
-# jQuery Template Plugin
-#
-echo "Downloading and extracting jQuery Template Plugin..."
-curl -s -L -o jquery-tmpl.zip https://github.com/jquery/jquery-tmpl/zipball/vBeta1.0.0
-unzip -o -q jquery-tmpl.zip -d src
-rm jquery-tmpl.zip
-echo "Copying to Drupal libraries..."
-if [ ! -d $1/sites/all/libraries/jquery-tmpl ]; then
-    mkdir -p $1/sites/all/libraries/jquery-tmpl
-fi
-rm -rf $1/sites/all/libraries/jquery-tmpl/*
-cp -r ./src/jquery-jquery-tmpl-484cee9/* $1/sites/all/libraries/jquery-tmpl
 echo
 
 #
@@ -197,30 +167,30 @@ echo
 echo "Ensuring contrib module dependencies"
 if [ ! -d $1/sites/all/modules/features ]; then
     echo " - downloading Features module"
-    curl -s -L -O http://ftp.drupal.org/files/projects/features-7.x-1.0.zip
-    unzip -o -q features-7.x-1.0.zip -d src
-    rm features-7.x-1.0.zip
+    curl -s -L -O http://ftp.drupal.org/files/projects/features-7.x-2.2.zip
+    unzip -o -q features-7.x-2.2.zip -d src
+    rm features-7.x-2.2.zip
     mv src/features $1/sites/all/modules/
 fi
 if [ ! -d $1/sites/all/modules/field_group ]; then
     echo " - downloading Field_group module"
-    curl -s -L -O http://ftp.drupal.org/files/projects/field_group-7.x-1.1.zip
-    unzip -o -q field_group-7.x-1.1.zip -d src
-    rm field_group-7.x-1.1.zip
+    curl -s -L -O http://ftp.drupal.org/files/projects/field_group-7.x-1.4.zip
+    unzip -o -q field_group-7.x-1.4.zip -d src
+    rm field_group-7.x-1.4.zip
     mv src/field_group $1/sites/all/modules/
 fi
 if [ ! -d $1/sites/all/modules/libraries ]; then
     echo " - downloading Libraries module"
-    curl -s -L -O http://ftp.drupal.org/files/projects/libraries-7.x-1.0.zip
-    unzip -o -q libraries-7.x-1.0.zip -d src
-    rm libraries-7.x-1.0.zip
+    curl -s -L -O http://ftp.drupal.org/files/projects/libraries-7.x-2.2.zip
+    unzip -o -q libraries-7.x-2.2.zip -d src
+    rm libraries-7.x-2.2.zip
     mv src/libraries $1/sites/all/modules/
 fi
 if [ ! -d $1/sites/all/modules/references ]; then
     echo " - downloading References module"
-    curl -s -L -O http://ftp.drupal.org/files/projects/references-7.x-2.0.zip
-    unzip -o -q references-7.x-2.0.zip -d src
-    rm references-7.x-2.0.zip
+    curl -s -L -O http://ftp.drupal.org/files/projects/references-7.x-2.1.zip
+    unzip -o -q references-7.x-2.1.zip -d src
+    rm references-7.x-2.1.zip
     mv src/references $1/sites/all/modules/
 fi
 if [ ! -d $1/sites/all/modules/wysiwyg ]; then
@@ -232,18 +202,20 @@ if [ ! -d $1/sites/all/modules/wysiwyg ]; then
 fi
 if [ ! -d $1/sites/all/modules/ctools ]; then
     echo " - downloading CTools module"
-    curl -s -L -O http://ftp.drupal.org/files/projects/ctools-7.x-1.2.zip
-    unzip -o -q ctools-7.x-1.2.zip -d src
-    rm ctools-7.x-1.2.zip
+    curl -s -L -O http://ftp.drupal.org/files/projects/ctools-7.x-1.4.zip
+    unzip -o -q ctools-7.x-1.4.zip -d src
+    rm ctools-7.x-1.4.zip
     mv src/ctools $1/sites/all/modules/
 fi
 if [ ! -d $1/sites/all/modules/apachesolr ]; then
     echo " - downloading ApacheSolr module"
-    curl -s -L -O http://ftp.drupal.org/files/projects/apachesolr-7.x-1.1.zip
-    unzip -o -q apachesolr-7.x-1.1.zip -d src
-    rm apachesolr-7.x-1.1.zip
+    curl -s -L -O http://ftp.drupal.org/files/projects/apachesolr-7.x-1.7.zip
+    unzip -o -q apachesolr-7.x-1.7.zip -d src
+    rm apachesolr-7.x-1.7.zip
     mv src/apachesolr $1/sites/all/modules/
 fi
 echo
+
+rm -R ./src
 
 echo "Finished"
