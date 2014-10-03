@@ -33,7 +33,7 @@ function osci_tk_epub_preprocess_epub_package(&$vars)
                     $metaThemed[] = $identifierString;
                     $first = false;
                 }
-                
+
                 break;
             case 'meta':
                 foreach ($v as $prop => $value)
@@ -42,7 +42,7 @@ function osci_tk_epub_preprocess_epub_package(&$vars)
                 }
                 break;
             case 'title':
-                $metaThemed[] = '<dc:title id="t1">' . $v . '</dc:title><meta refines="#t1" property="title-type">main</meta><meta refines="#t1" property="display-seq">1</meta>';
+                $metaThemed[] = '<dc:title id="t1">' . htmlentities($v) . '</dc:title><meta refines="#t1" property="title-type">main</meta><meta refines="#t1" property="display-seq">1</meta>';
                 break;
             default:
                 if (is_array($v))
@@ -56,7 +56,7 @@ function osci_tk_epub_preprocess_epub_package(&$vars)
                 }
         }
     }
-    
+
     $vars['metadata'] = $metaThemed;
 }
 
