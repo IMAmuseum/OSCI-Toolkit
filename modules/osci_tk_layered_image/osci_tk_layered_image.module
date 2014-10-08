@@ -497,6 +497,7 @@ function _osci_tk_layered_image_get_ptiff_image($node) {
 	$command = "?FIF={$node->field_ptiff_path['und'][0]['value']}&CVT=jpeg";
 	$curl = curl_init($iip_host . $command);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
 	$output = curl_exec($curl);
 	curl_close($curl);
 
@@ -525,6 +526,7 @@ function _osci_tk_layered_image_get_ptiff_attr($node) {
 	$url = "{$iip_srv_url}?FIF={$ptiff_path}&OBJ=Basic-info";
 	$curl = curl_init($url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
 	$res = curl_exec($curl);
 	curl_close($curl);
 	if ($res != false && !stristr($res, 'error')) {
