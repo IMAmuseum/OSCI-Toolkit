@@ -38,7 +38,7 @@ h1 {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color:#222;
+  color:#999965;
   margin:0 0 20px;
 }
 
@@ -63,9 +63,18 @@ h3, h4, h5, h6 {
 }
 
 a {
-  color:#39c;
+  color:#52818C;
   font-weight:400;
   text-decoration:none;
+}
+
+a:hover {
+  color: #BDB231;
+  -webkit-transition: color .25s linear .1s;
+  -moz-transition: color .25s linear .1s;
+  -ms-transition: color .25s linear .1s;
+  transition: color .25s linear .1s;
+  cursor: pointer;
 }
 
 a small {
