@@ -1,26 +1,26 @@
 <?php
 
 function osci_tk_webapp_preview_menu() {
-
-	$items['admin/osci/webapp'] = array(
-        'title'             => 'Web App',
+    $items['admin/config/system/osci/webapp'] = array(
+        'title'             => t('Web App'),
+        'description'       => 'Settings for the OSCI Toolkit Web App',
         'page callback'     => 'drupal_get_form',
         'page arguments'    => array('osci_tk_webapp_admin_form'),
-        'access arguments'  => array('administer osci toolkit'),
+        'access arguments'  => array('administer OSCI ToolKit settings'),
         'type'              => MENU_LOCAL_TASK,
         'file'              => 'osci_tk_webapp.admin.inc',
     );
 
-	$items['node/%node/web-app'] = array(
-		'title'             => 'OSCI Toolkit Web-App Preview',
-		'page callback'     => 'osci_tk_webapp_preview',
-		'page arguments'    => array(1),
-		'access callback'  => '_osci_tk_webapp_preview_access',
-		'access arguments'    => array(1),
-		'type'              => MENU_LOCAL_TASK
-	);
+    $items['node/%node/web-app'] = array(
+	'title'             => 'OSCI Toolkit Web-App Preview',
+	'page callback'     => 'osci_tk_webapp_preview',
+	'page arguments'    => array(1),
+	'access callback'  => '_osci_tk_webapp_preview_access',
+	'access arguments'    => array(1),
+	'type'              => MENU_LOCAL_TASK
+    );
 
-	return $items;
+    return $items;
 }
 
 function osci_tk_webapp_preview_theme() {
