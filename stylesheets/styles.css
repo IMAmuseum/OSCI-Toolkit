@@ -123,6 +123,7 @@ th {
 
 img {
   max-width:100%;
+  margin: 0 0 20px;
 }
 
 header {
@@ -166,6 +167,14 @@ header ul a {
   text-align:center;
   padding-top:6px;
   height:40px;
+}
+
+header p.view {
+  margin: 0 0 6px;
+}
+
+header p.view.last {
+  margin: 0 0 20px;
 }
 
 strong {
