@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <title>Osci Toolkit by IMAmuseum</title>
+
+        <link rel="stylesheet" href="stylesheets/styles.css">
+        <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <!--[if lt IE 9]>
+        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="wrapper">
+            <header>
+                <h1>Osci Toolkit</h1>
+                <p>An authoring and publishing environment for online catalogues with full scholarly apparatus</p>
+
+                <p class="view"><a href="https://github.com/IMAmuseum/OSCI-Toolkit">View the Project on GitHub <small>IMAmuseum/OSCI-Toolkit</small></a></p>
+
+            </header>
+            <section>
+                <h2>OSCI Toolkit Architecture</h2>
+
+                <img src="images/arch.png" />
+
+                <ol>
+                    <li>At its core the OSCI Toolkit builds upon the Drupal content management system in order to provide an easy and extensible model for managing catalogue contents, structure, and media assets.</li>
+                    <li>In order to better support the publication workflows of institutions, the OSCI Toolkit is building specialized support for easily importing materials into the content management system. These include 1) "paste from Word" support which automatically extracts and maintains formatting, like footnotes, 2) the ability to harvest OAI-PMH compliant endpoints, commonly found amongst museum collection management systems, and 3) demonstration models of importing content from digital asset management systems which can serve as an example for supporting many commercial systems.</li>
+                    <li>The OSCI Toolkit strives for a model of write once, deploy everywhere. In order to support this a set of standard export features are provided. Users can click a button to export catalogues in several formats: ePub3 for supporting many modern reading experiences such as iBooks on the iPad, MOBI eBooks as an alternative format supported on devices such as the Kindle, and a standard PDF document.</li>
+                    <li>A rich Application Programming Interface (API) enables developers to create full-featured applications of their own. A complete JavaScript client library is readily available as a starting point for building a custom web application, or developers can use the OSCI Toolkit’s sample web application as a starting point.</li>
+                </ol>
+            </section>
+            <footer>
+                <p>This project is maintained by <a href="https://github.com/IMAmuseum">IMAmuseum</a></p>
+                <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+            </footer>
+        </div>
+        <script src="javascripts/scale.fix.js"></script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-1868672-29', 'auto');
+            ga('send', 'pageview');
+        </script>
+    </body>
+</html>
