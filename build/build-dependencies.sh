@@ -138,9 +138,9 @@ echo
 # CKEditor
 #
 echo "Downloading and extracting CKEditor..."
-curl -s -L -O http://download.cksource.com/CKEditor/CKEditor/CKEditor%204.4.1/ckeditor_4.4.1_standard.zip
-unzip -o -q ckeditor_4.4.1_standard.zip -d src
-rm ckeditor_4.4.1_standard.zip
+curl -s -L -O http://download.cksource.com/CKEditor/CKEditor/CKEditor%203.6.6.1/ckeditor_3.6.6.1.zip
+unzip -o -q ckeditor_3.6.6.1.zip -d src
+rm ckeditor_3.6.6.1.zip
 echo "Copying to Drupal libraries..."
 if [ ! -d $1/sites/all/libraries/ckeditor ]; then
     mkdir -p $1/sites/all/libraries/ckeditor
