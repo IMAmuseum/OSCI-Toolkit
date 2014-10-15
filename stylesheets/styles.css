@@ -222,6 +222,10 @@ footer {
   bottom:50px;
 }
 
+footer p {
+  margin: 0 0 6px;
+}
+
 @media print, screen and (max-width: 960px) {
 
   div.wrapper {
