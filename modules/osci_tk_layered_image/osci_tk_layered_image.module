@@ -397,6 +397,9 @@ function osci_tk_layered_image_figure_html_layered_image($node) {
 			case "svg_asset":
 				$data['type'] = 'svg';
 				break;
+            case "json_asset":
+				$data['type'] = 'json';
+				break;
 		}
 
 		// set the annotation flag
@@ -441,6 +444,13 @@ function osci_tk_layered_image_figure_html_layered_image($node) {
 			$data['height'] = $layer_node->field_svg['und'][0]['height'];
 			$data['color'] = $asset['color'];
 			$data['thumb'] = image_style_url($thumbStyle, $layer_node->field_svg['und'][0]['uri']);
+		}
+        
+        // set the json specific values
+		if ($data['type'] == 'json') {
+			$jsonfileurl = file_create_url($layer_node->field_json_file['und'][0]['uri']);
+            $jsonfileurl = parse_url($jsonfileurl);
+            $data['json_data'] = $jsonfileurl['path'];
 		}
 
 		// form our data attributes string
@@ -648,6 +658,7 @@ function osci_tk_layered_image_get_json($nid)
 		case 'iip_asset':
 		case 'svg_asset':
 		case 'image_asset':
+        case 'json_asset':
 			$node->field_assets['und'][0]['nid'] = $node->nid;
 	}
 
