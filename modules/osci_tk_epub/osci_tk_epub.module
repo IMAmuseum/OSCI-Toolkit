@@ -739,27 +739,36 @@ function _osci_tk_get_flattened_nodetree_toc($node, $revTime) {
         $target = $node->field_nodetree['und'][$i]['target_nid'];
         $section = node_load($target, _osci_tk_utility_retrieve_revision_id_by_timestamp($target, $revTime));
         // prepare toc item attributes
+		//TOC thumbnail
         $thumb = null;
 		//for separate reference thumbnail
 		$thumb2 = null;		
 		if (isset($section->field_figure['und'])) {
 			foreach($section->field_figure['und'] as $index => $figure) {
+				$asset = node_load($figure['asset_reference']);
+				$figureType = $asset->type;	
 				// find the reference image
 				if ($figure['position'] === 'reference') {
 					if (isset($figure['custom_thumbnail'])) {
 						$thumbFile = file_load($figure['custom_thumbnail']);
 						$thumbFileUri = $thumbFile->uri;
-						$thumb = image_style_url('osci_tk_thumbnail_square', $thumbFileUri);
 						$thumb2 = image_style_url('osci_tk_thumbnail_square', $thumbFileUri);
 						} else {
 							// use the default thumbnail
-							$asset = node_load($figure['asset_reference']);
-                        	$thumb = image_style_url('osci_tk_thumbnail_square', $asset->field_image['und'][0]['uri']);
 							$thumb2 = image_style_url('osci_tk_thumbnail_square', $asset->field_image['und'][0]['uri']);
 							}
-						}
-					}
 				}
+				// if plate is a layered image, use the custom thumbnail for the TOC thumbnail		
+				if (($figure['position'] === 'plate') && ($figureType == 'layered_image')) {
+						$thumbFile = file_load($figure['custom_thumbnail']);
+						$thumbFileUri = $thumbFile->uri;
+						if ($thumbFileUri != null) {
+							$thumb = image_style_url('osci_tk_thumbnail_square', $thumbFileUri);
+						}
+				}
+			}
+		}
+		
         $subtitle = null;
         if (isset($section->field_subtitle['und'][0])) {
             $subtitle = $section->field_subtitle['und'][0]['value'];
