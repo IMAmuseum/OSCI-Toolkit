@@ -7,6 +7,7 @@
 	<body>
 		<div class='publication-metadata'>
 			<h1><?php print $publication->title; ?></h1>
+            <h2><?php print $publicationsection->title; ?></h2>
 			<?php if (isset($publication->field_osci_tk_cover_image['und'])): ?>
 				<img src='<?php print file_create_url($publication->field_osci_tk_cover_image['und'][0]['uri']); ?>' />
 			<?php endif; ?>

@@ -1,11 +1,43 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Notes</title>
+        <title>Notes | Online Scholarly Catalogues | The Art Institute of Chicago</title>
         <style type="text/css">
-            h2 {
-                margin:0;
-                border-bottom: 1px solid #CCC;
+			body {
+				margin: 0;
+				}
+			#osci_header {
+				background: #464646 url('/sites/all/themes/osci/images/bg-header-bar-left.png') no-repeat;   
+				height: 26px;
+				position: absolute;
+				width: 100%;
+				top: 0;
+				max-width: 100%;
+				
+				}
+			#osci_header h1 {
+				font-size: 14px; 
+				border: 0px;  
+				margin: 0;
+				color: #d8d8d8;
+				display: inline-block;
+				text-align: left!important;
+				color: #d8d8d8;
+				padding: 5px 0 0 40px;
+			}
+			#page-wrapper {
+			  min-height: 100%;
+			  min-width: 960px;
+				}
+				
+			#notes {
+				position: relative;
+				top: 20px;	
+				margin: 0 0 0 20px;
+			}
+			h2 {
+				margin:0;
+				border-bottom: 1px solid #CCC;
             }
             h3 {
                 margin: 0 0 0 20px;
@@ -31,10 +63,18 @@
             }
         </style>
     </head>
-    <body>
+    <body class="html not-front not-logged-in no-sidebars page-user page-user-register">
+    <div id="page-wrapper"><div id="page">
+
+  <div id="osci_header" class="with-secondary-menu"><div class="section clearfix">
+    <h1>Online Scholarly Catalogues | The Art Institute of Chicago</h1>
+  </div></div> <!-- /.section, /#header -->
         <div id="notes">
-            <h1>Notes</h1>
-            <?php foreach ($notes as $pub) { ?>
+            <h1>Your Notes</h1>
+            <?php if (!$notes) {
+					print 'No notes have been taken at this time.';
+					break;
+			}else {foreach ($notes as $pub) { ?>
             <div class="publication">
                 <h2><?php print $pub['title']; ?></h2>
                 <?php foreach ($pub['sections'] as $section) { ?>
@@ -55,7 +95,8 @@
                 </div>
                 <?php } ?>
             </div>
-            <?php } ?>
+            <?php } }?>
         </div>
-    </body>
+        </div></div> <!-- /#page, /#page-wrapper -->
+  </body>
 </html>

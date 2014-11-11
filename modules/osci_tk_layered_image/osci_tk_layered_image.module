@@ -397,6 +397,9 @@ function osci_tk_layered_image_figure_html_layered_image($node) {
 			case "svg_asset":
 				$data['type'] = 'svg';
 				break;
+            case "json_asset":
+				$data['type'] = 'json';
+				break;
 		}
 
 		// set the annotation flag
@@ -441,6 +444,13 @@ function osci_tk_layered_image_figure_html_layered_image($node) {
 			$data['height'] = $layer_node->field_svg['und'][0]['height'];
 			$data['color'] = $asset['color'];
 			$data['thumb'] = image_style_url($thumbStyle, $layer_node->field_svg['und'][0]['uri']);
+		}
+        
+        // set the json specific values
+		if ($data['type'] == 'json') {
+			$jsonfileurl = file_create_url($layer_node->field_json_file['und'][0]['uri']);
+            $jsonfileurl = parse_url($jsonfileurl);
+            $data['json_data'] = $jsonfileurl['path'];
 		}
 
 		// form our data attributes string
@@ -497,6 +507,7 @@ function _osci_tk_layered_image_get_ptiff_image($node) {
 	$command = "?FIF={$node->field_ptiff_path['und'][0]['value']}&CVT=jpeg";
 	$curl = curl_init($iip_host . $command);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
 	$output = curl_exec($curl);
 	curl_close($curl);
 
@@ -525,6 +536,7 @@ function _osci_tk_layered_image_get_ptiff_attr($node) {
 	$url = "{$iip_srv_url}?FIF={$ptiff_path}&OBJ=Basic-info";
 	$curl = curl_init($url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
 	$res = curl_exec($curl);
 	curl_close($curl);
 	if ($res != false && !stristr($res, 'error')) {
@@ -646,6 +658,7 @@ function osci_tk_layered_image_get_json($nid)
 		case 'iip_asset':
 		case 'svg_asset':
 		case 'image_asset':
+        case 'json_asset':
 			$node->field_assets['und'][0]['nid'] = $node->nid;
 	}
 
