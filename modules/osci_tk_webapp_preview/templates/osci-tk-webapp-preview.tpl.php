@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="fragment" content="!" />
 
     <title>OSCI TK Web</title>
 
@@ -26,8 +27,8 @@
                     '<?php print $templatePath; ?>'
                 ],
                 endpoints: {
-                    <?php 
-                    $first = true; foreach($endPoints as $k => $v) { 
+                    <?php
+                    $first = true; foreach($endPoints as $k => $v) {
                         if (!$first) {
                             print ",";
                         }
