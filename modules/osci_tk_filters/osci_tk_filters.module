@@ -20,6 +20,30 @@ function osci_tk_filters_init() {
     drupal_add_js($settings, 'setting');
 }
 
+function osci_tk_filters_node_insert($node) {
+    if ($node->type === "section") {
+        for ($i=0; $i < count($node->field_body['und']); $i++) {
+            preg_match_all("|(\[footnoteref:fn-)(-\d+\])|", $node->field_body['und'][$i]['value'], $matches);
+            for ($j=0; $j < count($matches[0]); $j++) {
+                $newref = $matches[1][$j].$node->nid.$matches[2][$j];
+                $node->field_body['und'][$i]['value'] = str_ireplace($matches[0][$j], $newref, $node->field_body['und'][$i]['value']);
+            }
+            preg_match_all("|(\[figureref:fig-)(-\d+\])|", $node->field_body['und'][$i]['value'], $matches);
+            for ($j=0; $j < count($matches[0]); $j++) {
+                $newref = $matches[1][$j].$node->nid.$matches[2][$j];
+                $node->field_body['und'][$i]['value'] = str_ireplace($matches[0][$j], $newref, $node->field_body['und'][$i]['value']);
+            }
+            preg_match_all("|(\[figure:fig-)(-\d+\])|", $node->field_body['und'][$i]['value'], $matches);
+            for ($j=0; $j < count($matches[0]); $j++) {
+                $newref = $matches[1][$j].$node->nid.$matches[2][$j];
+                $node->field_body['und'][$i]['value'] = str_ireplace($matches[0][$j], $newref, $node->field_body['und'][$i]['value']);
+            }
+        }
+        $node->is_new = false;
+        node_save($node);
+    }
+}
+
 function osci_tk_filters_theme()
 {
     return array(
