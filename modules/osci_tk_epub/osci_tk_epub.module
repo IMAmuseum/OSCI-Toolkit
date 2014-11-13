@@ -509,7 +509,8 @@ function _osci_tk_epub_generate_figure_document($node, $index, $noCache = false,
 
     /***** Check the cache *****/
     if (!$noCache) {
-        $cache_key = "osci_epub_figure_{$node->nid}-{$index}_{$revTime}";
+        $rid = _osci_tk_utility_retrieve_revision_id_by_timestamp($node->nid, $revTime);
+        $cache_key = "osci_epub_figure_{$node->nid}-{$index}_{$rid}";
         $output = _osci_tk_epub_check_cache($cache_key);
         if (!is_null($output)) {
             return $output;
@@ -608,7 +609,8 @@ function _osci_tk_epub_generate_package_document($node, $revTime, $forExport = f
 
     /***** Check the cache *****/
     if (!$noCache) {
-        $cache_key = "osci_epub_package_{$node->nid}_{$revTime}";
+        $rid = _osci_tk_utility_retrieve_revision_id_by_timestamp($node->nid, $revTime);
+        $cache_key = "osci_epub_package_{$node->nid}_{$rid}";
         $output = _osci_tk_epub_check_cache($cache_key);
         if (!is_null($output)) {
             return $output;
@@ -779,7 +781,8 @@ function _osci_tk_epub_navigation_generate_toc($node, $forExport = false, $noCac
 
     // Check the cache
     if (!$noCache) {
-        $cache_key = "osci_epub_toc_{$node->nid}_{$revTime}";
+        $rid = _osci_tk_utility_retrieve_revision_id_by_timestamp($node->nid, $revTime);
+        $cache_key = "osci_epub_toc_{$node->nid}_{$rid}";
         $output = _osci_tk_epub_check_cache($cache_key);
         if (!is_null($output)) {
             return $output;
@@ -1044,7 +1047,8 @@ function _osci_tk_epub_navigation_generate_index($node, $forExport = False, $noC
 
     // Check the cache
     if (!$noCache) {
-        $cache_key = "osci_epub_index_{$node->nid}_{$revTime}";
+        $rid = _osci_tk_utility_retrieve_revision_id_by_timestamp($node->nid, $revTime);
+        $cache_key = "osci_epub_index_{$node->nid}_{$rid}";
         $output = _osci_tk_epub_check_cache($cache_key);
         if (!is_null($output)) {
             return $output;
@@ -1224,7 +1228,8 @@ function _osci_tk_epub_generate_ncx_document($node, $forExport = false, $noCache
 
     // Check the cache
     if (!$noCache) {
-        $cache_key = "osci_epub_ncx_{$node->nid}_{$revTime}";
+        $rid = _osci_tk_utility_retrieve_revision_id_by_timestamp($node->nid, $revTime);
+        $cache_key = "osci_epub_ncx_{$node->nid}_{$rid}";
         $output = _osci_tk_epub_check_cache($cache_key);
         if (!is_null($output)) {
             return $output;
@@ -1269,7 +1274,8 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
 
     // Check the cache
     if (!$noCache) {
-        $cache_key = "osci_epub_toc_{$node->nid}_{$revTime}";
+        $rid = _osci_tk_utility_retrieve_revision_id_by_timestamp($node->nid, $revTime);
+        $cache_key = "osci_epub_toc_{$node->nid}_{$rid}";
         $output = _osci_tk_epub_check_cache($cache_key);
         if (!is_null($output)) {
             return $output;
