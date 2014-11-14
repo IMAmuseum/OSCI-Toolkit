@@ -230,6 +230,24 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
             $figId      = _osci_tk_figure_create_id($form['nid']['#value'], $itemDelta);
             $key        = _osci_tk_figure_asset_label($asset);
 
+            // disable asset options if no nid is set on this section yet
+            if (isset($node->nid)) {
+                $asset_options_markup = '<a href="#asset-options-modal-'.$itemDelta.'" class="asset-options button" data-parent-nid="'.$node->nid.'" data-delta="'.$itemDelta.'">Asset Options</a><a href="#asset-options-reset" class="asset-options-reset button" data-parent-nid="'.$node->nid.'" data-delta="'.$itemDelta.'">Reset Options</a>';
+            }
+            else {
+                $asset_options_markup = "You must save this section for the first time before you can set asset options.";
+            }
+
+            if (isset($item['number_template'])) {
+                $number_template = $item['number_template'];
+            }
+            elseif (isset($instance['widget']['settings']['osci_tk_number_template'])) {
+                $number_template = $instance['widget']['settings']['osci_tk_number_template'];
+            }
+            else {
+                $number_template = "";
+            }
+
             $figureElement[] = array(
                 '#type'             => 'fieldset',
                 '#attributes'       => array(
@@ -259,7 +277,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
                 ),
                 'asset_options' => array(
                     '#type' => 'item',
-                    '#markup' => '<a href="#asset-options-modal-'.$itemDelta.'" class="asset-options button" data-parent-nid="'.$node->nid.'" data-delta="'.$itemDelta.'">Asset Options</a><a href="#asset-options-reset" class="asset-options-reset button" data-parent-nid="'.$node->nid.'" data-delta="'.$itemDelta.'">Reset Options</a>'
+                    '#markup' => $asset_options_markup
                 ),
                 'custom_thumbnail' => array(
                     '#type' => 'managed_file',
@@ -276,8 +294,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
                     '#description'          => t('The template to use for generating the figure number. (fig# will be replaced with figure numbers accordingly)'),
                     '#type'                 => 'textfield',
 					//default value that has been set in the figures/number template's manage field setting
-					'#default_value'        => 	isset($item['number_template']) ? 
-                            $item['number_template'] : $instance['widget']['settings']['osci_tk_number_template'],
+					'#default_value'        => 	$number_template
                 ),
                 'caption' => array(
                     '#title'                => t('Caption'),
