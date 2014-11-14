@@ -171,6 +171,7 @@ function osci_tk_figure_field_is_empty($item, $field)
 
 function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element)
 {
+    global $base_url;
     if ($instance['widget']['type'] === 'osci_tk_figure_widget')
     {
         $node = $form_state['node'];
@@ -204,6 +205,24 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 
         $max = $form_state['field'][$field['field_name']][LANGUAGE_NONE]['items_count'];
 
+        // create list of asset creation links. create link for each referenceable content type
+        $asset_links = "Create a new asset: ";
+        $first = true;
+        foreach($instance['widget']['settings']['osci_tk_figure_types'] as $k => $v) {
+            if ($v !== 0) {
+                $link = "";
+                if ($first == false) {
+                    $link .= ", ";
+                }
+                else {
+                    $first = false;
+                }
+                $path = $base_url . "/node/add/" . str_ireplace('_', '-', $k) . "?sub=1";
+                $link .= '<a href="'.$path.'" target="_blank">'.ucfirst(str_ireplace('_', ' ', $k)).'</a>';
+                $asset_links .= $link;
+            }
+        }
+
         for($itemDelta = 0; $itemDelta < $max; $itemDelta++)
         {
             $item       = isset($items[$itemDelta]) ? $items[$itemDelta] : array();
@@ -231,7 +250,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
                 ),
                 'asset_reference' => array(
                     '#title'                => t('Asset Reference'),
-                    '#description'          => t('Type the identifier of the media asset that this figure should display.'),
+                    '#description'          => 'Type the identifier of the media asset that this figure should display.<br>' . $asset_links,
                     '#type'                 => 'textfield',
                     '#autocomplete_path'    => 'ajax/figure/' . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $field['field_name'],
                     '#attributes'           => array('class' => array('figure_reference_field')),
@@ -383,6 +402,9 @@ function osci_tk_figure_form_alter(&$form, &$form_state, $form_id)
         }
 
         array_unshift($form['actions']['submit']['#submit'], 'osci_tk_figure_node_submit');
+
+        // detect node forms opened as a new tab but meant to close after submit
+        $form['#attached']['js'][] = drupal_get_path('module', 'osci_tk_figure').'/js/subdetect.js';
     }
 }
 
