@@ -61,10 +61,20 @@ function osci_tk_epub_menu()
         'file' => 'osci_tk_epub.publish.inc'
     );
 
+    // print by publication
     $items['api/epub/%/print_view'] = array(
         'title' => 'ePub Print View',
         'page callback' => 'osci_tk_epub_print_view',
         'page arguments' => array(2),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+    //printing by section
+    $items['api/epub/%/%/print_view'] = array(
+        'title' => 'ePub Print View',
+        'page callback' => 'osci_tk_epub_print_view',
+        'page arguments' => array(2, 3),
         'access arguments' => array('access content'),
         'type' => MENU_CALLBACK,
     );
@@ -272,6 +282,7 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
             'variables' => array(
                 'toc'           => array(),
                 'for_export'    => false,
+                'for_sitemap'   => false
             ),
             'file' => 'osci_tk_epub.templates.inc',
         ),
@@ -280,6 +291,7 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
                 'node' => null,
                 'for_export' => false,
                 'rev_time' => null,
+                'for_sitemap' => false
             ),
             'file' => 'osci_tk_epub.templates.inc',
         ),
@@ -375,7 +387,7 @@ function osci_tk_epub_entity_info_alter(&$entity_info)
     }
 }
 
-function osci_tk_epub_render($nid, $pubNid = null)
+function osci_tk_epub_render($nid, $pubNid = null, $returnOutput = false)
 {
     global $osci_tk_view_mode;
     $osci_tk_view_mode = 'epub';
@@ -393,6 +405,11 @@ function osci_tk_epub_render($nid, $pubNid = null)
     }
 
     if ($dev) return $output;
+
+    if ($returnOutput) {
+        return _filter_clean_content($output, null, null);
+    }
+
     header('Content-Type: application/xhtml+xml');
     print _filter_clean_content($output, null, null);
     drupal_exit();
@@ -567,13 +584,13 @@ function _osci_tk_epub_check_cache($cache_key) {
 }
 
 
-function _osci_tk_epub_generate_navigation_document($node, $forExport = false, $noCache = false, $revTime = null) {
+function _osci_tk_epub_generate_navigation_document($node, $forExport = false, $noCache = false, $revTime = null, $forSitemap = false) {
 
     // Generate table of contents
-    $output = _osci_tk_epub_navigation_generate_toc($node, $forExport, $noCache, $revTime);
+    $output = _osci_tk_epub_navigation_generate_toc($node, $forExport, $noCache, $revTime, $forSitemap);
 
     // Generate other tables...
-    $output .= _osci_tk_epub_navigation_generate_index($node, $forExport, $noCache, $revTime);
+    $output .= _osci_tk_epub_navigation_generate_index($node, $forExport, $noCache, $revTime, $forSitemap);
 
     $output = theme("osci_tk_epub_navigation", array('content' => $output));
 
@@ -753,6 +770,7 @@ function _osci_tk_get_flattened_nodetree_toc($node, $revTime) {
             'title'  => $title,
             'timestamp' => $section->created,
             'url'      => _osci_tk_epub_node_content_url($section->nid, $revTime, $node->nid),
+            'sitemap_url' => _osci_tk_webapp_create_url($section->nid, $revTime, $node->nid),
             'filename' => _osci_tk_epub_node_content_filename($section->nid),
             'thumbnail' => $thumb,
             'subtitle'  => $subtitle,
@@ -774,15 +792,22 @@ function _osci_tk_get_flattened_nodetree_toc($node, $revTime) {
 /**
  * Render the ePub table of contents for the book of the given node
  */
-function _osci_tk_epub_navigation_generate_toc($node, $forExport = false, $noCache = false, $revTime = null)
+function _osci_tk_epub_navigation_generate_toc($node, $forExport = false, $noCache = false, $revTime = null, $forSitemap = false)
 {
     if ($node->type !== 'publication') return null;
     $revTime = $revTime ? $revTime : time();
 
     // Check the cache
     if (!$noCache) {
+        $id = "";
+        if ($forExport) {
+            $id = "_export";
+        }
+        if ($forSitemap) {
+            $id = "_sitemap";
+        }
         $rid = _osci_tk_utility_retrieve_revision_id_by_timestamp($node->nid, $revTime);
-        $cache_key = "osci_epub_toc_{$node->nid}_{$rid}";
+        $cache_key = "osci_epub_toc_{$node->nid}_{$rid}{$id}";
         $output = _osci_tk_epub_check_cache($cache_key);
         if (!is_null($output)) {
             return $output;
@@ -793,7 +818,7 @@ function _osci_tk_epub_navigation_generate_toc($node, $forExport = false, $noCac
 
     $output = "<nav epub:type='toc' id='book-{$node->nid}-toc'>";
     $output .= "<h1>Table of Contents</h1>"; // Optional header
-    $output .= theme('osci_tk_epub_navigation_generate_toc_item_list', array('toc' => $toc, 'for_export' => $forExport));
+    $output .= theme('osci_tk_epub_navigation_generate_toc_item_list', array('toc' => $toc, 'for_export' => $forExport, 'for_sitemap' => $forSitemap));
     $output .= "</nav>";
 
     if (!$noCache) {
@@ -1038,7 +1063,7 @@ function _osci_tk_epub_get_book_metadata(&$pub, &$data = array())
     return $metadata;
 }
 
-function _osci_tk_epub_navigation_generate_index($node, $forExport = False, $noCache = False, $revTime = null)
+function _osci_tk_epub_navigation_generate_index($node, $forExport = False, $noCache = False, $revTime = null, $forSitemap = false)
 {
     if ($node->type !== 'publication') return null;
     $revTime = $revTime ? $revTime : time();
@@ -1047,15 +1072,22 @@ function _osci_tk_epub_navigation_generate_index($node, $forExport = False, $noC
 
     // Check the cache
     if (!$noCache) {
+        $id = "";
+        if ($forExport) {
+            $id = "_export";
+        }
+        if ($forSitemap) {
+            $id = "_sitemap";
+        }
         $rid = _osci_tk_utility_retrieve_revision_id_by_timestamp($node->nid, $revTime);
-        $cache_key = "osci_epub_index_{$node->nid}_{$rid}";
+        $cache_key = "osci_epub_index_{$node->nid}_{$rid}{$id}";
         $output = _osci_tk_epub_check_cache($cache_key);
         if (!is_null($output)) {
             return $output;
         }
     }
 
-    $output = theme('osci_tk_epub_navigation_generate_index', array('node' => $node, 'for_export' => $forExport, 'rev_time' => $revTime));
+    $output = theme('osci_tk_epub_navigation_generate_index', array('node' => $node, 'for_export' => $forExport, 'rev_time' => $revTime, 'for_sitemap' => $forSitemap));
 
     if (!$noCache) {
         cache_set($cache_key, $output, 'cache');
@@ -1185,6 +1217,14 @@ function osci_tk_epub_block_view($delta = '')
                     $links[] = l("Content Document", "api/epub/{$nid}/content.xhtml");
                 }
 
+                if ($node->type == 'section') {
+                    $results = db_query("SELECT * FROM {field_data_field_nodetree}
+                                        WHERE field_nodetree_target_nid = " . $node->nid . " GROUP BY entity_id");
+                    foreach($results as $result) {
+                        $links[] = l("Print-friendly", "api/epub/{$result->entity_id}/{$nid}/print_view");
+                    }
+                }
+
                 // add nav, toc, and package links for publications
                 if ($node->type === 'publication') {
                     $form = drupal_get_form('osci_tk_epub_publish_form', $nid);
@@ -1265,17 +1305,15 @@ function _osci_tk_epub_get_revision_id($nid)
 }
 
 
-function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
-
+function osci_tk_epub_print_view($pubNid, $nid, $noCache=false, $revTime=null) {
     $node = node_load($nid);
+    $pubnode = node_load($pubNid);
 
-    if ($node->type !== 'publication') return null;
     $revTime = $revTime ? $revTime : time();
 
     // Check the cache
     if (!$noCache) {
-        $rid = _osci_tk_utility_retrieve_revision_id_by_timestamp($node->nid, $revTime);
-        $cache_key = "osci_epub_toc_{$node->nid}_{$rid}";
+        $cache_key = "osci_epub_toc_{$node->nid}_{$revTime}";
         $output = _osci_tk_epub_check_cache($cache_key);
         if (!is_null($output)) {
             return $output;
@@ -1287,46 +1325,46 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
         return '<sup>[' . (intval($matches[1]) + 1) . ']</sup>';
     }
     function footnote_numbering($matches) {
-        return $matches[0] . "<span class='number'>" . (intval($matches[2]) + 1) . ")</span> ";
+        return $matches[0] . "<span class='number'>" . (intval($matches[2])) . ")</span> ";
     }
-
-    $toc = _osci_tk_get_flattened_nodetree_toc($node, $revTime);
 
     $content = '';
 
     $first = true;
-    foreach($toc[0] as $item) {
-
-        $vid = _osci_tk_epub_get_revision_id($item['nid']);
-        $section_node = node_load($item['nid'], $vid);
-        if (!$first) {
-            $content .= "<div class='section-separator'>&nbsp</div>";
-        }
-        $section_content = _osci_tk_epub_generate_content_document($section_node, false);
-
-        $section_content = preg_replace_callback(
-            '/\[footnote:fn-[0-9]+-([0-9]+)\]/',
-            'footnote_reference',
-            $section_content
-        );
-
-        $section_content = preg_replace_callback(
-            "/<aside epub:type([^>]*)?fn-[0-9]+-([0-9]+)[^>]*>\s*<p>/",
-            'footnote_numbering',
-            $section_content
-        );
-
-        // This is the full content document, including <html>, <head>, and <body>
-        // We want to extract the <section> portion
-        $matches = array();
-        preg_match_all('/<section([^>]*)>(.+)<\/section>/msU', $section_content, $matches);
-        foreach($matches[0] as $section) {
-            $content .= $section;
-        }
-
-        $first = false;
-
+    $vid = _osci_tk_epub_get_revision_id($nid);
+    $section_node = node_load($nid, $vid);
+    if (!$first) {
+        $content .= "<div class='section-separator'>&nbsp</div>";
     }
+    $section_content = _osci_tk_epub_generate_content_document($section_node, false);
+
+    $section_content = preg_replace_callback(
+        '/\[footnote:fn-[0-9]+-([0-9]+)\]/',
+        'footnote_reference',
+        $section_content
+    );
+
+    $section_content = preg_replace_callback(
+        '/<aside epub:type([^>]*)?data-footnote_index="([0-9]+)[^>]*>\s*<p>/',
+        'footnote_numbering',
+        $section_content
+    );
+
+    //finding relative #section urls and adding root url to access webapp preview from print view
+    global $base_url;
+    $pubalias = drupal_lookup_path("alias", "node/" . $pubNid);
+    $fullurl = 'href="' . $base_url . '/reader/' . $pubalias . '#section/';
+    $section_content = preg_replace('/href="#section\//', $fullurl, $section_content);
+
+    // This is the full content document, including <html>, <head>, and <body>
+    // We want to extract the <section> portion
+    $matches = array();
+    preg_match_all('/<section([^>]*)>(.+)<\/section>/msU', $section_content, $matches);
+    foreach($matches[0] as $section) {
+        $content .= $section;
+    }
+
+    $first = false;
 
     //return $content; // For use in development
 
@@ -1341,9 +1379,9 @@ function osci_tk_epub_print_view($nid, $noCache=false, $revTime=null) {
     print theme('osci_tk_epub_print', array(
         'content' => $content,
         'css_urls' => $css_urls,
-        'publication' => $node
+        'publication' => $pubnode,
+        'publicationsection' => $node
     ));
 
     drupal_exit();
-
 }

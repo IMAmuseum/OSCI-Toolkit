@@ -89,17 +89,18 @@ function theme_osci_tk_epub_navigation_generate_toc_item_list(&$vars) {
             $output .= '<ol><li>';
             $flag = false;
             $depth++;
-        }    
+        }
         while ($leaf['depth'] < $depth) {
             $output .= '</li></ol>';
             $depth--;
-        }    
+        }
         if ($flag) {
             $output .= '</li><li>';
             $flag = false;
-        }    
+        }
 
         $link = $vars['for_export'] ? $leaf['filename'] : $leaf['url'];
+        $link = $vars['for_sitemap'] ? $leaf['sitemap_url'] : $link;
 
         $attrs = "data-section_id=\"{$leaf['nid']}\"";
         $attrs .= " data-subtitle=\"{$leaf['subtitle']}\"";
@@ -108,10 +109,10 @@ function theme_osci_tk_epub_navigation_generate_toc_item_list(&$vars) {
         $output .= "<a href=\"{$link}\" {$attrs}>{$leaf['title']}</a>";
 
         $flag = true;
-    }    
+    }
     while ($depth-- > -1) {
         $output .= '</li></ol>';
-    }    
+    }
     return $output;
 }
 
@@ -123,23 +124,24 @@ function theme_osci_tk_epub_navigation_generate_index(&$vars) {
             $target = $nodeTreeItem['target_nid'];
             $section = node_load($target, _osci_tk_utility_retrieve_revision_id_by_timestamp($target, $vars['rev_time']));
             $link = $vars['for_export'] ? _osci_tk_epub_node_content_filename($section->nid) : _osci_tk_epub_node_content_url($section->nid, $vars['rev_time'], $vars['node']->nid);
+            $link = $vars['for_sitemap'] ? _osci_tk_webapp_create_url($section->nid, $vars['rev_time'], $vars['node']->nid) : $link;
 
             $title = $section->title;
             if (isset($section->field_osci_tk_title) && isset($section->field_osci_tk_title['und'][0]['value'])) {
                 $title = $section->field_osci_tk_title['und'][0]['value'];
-            }    
+            }
 
             $list .= "<li><a href='{$link}'>{$title}</a></li>";
 
             // if section has figures, include them in index
-            if (isset($section->field_figure['und']) && count($section->field_figure['und']) > 0) { 
+            if (isset($section->field_figure['und']) && count($section->field_figure['und']) > 0) {
                 for ($i=0; $i < count($section->field_figure['und']); $i++) {
                     $link = $vars['for_export'] ? _osci_tk_epub_node_figure_filename($section->nid, $i) : _osci_tk_epub_node_figure_url($section->nid, $i, $vars['rev_time'], $vars['node']->nid);
                     $list .= "<li><a href='{$link}'>{$title}: Fig. {$i}</a></li>";
-                }    
-            }    
-        }    
-    }    
+                }
+            }
+        }
+    }
 
     $output = "<nav epub:type='index' id='book-{$vars['node']->nid}-index'>";
     $output .= "<h1>Index</h1>"; // Optional header
@@ -153,15 +155,15 @@ function theme_osci_tk_epub_ncx_generate_navmap(&$vars) {
     if (!is_null($vars['data']['content_nids'])) {
         // Not using templates for performance. Might consider an XML library.
         $output = "<navMap>";
-        $count = 0; 
+        $count = 0;
         foreach($vars['data']['content_nids'] as $content) {
             $count++;
             $url = $vars['for_export'] ? $content['filename'] : $content['url'];
             $output .= '<navPoint id="section-' . $content['nid'] . '" playOrder="' . $count . '"><navLabel><text>' . $content['title'] . '</text></navLabel><content src="' . $url . '" /></navPoint>';
-        }    
+        }
 
         $output .= "</navMap>";
-    }    
+    }
 
     return $output;
 }

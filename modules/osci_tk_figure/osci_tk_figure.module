@@ -171,6 +171,7 @@ function osci_tk_figure_field_is_empty($item, $field)
 
 function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element)
 {
+    global $base_url;
     if ($instance['widget']['type'] === 'osci_tk_figure_widget')
     {
         $node = $form_state['node'];
@@ -204,12 +205,48 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
 
         $max = $form_state['field'][$field['field_name']][LANGUAGE_NONE]['items_count'];
 
+        // create list of asset creation links. create link for each referenceable content type
+        $asset_links = "Create a new asset: ";
+        $first = true;
+        foreach($instance['widget']['settings']['osci_tk_figure_types'] as $k => $v) {
+            if ($v !== 0) {
+                $link = "";
+                if ($first == false) {
+                    $link .= ", ";
+                }
+                else {
+                    $first = false;
+                }
+                $path = $base_url . "/node/add/" . str_ireplace('_', '-', $k) . "?sub=1";
+                $link .= '<a href="'.$path.'" target="_blank">'.ucfirst(str_ireplace('_', ' ', $k)).'</a>';
+                $asset_links .= $link;
+            }
+        }
+
         for($itemDelta = 0; $itemDelta < $max; $itemDelta++)
         {
             $item       = isset($items[$itemDelta]) ? $items[$itemDelta] : array();
             $asset      = isset($item['asset_reference']) ? node_load($item['asset_reference']) : '';
             $figId      = _osci_tk_figure_create_id($form['nid']['#value'], $itemDelta);
             $key        = _osci_tk_figure_asset_label($asset);
+
+            // disable asset options if no nid is set on this section yet
+            if (isset($node->nid)) {
+                $asset_options_markup = '<a href="#asset-options-modal-'.$itemDelta.'" class="asset-options button" data-parent-nid="'.$node->nid.'" data-delta="'.$itemDelta.'">Asset Options</a><a href="#asset-options-reset" class="asset-options-reset button" data-parent-nid="'.$node->nid.'" data-delta="'.$itemDelta.'">Reset Options</a>';
+            }
+            else {
+                $asset_options_markup = "You must save this section for the first time before you can set asset options.";
+            }
+
+            if (isset($item['number_template'])) {
+                $number_template = $item['number_template'];
+            }
+            elseif (isset($instance['widget']['settings']['osci_tk_number_template'])) {
+                $number_template = $instance['widget']['settings']['osci_tk_number_template'];
+            }
+            else {
+                $number_template = "";
+            }
 
             $figureElement[] = array(
                 '#type'             => 'fieldset',
@@ -231,7 +268,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
                 ),
                 'asset_reference' => array(
                     '#title'                => t('Asset Reference'),
-                    '#description'          => t('Type the identifier of the media asset that this figure should display.'),
+                    '#description'          => 'Type the identifier of the media asset that this figure should display.<br>' . $asset_links,
                     '#type'                 => 'textfield',
                     '#autocomplete_path'    => 'ajax/figure/' . $instance['entity_type'] . '/' . $instance['bundle'] . '/' . $field['field_name'],
                     '#attributes'           => array('class' => array('figure_reference_field')),
@@ -240,7 +277,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
                 ),
                 'asset_options' => array(
                     '#type' => 'item',
-                    '#markup' => '<a href="#asset-options-modal-'.$itemDelta.'" class="asset-options button" data-parent-nid="'.$node->nid.'" data-delta="'.$itemDelta.'">Asset Options</a><a href="#asset-options-reset" class="asset-options-reset button" data-parent-nid="'.$node->nid.'" data-delta="'.$itemDelta.'">Reset Options</a>'
+                    '#markup' => $asset_options_markup
                 ),
                 'custom_thumbnail' => array(
                     '#type' => 'managed_file',
@@ -257,8 +294,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
                     '#description'          => t('The template to use for generating the figure number. (fig# will be replaced with figure numbers accordingly)'),
                     '#type'                 => 'textfield',
 					//default value that has been set in the figures/number template's manage field setting
-					'#default_value'        => 	isset($item['number_template']) ? 
-                            $item['number_template'] : $instance['widget']['settings']['osci_tk_number_template'],
+					'#default_value'        => 	$number_template
                 ),
                 'caption' => array(
                     '#title'                => t('Caption'),
@@ -384,49 +420,9 @@ function osci_tk_figure_form_alter(&$form, &$form_state, $form_id)
         if (isset($form['field_data'])) {
             $form['field_data']['#attributes']['style'] = array('display:none');
         }
+
     }
 }
-
-function _osci_tk_figure_node_get_replace_ids($form, &$form_state)
-{
-    $offset = 0;
-    $replaceIds = array();
-    $newIds = array();
-
-    //update figure references for renumbering if one deleted
-    if (isset($form_state['values']['field_figure']))
-    {
-        $figureTemplate = '[figure:';
-        $figureRefTemplate = '[figureref:';
-        foreach($form_state['values']['field_figure'][LANGUAGE_NONE] as $k => $v)
-        {
-            if ($k === 'add_more')
-            {
-                continue;
-            }
-
-            $figId = _osci_tk_figure_create_id($form_state['values']['nid'], $k);
-            if (empty($v['asset_reference']) || !is_numeric($v['asset_reference']))
-            {
-                $offset++;
-                $replaceIds[] = $figureTemplate . $figId . ']';
-                $replaceIds[] = $figureRefTemplate . $figId . ']';
-                $newIds[] = '';
-            }
-            else if ($offset > 0)
-            {
-                $replaceIds[] = $figureTemplate . $figId . ']';
-                $replaceIds[] = $figureRefTemplate . $figId . ']';
-                $newFigId = _osci_tk_figure_create_id($form_state['values']['nid'], $k - $offset);
-                $newIds[] = $figureTemplate . $newFigId . ']';
-                $newIds[] = $figureRefTemplate . $newFigId . ']';
-            }
-        }
-    }
-
-    return array($replaceIds, $newIds);
-}
-
 
 function osci_tk_figure_node_view($node, $view_mode, $langcode) {
 
