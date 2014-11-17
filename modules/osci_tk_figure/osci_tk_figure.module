@@ -374,38 +374,15 @@ function figure_add_more_js($form, $form_state)
     return $form['field_figure'];
 }
 
+/**
+ * Implements hook_form_alter()
+ */
 function osci_tk_figure_form_alter(&$form, &$form_state, $form_id)
 {
     if (strpos($form_id, '_node_form') !== false)
     {
         if (isset($form['field_data'])) {
             $form['field_data']['#attributes']['style'] = array('display:none');
-        }
-
-        array_unshift($form['actions']['submit']['#submit'], 'osci_tk_figure_node_submit');
-    }
-}
-
-function osci_tk_figure_node_submit($form, &$form_state)
-{
-    // if a figure has been deleted, remove all references to that figure from any text fields
-    list($replaceIds, $newIds) = _osci_tk_figure_node_get_replace_ids($form, $form_state);
-
-    if (count($replaceIds))
-    {
-        foreach($form_state['values'] as $k => $v)
-        {
-            if (is_array($v) && isset($v[LANGUAGE_NONE]))
-            {
-                foreach($v[LANGUAGE_NONE] as $delta => $value)
-                {
-                    if (isset($form_state['values'][$k][LANGUAGE_NONE][$delta]['value']))
-                    {
-                        $form_state['values'][$k][LANGUAGE_NONE][$delta]['value'] =
-                            str_replace($replaceIds, $newIds, $form_state['values'][$k][LANGUAGE_NONE][$delta]['value']);
-                    }
-                }
-            }
         }
     }
 }

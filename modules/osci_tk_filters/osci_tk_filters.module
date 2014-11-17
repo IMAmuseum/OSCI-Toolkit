@@ -123,6 +123,112 @@ function osci_tk_filters_filter_info() {
 }
 
 /**
+ * Implements hook_node_submit()
+ * 
+ * Reorder figures and footnotes to match order they are placed in the content
+ */
+function osci_tk_filters_node_submit($node, $form, &$form_state)
+{
+
+    // Get fields configured for epub
+    $fields = field_attach_view('node', $node, 'epub');
+    foreach (element_children($fields) as $field) {
+        $newFields[] = $fields[$field];
+    }
+    
+    // Sort fields be weight
+    usort($newFields, 'cmpWeight');
+
+    $originalFigureValues = $node->field_figure[LANGUAGE_NONE];
+    $originalFootnoteValues = $node->field_footnote[LANGUAGE_NONE];
+
+    $newFigures         = array();
+    $newFootnotes       = array();
+    $figureCounter      = 0;
+    $footnoteCounter    = 0;
+
+    foreach($newFields as $k => $field) {
+        foreach($field['#items'] as $d => $item) {
+
+            // If the field has a format, then figures can be present
+            if (isset($item['format'])) {
+                // Process figures
+                $node->{$field['#field_name']}[LANGUAGE_NONE][$d]['value'] = _osci_tk_filter_references($node, $newFigures, $originalFigureValues, $figureCounter, $item, "?\[(figureref|figure):fig-\d+-\d+\]?", 'fig');
+
+                // Update item value so previous changes carry thru
+                $item['value'] = $node->{$field['#field_name']}[LANGUAGE_NONE][$d]['value'];
+
+                // Process footnotes
+                $node->{$field['#field_name']}[LANGUAGE_NONE][$d]['value'] = _osci_tk_filter_references($node, $newFootnotes, $originalFootnoteValues, $footnoteCounter, $item, "?\[(footnoteref|footnote):fn-\d+-\d+\]?", 'fn');
+            }
+        }
+
+    }
+
+    // Save new order of figures
+    $node->field_figure[LANGUAGE_NONE] = $newFigures;
+
+    if (!empty($originalFigureValues)) {
+        $node->field_figure[LANGUAGE_NONE] = array_merge($node->field_figure[LANGUAGE_NONE], $originalFigureValues);
+    }
+
+    // Save new order of footnotes
+    $node->field_footnote[LANGUAGE_NONE] = $newFootnotes;
+
+    if (!empty($originalFootnoteValues)) {
+        $node->field_footnote[LANGUAGE_NONE] = array_merge($node->field_footnote[LANGUAGE_NONE], $originalFootnoteValues);
+    }
+}
+
+function _osci_tk_filter_references(&$node, &$new, &$original, &$counter, $item, $regex, $prefix) {
+    preg_match_all($regex, $item['value'], $matches);
+    $matches    = array_shift($matches);
+    $search     = array();
+    $replace    = array();
+    $salt       = array();
+
+    foreach($matches as $key => $match) {
+        $match = substr($match, 1, -1);
+        list($type, $nid, $delta) = explode('-', $match);
+
+        $new[$counter] = $original[$delta];
+                    
+        unset($original[$delta]);
+
+        // str_replace cant internally handle similiar keys, so salt with
+        // a random string which will be removed after we are done processing
+        $salt[$key] = md5(rand());
+        $nid = $node->nid . $salt[$key];
+
+        $newKey = _osci_tk_filter_create_id($prefix, $nid, $counter, true);
+                    
+        list($type, $key) = explode(":", $match);
+
+        $newKey = implode(":", array($type, $newKey));
+
+        // Build a new search/replace criteria
+        $search[]   = $match;
+        $replace[]  = $newKey;
+
+        $counter++;
+    }
+
+    $output = str_replace($search, $replace, $item['value']);
+
+    // Remove the salt before returning value
+    return str_replace($salt, array(), $output);
+}
+
+function _osci_tk_filter_create_id($type, $nid, $delta, $salt = false)
+{
+    return $type . '-' . $nid . '-' . $delta;
+}
+
+function cmpWeight($a, $b) {
+    return $a['#weight'] - $b['#weight'];    
+}
+
+/**
  * Implementation of hook_wysiwyg_plugin
  */
 function osci_tk_filters_wysiwyg_plugin($editor, $version) {
