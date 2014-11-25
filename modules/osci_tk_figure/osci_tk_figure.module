@@ -317,6 +317,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
                         'br'    => 'bottom right',
                         'p'     => 'full page',
                         'plate' => 'plate',
+						'platefull' => 'plate full page',
                         'n'     => 'none'
                     )
                 ),
