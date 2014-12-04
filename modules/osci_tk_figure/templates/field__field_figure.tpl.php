@@ -9,6 +9,8 @@
 					$item['#item']['number_template'] = $osci_tk_placed_figures[$item['#item']['delta']]['fig_text'];
 				} elseif ($item['#item']['position'] === 'plate') {
 					$item['#item']['number_template'] = "";
+				} elseif ($item['#item']['position'] === 'platefull') {
+					$item['#item']['number_template'] = "";
 				} else {
 					continue;
 				}
