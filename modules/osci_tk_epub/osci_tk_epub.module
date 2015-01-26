@@ -1374,13 +1374,12 @@ function osci_tk_epub_print_view($pubNid, $nid, $noCache=false, $revTime=null) {
 		return $content;
 	}
 
-    $toc = _osci_tk_get_flattened_nodetree_toc($node, $revTime);
-
     $content = '';
 
     $first = true;
 	
 	if ($pubNid == $nid) {
+		$toc = _osci_tk_get_flattened_nodetree_toc($node, $revTime);
 		//print entire publication
 		foreach($toc[0] as $item) {
 			$vid = _osci_tk_epub_get_revision_id($item['nid']);
