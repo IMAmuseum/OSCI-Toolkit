@@ -247,7 +247,7 @@ function osci_tk_figure_field_widget_form(&$form, &$form_state, $field, $instanc
                     '#title' => t('Custom Thumbnail'),
                     '#description' => t('Upload a custom thumbnail for this figure.<br />Allowed file types: png gif jpg jpeg.'),
                     '#upload_location' => 'public://figures/thumbnail',
-                    '#default_value' => $item['custom_thumbnail'],
+                    '#default_value' => (isset($item['custom_thumbnail'])) ? $item['custom_thumbnail'] : null,
                     '#upload_validators' => array(
                         'file_validate_extensions' => array('gif png jpg jpeg'),
                     )
