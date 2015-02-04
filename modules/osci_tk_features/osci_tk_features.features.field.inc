@@ -10,86 +10,6 @@
 function osci_tk_features_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-html_asset-body'.
-  $fields['node-html_asset-body'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(
-        0 => 'node',
-      ),
-      'field_name' => 'body',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'text',
-      'settings' => array(),
-      'translatable' => '0',
-      'type' => 'text_with_summary',
-    ),
-    'field_instance' => array(
-      'bundle' => 'html_asset',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'hidden',
-          'module' => 'text',
-          'settings' => array(),
-          'type' => 'text_default',
-          'weight' => 2,
-        ),
-        'epub' => array(
-          'label' => 'hidden',
-          'module' => 'text',
-          'settings' => array(),
-          'type' => 'text_default',
-          'weight' => '0',
-        ),
-        'teaser' => array(
-          'label' => 'hidden',
-          'module' => 'text',
-          'settings' => array(
-            'trim_length' => 600,
-          ),
-          'type' => 'text_summary_or_trimmed',
-          'weight' => 1,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'body',
-      'label' => 'Body',
-      'required' => FALSE,
-      'settings' => array(
-        'display_summary' => TRUE,
-        'text_processing' => 1,
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'module' => 'text',
-        'settings' => array(
-          'rows' => 20,
-          'summary_rows' => 5,
-        ),
-        'type' => 'text_textarea_with_summary',
-        'weight' => -1,
-      ),
-    ),
-  );
-
   // Exported field: 'node-html_asset-field_asset_thumbnail'.
   $fields['node-html_asset-field_asset_thumbnail'] = array(
     'field_config' => array(
@@ -135,7 +55,7 @@ function osci_tk_features_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '0',
+          'weight' => 0,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -168,6 +88,85 @@ function osci_tk_features_field_default_fields() {
         ),
         'type' => 'image_image',
         'weight' => '-2',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-iip_asset-field_alt_tag'.
+  $fields['node-iip_asset-field_alt_tag'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_alt_tag',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'iip_asset',
+      'default_value' => array(
+        0 => array(
+          'value' => 'Online Scholarly Catalogue | Art Institute of Chicago',
+        ),
+      ),
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 5,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_alt_tag',
+      'label' => 'Alt Tag',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '2',
       ),
     ),
   );
@@ -249,7 +248,7 @@ function osci_tk_features_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'image_image',
-        'weight' => '2',
+        'weight' => '6',
       ),
     ),
   );
@@ -315,7 +314,7 @@ function osci_tk_features_field_default_fields() {
         'module' => 'options',
         'settings' => array(),
         'type' => 'options_select',
-        'weight' => '-3',
+        'weight' => '3',
       ),
     ),
   );
@@ -383,7 +382,7 @@ function osci_tk_features_field_default_fields() {
       'label' => 'Image',
       'required' => 0,
       'settings' => array(
-        'alt_field' => 0,
+        'alt_field' => 1,
         'default_image' => 0,
         'file_directory' => 'iip_images',
         'file_extensions' => 'png gif jpg jpeg',
@@ -401,7 +400,7 @@ function osci_tk_features_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'image_image',
-        'weight' => '-1',
+        'weight' => '4',
       ),
     ),
   );
@@ -473,7 +472,7 @@ function osci_tk_features_field_default_fields() {
           'rows' => '1',
         ),
         'type' => 'text_textarea',
-        'weight' => '0',
+        'weight' => '5',
       ),
     ),
   );
@@ -548,7 +547,86 @@ function osci_tk_features_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '-4',
+        'weight' => '1',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-image_asset-field_alt_tag'.
+  $fields['node-image_asset-field_alt_tag'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_alt_tag',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'image_asset',
+      'default_value' => array(
+        0 => array(
+          'value' => 'Online Scholarly Catalogue | Art Institute of Chicago',
+        ),
+      ),
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 2,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_alt_tag',
+      'label' => 'Alt Tag',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '2',
       ),
     ),
   );
@@ -630,7 +708,7 @@ function osci_tk_features_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'image_image',
-        'weight' => '-2',
+        'weight' => '3',
       ),
     ),
   );
@@ -722,7 +800,86 @@ function osci_tk_features_field_default_fields() {
           'progress_indicator' => 'bar',
         ),
         'type' => 'image_image',
-        'weight' => '-3',
+        'weight' => '1',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-layered_image-field_alt_tag'.
+  $fields['node-layered_image-field_alt_tag'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_alt_tag',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'layered_image',
+      'default_value' => array(
+        0 => array(
+          'value' => 'Online Scholarly Catalogue | Art Institute of Chicago',
+        ),
+      ),
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 3,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_alt_tag',
+      'label' => 'Alt Tag',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '2',
       ),
     ),
   );
@@ -752,19 +909,25 @@ function osci_tk_features_field_default_fields() {
       'module' => 'node_reference',
       'settings' => array(
         'referenceable_types' => array(
-          'category_section' => 0,
-          'cover_section' => 0,
-          'credits_section' => 0,
+          'about_catalogue' => 0,
+          'about_this_catalogue' => 0,
+          'collector' => 0,
+          'conservation_asset' => 0,
+          'figure_gallery' => 0,
+          'file_asset' => 0,
           'html_asset' => 0,
+          'html_figure' => 'html_figure',
           'iip_asset' => 'iip_asset',
           'image_asset' => 'image_asset',
+          'json_asset' => 'json_asset',
           'layered_image' => 0,
           'note' => 0,
-          'paper_front_section' => 0,
           'publication' => 0,
-          'references_section' => 0,
           'section' => 0,
           'svg_asset' => 'svg_asset',
+          'title_pages' => 0,
+          'volume' => 0,
+          'work_of_art' => 0,
         ),
         'view' => array(
           'args' => array(),
@@ -817,7 +980,7 @@ function osci_tk_features_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'node_reference_autocomplete',
-        'weight' => '-3',
+        'weight' => '1',
       ),
     ),
   );
@@ -890,7 +1053,7 @@ function osci_tk_features_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '1',
+        'weight' => '4',
       ),
     ),
   );
@@ -958,7 +1121,7 @@ function osci_tk_features_field_default_fields() {
       'label' => 'Representative Image',
       'required' => 0,
       'settings' => array(
-        'alt_field' => 0,
+        'alt_field' => 1,
         'default_image' => 0,
         'file_directory' => '',
         'file_extensions' => 'png gif jpg jpeg',
@@ -976,7 +1139,7 @@ function osci_tk_features_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'image_image',
-        'weight' => '-1',
+        'weight' => '3',
       ),
     ),
   );
@@ -1241,6 +1404,81 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
+  // Exported field: 'node-note-field_paragraph_number'.
+  $fields['node-note-field_paragraph_number'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_paragraph_number',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'note',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 5,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_paragraph_number',
+      'label' => 'Paragraph Number',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '6',
+      ),
+    ),
+  );
+
   // Exported field: 'node-note-field_section'.
   $fields['node-note-field_section'] = array(
     'field_config' => array(
@@ -1267,6 +1505,7 @@ function osci_tk_features_field_default_fields() {
       'settings' => array(
         'referenceable_types' => array(
           'book' => 0,
+          'conservation_asset' => 0,
           'iip_asset' => 0,
           'image_asset' => 0,
           'note' => 0,
@@ -1343,14 +1582,16 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-note-field_paragrpah_number'.
-  $fields['node-note-field_paragraph_number'] = array(
+  // Exported field: 'node-publication-body'.
+  $fields['node-publication-body'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
       'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_paragraph_number',
+      'entity_types' => array(
+        0 => 'node',
+      ),
+      'field_name' => 'body',
       'foreign keys' => array(
         'format' => array(
           'columns' => array(
@@ -1366,24 +1607,22 @@ function osci_tk_features_field_default_fields() {
       ),
       'locked' => '0',
       'module' => 'text',
-      'settings' => array(
-        'max_length' => '255',
-      ),
+      'settings' => array(),
       'translatable' => '0',
-      'type' => 'text',
+      'type' => 'text_with_summary',
     ),
     'field_instance' => array(
-      'bundle' => 'note',
+      'bundle' => 'publication',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 4,
+          'weight' => 0,
         ),
         'epub' => array(
           'label' => 'above',
@@ -1392,28 +1631,32 @@ function osci_tk_features_field_default_fields() {
           'weight' => 0,
         ),
         'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(
+            'trim_length' => 600,
+          ),
+          'type' => 'text_summary_or_trimmed',
           'weight' => 0,
         ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'field_paragraph_number',
-      'label' => 'Paragraph Number',
-      'required' => 1,
+      'field_name' => 'body',
+      'label' => 'Body',
+      'required' => FALSE,
       'settings' => array(
-        'text_processing' => '0',
+        'display_summary' => TRUE,
+        'text_processing' => 1,
         'user_register_form' => FALSE,
       ),
       'widget' => array(
-        'active' => 1,
         'module' => 'text',
         'settings' => array(
-          'size' => '60',
+          'rows' => 20,
+          'summary_rows' => 5,
         ),
-        'type' => 'text_textfield',
-        'weight' => '5',
+        'type' => 'text_textarea_with_summary',
+        'weight' => '-4',
       ),
     ),
   );
@@ -1472,15 +1715,24 @@ function osci_tk_features_field_default_fields() {
         'module' => 'osci_tk_nodetree',
         'settings' => array(
           'osci_tk_content_types' => array(
-            'article' => 0,
+            'about_catalogue' => 'about_catalogue',
+            'about_this_catalogue' => 'about_this_catalogue',
+            'collector' => 'collector',
+            'conservation_asset' => 0,
+            'figure_gallery' => 'figure_gallery',
+            'file_asset' => 0,
+            'html_asset' => 0,
+            'html_figure' => 0,
             'iip_asset' => 0,
             'image_asset' => 0,
             'layered_image' => 0,
             'note' => 0,
-            'page' => 0,
             'publication' => 0,
             'section' => 'section',
             'svg_asset' => 0,
+            'title_pages' => 'title_pages',
+            'volume' => 0,
+            'work_of_art' => 'work_of_art',
           ),
         ),
         'type' => 'nodetree_nodetree_form',
@@ -1570,7 +1822,7 @@ function osci_tk_features_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'image_image',
-        'weight' => '8',
+        'weight' => '4',
       ),
     ),
   );
@@ -1645,7 +1897,7 @@ function osci_tk_features_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '3',
+        'weight' => '-1',
       ),
     ),
   );
@@ -1718,7 +1970,7 @@ function osci_tk_features_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '2',
+        'weight' => '-2',
       ),
     ),
   );
@@ -1793,7 +2045,7 @@ function osci_tk_features_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '4',
+        'weight' => '0',
       ),
     ),
   );
@@ -1852,7 +2104,7 @@ function osci_tk_features_field_default_fields() {
         'module' => 'osci_tk_utility',
         'settings' => array(),
         'type' => 'identifier_widget',
-        'weight' => '1',
+        'weight' => '-4',
       ),
     ),
   );
@@ -1927,7 +2179,7 @@ function osci_tk_features_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '5',
+        'weight' => '1',
       ),
     ),
   );
@@ -2000,7 +2252,7 @@ function osci_tk_features_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '7',
+        'weight' => '3',
       ),
     ),
   );
@@ -2080,7 +2332,369 @@ function osci_tk_features_field_default_fields() {
           'size' => 60,
         ),
         'type' => 'taxonomy_autocomplete',
-        'weight' => '6',
+        'weight' => '2',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-publication-field_publication_date'.
+  $fields['node-publication-field_publication_date'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_publication_date',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'publication',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 10,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_publication_date',
+      'label' => 'Publication Date',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '-3',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-publication-field_vocabulary'.
+  $fields['node-publication-field_vocabulary'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_vocabulary',
+      'foreign keys' => array(),
+      'indexes' => array(
+        'vocab_id' => array(
+          0 => 'vocab_id',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'osci_tk_glossary',
+      'settings' => array(),
+      'translatable' => '0',
+      'type' => 'vocabulary_reference',
+    ),
+    'field_instance' => array(
+      'bundle' => 'publication',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'osci_tk_glossary',
+          'settings' => array(),
+          'type' => 'vocabulary_reference_default',
+          'weight' => 9,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_vocabulary',
+      'label' => 'Glossary',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(),
+        'type' => 'options_select',
+        'weight' => '5',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-section-field_active'.
+  $fields['node-section-field_active'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_active',
+      'foreign keys' => array(),
+      'indexes' => array(
+        'value' => array(
+          0 => 'value',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'list',
+      'settings' => array(
+        'allowed_values' => array(
+          0 => 'No',
+          1 => 'Yes',
+        ),
+        'allowed_values_function' => '',
+      ),
+      'translatable' => '0',
+      'type' => 'list_boolean',
+    ),
+    'field_instance' => array(
+      'bundle' => 'section',
+      'default_value' => array(
+        0 => array(
+          'value' => 0,
+        ),
+      ),
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'list',
+          'settings' => array(),
+          'type' => 'list_default',
+          'weight' => 8,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '7',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_active',
+      'label' => 'Active',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(
+          'display_label' => 1,
+        ),
+        'type' => 'options_onoff',
+        'weight' => '5',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-section-field_author_curatorial_entry'.
+  $fields['node-section-field_author_curatorial_entry'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_author_curatorial_entry',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'section',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 11,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '4',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_author_curatorial_entry',
+      'label' => 'Author',
+      'required' => FALSE,
+      'settings' => array(
+        'text_processing' => 0,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'module' => 'text',
+        'settings' => array(
+          'size' => 60,
+        ),
+        'type' => 'text_textfield',
+        'weight' => '10',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-section-field_authors_body'.
+  $fields['node-section-field_authors_body'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_authors_body',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'section',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 15,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_authors_body',
+      'label' => 'Author',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '12',
       ),
     ),
   );
@@ -2119,18 +2733,18 @@ function osci_tk_features_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'hidden',
+          'label' => 'above',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '3',
+          'weight' => '1',
         ),
         'epub' => array(
           'label' => 'hidden',
           'module' => 'osci_tk_epub',
           'settings' => array(),
           'type' => 'osci_tk_section',
-          'weight' => '2',
+          'weight' => '0',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -2154,7 +2768,81 @@ function osci_tk_features_field_default_fields() {
           'rows' => '10',
         ),
         'type' => 'text_textarea',
-        'weight' => '6',
+        'weight' => '13',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-section-field_curatorial_entry'.
+  $fields['node-section-field_curatorial_entry'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_curatorial_entry',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(),
+      'translatable' => '0',
+      'type' => 'text_long',
+    ),
+    'field_instance' => array(
+      'bundle' => 'section',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 12,
+        ),
+        'epub' => array(
+          'label' => 'hidden',
+          'module' => 'osci_tk_epub',
+          'settings' => array(),
+          'type' => 'osci_tk_section',
+          'weight' => '1',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_curatorial_entry',
+      'label' => 'Curatorial Entry',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '1',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'rows' => '5',
+        ),
+        'type' => 'text_textarea',
+        'weight' => '11',
       ),
     ),
   );
@@ -2184,14 +2872,14 @@ function osci_tk_features_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '5',
+          'weight' => '4',
         ),
         'epub' => array(
           'label' => 'hidden',
           'module' => 'osci_tk_figure',
           'settings' => array(),
           'type' => 'osci_tk_figure',
-          'weight' => '4',
+          'weight' => '3',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -2212,21 +2900,108 @@ function osci_tk_features_field_default_fields() {
         'module' => 'osci_tk_figure',
         'settings' => array(
           'osci_tk_figure_types' => array(
-            'article' => 0,
-            'book' => 0,
+            'about_catalogue' => 0,
+            'about_this_catalogue' => 0,
+            'collector' => 0,
+            'conservation_asset' => 'conservation_asset',
+            'figure_gallery' => 0,
+            'file_asset' => 0,
             'html_asset' => 'html_asset',
+            'html_figure' => 'html_figure',
             'iip_asset' => 'iip_asset',
             'image_asset' => 'image_asset',
-            'layered_image' => 0,
+            'layered_image' => 'layered_image',
             'note' => 0,
-            'page' => 0,
             'publication' => 0,
             'section' => 0,
             'svg_asset' => 'svg_asset',
+            'title_pages' => 0,
+            'volume' => 0,
+            'work_of_art' => 0,
           ),
+          'osci_tk_number_template' => 'fig. fig#',
         ),
         'type' => 'osci_tk_figure_widget',
         'weight' => '8',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-section-field_file'.
+  $fields['node-section-field_file'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_file',
+      'foreign keys' => array(
+        'fid' => array(
+          'columns' => array(
+            'fid' => 'fid',
+          ),
+          'table' => 'file_managed',
+        ),
+      ),
+      'indexes' => array(
+        'fid' => array(
+          0 => 'fid',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'file',
+      'settings' => array(
+        'display_default' => 0,
+        'display_field' => 0,
+        'uri_scheme' => 'public',
+      ),
+      'translatable' => '0',
+      'type' => 'file',
+    ),
+    'field_instance' => array(
+      'bundle' => 'section',
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'file',
+          'settings' => array(),
+          'type' => 'file_default',
+          'weight' => 9,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '6',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_file',
+      'label' => 'File',
+      'required' => 0,
+      'settings' => array(
+        'description_field' => 0,
+        'file_directory' => '',
+        'file_extensions' => 'txt pdf png jpg jpeg gif',
+        'max_filesize' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'file',
+        'settings' => array(
+          'progress_indicator' => 'throbber',
+        ),
+        'type' => 'file_generic',
+        'weight' => '5',
       ),
     ),
   );
@@ -2269,14 +3044,14 @@ function osci_tk_features_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '4',
+          'weight' => '3',
         ),
         'epub' => array(
           'label' => 'hidden',
-          'module' => 'osci_tk_epub',
+          'module' => 'text',
           'settings' => array(),
-          'type' => 'osci_tk_section',
-          'weight' => '3',
+          'type' => 'text_default',
+          'weight' => '2',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -2305,14 +3080,14 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-section-field_osci_tk_title'.
-  $fields['node-section-field_osci_tk_title'] = array(
+  // Exported field: 'node-section-field_navigation_title'.
+  $fields['node-section-field_navigation_title'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_osci_tk_title',
+      'field_name' => 'field_navigation_title',
       'foreign keys' => array(
         'format' => array(
           'columns' => array(
@@ -2328,11 +3103,9 @@ function osci_tk_features_field_default_fields() {
       ),
       'locked' => '0',
       'module' => 'text',
-      'settings' => array(
-        'max_length' => '1024',
-      ),
+      'settings' => array(),
       'translatable' => '0',
-      'type' => 'text',
+      'type' => 'text_long',
     ),
     'field_instance' => array(
       'bundle' => 'section',
@@ -2341,18 +3114,17 @@ function osci_tk_features_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'inline',
+          'label' => 'above',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '0',
+          'weight' => 10,
         ),
         'epub' => array(
-          'label' => 'hidden',
-          'module' => 'osci_tk_epub',
+          'label' => 'above',
           'settings' => array(),
-          'type' => 'osci_tk_section',
-          'weight' => '0',
+          'type' => 'hidden',
+          'weight' => '5',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -2362,21 +3134,21 @@ function osci_tk_features_field_default_fields() {
         ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'field_osci_tk_title',
-      'label' => 'Title',
-      'required' => 1,
+      'field_name' => 'field_navigation_title',
+      'label' => 'Navigation Title',
+      'required' => 0,
       'settings' => array(
-        'text_processing' => '0',
+        'text_processing' => '1',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
         'active' => 1,
         'module' => 'text',
         'settings' => array(
-          'size' => '60',
+          'rows' => '5',
         ),
-        'type' => 'text_textfield',
-        'weight' => '1',
+        'type' => 'text_textarea',
+        'weight' => '2',
       ),
     ),
   );
@@ -2424,13 +3196,13 @@ function osci_tk_features_field_default_fields() {
             'image_style' => '',
           ),
           'type' => 'image',
-          'weight' => '2',
+          'weight' => 5,
         ),
         'epub' => array(
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '5',
+          'weight' => '9',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -2462,7 +3234,7 @@ function osci_tk_features_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'image_image',
-        'weight' => '3',
+        'weight' => '4',
       ),
     ),
   );
@@ -2503,18 +3275,17 @@ function osci_tk_features_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'inline',
+          'label' => 'above',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '1',
+          'weight' => 6,
         ),
         'epub' => array(
           'label' => 'hidden',
-          'module' => 'osci_tk_epub',
           'settings' => array(),
-          'type' => 'osci_tk_section',
-          'weight' => '1',
+          'type' => 'hidden',
+          'weight' => '8',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -2538,7 +3309,7 @@ function osci_tk_features_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '2',
+        'weight' => '3',
       ),
     ),
   );
@@ -2712,25 +3483,34 @@ function osci_tk_features_field_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Active');
+  t('Alt Tag');
   t('An account of the resource.');
   t('An entity responsible for making the resource available.');
   t('An optional thumbnail to display in reader interfaces');
   t('An optional thumbnail to display in reader interfaces.');
   t('Assets');
+  t('Author');
   t('Body');
   t('Content Id');
   t('Cover Image');
   t('Creator');
+  t('Curatorial Entry');
   t('Data');
   t('Description');
   t('Editor');
   t('Figure');
+  t('File');
   t('Footnote');
+  t('Glossary');
   t('IIP Server URL');
   t('Identifier');
   t('Image');
+  t('Navigation Title');
   t('PTIFF Path');
+  t('Paragraph Number');
   t('Ptiff Attributes');
+  t('Publication Date');
   t('Publisher');
   t('Representative Image');
   t('Rights');
@@ -2744,7 +3524,6 @@ function osci_tk_features_field_default_fields() {
   t('The path on the server to the Pyramidal TIFF image');
   t('The topic of the resource. Typically, the subject will be represented using keywords, key phrases, or classification codes. Recommended best practice is to use a controlled vocabulary.');
   t('Thumbnail');
-  t('Title');
 
   return $fields;
 }

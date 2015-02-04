@@ -19,32 +19,32 @@ function osci_tk_features_filter_default_formats() {
     'weight' => '-10',
     'filters' => array(
       'osci_tk_clean_content' => array(
-        'weight' => '0',
-        'status' => '1',
-        'settings' => array(),
-      ),
-      'osci_tk_cross_link' => array(
-        'weight' => '0',
-        'status' => '1',
-        'settings' => array(),
-      ),
-      'osci_tk_figure' => array(
-        'weight' => '0',
-        'status' => '1',
-        'settings' => array(),
-      ),
-      'osci_tk_figure_reference' => array(
-        'weight' => '0',
+        'weight' => '-48',
         'status' => '1',
         'settings' => array(),
       ),
       'osci_tk_footnote_reference' => array(
-        'weight' => '0',
+        'weight' => '-47',
+        'status' => '1',
+        'settings' => array(),
+      ),
+      'osci_tk_figure' => array(
+        'weight' => '-46',
+        'status' => '1',
+        'settings' => array(),
+      ),
+      'osci_tk_figure_reference' => array(
+        'weight' => '-45',
+        'status' => '1',
+        'settings' => array(),
+      ),
+      'osci_tk_cross_link' => array(
+        'weight' => '-44',
         'status' => '1',
         'settings' => array(),
       ),
       'osci_tk_glossary_terms' => array(
-        'weight' => '0',
+        'weight' => '-43',
         'status' => '1',
         'settings' => array(),
       ),

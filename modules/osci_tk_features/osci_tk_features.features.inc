@@ -23,8 +23,9 @@ function osci_tk_features_image_default_styles() {
   // Exported image style: osci_tk_default.
   $styles['osci_tk_default'] = array(
     'name' => 'osci_tk_default',
+    'label' => 'osci_tk_default',
     'effects' => array(
-      1 => array(
+      3 => array(
         'label' => 'Scale',
         'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
         'effect callback' => 'image_scale_effect',
@@ -34,8 +35,8 @@ function osci_tk_features_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => '50',
-          'height' => '',
+          'width' => '200',
+          'height' => '200',
           'upscale' => 1,
         ),
         'weight' => '1',
@@ -46,19 +47,21 @@ function osci_tk_features_image_default_styles() {
   // Exported image style: osci_tk_thumbnail_square.
   $styles['osci_tk_thumbnail_square'] = array(
     'name' => 'osci_tk_thumbnail_square',
+    'label' => 'osci_tk_thumbnail_square',
     'effects' => array(
-      1 => array(
-        'label' => 'Scale and crop',
-        'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
-        'effect callback' => 'image_scale_and_crop_effect',
-        'dimensions callback' => 'image_resize_dimensions',
-        'form callback' => 'image_resize_form',
-        'summary theme' => 'image_resize_summary',
+      2 => array(
+        'label' => 'Scale',
+        'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
+        'effect callback' => 'image_scale_effect',
+        'dimensions callback' => 'image_scale_dimensions',
+        'form callback' => 'image_scale_form',
+        'summary theme' => 'image_scale_summary',
         'module' => 'image',
-        'name' => 'image_scale_and_crop',
+        'name' => 'image_scale',
         'data' => array(
-          'width' => '200',
-          'height' => '150',
+          'width' => '160',
+          'height' => '160',
+          'upscale' => 0,
         ),
         'weight' => '1',
       ),
