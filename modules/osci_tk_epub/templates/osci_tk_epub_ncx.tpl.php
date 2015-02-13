@@ -10,7 +10,7 @@
 		<text><?php print $metadata['title']; ?></text>
 	</docTitle>
 	<docAuthor>
-		<text><?php print $metadata['creator'][0]; ?></text>
+		<text><?php if ($metadata['creator'][0]) { print $metadata['creator'][0]; }; ?></text>
 	</docAuthor>
 	<?php print $navMap; ?>
 </ncx>
