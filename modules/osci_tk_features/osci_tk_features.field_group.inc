@@ -190,7 +190,8 @@ function osci_tk_features_field_group_info() {
       5 => 'field_osci_tk_publisher',
       6 => 'field_osci_tk_rights',
       7 => 'field_osci_tk_subject',
-      8 => 'title',
+      8 => 'field_glossary',
+      9 => 'title',
     ),
     'format_type' => 'tab',
     'format_settings' => array(

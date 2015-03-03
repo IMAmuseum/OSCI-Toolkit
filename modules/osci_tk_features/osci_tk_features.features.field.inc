@@ -2005,6 +2005,68 @@ function osci_tk_features_field_default_fields() {
     ),
   );
 
+  $field_instances['node-publication-field_glossary'] = array(
+    'field_config' => array(
+      'active' => 1,
+      'cardinality' => 1,
+      'deleted' => 0,
+      'entity_types' => array(),
+      'field_name' => 'field_glossary',
+      'foreign keys' => array(),
+      'indexes' => array(
+        'vocab_id' => array(
+          0 => 'vocab_id',
+        ),
+      ),
+      'locked' => 0,
+      'module' => 'osci_tk_glossary',
+      'settings' => array(),
+      'translatable' => 0,
+      'type' => 'vocabulary_reference',
+    ),
+    'field_instance' => array(
+      'bundle' => 'publication',
+      'default_value' => NULL,
+      'deleted' => 0,
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'osci_tk_glossary',
+          'settings' => array(),
+          'type' => 'vocabulary_reference_default',
+          'weight' => 9,
+        ),
+        'epub' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_glossary',
+      'label' => 'Glossary',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(),
+        'type' => 'options_select',
+        'weight' => 4,
+      ),
+    ),
+  );
+
   // Exported field: 'node-publication-field_osci_tk_subject'.
   $fields['node-publication-field_osci_tk_subject'] = array(
     'field_config' => array(
