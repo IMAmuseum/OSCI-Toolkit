@@ -412,7 +412,13 @@ function _process_cross_link($text) {
         $args[$matches[1][$i]] = $matches[2][$i];
     }
     $nid = $text[1];
-    $url = "#section/{$nid}";
+	
+	$menuTrail = menu_get_active_trail();
+	$parentNode = $menuTrail[1]['map'][2];
+	$nodeAlias = drupal_get_path_alias("node/$parentNode");
+
+	global $base_path;
+	$url = $base_path . "reader/{$nodeAlias}/section/{$nid}";
     if (isset($args['paragraph'])) {
         $url .= "/p-{$args['paragraph']}";
     }

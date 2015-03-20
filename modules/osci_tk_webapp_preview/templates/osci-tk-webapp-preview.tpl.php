@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="fragment" content="!" />
-
+    <meta name="description" content="Welcome to the Art Institute’s online scholarly catalogues. James Ensor: The Temptation of Saint Anthony is an exhibition catalogue which features essays by Susan M. Canning, Patrick Florizoone and Nancy Ireson, Anna Swinbourne, Debora Silverman, and Kimberly J. Nichols. Monet Paintings and Drawings at the Art Institute of Chicago and Renoir Paintings and Drawings at the Art Institute of Chicago are permanent collection catalogues with essays by Gloria Groom, Jill Shaw, John Collins, Nancy Ireson, Kelly Keegan, Kimberley Muir, and Dawn Jaros. Additional research support was provided by Genevieve Westerby and Inge Fiedler. Peer review was conducted by Paul Tucker Hayes and Colin Bailey.  Each digital catalogue contains in-depth curatorial and conservation research on the museum’s collection, including high-resolution, zoomable images, and other interactive elements about the artwork. Upcoming catalogues scheduled for release in 2015 will be devoted to the museum’s holdings of works by Gustave Caillebotte, Camille Pissarro, and Paul Gauguin, as well as our collection of Roman art.">
     <title>Online Scholarly Catalogues at the Art Institute of Chicago</title>
 
     <?php foreach($css as $cssPath): ?>
