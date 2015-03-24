@@ -413,9 +413,13 @@ function _process_cross_link($text) {
     }
     $nid = $text[1];
 	
-	$menuTrail = menu_get_active_trail();
-	$parentNode = $menuTrail[1]['map'][2];
-	$nodeAlias = drupal_get_path_alias("node/$parentNode");
+	//get root id
+	$treeData = osci_tk_nodetree_get_data_for_nid($nid);
+	foreach($treeData as $tree) {
+		$rootNodeId = $tree['rootNid'];
+	}
+	
+	$nodeAlias = drupal_get_path_alias("node/$rootNodeId");
 
 	global $base_path;
 	$url = $base_path . "reader/{$nodeAlias}/section/{$nid}";
