@@ -7,8 +7,7 @@
 /**
  * Implements hook_ctools_plugin_api().
  */
-function osci_tk_features_ctools_plugin_api() {
-  list($module, $api) = func_get_args();
+function osci_tk_features_ctools_plugin_api($module = NULL, $api = NULL) {
   if ($module == "field_group" && $api == "field_group") {
     return array("version" => "1");
   }
@@ -22,47 +21,33 @@ function osci_tk_features_image_default_styles() {
 
   // Exported image style: osci_tk_default.
   $styles['osci_tk_default'] = array(
-    'name' => 'osci_tk_default',
     'effects' => array(
       1 => array(
-        'label' => 'Scale',
-        'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
-        'effect callback' => 'image_scale_effect',
-        'dimensions callback' => 'image_scale_dimensions',
-        'form callback' => 'image_scale_form',
-        'summary theme' => 'image_scale_summary',
-        'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => '50',
+          'width' => 50,
           'height' => '',
           'upscale' => 1,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => 'osci_tk_default',
   );
 
   // Exported image style: osci_tk_thumbnail_square.
   $styles['osci_tk_thumbnail_square'] = array(
-    'name' => 'osci_tk_thumbnail_square',
     'effects' => array(
       1 => array(
-        'label' => 'Scale and crop',
-        'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
-        'effect callback' => 'image_scale_and_crop_effect',
-        'dimensions callback' => 'image_resize_dimensions',
-        'form callback' => 'image_resize_form',
-        'summary theme' => 'image_resize_summary',
-        'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '200',
-          'height' => '150',
+          'width' => 200,
+          'height' => 150,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => 'osci_tk_thumbnail_square',
   );
 
   return $styles;
@@ -138,5 +123,6 @@ function osci_tk_features_node_info() {
       'help' => '',
     ),
   );
+  drupal_alter('node_info', $items);
   return $items;
 }
