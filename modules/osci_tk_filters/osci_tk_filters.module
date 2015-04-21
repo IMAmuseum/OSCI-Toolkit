@@ -135,48 +135,51 @@ function osci_tk_filters_node_submit($node, $form, &$form_state)
     foreach (element_children($fields) as $field) {
         $newFields[] = $fields[$field];
     }
-    
-    // Sort fields be weight
-    usort($newFields, 'cmpWeight');
 
-    $originalFigureValues = $node->field_figure[LANGUAGE_NONE];
-    $originalFootnoteValues = $node->field_footnote[LANGUAGE_NONE];
+    if (isset($newFields))
+    {
+        // Sort fields be weight
+        usort($newFields, 'cmpWeight');
 
-    $newFigures         = array();
-    $newFootnotes       = array();
-    $figureCounter      = 0;
-    $footnoteCounter    = 0;
+        $originalFigureValues = $node->field_figure[LANGUAGE_NONE];
+        $originalFootnoteValues = $node->field_footnote[LANGUAGE_NONE];
 
-    foreach($newFields as $k => $field) {
-        foreach($field['#items'] as $d => $item) {
+        $newFigures         = array();
+        $newFootnotes       = array();
+        $figureCounter      = 0;
+        $footnoteCounter    = 0;
 
-            // If the field has a format, then figures can be present
-            if (isset($item['format'])) {
-                // Process figures
-                $node->{$field['#field_name']}[LANGUAGE_NONE][$d]['value'] = _osci_tk_filter_references($node, $newFigures, $originalFigureValues, $figureCounter, $item, "?\[(figureref|figure):fig-\d+-\d+\]?", 'fig');
+        foreach($newFields as $k => $field) {
+            foreach($field['#items'] as $d => $item) {
 
-                // Update item value so previous changes carry thru
-                $item['value'] = $node->{$field['#field_name']}[LANGUAGE_NONE][$d]['value'];
+                // If the field has a format, then figures can be present
+                if (isset($item['format'])) {
+                    // Process figures
+                    $node->{$field['#field_name']}[LANGUAGE_NONE][$d]['value'] = _osci_tk_filter_references($node, $newFigures, $originalFigureValues, $figureCounter, $item, "?\[(figureref|figure):fig-\d+-\d+\]?", 'fig');
 
-                // Process footnotes
-                $node->{$field['#field_name']}[LANGUAGE_NONE][$d]['value'] = _osci_tk_filter_references($node, $newFootnotes, $originalFootnoteValues, $footnoteCounter, $item, "?\[(footnoteref|footnote):fn-\d+-\d+\]?", 'fn');
+                    // Update item value so previous changes carry thru
+                    $item['value'] = $node->{$field['#field_name']}[LANGUAGE_NONE][$d]['value'];
+
+                    // Process footnotes
+                    $node->{$field['#field_name']}[LANGUAGE_NONE][$d]['value'] = _osci_tk_filter_references($node, $newFootnotes, $originalFootnoteValues, $footnoteCounter, $item, "?\[(footnoteref|footnote):fn-\d+-\d+\]?", 'fn');
+                }
             }
+
         }
 
-    }
+        // Save new order of figures
+        $node->field_figure[LANGUAGE_NONE] = $newFigures;
 
-    // Save new order of figures
-    $node->field_figure[LANGUAGE_NONE] = $newFigures;
+        if (!empty($originalFigureValues)) {
+            $node->field_figure[LANGUAGE_NONE] = array_merge($node->field_figure[LANGUAGE_NONE], $originalFigureValues);
+        }
 
-    if (!empty($originalFigureValues)) {
-        $node->field_figure[LANGUAGE_NONE] = array_merge($node->field_figure[LANGUAGE_NONE], $originalFigureValues);
-    }
+        // Save new order of footnotes
+        $node->field_footnote[LANGUAGE_NONE] = $newFootnotes;
 
-    // Save new order of footnotes
-    $node->field_footnote[LANGUAGE_NONE] = $newFootnotes;
-
-    if (!empty($originalFootnoteValues)) {
-        $node->field_footnote[LANGUAGE_NONE] = array_merge($node->field_footnote[LANGUAGE_NONE], $originalFootnoteValues);
+        if (!empty($originalFootnoteValues)) {
+            $node->field_footnote[LANGUAGE_NONE] = array_merge($node->field_footnote[LANGUAGE_NONE], $originalFootnoteValues);
+        }
     }
 }
 
