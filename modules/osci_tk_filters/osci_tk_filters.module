@@ -141,8 +141,12 @@ function osci_tk_filters_node_submit($node, $form, &$form_state)
         // Sort fields be weight
         usort($newFields, 'cmpWeight');
 
-        $originalFigureValues = $node->field_figure[LANGUAGE_NONE];
-        $originalFootnoteValues = $node->field_footnote[LANGUAGE_NONE];
+        if(isset($node->field_figure[LANGUAGE_NONE])) {
+            $originalFigureValues = $node->field_figure[LANGUAGE_NONE];
+        }
+        if(isset($node->field_footnote[LANGUAGE_NONE])) {
+            $originalFootnoteValues = $node->field_footnote[LANGUAGE_NONE];
+        }
 
         $newFigures         = array();
         $newFootnotes       = array();
