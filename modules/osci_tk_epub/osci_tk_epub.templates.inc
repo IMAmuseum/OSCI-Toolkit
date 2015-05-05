@@ -68,6 +68,7 @@ function osci_tk_epub_preprocess_osci_tk_epub_section(&$vars)
     // Handle title and subtitle of a section
     switch ($vars['field_name']) {
         case 'title':
+        case 'osci_tk_title':
             $vars['content'] = '<h1>' . check_plain($vars['item']['value']) . '</h1>';
             break;
         case 'subtitle':
