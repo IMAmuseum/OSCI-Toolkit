@@ -1,5 +1,5 @@
 <section id="figures">
-	<?php 
+	<?php
 		global $osci_tk_placed_figures;
 		$numItems = count($osci_tk_placed_figures);
 		foreach($items as $item)
@@ -15,8 +15,8 @@
 					continue;
 				}
 			}
-				
-			print drupal_render($item); 
+
+			print drupal_render($item);
 		}
 	?>
 </section>
