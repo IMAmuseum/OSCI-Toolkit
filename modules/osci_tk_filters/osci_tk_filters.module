@@ -419,13 +419,17 @@ function _process_cross_link($text) {
 		$rootNodeId = $tree['rootNid'];
 	}
 	
-	$nodeAlias = drupal_get_path_alias("node/$rootNodeId");
-
 	global $base_path;
-	$url = $base_path . "reader/{$nodeAlias}/section/{$nid}";
+	$alias = drupal_lookup_path("alias", "node/$rootNodeId");
+	if ($alias) {
+		$url = $base_path . "reader/{$alias}/section/{$nid}";
+	} else {
+		$url = $base_path . "reader/{$rootNodeId}/section/{$nid}";
+	}
     if (isset($args['paragraph'])) {
         $url .= "/p-{$args['paragraph']}";
     }
+	
     $linkText = isset($args['text']) ? $args['text'] : "link";
     $replace =  "<a href=\"{$url}\" class=\"cross-link\" target=\"_blank\" data-nid=\"{$nid}\">{$linkText}</a>";
     return $replace;
