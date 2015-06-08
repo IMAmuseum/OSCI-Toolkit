@@ -731,9 +731,14 @@ function osci_tk_layered_image_osci_tk_figure_content($args) {
 		case 'image_asset':
 		case 'iip_asset':
 		case 'layered_image':
+
 			global $base_url;
 			// parse the section id from the figure identifier
 			preg_match('/fig-(\d+)-(\d+)/', $args['item']['fig_id'], $matches);
+			if($args['item']['export']) {
+				$asset_node = node_load($args['item']['asset_reference']);
+				$args['item']['thumbnail'] = _osci_tk_epub_asset_process_uri($asset_node->field_image['und'][0]['uri'], $export);
+			}
 			$args['item']['content_url'] = $base_url.'/api/epub/'.$matches[1].'/'.$matches[2].'/figure.xhtml';
 			return theme('osci_tk_layered_image_figure_formatter', array('item' => $args['item']));
 	}
@@ -755,6 +760,7 @@ function osci_tk_layered_image_osci_tk_figure_formatter_alter(&$vars) {
 	// correct the public url scheme for previewUri in figure options
 	if (isset($vars['item']['options'])) {
 		$opts = json_decode($vars['item']['options']);
+
 		if (isset($opts->previewUri)) {
 			$opts->previewUri = file_create_url($opts->previewUri);
 			$vars['item']['options'] = json_encode($opts);

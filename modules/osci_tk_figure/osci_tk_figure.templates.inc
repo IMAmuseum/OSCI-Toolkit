@@ -19,8 +19,14 @@ function osci_tk_figure_preprocess_osci_tk_figure_formatter(&$vars) {
 	}
 
 	if (!isset($vars['item']['thumbnail'])) {
-		$thumbnail = module_invoke_all('osci_tk_figure_thumbnail', array('item' => $vars['item']));
-		$vars['item']['thumbnail'] = array_pop($thumbnail);
+		$export = isset($vars['item']['export']) ? $vars['item']['export'] : false;
+		if($vars['item']['export']) {
+			$asset_node = node_load($vars['item']['asset_reference']);
+			$vars['item']['thumbnail'] = _osci_tk_epub_asset_process_uri($asset_node->field_image['und'][0]['uri'], $export);
+		} else {
+			$thumbnail = module_invoke_all('osci_tk_figure_thumbnail', array('item' => $vars['item']));
+			$vars['item']['thumbnail'] = array_pop($thumbnail);
+		}
 	}
 
 	$content = module_invoke_all('osci_tk_figure_content', array('item' => $vars['item']));
