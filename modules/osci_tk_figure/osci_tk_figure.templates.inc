@@ -20,7 +20,7 @@ function osci_tk_figure_preprocess_osci_tk_figure_formatter(&$vars) {
 
 	if (!isset($vars['item']['thumbnail'])) {
 		$export = isset($vars['item']['export']) ? $vars['item']['export'] : false;
-		if($vars['item']['export']) {
+		if($export) {
 			$asset_node = node_load($vars['item']['asset_reference']);
 			$vars['item']['thumbnail'] = _osci_tk_epub_asset_process_uri($asset_node->field_image['und'][0]['uri'], $export);
 		} else {
