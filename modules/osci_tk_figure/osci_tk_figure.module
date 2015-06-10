@@ -79,7 +79,6 @@ function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $ins
     global $osci_tk_placed_figures;
 
     $osci_tk_placed_figures = is_array($osci_tk_placed_figures) ? $osci_tk_placed_figures : array();
-
     $element = array();
     switch($display['type'])
     {
@@ -87,7 +86,7 @@ function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $ins
             foreach($items as $delta => $item)
             {
                 //if figure placed inline do not output it again
-                if (is_array($osci_tk_placed_figures) && in_array($delta, $osci_tk_placed_figures)) {
+                if (is_array($osci_tk_placed_figures) && ! in_array($delta, $osci_tk_placed_figures)) {
                     continue;
                 }
 
@@ -145,7 +144,7 @@ function osci_tk_figure_field_widget_settings_form($field, $instance)
             '#mulitple' => true,
             '#options' => array_map('check_plain', node_type_get_names())
         );
-		
+
 		$form['osci_tk_number_template'] = array(
 			'#type'                 => 'textfield',
 			'#title'                => t('Number Template'),
