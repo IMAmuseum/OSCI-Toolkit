@@ -94,12 +94,13 @@ function osci_tk_webapp_preview($node) {
 		preg_match("/section\/(.*?)\?_escaped_fragment_=/", $url, $output_array);
 		$sectionNid = $output_array[1];
 		$output = osci_tk_epub_render($sectionNid, $pubNid, true);
-
+		
+		/*will fix TOC later
 		$tocLink = l("Table of Contents", "node/{$pubNid}/web-app/nav");
 
 		$parts = split("</body>", $output);
 		$output = $parts[0] . $tocLink . $parts[1];
-
+		*/
 		print $output;
 		drupal_exit();
 	}
