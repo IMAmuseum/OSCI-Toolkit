@@ -167,9 +167,9 @@ echo
 echo "Ensuring contrib module dependencies"
 if [ ! -d $1/sites/all/modules/features ]; then
     echo " - downloading Features module"
-    curl -s -L -O http://ftp.drupal.org/files/projects/features-7.x-2.2.zip
-    unzip -o -q features-7.x-2.2.zip -d src
-    rm features-7.x-2.2.zip
+    curl -s -L -O http://ftp.drupal.org/files/projects/features-7.x-2.5.zip
+    unzip -o -q features-7.x-2.5.zip -d src
+    rm features-7.x-2.5.zip
     mv src/features $1/sites/all/modules/
 fi
 if [ ! -d $1/sites/all/modules/field_group ]; then

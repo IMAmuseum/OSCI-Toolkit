@@ -49,7 +49,7 @@ function osci_tk_notes_request() {
             // POST request, insert a note into the db
             if (isset($_POST['section_id']) && !empty($_POST['section_id'])
                 && isset($_POST['content_id']) && !empty($_POST['content_id'])
-                && isset($_POST['note']) && !empty($_POST['note'])) {
+                && isset($_POST['note'])) {
 
                 // if id is provided this is an update or delete
                 if (isset($_POST['id'])) {

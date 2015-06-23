@@ -1,4 +1,4 @@
 <section id="<?php print $field_name; ?>" class="<?php print $classes.' '.$field_name; ?>">
-	<a name="<?php print $field_name; ?>" id="<?php print $field_name; ?>_anchor" class="<?php print $field_name; ?> anchor-link"></a>
+	<a id="<?php print $field_name; ?>_anchor" class="<?php print $field_name; ?> anchor-link"></a>
 	<?php print $content; ?>
 </section>

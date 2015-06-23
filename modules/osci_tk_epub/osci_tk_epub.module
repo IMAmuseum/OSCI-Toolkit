@@ -324,10 +324,6 @@ function osci_tk_epub_theme($existing, $type, $theme, $path) {
             'variables' => array('item' => ''),
             'file' => 'osci_tk_epub.templates.inc',
         ),
-        'osci_tk_epub_mimetype' => array(
-            'template' => 'templates/osci_tk_epub_mimetype',
-            'variables' => array(),
-        ),
         'osci_tk_epub_container_xml' => array(
             'template' => 'templates/osci_tk_epub_container_xml',
             'variables' => array(
@@ -1048,6 +1044,12 @@ function _osci_tk_epub_get_book_metadata(&$pub, &$data = array())
         strlen($pub->field_osci_tk_rights[$lang][0]['value']))
     {
         $metadata['rights'] = $pub->field_osci_tk_rights[$lang][0]['value'];
+    }
+
+    //Get cover
+    if (isset($pub->field_osci_tk_cover_image) && $pub->field_osci_tk_cover_image['und'][0])
+    {
+        $metadata['cover'] = _osci_tk_epub_asset_process_uri($pub->field_osci_tk_cover_image['und'][0]['uri'], true);
     }
 
     //add date element

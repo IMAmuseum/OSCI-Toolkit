@@ -44,6 +44,9 @@ function osci_tk_epub_preprocess_epub_package(&$vars)
             case 'title':
                 $metaThemed[] = '<dc:title id="t1">' . htmlentities($v) . '</dc:title><meta refines="#t1" property="title-type">main</meta><meta refines="#t1" property="display-seq">1</meta>';
                 break;
+            case 'cover':
+                $metaThemed[] = '<meta name="cover" content="' . $v . '" />';
+                break;
             default:
                 if (is_array($v))
                 {
@@ -68,6 +71,7 @@ function osci_tk_epub_preprocess_osci_tk_epub_section(&$vars)
     // Handle title and subtitle of a section
     switch ($vars['field_name']) {
         case 'title':
+        case 'osci_tk_title':
             $vars['content'] = '<h1>' . check_plain($vars['item']['value']) . '</h1>';
             break;
         case 'subtitle':

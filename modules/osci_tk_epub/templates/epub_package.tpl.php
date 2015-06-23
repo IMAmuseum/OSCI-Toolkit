@@ -6,10 +6,11 @@
     <?php endforeach ?>
     <dc:language><?php print $language ?></dc:language>
   </metadata>
+
   <manifest>
     <?php foreach ($manifest as $item): ?>
       <?php $properties = isset($item['properties']) ? "properties='{$item['properties']}'" : ''; ?>
-	  <item id="<?php print $item['id'] ?>" href="<?php print $item['href'] ?>" 
+	  <item id="<?php print $item['id'] ?>" href="<?php print $item['href'] ?>"
 	        media-type="<?php print $item['media-type'] ?>" <?php print $properties ?> ></item>
     <?php endforeach ?>
   </manifest>

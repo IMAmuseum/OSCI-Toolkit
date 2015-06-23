@@ -79,7 +79,6 @@ function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $ins
     global $osci_tk_placed_figures;
 
     $osci_tk_placed_figures = is_array($osci_tk_placed_figures) ? $osci_tk_placed_figures : array();
-
     $element = array();
     switch($display['type'])
     {
@@ -87,24 +86,23 @@ function osci_tk_figure_field_formatter_view($entity_type, $entity, $field, $ins
             foreach($items as $delta => $item)
             {
                 //if figure placed inline do not output it again
-                if (is_array($osci_tk_placed_figures) && in_array($delta, $osci_tk_placed_figures)) {
-                    continue;
+                if (in_array($delta, $osci_tk_placed_figures) || $item['position'] == 'plate') {
+
+                    $figureNode = node_load($item['asset_reference']);
+
+                    $item['fig_id'] = _osci_tk_figure_create_id($entity->nid, $delta);
+                    $item['delta'] = $delta;
+                    $item['number_template'] = _osci_tk_figure_process_number_template($item, $entity->nid);
+                    $item['type'] = $figureNode->type;
+                    $invoke = module_invoke_all('osci_tk_figure_aspect', $item);
+                    $item['aspect'] = array_pop($invoke);
+                    $item['section_id'] = $entity->nid;
+
+                    $element[$delta] = array(
+                        '#theme'    => 'osci_tk_figure_formatter',
+                        '#item'     => $item,
+                    );
                 }
-
-                $figureNode = node_load($item['asset_reference']);
-
-                $item['fig_id'] = _osci_tk_figure_create_id($entity->nid, $delta);
-                $item['delta'] = $delta;
-                $item['number_template'] = _osci_tk_figure_process_number_template($item, $entity->nid);
-                $item['type'] = $figureNode->type;
-                $invoke = module_invoke_all('osci_tk_figure_aspect', $item);
-                $item['aspect'] = array_pop($invoke);
-                $item['section_id'] = $entity->nid;
-
-                $element[$delta] = array(
-                    '#theme'    => 'osci_tk_figure_formatter',
-                    '#item'     => $item,
-                );
             }
             break;
     }
@@ -145,7 +143,7 @@ function osci_tk_figure_field_widget_settings_form($field, $instance)
             '#mulitple' => true,
             '#options' => array_map('check_plain', node_type_get_names())
         );
-		
+
 		$form['osci_tk_number_template'] = array(
 			'#type'                 => 'textfield',
 			'#title'                => t('Number Template'),

@@ -88,7 +88,6 @@ function osci_tk_figure_asset_options($parent_node, $delta, $node) {
         'delta'         => $delta,
         'node'          => $node,
         'options'       => $options,
-        
     );
     $form_id = 'osci_tk_figure_asset_' . $node->type . '_options_form';
     // Throw an error if nothing has been implemented for this node type

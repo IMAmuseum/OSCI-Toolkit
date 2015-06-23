@@ -13,7 +13,7 @@
 			<?php endif; ?>
 			<?php if (isset($publication->field_osci_tk_creator['und'])): ?>
 				<p class='creator'>
-					<?php 
+					<?php
 						$creators = array();
 						foreach($publication->field_osci_tk_creator['und'] as $creator) {
 							$creators[] = $creator['value'];
