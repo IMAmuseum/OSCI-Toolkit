@@ -90,19 +90,34 @@ function osci_tk_webapp_preview($node) {
 	}
 	
 	if (isset($_GET['_escaped_fragment_'])) {
-		$url="https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-		preg_match("/section\/(\d+).*/", $url, $output_array);
-		$sectionNid = $output_array[1];
-		$output = osci_tk_epub_render($sectionNid, $pubNid, true);
+	  //for google indexing
+	  $url="https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+	  preg_match("/section\/(\d+).*/", $url, $output_array);
+	  $sectionNid = $output_array[1];
+	  //if no section specified, get entire publication
+	    if (is_null($sectionNid)) {
+		  preg_match("/(.*)\/(.*)\?(.*)/", $url, $output_array);
+          $pubName = $output_array[2];
+		  //get id from alias
+		  $nidPath = drupal_lookup_path('source', $pubName);
+		  if ($nidPath) {
+			  $pubId = arg(1, $nidPath);
+		  } else {
+			  $pubId = $pubName;
+		  }
+		  $sectionNid = $pubId; 
+		}
 		
-		/*will fix TOC later
-		$tocLink = l("Table of Contents", "node/{$pubNid}/web-app/nav");
-
-		$parts = split("</body>", $output);
-		$output = $parts[0] . $tocLink . $parts[1];
-		*/
-		print $output;
-		drupal_exit();
+	  $output = osci_tk_epub_print_view($pubNid, $sectionNid, true);
+		
+	  /*will fix TOC later
+	  $tocLink = l("Table of Contents", "node/{$pubNid}/web-app/nav");
+	  $parts = split("</body>", $output);
+	  $output = $parts[0] . $tocLink . $parts[1];
+	  */
+		
+	  print $output;
+	  drupal_exit();
 	}
 
     $packageUri = url('api/epub/' . $pubNid . '/package.opf');
