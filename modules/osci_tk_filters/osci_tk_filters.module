@@ -415,6 +415,10 @@ function _process_cross_link($text) {
 	
 	//get root id
 	$treeData = osci_tk_nodetree_get_data_for_nid($nid);
+	if (!$treeData) {
+		print "incorrect section number $nid ";
+		return;
+	}
 	foreach($treeData as $tree) {
 		$rootNodeId = $tree['rootNid'];
 	}
