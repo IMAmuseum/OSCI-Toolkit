@@ -413,9 +413,10 @@ function osci_tk_epub_render($nid, $pubNid = null, $returnOutput = false)
 
 function _osci_tk_epub_generate_content_document($node, $forExport = false, $pubNid = null, $noCache = false)
 {
-    global $osci_tk_epub_for_export;
+    global $osci_tk_epub_for_export, $osci_tk_placed_figures;
 
     $osci_tk_epub_for_export = $forExport;
+    $osci_tk_placed_figures = array();
 
     /***** Check the cache *****/
     if (!$noCache) {
