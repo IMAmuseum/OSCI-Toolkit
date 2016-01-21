@@ -1050,6 +1050,54 @@ function osci_tk_features_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-publication-field_osci_tk_css'
+  $field_instances['node-publication-field_osci_tk_css'] = array(
+    'bundle' => 'publication',
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'file',
+        'settings' => array(),
+        'type' => 'file_default',
+        'weight' => 11,
+      ),
+      'epub' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_osci_tk_css',
+    'label' => 'ePub CSS',
+    'required' => 0,
+    'settings' => array(
+      'description_field' => 0,
+      'file_directory' => '',
+      'file_extensions' => 'css',
+      'max_filesize' => '',
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'file',
+      'settings' => array(
+        'progress_indicator' => 'throbber',
+      ),
+      'type' => 'file_generic',
+      'weight' => 6,
+    ),
+  );
+
   // Exported field_instance: 'node-publication-field_osci_tk_description'
   $field_instances['node-publication-field_osci_tk_description'] = array(
     'bundle' => 'publication',
@@ -1367,6 +1415,53 @@ function osci_tk_features_field_default_field_instances() {
       ),
       'type' => 'taxonomy_autocomplete',
       'weight' => 1,
+    ),
+  );
+
+  // Exported field_instance: 'node-publication-field_osci_tk_theme'
+  $field_instances['node-publication-field_osci_tk_theme'] = array(
+    'bundle' => 'publication',
+    'default_value' => array(
+      0 => array(
+        'value' => 'simple_theme',
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'list',
+        'settings' => array(),
+        'type' => 'list_default',
+        'weight' => 10,
+      ),
+      'epub' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_osci_tk_theme',
+    'label' => 'Web App Theme',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_select',
+      'weight' => 5,
     ),
   );
 
@@ -1813,6 +1908,8 @@ function osci_tk_features_field_default_field_instances() {
   t('The topic of the resource. Typically, the subject will be represented using keywords, key phrases, or classification codes. Recommended best practice is to use a controlled vocabulary.');
   t('Thumbnail');
   t('Title');
+  t('Web App Theme');
+  t('ePub CSS');
 
   return $field_instances;
 }

@@ -11,6 +11,26 @@ function osci_tk_webapp_preview_menu() {
         'file'              => 'osci_tk_webapp.admin.inc',
     );
 
+    $items['admin/config/system/osci/simple'] = array(
+        'title'             => t('Simple Theme'),
+        'description'       => 'Settings for the OSCI Toolkit Simple Theme',
+        'page callback'     => 'drupal_get_form',
+        'page arguments'    => array('osci_tk_webapp_admin_form_simple_theme'),
+        'access arguments'  => array('administer OSCI ToolKit settings'),
+        'type'              => MENU_LOCAL_TASK,
+        'file'              => 'osci_tk_webapp.admin.inc',
+    );
+
+    $items['admin/config/system/osci/simple_horizontal'] = array(
+        'title'             => t('Simple Horizontal Theme'),
+        'description'       => 'Settings for the OSCI Toolkit Simple Horizontal Theme',
+        'page callback'     => 'drupal_get_form',
+        'page arguments'    => array('osci_tk_webapp_admin_form_simple_horizontal_theme'),
+        'access arguments'  => array('administer OSCI ToolKit settings'),
+        'type'              => MENU_LOCAL_TASK,
+        'file'              => 'osci_tk_webapp.admin.inc',
+    );
+
     $items['node/%node/web-app'] = array(
 		'title'             => 'OSCI Toolkit Web-App Preview',
 		'page callback'     => 'osci_tk_webapp_preview',
@@ -62,6 +82,56 @@ function osci_tk_webapp_preview_theme() {
 			),
 			'template'  => 'templates/osci-tk-webapp-preview',
 		),
+		'osci_tk_simple_theme' => array(
+			'variables' => array(
+				'basePath' => variable_get('osci_tk_webapp_simple_theme_base_path', ''),
+				'baseUrl' => $base_url,
+				'js' => array(),
+				'css' => array(),
+				'endPoints' => array(
+					'OsciTkNote' => variable_get('osci_tk_webapp_note_endpoint', ''),
+					'OsciTkSearch' => variable_get('osci_tk_webapp_search_endpoint', ''),
+					'OsciTkOpenSearch' => variable_get('osci_tk_webapp_opensearch_endpoint', ''),
+					'OsciTkAccount' => variable_get('osci_tk_webapp_account_endpoint', ''),
+					'OsciTkCitation' => variable_get('osci_tk_webapp_citation_endpoint', ''),
+				),
+				'templatePath' => variable_get('osci_tk_webapp_simple_theme_base_path', '') . 'templates/',
+				'customTemplatePath' => variable_get('osci_tk_webapp_simple_theme_template_path', ''),
+				'customHead' => variable_get('osci_tk_webapp_simple_theme_head', ''),
+				'customFooter' => variable_get('osci_tk_webapp_simple_theme_footer', ''),
+				'toolbarItems' => variable_get('osci_tk_webapp_simple_theme_toolbar_items', ''),
+				'themeFeatures' => variable_get('osci_tk_webapp_simple_theme_features', ''),
+				'sectionView' => variable_get('osci_tk_webapp_section_view', ''),
+				'sectionViewOptions' => variable_get('osci_tk_webapp_section_view_options', ''),
+				'paragraphControls' => variable_get('osci_tk_webapp_simple_theme_paragraph_controls','')
+			),
+			'template'  => 'templates/osci-tk-simple-theme',
+		),
+		'osci_tk_simple_horizontal_theme' => array(
+			'variables' => array(
+				'basePath' => variable_get('osci_tk_webapp_simple_horizontal_theme_base_path', ''),
+				'baseUrl' => $base_url,
+				'js' => array(),
+				'css' => array(),
+				'endPoints' => array(
+					'OsciTkNote' => variable_get('osci_tk_webapp_note_endpoint', ''),
+					'OsciTkSearch' => variable_get('osci_tk_webapp_search_endpoint', ''),
+					'OsciTkOpenSearch' => variable_get('osci_tk_webapp_opensearch_endpoint', ''),
+					'OsciTkAccount' => variable_get('osci_tk_webapp_account_endpoint', ''),
+					'OsciTkCitation' => variable_get('osci_tk_webapp_citation_endpoint', ''),
+				),
+				'templatePath' => variable_get('osci_tk_webapp_simple_horizontal_theme_base_path', '') . 'templates/',
+				'customTemplatePath' => variable_get('osci_tk_webapp_simple_horizontal_theme_template_path', ''),
+				'customHead' => variable_get('osci_tk_webapp_simple_horizontal_theme_head', ''),
+				'customFooter' => variable_get('osci_tk_webapp_simple_horizontal_theme_footer', ''),
+				'toolbarItems' => variable_get('osci_tk_webapp_simple_horizontal_theme_toolbar_items', ''),
+				'themeFeatures' => variable_get('osci_tk_webapp_simple_horizontal_theme_features', ''),
+				'sectionView' => variable_get('osci_tk_webapp_section_view', ''),
+				'sectionViewOptions' => variable_get('osci_tk_webapp_section_view_options', ''),
+				'paragraphControls' => variable_get('osci_tk_webapp_simple_horizontal_theme_paragraph_controls','')
+			),
+			'template'  => 'templates/osci-tk-simple-theme',
+		)
 	);
 }
 
@@ -86,6 +156,12 @@ function osci_tk_webapp_preview($node) {
 	$treeData = osci_tk_nodetree_get_data_for_nid($node->nid);
 	if (count($treeData) && isset($treeData[0]['rootNid'])) {
 		$pubNid = $treeData[0]['rootNid'];
+	}
+
+	if(isset($node->field_osci_tk_theme) && isset($node->field_osci_tk_theme['und'][0]["value"]) ){
+		$theme = $node->field_osci_tk_theme['und'][0]["value"];
+	}else{
+		$theme = "simple_theme";
 	}
 
 	if (isset($_GET['_escaped_fragment_'])) {
@@ -117,67 +193,67 @@ function osci_tk_webapp_preview($node) {
 
 	//Add the JS files
 	$js = array();
-	$js[] = $basePath . "js/external/json2.js";
-	$js[] = $basePath . "js/external/jquery.js";
-	$js[] = $basePath . "js/external/jquery.qtip.js";
-	$js[] = $basePath . "js/external/lodash.js";
-	$js[] = $basePath . "js/external/backbone.js";
-	$js[] = $basePath . "js/external/backbone-super.js";
-	$js[] = $basePath . "js/external/fancybox/jquery.fancybox.js";
-	$js[] = $basePath . "js/external/polymaps.min.js";
-	$js[] = $basePath . "js/external/jquery-ui/jquery-ui.min.js";
-	$js[] = $basePath . "js/oscitk/osci_tk_layered_image.js";
-	$js[] = $basePath . "js/oscitk/OsciTk.js";
-	$js[] = $basePath . "js/oscitk/TemplateManager.js";
-	$js[] = $basePath . "js/oscitk/models/BaseModel.js";
-	$js[] = $basePath . "js/oscitk/models/ConfigModel.js";
-	$js[] = $basePath . "js/oscitk/models/PackageModel.js";
-	$js[] = $basePath . "js/oscitk/models/FigureModel.js";
-	$js[] = $basePath . "js/oscitk/models/FootnoteModel.js";
-	$js[] = $basePath . "js/oscitk/models/NavigationItemModel.js";
-	$js[] = $basePath . "js/oscitk/models/NoteModel.js";
-	$js[] = $basePath . "js/oscitk/models/SearchResultModel.js";
-	$js[] = $basePath . "js/oscitk/models/AccountModel.js";
-	$js[] = $basePath . "js/oscitk/models/PageModel.js";
-	$js[] = $basePath . "js/oscitk/models/SectionModel.js";
-	$js[] = $basePath . "js/oscitk/models/GlossaryTermModel.js";
-	$js[] = $basePath . "js/oscitk/collections/BaseCollection.js";
-	$js[] = $basePath . "js/oscitk/collections/FiguresCollection.js";
-	$js[] = $basePath . "js/oscitk/collections/NavigationItemsCollection.js";
-	$js[] = $basePath . "js/oscitk/collections/FootnotesCollection.js";
-	$js[] = $basePath . "js/oscitk/collections/NotesCollection.js";
-	$js[] = $basePath . "js/oscitk/collections/PagesCollection.js";
-	$js[] = $basePath . "js/oscitk/collections/SearchResultsCollection.js";
-	$js[] = $basePath . "js/oscitk/collections/GlossaryTermsCollection.js";
-	$js[] = $basePath . "js/oscitk/views/BaseView.js";
-	$js[] = $basePath . "js/oscitk/views/AppView.js";
-	$js[] = $basePath . "js/oscitk/views/SectionView.js";
-	$js[] = $basePath . "js/oscitk/views/PageView.js";
-	$js[] = $basePath . "js/oscitk/views/MultiColumnSectionView.js";
-	$js[] = $basePath . "js/oscitk/views/MultiColumnPageView.js";
-	$js[] = $basePath . "js/oscitk/views/MultiColumnFigureView.js";
-	$js[] = $basePath . "js/oscitk/views/MultiColumnFigureImageView.js";
-	$js[] = $basePath . "js/oscitk/views/MultiColumnFigureLayeredImageView.js";
-	$js[] = $basePath . "js/oscitk/views/TitleView.js";
-	$js[] = $basePath . "js/oscitk/views/ToolbarView.js";
-	$js[] = $basePath . "js/oscitk/views/ToolbarItemView.js";
-	$js[] = $basePath . "js/oscitk/views/NavigationView.js";
-	$js[] = $basePath . "js/oscitk/views/SearchView.js";
-	$js[] = $basePath . "js/oscitk/views/NotesView.js";
-	$js[] = $basePath . "js/oscitk/views/InlineNotesView.js";
-	$js[] = $basePath . "js/oscitk/views/CitationView.js";
-	$js[] = $basePath . "js/oscitk/views/FootnotesView.js";
-	$js[] = $basePath . "js/oscitk/views/FiguresView.js";
-	$js[] = $basePath . "js/oscitk/views/GlossaryView.js";
-	$js[] = $basePath . "js/oscitk/views/GlossaryTooltipView.js";
-	$js[] = $basePath . "js/oscitk/views/TocView.js";
-	$js[] = $basePath . "js/oscitk/views/AccountView.js";
-	$js[] = $basePath . "js/oscitk/views/FontView.js";
-	$js[] = $basePath . "js/oscitk/views/ParagraphControlsView.js";
-	$js[] = $basePath . "js/oscitk/Router.js";
-	$js[] = $basePath . "js/oscitk/helper.js";
-	$js[] = $basePath . "js/appBootstrap.js";
-	$js[] = $basePath . "js/oscitk/zotero.js";
+	// $js[] = $basePath . "js/external/json2.js";
+	// $js[] = $basePath . "js/external/jquery.js";
+	// $js[] = $basePath . "js/external/jquery.qtip.js";
+	// $js[] = $basePath . "js/external/lodash.js";
+	// $js[] = $basePath . "js/external/backbone.js";
+	// $js[] = $basePath . "js/external/backbone-super.js";
+	// $js[] = $basePath . "js/external/fancybox/jquery.fancybox.js";
+	// $js[] = $basePath . "js/external/polymaps.min.js";
+	// $js[] = $basePath . "js/external/jquery-ui/jquery-ui.min.js";
+	// $js[] = $basePath . "js/oscitk/osci_tk_layered_image.js";
+	// $js[] = $basePath . "js/oscitk/OsciTk.js";
+	// $js[] = $basePath . "js/oscitk/TemplateManager.js";
+	// $js[] = $basePath . "js/oscitk/models/BaseModel.js";
+	// $js[] = $basePath . "js/oscitk/models/ConfigModel.js";
+	// $js[] = $basePath . "js/oscitk/models/PackageModel.js";
+	// $js[] = $basePath . "js/oscitk/models/FigureModel.js";
+	// $js[] = $basePath . "js/oscitk/models/FootnoteModel.js";
+	// $js[] = $basePath . "js/oscitk/models/NavigationItemModel.js";
+	// $js[] = $basePath . "js/oscitk/models/NoteModel.js";
+	// $js[] = $basePath . "js/oscitk/models/SearchResultModel.js";
+	// $js[] = $basePath . "js/oscitk/models/AccountModel.js";
+	// $js[] = $basePath . "js/oscitk/models/PageModel.js";
+	// $js[] = $basePath . "js/oscitk/models/SectionModel.js";
+	// $js[] = $basePath . "js/oscitk/models/GlossaryTermModel.js";
+	// $js[] = $basePath . "js/oscitk/collections/BaseCollection.js";
+	// $js[] = $basePath . "js/oscitk/collections/FiguresCollection.js";
+	// $js[] = $basePath . "js/oscitk/collections/NavigationItemsCollection.js";
+	// $js[] = $basePath . "js/oscitk/collections/FootnotesCollection.js";
+	// $js[] = $basePath . "js/oscitk/collections/NotesCollection.js";
+	// $js[] = $basePath . "js/oscitk/collections/PagesCollection.js";
+	// $js[] = $basePath . "js/oscitk/collections/SearchResultsCollection.js";
+	// $js[] = $basePath . "js/oscitk/collections/GlossaryTermsCollection.js";
+	// $js[] = $basePath . "js/oscitk/views/BaseView.js";
+	// $js[] = $basePath . "js/oscitk/views/AppView.js";
+	// $js[] = $basePath . "js/oscitk/views/SectionView.js";
+	// $js[] = $basePath . "js/oscitk/views/PageView.js";
+	// $js[] = $basePath . "js/oscitk/views/MultiColumnSectionView.js";
+	// $js[] = $basePath . "js/oscitk/views/MultiColumnPageView.js";
+	// $js[] = $basePath . "js/oscitk/views/MultiColumnFigureView.js";
+	// $js[] = $basePath . "js/oscitk/views/MultiColumnFigureImageView.js";
+	// $js[] = $basePath . "js/oscitk/views/MultiColumnFigureLayeredImageView.js";
+	// $js[] = $basePath . "js/oscitk/views/TitleView.js";
+	// $js[] = $basePath . "js/oscitk/views/ToolbarView.js";
+	// $js[] = $basePath . "js/oscitk/views/ToolbarItemView.js";
+	// $js[] = $basePath . "js/oscitk/views/NavigationView.js";
+	// $js[] = $basePath . "js/oscitk/views/SearchView.js";
+	// $js[] = $basePath . "js/oscitk/views/NotesView.js";
+	// $js[] = $basePath . "js/oscitk/views/InlineNotesView.js";
+	// $js[] = $basePath . "js/oscitk/views/CitationView.js";
+	// $js[] = $basePath . "js/oscitk/views/FootnotesView.js";
+	// $js[] = $basePath . "js/oscitk/views/FiguresView.js";
+	// $js[] = $basePath . "js/oscitk/views/GlossaryView.js";
+	// $js[] = $basePath . "js/oscitk/views/GlossaryTooltipView.js";
+	// $js[] = $basePath . "js/oscitk/views/TocView.js";
+	// $js[] = $basePath . "js/oscitk/views/AccountView.js";
+	// $js[] = $basePath . "js/oscitk/views/FontView.js";
+	// $js[] = $basePath . "js/oscitk/views/ParagraphControlsView.js";
+	// $js[] = $basePath . "js/oscitk/Router.js";
+	// $js[] = $basePath . "js/oscitk/helper.js";
+	// $js[] = $basePath . "js/appBootstrap.js";
+	// $js[] = $basePath . "js/oscitk/zotero.js";
 
 	//Add the CSS files
     if ($preprocessCss) {
@@ -190,21 +266,21 @@ function osci_tk_webapp_preview($node) {
     }
 
 	$css = array();
-	$css[] = $cssBasePath . "js/external/jquery-ui/jquery-ui.min.css";
-	$css[] = $cssBasePath . "js/external/jquery.qtip.css";
-	$css[] = $cssBasePath . "js/external/fancybox/jquery.fancybox.css";
-	$css[] = $cssBasePath . "css/common.css";
-	$css[] = $cssBasePath . "css/toolbar.css";
-	$css[] = $cssBasePath . "css/section.css";
-	$css[] = $cssBasePath . "css/multiColumnSection.css";
-	$css[] = $cssBasePath . "css/search.css";
-	$css[] = $cssBasePath . "css/navigation.css";
-	$css[] = $cssBasePath . "css/notes.css";
-	$css[] = $cssBasePath . "css/glossary.css";
-	$css[] = $cssBasePath . "css/layered_image.css";
-	$css[] = $cssBasePath . "css/citation.css";
-	$css[] = $cssBasePath . "css/themeNight.css";
-	$css[] = $cssBasePath . "css/themeSepia.css";
+	// $css[] = $cssBasePath . "js/external/jquery-ui/jquery-ui.min.css";
+	// $css[] = $cssBasePath . "js/external/jquery.qtip.css";
+	// $css[] = $cssBasePath . "js/external/fancybox/jquery.fancybox.css";
+	// $css[] = $cssBasePath . "css/common.css";
+	// $css[] = $cssBasePath . "css/toolbar.css";
+	// $css[] = $cssBasePath . "css/section.css";
+	// $css[] = $cssBasePath . "css/multiColumnSection.css";
+	// $css[] = $cssBasePath . "css/search.css";
+	// $css[] = $cssBasePath . "css/navigation.css";
+	// $css[] = $cssBasePath . "css/notes.css";
+	// $css[] = $cssBasePath . "css/glossary.css";
+	// $css[] = $cssBasePath . "css/layered_image.css";
+	// $css[] = $cssBasePath . "css/citation.css";
+	// $css[] = $cssBasePath . "css/themeNight.css";
+	// $css[] = $cssBasePath . "css/themeSepia.css";
 
 	drupal_alter("osci_tk_webapp_custom", $js, $css);
 
@@ -232,7 +308,9 @@ function osci_tk_webapp_preview($node) {
 		$css = array(file_create_url(drupal_build_css_cache($finalCss)));
 	}
 
-    print theme('osci_tk_webapp_preview', array(
+	$use_theme = "osci_tk_" . $theme;
+
+    print theme($use_theme, array(
     	'package_path' => $packageUri,
     	'section_id' => ($pubNid === $node->nid) ? null : $node->nid,
     	'js' => $js,
