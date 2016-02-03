@@ -743,10 +743,6 @@ function osci_tk_layered_image_osci_tk_figure_content($args) {
 			global $base_url;
 			// parse the section id from the figure identifier
 			preg_match('/fig-(\d+)-(\d+)/', $args['item']['fig_id'], $matches);
-			if($args['item']['export'] == true) {
-				$asset_node = node_load($args['item']['asset_reference']);
-				$args['item']['thumbnail'] = _osci_tk_epub_asset_process_uri($asset_node->field_image['und'][0]['uri'], $args['item']['export']);
-			}
 			$args['item']['content_url'] = $base_url.'/api/epub/'.$matches[1].'/'.$matches[2].'/figure.xhtml';
 			return theme('osci_tk_layered_image_figure_formatter', array('item' => $args['item']));
 	}
