@@ -126,6 +126,7 @@ function osci_tk_webapp_preview($node) {
 	$js[] = $basePath . "js/external/fancybox/jquery.fancybox.js";
 	$js[] = $basePath . "js/external/polymaps.min.js";
 	$js[] = $basePath . "js/external/jquery-ui/jquery-ui.min.js";
+	$js[] = $basePath . "js/external/d3.min.js";
 	$js[] = $basePath . "js/oscitk/osci_tk_layered_image.js";
 	$js[] = $basePath . "js/oscitk/OsciTk.js";
 	$js[] = $basePath . "js/oscitk/TemplateManager.js";
