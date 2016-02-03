@@ -314,29 +314,6 @@ function osci_tk_features_field_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_osci_tk_css'
-  $field_bases['field_osci_tk_css'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_osci_tk_css',
-    'indexes' => array(
-      'fid' => array(
-        0 => 'fid',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'file',
-    'settings' => array(
-      'display_default' => 0,
-      'display_field' => 0,
-      'uri_scheme' => 'public',
-    ),
-    'translatable' => 0,
-    'type' => 'file',
-  );
-
   // Exported field_base: 'field_osci_tk_description'
   $field_bases['field_osci_tk_description'] = array(
     'active' => 1,
@@ -477,31 +454,6 @@ function osci_tk_features_field_default_field_bases() {
     'type' => 'taxonomy_term_reference',
   );
 
-  // Exported field_base: 'field_osci_tk_theme'
-  $field_bases['field_osci_tk_theme'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_osci_tk_theme',
-    'indexes' => array(
-      'value' => array(
-        0 => 'value',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'list',
-    'settings' => array(
-      'allowed_values' => array(
-        'simple_theme' => 'Simple',
-        'simple_horizontal_theme' => 'Simple Horizontal',
-      ),
-      'allowed_values_function' => '',
-    ),
-    'translatable' => 0,
-    'type' => 'list_text',
-  );
-
   // Exported field_base: 'field_osci_tk_title'
   $field_bases['field_osci_tk_title'] = array(
     'active' => 1,
@@ -637,6 +589,31 @@ function osci_tk_features_field_default_field_bases() {
     ),
     'translatable' => 0,
     'type' => 'image',
+  );
+
+  // Exported field_base: 'field_slideshow'
+  $field_bases['field_slideshow'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_slideshow',
+    'indexes' => array(
+      'value' => array(
+        0 => 'value',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'list',
+    'settings' => array(
+      'allowed_values' => array(
+        0 => 'false',
+        1 => 'true',
+      ),
+      'allowed_values_function' => '',
+    ),
+    'translatable' => 0,
+    'type' => 'list_boolean',
   );
 
   // Exported field_base: 'field_subtitle'
