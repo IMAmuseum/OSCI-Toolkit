@@ -1,0 +1,6 @@
+name = "Web App Theme"
+description = "Provides theme switching for OSCI Toolkit publications."
+package = "OSCI ToolKit"
+project = "OSCI ToolKit"
+version = "1.0"
+core = "7.x"
