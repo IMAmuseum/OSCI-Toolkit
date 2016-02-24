@@ -8,15 +8,16 @@
 	<p>Help Text</p>
 </div>
 <form method="POST" action="<?php echo $_SERVER['REQUEST_URI'];?>">
+<input type="hidden" value="<?php echo $data['publication']->vid; ?>" name="vid" />
+<div class="form-item">
+	<label>Theme Settings</label>
+	<div class="form-textarea-wrapper resizable textarea-processed resizable-textarea">
+		<textarea class="form-textarea" name="theme-settings" cols="60" rows="30">
+			<?php echo $data['publication']->field_osci_tk_theme_settings['und'][0]['value']; ?>
+		</textarea>
+	</div>
+</div>
 
-<label>Theme Features</label>
-<textarea></textarea>
-
-<label>Toolbar Items</label>
-<textarea></textarea>
-
-<label>Paragraph Controls</label>
-<textarea></textarea>
 
 <div class="form-actions">
 	<input type="submit" value="Save configuration" class="form-submit" />

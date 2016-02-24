@@ -98,19 +98,38 @@ function movePublicationThemeFiles($node)
             file_prepare_directory($pub_theme_path, $options = FILE_CREATE_DIRECTORY);
         }
         $theme = trim($node->field_osci_tk_theme['und'][0]['value']);
-        global $base_url;
-        $basePath = '/osci-themes/dist/themes/'.$theme;
-        // get the config oscitk.json and set paths
-        $config_json = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/osci-themes/dist/themes/'.$theme.'/oscitk.json');
-        $config_json = str_replace('/api/epub/1/package.opf', '/api/epub/'.$node->vid.'/package.opf', $config_json);
-        $config_json = str_replace("basePath: ''", "basePath: '".$basePath."'", $config_json);
-        $config_json = str_replace("baseUrl: ''", "basePath: '".$base_url."'", $config_json);
+        if ($node->field_osci_tk_theme_settings['und'][0]['value'] === '') {
+            // get the config oscitk.json and set paths
+            $config_json = getOscitkConfigJson($theme, $node->vid);
+            file_put_contents($pub_theme_path.'/oscitk.json', $config_json);
+        } else {
+            $config_json = $node->field_osci_tk_theme_settings['und'][0]['value'];
+            file_put_contents($pub_theme_path.'/oscitk.json', $config_json);
+        }
         // get the theme index and set paths
-        $theme_index = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/osci-themes/dist/themes/'.$theme.'/index.html');
-        $theme_index = str_replace('base href=""', 'base href="'.$basePath.'/"', $theme_index);
-        $theme_index = str_replace('oscitk.json', '/publications/'.$node->vid.'/oscitk.json', $theme_index);
+        $theme_index = getThemeIndex($theme, $node->vid);
         file_put_contents($pub_theme_path.'/index.html', $theme_index);
-        file_put_contents($pub_theme_path.'/oscitk.json', $config_json);
+
     }
 }
 
+function getOscitkConfigJson($theme, $vid)
+{
+    global $base_url;
+    $base_path = '/osci-themes/dist/themes/'.$theme;
+    $config_json = file_get_contents($_SERVER['DOCUMENT_ROOT'].$base_path.'/oscitk.json');
+    $config_json = str_replace('/api/epub/1/package.opf', '/api/epub/'.$vid.'/package.opf', $config_json);
+    $config_json = str_replace("basePath: ''", "basePath: '".$base_path."'", $config_json);
+    $config_json = str_replace("baseUrl: ''", "basePath: '".$base_url."'", $config_json);
+    return $config_json;
+}
+
+function getThemeIndex($theme, $vid)
+{
+    global $base_url;
+    $base_path = '/osci-themes/dist/themes/'.$theme;
+    $theme_index = file_get_contents($_SERVER['DOCUMENT_ROOT'].$base_path.'/index.html');
+    $theme_index = str_replace('base href=""', 'base href="'.$base_path.'/"', $theme_index);
+    $theme_index = str_replace('oscitk.json', '/publications/'.$vid.'/oscitk.json', $theme_index);
+    return $theme_index;
+}

@@ -87,8 +87,12 @@ function setPublicationThemeData($publication, $themes)
 
 function setCurrentPublicationTheme($data)
 {
+    $config_json = getOscitkConfigJson($data['theme'], $data['vid']);
     $publication = node_load($data['vid']);
     $publication->field_osci_tk_theme['und'][0]['value'] = $data['theme'];
+    $publication->field_osci_tk_theme_settings['und'][0]['value'] = $config_json;
     node_save($publication);
     drupal_set_message(t($publication->title . ' theme set to ' . $data['theme']), 'status', FALSE);
 }
+
+
