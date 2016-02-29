@@ -1388,3 +1388,13 @@ function osci_tk_epub_print_view($pubNid, $nid, $noCache=false, $revTime=null) {
 
     drupal_exit();
 }
+
+function _osci_tk_webapp_create_url($sectionNid, $revTime, $pubNid) {
+    return url('node/' . $pubNid . '/web-app', array(
+        'fragment' => 'section/' . $sectionNid,
+        'absolute' => true,
+        'query' => array(
+            'revision' => $revTime
+        )
+    ));
+}
