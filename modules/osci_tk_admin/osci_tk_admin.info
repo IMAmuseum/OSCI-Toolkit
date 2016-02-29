@@ -1,0 +1,6 @@
+name = "Admin Config"
+description = "Administration Configuration Pages for OSCI"
+package = "OSCI ToolKit"
+project = "OSCI ToolKit"
+version = "1.0"
+core = "7.x"
