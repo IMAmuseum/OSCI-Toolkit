@@ -28,7 +28,6 @@ function osci_tk_themes_select()
         }
     }
 
-
     $data = array(
         'publications' => $publication_data
     );

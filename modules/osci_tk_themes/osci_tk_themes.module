@@ -5,16 +5,16 @@
  */
 function osci_tk_themes_menu()
 {
-    $items['admin/config/system/osci-themes'] = array(
-        'title'            => 'OSCI Toolkit Web-App Theme',
-        'type'             => MENU_NORMAL_ITEM,
+    $items['admin/config/system/osci/theme-select'] = array(
+        'title'            => 'Select Theme',
+        'type'              => MENU_LOCAL_TASK,
         'page callback'    => 'osci_tk_themes_select',
         'file'             => 'osci_tk_themes.select.inc',
         'access arguments' => array('access administration pages'),
     );
 
-    $items['admin/config/system/osci-themes/%/settings'] = array(
-        'title'            => 'OSCI Toolkit Web-App Theme Settings',
+    $items['admin/config/system/osci/%/theme-settings'] = array(
+        'title'            => 'Theme Settings',
         'type'             => MENU_CALLBACK,
         'page callback'    => 'osci_tk_themes_settings',
         'file'             => 'osci_tk_themes.settings.inc',
@@ -30,7 +30,6 @@ function osci_tk_themes_menu()
         'access callback'  => '_osci_tk_themes_preview_access',
         'access arguments' => array(1),
     );
-
     return $items;
 }
 
@@ -72,8 +71,10 @@ function osci_tk_themes_node_sumbit($node)
  */
 function osci_tk_themes_form_alter(&$form, &$form_state)
 {
-    // $form['field_osci_tk_theme']['#prefix'] = "<div style='display: none;'>";
-    // $form['field_osci_tk_theme']['#suffix'] = "</div>";
+    $form['field_osci_tk_theme']['#prefix'] = "<div style='display: none;'>";
+    $form['field_osci_tk_theme']['#suffix'] = "</div>";
+    $form['field_osci_tk_theme_settings']['#prefix'] = "<div style='display: none;'>";
+    $form['field_osci_tk_theme_settings']['#suffix'] = "</div>";
 }
 
 // redirect to theme preview
@@ -94,14 +95,18 @@ function movePublicationThemeFiles($node)
 {
     if ($node->type == 'publication') {
         $pub_theme_path = $_SERVER['DOCUMENT_ROOT'].'/publications/'.$node->vid;
+        // make publications/{nid} directory
         if (!file_exists($pub_theme_path)) {
             file_prepare_directory($pub_theme_path, $options = FILE_CREATE_DIRECTORY);
         }
+        // get theme value
         $theme = trim($node->field_osci_tk_theme['und'][0]['value']);
-        if ($node->field_osci_tk_theme_settings['und'][0]['value'] === '') {
+        if (!isset($node->field_osci_tk_theme_settings['und'][0]['value']) || $node->field_osci_tk_theme_settings['und'][0]['value'] === '') {
             // get the config oscitk.json and set paths
             $config_json = getOscitkConfigJson($theme, $node->vid);
+            $node->field_osci_tk_theme_settings['und'][0]['value'] = $config_json;
             file_put_contents($pub_theme_path.'/oscitk.json', $config_json);
+            field_attach_presave('node', $node);
         } else {
             $config_json = $node->field_osci_tk_theme_settings['und'][0]['value'];
             file_put_contents($pub_theme_path.'/oscitk.json', $config_json);
@@ -133,3 +138,5 @@ function getThemeIndex($theme, $vid)
     $theme_index = str_replace('oscitk.json', '/publications/'.$vid.'/oscitk.json', $theme_index);
     return $theme_index;
 }
+
+

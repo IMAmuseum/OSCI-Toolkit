@@ -30,5 +30,5 @@ function setCurrentPublicationThemeSettings($data)
     $theme = $publication->field_osci_tk_theme['und'][0]['value'];
     $publication->field_osci_tk_theme_settings['und'][0]['value'] = $data['theme-settings'];
     node_save($publication);
-    drupal_set_message(t($publication->title . ' - ' . $theme . 'settings updated.'), 'status', FALSE);
+    drupal_set_message(t($publication->title . ' - ' . $theme . ' settings updated.'), 'status', FALSE);
 }
