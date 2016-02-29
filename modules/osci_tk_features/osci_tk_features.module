@@ -5,35 +5,3 @@
  */
 
 include_once('osci_tk_features.features.inc');
-include_once('osci_tk_features.admin.inc');
-
-/**
- * Implements hook_menu_alter().
- * using menu alter in the event the actual 
- * features module someday provides its own menu
- */
-function osci_tk_features_menu_alter(&$items) {
-    $items['admin/config/system/osci'] = array(
-            'title'             => t('OSCI ToolKit Settings'),
-            'description'       => 'Provides settings for the OSCI ToolKit',
-            'page callback'     => 'drupal_get_form',
-            'page arguments'    => array('osci_tk_features_admin_form'),
-            'access arguments'  => array('administer OSCI ToolKit settings'),
-            'type'              => MENU_NORMAL_ITEM
-    );  
-    
-    $items['admin/config/system/osci/overview'] = array(
-                'title'             => t('Overview'),
-                'type'              => MENU_DEFAULT_LOCAL_TASK,
-                'weight'            => -1
-    );  
-    
-    $items['admin/config/system/osci/images'] = array(
-                'title'             => t('Image Styles'),
-                'description'       => 'Settings for image sizes',
-                'page callback'     => 'drupal_get_form',
-                'page arguments'    => array('osci_tk_features_images_admin_form'),
-                'access arguments'  => array('administer OSCI ToolKit settings'),
-                'type'              => MENU_LOCAL_TASK,
-    );  
-}
