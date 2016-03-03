@@ -162,6 +162,10 @@ function osci_tk_search_do_query() {
 		if ($filters['type'] == '!notes') {
 			$query->addFilter('_query_', 'bundle:node OR bundle:paragraph OR bundle:figure OR bundle:footnote');
 		}
+	}else{
+		$query->addFilter('_query_', '(bundle:note AND (is_uid:' . $user->uid . ')) ' .
+			'OR bundle:node OR bundle:paragraph OR bundle:figure OR bundle:footnote');
+		$query->addParam('facet.field', 'sm_vid_Note_Tags');
 	}
 
 	if (empty($filters['section'])) {
