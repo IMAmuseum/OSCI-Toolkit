@@ -323,17 +323,22 @@ function _osci_tk_search_create_paragraph_documents($entity, $entity_doc, $env_i
 	$view = node_view($entity, 'epub');
 
 	// remove figures and footnotes from display
+	// TODO: This does not work correctly
 	unset($view['field_figure']);
 	unset($view['field_footnote']);
 
 	// render the content
 	$content = render($view);
 
+	// remove figures b/c figcaptions contain p tags
+	$content = preg_replace('/<figure>(.*?)<\/figure>/i', '', $content);
+
 	// retrieve all content in paragraph tags
 	preg_match_all('/<p>(.*?)<\/p>/', $content, $matches);
 
 	// setup documents for each paragraph
 	foreach($matches[0] as $delta => $paragraph) {
+
 		// strip container
 		$content = str_replace(array('<p>', '</p>'), '', $paragraph);
 
@@ -346,7 +351,7 @@ function _osci_tk_search_create_paragraph_documents($entity, $entity_doc, $env_i
 		unset($document->path);
 
 		$document->content = trim($content);
-		$document->teaser = substr(strip_tags($document->content), 0, 300);
+		$document->teaser = substr(strip_tags($document->content), 0, 100);
 		$document->ss_paragraph_id = $pid;
 		$document->ss_section_id = $entity->nid;
 		$document->im_publication_id = $publications;
@@ -433,7 +438,10 @@ function _osci_tk_search_create_figure_documents($entity, $entity_doc, $env_id, 
  * @return string
  */
 function _osci_tk_search_create_paragraph_id($nid, $delta) {
-	return 'p-' . $nid . '-' . $delta;
+	// front-end is 1-based, while back-end is 0-based
+	// we have to keep the section id in the link b/c the ids must be unique
+	// otherwise results for e.g. section 2 will override section 1
+	return 'p-' . $nid . '-' . ($delta + 1);
 }
 
 /**
