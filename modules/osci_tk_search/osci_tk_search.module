@@ -331,7 +331,7 @@ function _osci_tk_search_create_paragraph_documents($entity, $entity_doc, $env_i
 	$content = render($view);
 
 	// remove figures b/c figcaptions contain p tags
-	$content = preg_replace('/<figure>(.*?)<\/figure>/i', '', $content);
+	$content = preg_replace('/<figcaption>(.*?)<\/figcaption>/i', '', $content);
 
 	// retrieve all content in paragraph tags
 	preg_match_all('/<p>(.*?)<\/p>/', $content, $matches);
