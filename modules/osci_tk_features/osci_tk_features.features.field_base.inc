@@ -69,17 +69,15 @@ function osci_tk_features_field_default_field_bases() {
     'module' => 'node_reference',
     'settings' => array(
       'referenceable_types' => array(
-        'category_section' => 0,
-        'cover_section' => 0,
-        'credits_section' => 0,
+        'article' => 0,
         'html_asset' => 0,
         'iip_asset' => 'iip_asset',
         'image_asset' => 'image_asset',
+        'json_asset' => 'json_asset',
         'layered_image' => 0,
         'note' => 0,
-        'paper_front_section' => 0,
+        'page' => 0,
         'publication' => 0,
-        'references_section' => 0,
         'section' => 0,
         'svg_asset' => 'svg_asset',
       ),
@@ -652,6 +650,31 @@ function osci_tk_features_field_default_field_bases() {
     ),
     'translatable' => 0,
     'type' => 'image',
+  );
+
+  // Exported field_base: 'field_slideshow'
+  $field_bases['field_slideshow'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_slideshow',
+    'indexes' => array(
+      'value' => array(
+        0 => 'value',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'list',
+    'settings' => array(
+      'allowed_values' => array(
+        0 => 'false',
+        1 => 'true',
+      ),
+      'allowed_values_function' => '',
+    ),
+    'translatable' => 0,
+    'type' => 'list_boolean',
   );
 
   // Exported field_base: 'field_subtitle'

@@ -618,6 +618,55 @@ function osci_tk_features_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-layered_image-field_slideshow'
+  $field_instances['node-layered_image-field_slideshow'] = array(
+    'bundle' => 'layered_image',
+    'default_value' => array(
+      0 => array(
+        'value' => 0,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'list',
+        'settings' => array(),
+        'type' => 'list_default',
+        'weight' => 3,
+      ),
+      'epub' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_slideshow',
+    'label' => 'Slideshow',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(
+        'display_label' => 1,
+      ),
+      'type' => 'options_onoff',
+      'weight' => 2,
+    ),
+  );
+
   // Exported field_instance: 'node-note-body'
   $field_instances['node-note-body'] = array(
     'bundle' => 'note',
@@ -1598,17 +1647,18 @@ function osci_tk_features_field_default_field_instances() {
       'settings' => array(
         'osci_tk_figure_types' => array(
           'article' => 0,
-          'book' => 0,
           'html_asset' => 'html_asset',
           'iip_asset' => 'iip_asset',
           'image_asset' => 'image_asset',
-          'layered_image' => 0,
+          'json_asset' => 'json_asset',
+          'layered_image' => 'layered_image',
           'note' => 0,
           'page' => 0,
           'publication' => 0,
           'section' => 0,
           'svg_asset' => 'svg_asset',
         ),
+        'osci_tk_number_template' => 'fig. fig#',
       ),
       'type' => 'osci_tk_figure_widget',
       'weight' => 8,
@@ -1947,6 +1997,7 @@ function osci_tk_features_field_default_field_instances() {
   t('SVG File');
   t('Section');
   t('Sections');
+  t('Slideshow');
   t('Subject');
   t('Subtitle');
   t('Tags');
