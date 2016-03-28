@@ -1048,7 +1048,7 @@ function _osci_tk_epub_get_book_metadata(&$pub, &$data = array())
     }
 
     //Get cover
-    if (isset($pub->field_osci_tk_cover_image) && $pub->field_osci_tk_cover_image['und'][0])
+    if (isset($pub->field_osci_tk_cover_image) && isset($pub->field_osci_tk_cover_image['und']) && $pub->field_osci_tk_cover_image['und'][0])
     {
         $metadata['cover'] = _osci_tk_epub_asset_process_uri($pub->field_osci_tk_cover_image['und'][0]['uri'], true);
     }
