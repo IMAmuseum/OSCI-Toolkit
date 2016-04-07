@@ -22,7 +22,7 @@
 		<div id="<?php echo $pub['vid'] . '-theme-list'; ?>" class="theme-list is-hidden">
 			<h2>Current Theme</h2>
 				<div class="theme-selector clearfix">
-					<img class="screenshot" src="<?php echo $pub['themes']['current']['screenshot']; ?>">
+					<img class="screenshot" src="/osci-themes/dist/themes/<?php echo $pub['themes']['current']['name'].'/'.$pub['themes']['current']['screenshot']; ?>">
 					<div class="theme-info">
 						<h3><?php echo $pub['themes']['current']['name']; ?></h3>
 						<div class="theme-description"></div>
@@ -37,7 +37,7 @@
 			<h2>Available Themes</h2>
 			<?php foreach ($pub['themes']['others'] as $theme) : ?>
 				<div class="theme-selector clearfix">
-					<img class="screenshot" src="<?php echo $theme['screenshot']; ?>">
+					<img class="screenshot" src="/osci-themes/dist/themes/<?php echo $theme['name'].'/'.$theme['screenshot']; ?>">
 					<div class="theme-info">
 						<h3><?php echo $theme['name']; ?></h3>
 						<div class="theme-description"></div>
