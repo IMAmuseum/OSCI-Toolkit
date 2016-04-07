@@ -3,7 +3,7 @@
 /**
  *
  */
-function osci_tk_themes_select()
+function osci_tk_themes_select($node)
 {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         setCurrentPublicationTheme($_POST);

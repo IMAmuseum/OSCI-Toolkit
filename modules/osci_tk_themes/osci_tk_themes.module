@@ -5,13 +5,13 @@
  */
 function osci_tk_themes_menu()
 {
-    $items['admin/config/system/osci/theme-select'] = array(
-        'title'            => 'Select Theme',
-        'type'              => MENU_LOCAL_TASK,
-        'page callback'    => 'osci_tk_themes_select',
-        'file'             => 'osci_tk_themes.select.inc',
-        'access arguments' => array('access administration pages'),
-    );
+    // $items['admin/config/system/osci/theme-select'] = array(
+    //     'title'            => 'Select Theme',
+    //     'type'              => MENU_LOCAL_TASK,
+    //     'page callback'    => 'osci_tk_themes_select',
+    //     'file'             => 'osci_tk_themes.select.inc',
+    //     'access arguments' => array('access administration pages'),
+    // );
 
     $items['admin/config/system/osci/%/theme-settings'] = array(
         'title'            => 'Theme Settings',
@@ -26,6 +26,15 @@ function osci_tk_themes_menu()
         'title'            => 'OSCI Theme Preview',
         'type'             => MENU_LOCAL_TASK,
         'page callback'    => 'osci_tk_themes_preview',
+        'page arguments'   => array(1),
+        'access callback'  => '_osci_tk_themes_preview_access',
+        'access arguments' => array(1),
+    );
+    $items['node/%node/theme'] = array(
+        'title'            => 'OSCI Theme Select',
+        'type'             => MENU_LOCAL_TASK,
+        'page callback'    => 'osci_tk_themes_select',
+        'file'             => 'osci_tk_themes.select.inc',
         'page arguments'   => array(1),
         'access callback'  => '_osci_tk_themes_preview_access',
         'access arguments' => array(1),
