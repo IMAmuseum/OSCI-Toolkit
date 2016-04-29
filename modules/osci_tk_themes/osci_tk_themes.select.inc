@@ -9,43 +9,19 @@ function osci_tk_themes_select($node)
         setCurrentPublicationTheme($_POST);
     }
 
-    global $user;
-    $uid = $user->uid;
-    $publications = getUserPublications($uid);
-    $publication_nodes = null;
     $theme_base_path = $_SERVER['DOCUMENT_ROOT'].'/osci-themes/dist/themes';
     $theme_paths = getAllOsciThemePaths($theme_base_path);
     $themes = getOsciThemeData($theme_paths);
 
-    if (!$publications) {
-        drupal_set_message(t('You do not have any publications.'), 'warning');
-    }
-
-    if ($publications) {
-        $publication_keys = array_keys($publications['node']);
-        foreach ($publication_keys as $publication_id) {
-            $publication_data[] = setPublicationThemeData(node_load($publication_id), $themes);
-        }
-    }
+    $publication_data = setPublicationThemeData($node, $themes);
 
     $data = array(
-        'publications' => $publication_data
+        'pub' => $publication_data
     );
 
     //apply theme to node data
     $output = theme('theme_select', array('data' => $data));
     return $output;
-}
-
-function getUserPublications($uid)
-{
-    $query =  new EntityFieldQuery();
-    $query->entityCondition('entity_type', 'node')
-        ->entityCondition('bundle', 'publication')
-        ->propertyCondition('uid', $uid, '=')
-        ->propertyOrderBy('created', 'DESC');
-    $result = $query->execute();
-    return $result;
 }
 
 function getAllOsciThemePaths($path)
