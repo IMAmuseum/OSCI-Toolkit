@@ -40,21 +40,6 @@ cpath=`pwd`
 echo
 
 #
-# Gathering OSCI-Toolkit-Frontend
-#
-echo "Downloading OSCI-Toolkit-Frontend"
-cd $1/sites/default
-git clone -v https://github.com/IMAmuseum/OSCI-Toolkit-Frontend.git
-cd $1
-ln -s sites/default/OSCI-Toolkit-Frontend frontend
-cd $cpath
-mkdir -p $1/sites/all/libraries
-cd $1/sites/all/libraries
-ln -s ../../default/OSCI-Toolkit-Frontend
-cd $cpath
-echo
-
-#
 # Polymaps
 #
 echo "Downloading and extracting polymaps..."
