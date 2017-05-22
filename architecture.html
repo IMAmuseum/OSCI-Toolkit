@@ -1,64 +1,73 @@
 <!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="chrome=1">
-        <title>Osci Toolkit by IMAmuseum</title>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<title>Osci Toolkit by IMAmuseum</title>
 
-        <link rel="stylesheet" href="stylesheets/styles.css">
-        <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-        <!--[if lt IE 9]>
-        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-    </head>
-    <body>
-        <div class="wrapper">
-            <header>
-                <a href="index.html"><img src="images/logo.png" /></a>
-                <h1><a href="index.html">Osci Toolkit</a></h1>
-                <p>An authoring and publishing environment for online catalogues with full scholarly apparatus</p>
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/pygment_trac.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
 
-                <p class="view"><a href="about.html">About the OSCI Toolkit <small>Learn more about the Toolkit</small></a></p>
-                <p class="view"><a href="architecture.html">Toolkit Architecture <small>How all the pieces fit together</small></a></p>
-                <p class="view"><a href="tutorials.html">Tutorials <small>Build your knowledge</small></a></p>
-                <p class="view"><a href="aic.html">AIC Catalogues <small>Learn how the AIC is using OSCI</small></a></p>
-                <p class="view"><a href="mw2012.html">Museums and the Web <small>Conference paper publishing</small></a></p>
-                <p class="view last"><a href="https://github.com/IMAmuseum/OSCI-Toolkit">View the Project on GitHub <small>IMAmuseum/OSCI-Toolkit</small></a></p>
+<div class="wrapper">
+	<header>
+		<a href="index.html"><img src="images/logo.png" /></a>
+		<h1><a href="index.html">Osci Toolkit</a></h1>
+		<p>An authoring and publishing environment for online catalogues with full scholarly apparatus</p>
 
-                <h4>Visit the Demo Site</h4>
-                <p>The site <a href="http://demo.oscitoolkit.org">http://demo.oscitoolkit.org</a> is available for you to quickly tryout the tool. Your edits will be removed after the nightly (4:AM EST) rebuild.</p>
+		<p class="view"><a href="about.html">History the OSCI Toolkit <small>Learn more about the Toolkit</small></a></p>
+		<p class="view"><a href="architecture.html">Toolkit Architecture <small>How all the pieces fit together</small></a></p>
+		<p class="view"><a href="tutorials.html">Tutorials <small>Build your knowledge</small></a></p>
+		<p class="view"><a href="examples.html">Catalogues &amp; Publications <small>OSCI Toolkit in the wild</small></a></p>
+		<p class="view"><a href="research.html">Research &amp; Resources <small>Articles, presentations, etc.</small></a></p>
+		<p class="view last"><a href="https://github.com/IMAmuseum/OSCI-Toolkit">Source Code on GitHub <small>IMAmuseum/OSCI-Toolkit</small></a></p>
 
-                <h4>Join the Mailing List</h4>
-                <p>Sign up for the <a href="https://groups.google.com/forum/?fromgroups#!forum/osci-toolkit">OSCI Toolkit mailing list</a> to stay up to date on recent developments and share your experiences with your own projects.</p>
-            </header>
-            <section>
-                <h2>OSCI Toolkit Architecture</h2>
+		<h4>Demo Site</h4>
+		<p>The site <a href="http://demo.oscitoolkit.org">http://demo.oscitoolkit.org</a> is available for you to try out the tool. Your edits will be removed after the nightly (4 AM ET) rebuild.</p>
 
-                <img src="images/arch.png" />
+		<h4>Digital Publishing Slack</h4>
+		<p>Join the <a href="http://digpublishing.github.io/">Art &amp; Museum Digital Publishing Interest Group</a> on Slack to connect with other institutions interested in digital publishing.</p>
 
-                <ol>
-                    <li>At its core the OSCI Toolkit builds upon the Drupal content management system in order to provide an easy and extensible model for managing catalogue contents, structure, and media assets.</li>
-                    <li>In order to better support the publication workflows of institutions, the OSCI Toolkit is building specialized support for easily importing materials into the content management system. These include 1) "paste from Word" support which automatically extracts and maintains formatting, like footnotes, 2) the ability to harvest OAI-PMH compliant endpoints, commonly found amongst museum collection management systems, and 3) demonstration models of importing content from digital asset management systems which can serve as an example for supporting many commercial systems.</li>
-                    <li>The OSCI Toolkit strives for a model of write once, deploy everywhere. In order to support this a set of standard export features are provided. Users can click a button to export catalogues in several formats: ePub3 for supporting many modern reading experiences such as iBooks on the iPad, MOBI eBooks as an alternative format supported on devices such as the Kindle, and a standard PDF document.</li>
-                    <li>A rich Application Programming Interface (API) enables developers to create full-featured applications of their own. A complete JavaScript client library is readily available as a starting point for building a custom web application, or developers can use the OSCI Toolkit’s sample web application as a starting point.</li>
-                </ol>
-            </section>
-            <footer>
-                <p>This project is maintained by <a href="https://github.com/IMAmuseum">IMAmuseum</a></p>
-                <p>The OSCI Toolkit is generously funded by <a href="http://www.getty.edu/foundation/funding/access/current/online_cataloging.html">The Getty Foundation.</a></p>
-                <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-            </footer>
-        </div>
-        <script src="javascripts/scale.fix.js"></script>
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		<footer>
+			<p>This project was created by <a href="https://github.com/IMAmuseum">IMAmuseum</a></p>
+			<p>The OSCI Toolkit was generously funded by <a href="http://www.getty.edu/foundation/funding/access/current/online_cataloging.html">The Getty Foundation.</a></p>
+			<p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+		</footer>
 
-            ga('create', 'UA-1868672-29', 'auto');
-            ga('send', 'pageview');
-        </script>
-    </body>
+	</header>
+	<section>
+
+	<h2>OSCI Toolkit Architecture</h2>
+<p>The OSCI Toolkit is made up of two parts: the server-side content management system, and a front-end web application for digesting data from the server. We created an installer to help ease the process of installing the OSCI Toolkit, but it is likely that technical expertise will be required to customize it for your institution and for the particular needs of your project. All of the source code is available on GitHub:</p>
+<ul>
+    <li><a href="https://github.com/imamuseum/osci-toolkit">IMAmuseum/OSCI-Toolkit</a></li>
+    <li><a href="https://github.com/imamuseum/osci-toolkit-frontend">IMAmuseum/OSCI-Toolkit-Frontend</a></li>
+    <li><a href="https://github.com/imamuseum/osci-toolkit-installer">IMAmuseum/OSCI-Toolkit-Installer</a></li>
+</ul>
+<img src="images/arch.png" />
+<ol>
+    <li>At its core the OSCI Toolkit builds upon the Drupal content management system in order to provide an easy and extensible model for managing catalogue contents, structure, and media assets.</li>
+    <li>In order to better support the publication workflows of institutions, the OSCI Toolkit sought to facilitate importing materials into the content management system. These tools include 1) "paste from Word" support which automatically extracts and maintains formatting, like footnotes, 2) integration with IIIF servers, 3) examples of integration with museum collection management, 4) examples of importing assets from digital asset management systems.</li>
+    <li>The OSCI Toolkit strives for a model of write once, deploy everywhere. In order to support this a set of standard export features are provided. Users can click a button to export catalogues in several formats: ePub3 for supporting many modern reading experiences such as iBooks on the iPad, MOBI eBooks as an alternative format supported on devices such as the Kindle, and a standard PDF document.</li>
+    <li>An Application Programming Interface (API) enables developers to create full-featured applications of their own. A JavaScript client library is available as a starting point for building a custom web application, or developers can use the OSCI Toolkit’s sample web application as a starting point.</li>
+</ol>
+	</section>
+</div>
+<script src="js/scale.fix.js"></script>
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-1868672-29', 'auto');
+	ga('send', 'pageview');
+</script>
+
+</body>
 </html>
